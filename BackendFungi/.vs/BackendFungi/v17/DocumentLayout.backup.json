@@ -1,0 +1,139 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\\u042E\u0440\u0438\u0439\\Desktop\\\u041A\u0443\u0440\u0441\u0430\u0447\\Fungi_2\\BackendFungi\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{2A88C95E-2F0A-4037-8FC4-8BD8EE8BD960}|BackendFungi.csproj|c:\\users\\\u044E\u0440\u0438\u0439\\desktop\\\u043A\u0443\u0440\u0441\u0430\u0447\\fungi_2\\backendfungi\\context\\fungidbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2A88C95E-2F0A-4037-8FC4-8BD8EE8BD960}|BackendFungi.csproj|solutionrelative:context\\fungidbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2A88C95E-2F0A-4037-8FC4-8BD8EE8BD960}|BackendFungi.csproj|c:\\users\\\u044E\u0440\u0438\u0439\\desktop\\\u043A\u0443\u0440\u0441\u0430\u0447\\fungi_2\\backendfungi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2A88C95E-2F0A-4037-8FC4-8BD8EE8BD960}|BackendFungi.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2A88C95E-2F0A-4037-8FC4-8BD8EE8BD960}|BackendFungi.csproj|c:\\users\\\u044E\u0440\u0438\u0439\\desktop\\\u043A\u0443\u0440\u0441\u0430\u0447\\fungi_2\\backendfungi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{2A88C95E-2F0A-4037-8FC4-8BD8EE8BD960}|BackendFungi.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2A88C95E-2F0A-4037-8FC4-8BD8EE8BD960}|BackendFungi.csproj|c:\\users\\\u044E\u0440\u0438\u0439\\desktop\\\u043A\u0443\u0440\u0441\u0430\u0447\\fungi_2\\backendfungi\\supports\\mushroomsfilter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2A88C95E-2F0A-4037-8FC4-8BD8EE8BD960}|BackendFungi.csproj|solutionrelative:supports\\mushroomsfilter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2A88C95E-2F0A-4037-8FC4-8BD8EE8BD960}|BackendFungi.csproj|c:\\users\\\u044E\u0440\u0438\u0439\\desktop\\\u043A\u0443\u0440\u0441\u0430\u0447\\fungi_2\\backendfungi\\models\\mushroomsmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2A88C95E-2F0A-4037-8FC4-8BD8EE8BD960}|BackendFungi.csproj|solutionrelative:models\\mushroomsmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2A88C95E-2F0A-4037-8FC4-8BD8EE8BD960}|BackendFungi.csproj|c:\\users\\\u044E\u0440\u0438\u0439\\desktop\\\u043A\u0443\u0440\u0441\u0430\u0447\\fungi_2\\backendfungi\\entities\\mushroom.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2A88C95E-2F0A-4037-8FC4-8BD8EE8BD960}|BackendFungi.csproj|solutionrelative:entities\\mushroom.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2A88C95E-2F0A-4037-8FC4-8BD8EE8BD960}|BackendFungi.csproj|c:\\users\\\u044E\u0440\u0438\u0439\\desktop\\\u043A\u0443\u0440\u0441\u0430\u0447\\fungi_2\\backendfungi\\controllers\\sitecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2A88C95E-2F0A-4037-8FC4-8BD8EE8BD960}|BackendFungi.csproj|solutionrelative:controllers\\sitecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\\u042E\u0440\u0438\u0439\\Desktop\\\u041A\u0443\u0440\u0441\u0430\u0447\\Fungi_2\\BackendFungi\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "C:\\Users\\\u042E\u0440\u0438\u0439\\Desktop\\\u041A\u0443\u0440\u0441\u0430\u0447\\Fungi_2\\BackendFungi\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-10-12T14:30:31.921Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "FungiDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\\u042E\u0440\u0438\u0439\\Desktop\\\u041A\u0443\u0440\u0441\u0430\u0447\\Fungi_2\\BackendFungi\\Context\\FungiDbContext.cs",
+              "RelativeDocumentMoniker": "Context\\FungiDbContext.cs",
+              "ToolTip": "C:\\Users\\\u042E\u0440\u0438\u0439\\Desktop\\\u041A\u0443\u0440\u0441\u0430\u0447\\Fungi_2\\BackendFungi\\Context\\FungiDbContext.cs",
+              "RelativeToolTip": "Context\\FungiDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-12T14:13:20.742Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\\u042E\u0440\u0438\u0439\\Desktop\\\u041A\u0443\u0440\u0441\u0430\u0447\\Fungi_2\\BackendFungi\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\\u042E\u0440\u0438\u0439\\Desktop\\\u041A\u0443\u0440\u0441\u0430\u0447\\Fungi_2\\BackendFungi\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-12T14:03:34.091Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "MushroomsModel.cs",
+              "DocumentMoniker": "C:\\Users\\\u042E\u0440\u0438\u0439\\Desktop\\\u041A\u0443\u0440\u0441\u0430\u0447\\Fungi_2\\BackendFungi\\Models\\MushroomsModel.cs",
+              "RelativeDocumentMoniker": "Models\\MushroomsModel.cs",
+              "ToolTip": "C:\\Users\\\u042E\u0440\u0438\u0439\\Desktop\\\u041A\u0443\u0440\u0441\u0430\u0447\\Fungi_2\\BackendFungi\\Models\\MushroomsModel.cs",
+              "RelativeToolTip": "Models\\MushroomsModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-12T13:55:03.582Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MushroomsFilter.cs",
+              "DocumentMoniker": "C:\\Users\\\u042E\u0440\u0438\u0439\\Desktop\\\u041A\u0443\u0440\u0441\u0430\u0447\\Fungi_2\\BackendFungi\\Supports\\MushroomsFilter.cs",
+              "RelativeDocumentMoniker": "Supports\\MushroomsFilter.cs",
+              "ToolTip": "C:\\Users\\\u042E\u0440\u0438\u0439\\Desktop\\\u041A\u0443\u0440\u0441\u0430\u0447\\Fungi_2\\BackendFungi\\Supports\\MushroomsFilter.cs",
+              "RelativeToolTip": "Supports\\MushroomsFilter.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4AAABDAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-12T13:49:29.13Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Mushroom.cs",
+              "DocumentMoniker": "C:\\Users\\\u042E\u0440\u0438\u0439\\Desktop\\\u041A\u0443\u0440\u0441\u0430\u0447\\Fungi_2\\BackendFungi\\Entities\\Mushroom.cs",
+              "RelativeDocumentMoniker": "Entities\\Mushroom.cs",
+              "ToolTip": "C:\\Users\\\u042E\u0440\u0438\u0439\\Desktop\\\u041A\u0443\u0440\u0441\u0430\u0447\\Fungi_2\\BackendFungi\\Entities\\Mushroom.cs",
+              "RelativeToolTip": "Entities\\Mushroom.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAA3wBcAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-12T13:40:04.154Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "SiteController.cs",
+              "DocumentMoniker": "C:\\Users\\\u042E\u0440\u0438\u0439\\Desktop\\\u041A\u0443\u0440\u0441\u0430\u0447\\Fungi_2\\BackendFungi\\Controllers\\SiteController.cs",
+              "RelativeDocumentMoniker": "Controllers\\SiteController.cs",
+              "ToolTip": "C:\\Users\\\u042E\u0440\u0438\u0439\\Desktop\\\u041A\u0443\u0440\u0441\u0430\u0447\\Fungi_2\\BackendFungi\\Controllers\\SiteController.cs",
+              "RelativeToolTip": "Controllers\\SiteController.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAmwB8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-12T11:45:06.388Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
