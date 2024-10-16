@@ -31,7 +31,8 @@ public partial class FungiDbContext : DbContext
     // by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148.
     // For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=FungiDB;Username=developer;Password=developer");
+        => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=FungiDB;" +
+                                    "Username=developer;Password=developer");
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
