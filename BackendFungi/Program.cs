@@ -1,4 +1,4 @@
-using BackendFungi.Context;
+using BackendFungi.DataBase.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 

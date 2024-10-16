@@ -1,15 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BackendFungi.DataBase.Entities;
 
-public class Article
+public partial class Article
 {
-    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
-    [MaxLength(255)]
     public string Title { get; set; } = null!;
 
     public DateTime? PublishDate { get; set; }
+
+    public virtual ICollection<Paragraph> Paragraphs { get; set; } = new List<Paragraph>();
 }

@@ -1,4 +1,4 @@
-using BackendFungi.Context;
+using BackendFungi.DataBase.Context;
 using BackendFungi.Models;
 using BackendFungi.Supports;
 using Microsoft.AspNetCore.Mvc;
@@ -28,5 +28,4 @@ public class SiteController : ControllerBase
     {
         return Results.Json(MushroomsFilter.Filter(filterValues, _dbContext));
     }
-
 }

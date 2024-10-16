@@ -1,11 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BackendFungi.DataBase.Entities;
 
-public class Paragraph
+public partial class Paragraph
 {
-    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
     public int ArticleId { get; set; }
@@ -13,4 +12,6 @@ public class Paragraph
     public string? ParagraphText { get; set; }
 
     public int SerialNumber { get; set; }
+
+    public virtual Article Article { get; set; } = null!;
 }
