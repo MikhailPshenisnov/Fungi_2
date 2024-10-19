@@ -86,21 +86,26 @@ public static class DbApiFunctions
         return result;
     }
 
-    public static void CreateArticle(ArticleModel article)
+    public static void CreateArticle(ArticleModel articleToAdd)
     {
         using var dbContext = new FungiDbContext();
 
+        var a = (from article in dbContext.Articles
+            where article.Title == articleToAdd.Title
+            select article).FirstOrDefault();
+        if (a is not null) throw new Exception("Article already exists");
+
         var addedArticle = dbContext.Articles.Add(new Article
         {
-            Title = article.Title,
-            PublishDate = article.PublishDate
+            Title = articleToAdd.Title,
+            PublishDate = articleToAdd.PublishDate
         });
 
         dbContext.SaveChanges();
 
         var counter = 0;
 
-        foreach (var paragraph in article.Paragraphs)
+        foreach (var paragraph in articleToAdd.Paragraphs)
         {
             dbContext.Paragraphs.Add(new Paragraph
             {

@@ -4,7 +4,6 @@ using BackendFungi.DataBase.Context;
 using BackendFungi.Models;
 using BackendFungi.Supports;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
 
 namespace BackendFungi.Controllers;
 
@@ -20,29 +19,21 @@ public class SiteController : ControllerBase
     }
 
 
-    private int _c = 1;
-
-    [HttpGet]
-    public IActionResult GetArticle()
+    [HttpGet("{articleTitle=null}")]
+    public IActionResult GetArticle(string? articleTitle)
     {
-        var headers = HttpContext.Request.Headers;
-        if (headers.TryGetValue("article_title", out var articleTitle))
+        if (string.IsNullOrEmpty(articleTitle))
+            return Ok("\"article_title\" parameter is required");
+
+        try
         {
-            if (!(articleTitle != ""))
-                return Ok("\"article_title\" header required");
-
-            try
-            {
-                var article = DbApiFunctions.GetArticle(DbApiFunctions.FindArticleId(articleTitle.ToString()));
-                return Ok(article);
-            }
-            catch (Exception e)
-            {
-                return Ok(e.Message);
-            }
+            var article = DbApiFunctions.GetArticle(DbApiFunctions.FindArticleId(articleTitle));
+            return Ok(article);
         }
-
-        return BadRequest("incorrect_headers");
+        catch (Exception e)
+        {
+            return Ok(e.Message);
+        }
     }
 
     [HttpGet]
@@ -60,32 +51,28 @@ public class SiteController : ControllerBase
     }
 
 
-    [HttpGet]
-    public IActionResult CreateArticle()
+    [HttpPost]
+    public IActionResult CreateArticle([FromBody] ArticleModel article)
     {
-        var headers = HttpContext.Request.Headers;
-        if (headers.TryGetValue("article_data", out var articleData))
+        if (!ModelState.IsValid)
         {
-            if (!(articleData != ""))
-                return Ok("\"article_data\" header required");
-
-            try
-            {
-                var data = JsonSerializer.Deserialize<ArticleModel>(articleData.ToString());
-                if (data is null) return Ok("Incorrect data format of \"article_data\"");
-
-                data.PublishDate = data.PublishDate?.ToUniversalTime() ?? DateTime.Now.ToUniversalTime();
-
-                DbApiFunctions.CreateArticle(data);
-                return Ok("Article created");
-            }
-            catch (Exception e)
-            {
-                return Ok(e.Message);
-            }
+            return BadRequest(ModelState);
         }
+        
+        if (string.IsNullOrEmpty(article.Title))
+            return Ok("\"Title\" parameter for article is required");
 
-        return BadRequest("incorrect_headers");
+        try
+        {
+            article.PublishDate = article.PublishDate?.ToUniversalTime() ?? DateTime.Now.ToUniversalTime();
+
+            DbApiFunctions.CreateArticle(article);
+            return Ok($"Article \"{article.Title}\" was created");
+        }
+        catch (Exception e)
+        {
+            return Ok(e.Message);
+        }
     }
 
 
