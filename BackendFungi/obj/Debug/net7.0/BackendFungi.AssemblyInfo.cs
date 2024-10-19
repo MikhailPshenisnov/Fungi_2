@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BackendFungi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dc3819602124c072fb4e234813a2b0e629b7900c")]
 [assembly: System.Reflection.AssemblyProductAttribute("BackendFungi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BackendFungi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

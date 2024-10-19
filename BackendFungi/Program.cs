@@ -1,10 +1,13 @@
 using BackendFungi.DataBase.Context;
+using BackendFungi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddTransient<IFilterArticleService, FilterArticleService>();
 
 builder.Services.AddCors(options => options.AddPolicy
     (

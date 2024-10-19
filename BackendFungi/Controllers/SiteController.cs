@@ -1,7 +1,9 @@
 using System.Text.Json;
+using BackendFungi.Contracts.Requests;
 using BackendFungi.DataBase;
 using BackendFungi.DataBase.Context;
 using BackendFungi.Models;
+using BackendFungi.Services;
 using BackendFungi.Supports;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,10 +14,12 @@ namespace BackendFungi.Controllers;
 public class SiteController : ControllerBase
 {
     private readonly FungiDbContext _dbContext;
+    private readonly IFilterArticleService _filterArticleService;
 
-    public SiteController(FungiDbContext dbContext)
+    public SiteController(FungiDbContext dbContext, IFilterArticleService filterArticleService)
     {
         _dbContext = dbContext;
+        _filterArticleService = filterArticleService;
     }
 
 
@@ -47,6 +51,21 @@ public class SiteController : ControllerBase
         catch (Exception e)
         {
             return Ok(e.Message);
+        }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetFilterArticles([FromQuery] GetFilterArticleRequest request,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var filterArticleDtos=await _filterArticleService.GetFilterArticlesAsync(request, cancellationToken);
+            return Ok(new GetFilterArticleResponse(filterArticleDtos));
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, "An error occurred while retrieving data.");
         }
     }
 
