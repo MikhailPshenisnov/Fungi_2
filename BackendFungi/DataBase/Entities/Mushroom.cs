@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BackendFungi.Entities;
+namespace BackendFungi.DataBase.Entities;
 
 public partial class Mushroom
 {
@@ -26,8 +26,4 @@ public partial class Mushroom
     public string? SteamColor { get; set; }
 
     public string? Description { get; set; }
-
-    public virtual ICollection<Mushroom> Doppelgangers { get; set; } = new List<Mushroom>();
-
-    public virtual ICollection<Mushroom> Mushrooms { get; set; } = new List<Mushroom>();
 }
