@@ -1,4 +1,4 @@
-﻿namespace BackendFungi.Models;
+﻿namespace BackendFungi.YuraFolder.Models;
 
 public class MushroomsModel
 {

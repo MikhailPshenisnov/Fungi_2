@@ -1,6 +1,6 @@
 using BackendFungi.Contracts.DTOs;
 using BackendFungi.Contracts.Requests;
-using BackendFungi.DataBase.Entities;
+using BackendFungi.Database.Entities;
 
 namespace BackendFungi.Services;
 

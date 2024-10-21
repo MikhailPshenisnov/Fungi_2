@@ -1,8 +1,10 @@
-﻿using BackendFungi.DataBase.Context;
-using BackendFungi.DataBase.Entities;
+﻿using BackendFungi.Database.Context;
+using BackendFungi.Database.Entities;
 using BackendFungi.Models;
+using Article = BackendFungi.Database.Entities.Article;
+using Paragraph = BackendFungi.Database.Entities.Paragraph;
 
-namespace BackendFungi.DataBase;
+namespace BackendFungi.Database.Repositories;
 
 public static class DbApiFunctions
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BackendFungi.DataBase.Entities;
+namespace BackendFungi.Database.Entities;
 
 public partial class Role
 {

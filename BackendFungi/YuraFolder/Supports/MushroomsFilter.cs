@@ -1,8 +1,8 @@
-﻿using BackendFungi.DataBase.Context;
-using BackendFungi.DataBase.Entities;
-using BackendFungi.Models;
+﻿using BackendFungi.Database.Context;
+using BackendFungi.Database.Entities;
+using BackendFungi.YuraFolder.Models;
 
-namespace BackendFungi.Supports;
+namespace BackendFungi.YuraFolder.Supports;
 
 public static class MushroomsFilter
 {

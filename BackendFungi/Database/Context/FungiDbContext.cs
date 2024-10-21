@@ -1,7 +1,7 @@
-﻿using BackendFungi.DataBase.Entities;
+﻿using BackendFungi.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackendFungi.DataBase.Context;
+namespace BackendFungi.Database.Context;
 
 public partial class FungiDbContext : DbContext
 {

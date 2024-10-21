@@ -1,10 +1,10 @@
-using System.Text.Json;
 using BackendFungi.Contracts.Requests;
-using BackendFungi.DataBase;
-using BackendFungi.DataBase.Context;
+using BackendFungi.Database.Context;
+using BackendFungi.Database.Repositories;
 using BackendFungi.Models;
 using BackendFungi.Services;
-using BackendFungi.Supports;
+using BackendFungi.YuraFolder.Models;
+using BackendFungi.YuraFolder.Supports;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackendFungi.Controllers;

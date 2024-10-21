@@ -1,4 +1,4 @@
-using BackendFungi.DataBase.Context;
+using BackendFungi.Database.Context;
 using BackendFungi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,11 +23,11 @@ builder.Services.AddDbContext<FungiDbContext>();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// if (app.Environment.IsDevelopment())
+// {
+//     app.UseSwagger();
+//     app.UseSwaggerUI();
+// }
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

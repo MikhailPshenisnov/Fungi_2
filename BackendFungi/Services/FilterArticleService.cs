@@ -1,8 +1,8 @@
 ﻿using System.Linq.Expressions;
 using BackendFungi.Contracts.DTOs;
 using BackendFungi.Contracts.Requests;
-using BackendFungi.DataBase.Context;
-using BackendFungi.DataBase.Entities;
+using BackendFungi.Database.Context;
+using BackendFungi.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace BackendFungi.Services;
