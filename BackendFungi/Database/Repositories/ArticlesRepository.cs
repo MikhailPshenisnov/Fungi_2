@@ -17,8 +17,8 @@ public class ArticlesRepository : IArticlesRepository
     }
 
     // Creates an article and paragraphs to it in the database according to the article model,
-    // returns a tuple from the id of the created article and the list of ids of the created articles
-    public async Task<(Guid, List<Guid>)> CreateArticle(Article article)
+    // returns the id of the created article
+    public async Task<Guid> CreateArticle(Article article)
     {
         var articleEntity = new Entities.Article
         {
@@ -36,7 +36,7 @@ public class ArticlesRepository : IArticlesRepository
             addedParagraphs.Add(await _paragraphsRepository.CreateParagraph(paragraph));
         }
 
-        return (article.Id, addedParagraphs);
+        return article.Id;
     }
 
     // Gets list of all articles and paragraphs to them from the database

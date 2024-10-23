@@ -2,7 +2,6 @@ using BackendFungi.Abstractions;
 using BackendFungi.Contracts;
 using BackendFungi.Database.Context;
 using BackendFungi.Models;
-using BackendFungi.Services;
 using BackendFungi.YuraFolder.Models;
 using BackendFungi.YuraFolder.Supports;
 using Microsoft.AspNetCore.Mvc;
@@ -31,11 +30,11 @@ public class SiteController : ControllerBase
     }
 
     // Getting an article by title
-    [HttpGet("{articleTitle=null}")]
+    [HttpGet("{articleTitle=}")]
     public async Task<IActionResult> GetArticle(string? articleTitle, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(articleTitle))
-            return BadRequest("\"article_title\" parameter is required");
+            return BadRequest("\"articleTitle\" parameter is required");
 
         try
         {
@@ -123,10 +122,10 @@ public class SiteController : ControllerBase
                 return BadRequest(error);
             }
 
-            var createdObjectsIds = await _articleService
+            var createdArticleId = await _articleService
                 .CreateArticleAsync(article, cancellationToken);
 
-            return Ok(createdObjectsIds);
+            return Ok(createdArticleId);
         }
         catch (Exception e)
         {
@@ -135,7 +134,7 @@ public class SiteController : ControllerBase
     }
 
     // Updating an article based on the article title with the received data
-    [HttpPut("{articleTitle=null}")]
+    [HttpPut("{articleTitle=}")]
     public async Task<IActionResult> UpdateArticle(string? articleTitle,
         [FromBody] ArticleDto newArticle, CancellationToken cancellationToken)
     {
@@ -144,8 +143,10 @@ public class SiteController : ControllerBase
 
         try
         {
+            var existedArticleId = (await _articleService.GetArticleAsync(articleTitle, cancellationToken)).Id;
+            
             var (newArticleModel, error) = Article.Create(
-                Guid.NewGuid(),
+                existedArticleId,
                 newArticle.Title,
                 newArticle.PublishDate,
                 newArticle.Paragraphs);
@@ -172,7 +173,7 @@ public class SiteController : ControllerBase
     }
 
     // Deleting an article by title
-    [HttpDelete("{articleTitle=null}")]
+    [HttpDelete("{articleTitle=}")]
     public async Task<IActionResult> DeleteArticle(string? articleTitle, 
         CancellationToken cancellationToken)
     {

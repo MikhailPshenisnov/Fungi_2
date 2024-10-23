@@ -45,8 +45,8 @@ public class ArticleService : IArticleService
     }
 
     // Creates an article and paragraphs for it in the database,
-    // returns a tuple of the id of the created article and a list of ids of the created paragraphs
-    public async Task<(Guid, List<Guid>)> CreateArticleAsync(Article article, CancellationToken ct)
+    // returns the id of the created article
+    public async Task<Guid> CreateArticleAsync(Article article, CancellationToken ct)
     {
         try
         {
@@ -62,9 +62,9 @@ public class ArticleService : IArticleService
 
             try
             {
-                var createdObjectsIds = await _articleRepository.CreateArticle(article);
+                var createdArticleId = await _articleRepository.CreateArticle(article);
 
-                return createdObjectsIds;
+                return createdArticleId;
             }
             catch (Exception ex)
             {
