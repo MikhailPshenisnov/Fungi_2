@@ -1,5 +1,3 @@
-﻿using BackendFungi.Contracts.DTOs;
-
-namespace BackendFungi.Contracts.Requests;
+﻿namespace BackendFungi.Contracts;
 
 public record GetFilterArticleResponse(List<FilterArticleDto> FilterArticleDtos);

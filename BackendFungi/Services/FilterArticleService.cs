@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
-using BackendFungi.Contracts.DTOs;
-using BackendFungi.Contracts.Requests;
+using BackendFungi.Abstractions;
+using BackendFungi.Contracts;
 using BackendFungi.Database.Context;
 using BackendFungi.Database.Entities;
 using Microsoft.EntityFrameworkCore;

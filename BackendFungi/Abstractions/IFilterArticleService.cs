@@ -1,8 +1,6 @@
-using BackendFungi.Contracts.DTOs;
-using BackendFungi.Contracts.Requests;
-using BackendFungi.Database.Entities;
+using BackendFungi.Contracts;
 
-namespace BackendFungi.Services;
+namespace BackendFungi.Abstractions;
 
 public interface IFilterArticleService
 {

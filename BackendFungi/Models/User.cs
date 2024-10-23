@@ -6,7 +6,7 @@ public class User
     public const int MaxEmailLength = 128;
     public const int MaxPasswordHashLength = 128;
 
-    private User(int id, string username, string? email, string passwordHash, Role role)
+    private User(Guid id, string username, string? email, string passwordHash, Role role)
     {
         Id = id;
         Username = username;
@@ -15,22 +15,18 @@ public class User
         Role = role;
     }
 
-    public int Id { get; }
+    public Guid Id { get; }
     public string Username { get; }
     public string? Email { get; }
     public string PasswordHash { get; }
     public Role Role { get; }
 
     public static (User User, string Error)
-        Create(int id, string username, string? email, string passwordHash, Role role)
+        Create(Guid id, string username, string? email, string passwordHash, Role role)
     {
         var error = string.Empty;
 
-        if (id < 0)
-        {
-            error = "Id can't be less than 0";
-        }
-        else if (string.IsNullOrEmpty(username) || username.Length > MaxUsernameLength)
+        if (string.IsNullOrEmpty(username) || username.Length > MaxUsernameLength)
         {
             error = $"Username can't be longer than {MaxUsernameLength} characters or empty";
         }

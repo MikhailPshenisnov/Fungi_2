@@ -8,7 +8,7 @@ public class Mushroom
     public const int MaxStemTypeLength = 30;
     public const int MaxSteamColorLength = 100;
 
-    private Mushroom(int id, string name, string? synonymousName, bool redBook, string eatable,
+    private Mushroom(Guid id, string name, string? synonymousName, bool redBook, string eatable,
         bool hasStem, int? stemSizeFrom, int? stemSizeTo, string? stemType, string? steamColor,
         string? description, List<Doppelganger> doppelgangers)
     {
@@ -26,7 +26,7 @@ public class Mushroom
         Doppelgangers = doppelgangers;
     }
 
-    public int Id { get; }
+    public Guid Id { get; }
     public string Name { get; }
     public string? SynonymousName { get; }
     public bool RedBook { get; }
@@ -40,17 +40,13 @@ public class Mushroom
     public List<Doppelganger> Doppelgangers { get; }
 
     public static (Mushroom Mushroom, string Error)
-        Create(int id, string name, string? synonymousName, bool redBook, string eatable,
+        Create(Guid id, string name, string? synonymousName, bool redBook, string eatable,
             bool hasStem, int? stemSizeFrom, int? stemSizeTo, string? stemType, string? steamColor,
             string? description, List<Doppelganger> doppelgangers)
     {
         var error = string.Empty;
 
-        if (id < 0)
-        {
-            error = "Id can't be less than 0";
-        }
-        else if (string.IsNullOrEmpty(name) || name.Length > MaxNameLength)
+        if (string.IsNullOrEmpty(name) || name.Length > MaxNameLength)
         {
             error = $"Mushroom name can't be longer than {MaxNameLength} characters or empty";
         }

@@ -42,7 +42,7 @@ public static class MushroomsFilter
 
         if (model.SteamColor is not null)
         {
-            mushrooms = mushrooms.Where(p => p.SteamColor == model.SteamColor).ToArray();
+            mushrooms = mushrooms.Where(p => p.StemColor == model.SteamColor).ToArray();
         }
 
         return mushrooms;
