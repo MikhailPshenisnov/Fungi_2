@@ -17,8 +17,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="DataBase\Context\" />
-      <Folder Include="DataBase\Entities\" />
+      <Folder Include="Database\Context\" />
+      <Folder Include="Database\Entities\" />
     </ItemGroup>
 
 </Project>
