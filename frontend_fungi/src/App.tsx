@@ -5,7 +5,8 @@ import "./components/Header/header.tsx";
 import {Header} from "./components/Header/header.tsx";
 import { Footer } from "./components/Footer/footer.tsx";
 import Publications from "./pages/Publications/Publications.tsx";
-//import {Footer} from "./components/Footer/footer.tsx";
+import PublicationsSec from "./pages/Publications/PublicationsSec.tsx";
+// import {Footer} from "./components/Footer/footer.tsx";
 
 export function App() {
 
@@ -18,8 +19,11 @@ export function App() {
           <Route path="/mainpage" element={
             <MainPage />
           } />
-          <Route path="/contacts" element={
+          <Route path="/publications" element={
             <Publications />
+          } />
+          <Route path="/publications-sec" element={
+            <PublicationsSec />
           } />
           <Route path="*" element={<Navigate to="/mainpage"/>}/>
         </Routes>

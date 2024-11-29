@@ -9,17 +9,19 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    max-width: 1700px;
 }
 
 .publication-card {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 111px;
     cursor: pointer;
     overflow: hidden;
-    border-radius: 20px;
+    border-radius: 40px;
     background-color: #ffe8c5;
-    max-width: 800px;
+    max-width: 1698px;
+    min-height: 310px;
     width: 100%;
 }
 
@@ -45,4 +47,21 @@
 .publication-info p {
     margin: 5px 0 0;
     font-size: 0.9em;
+}
+
+
+
+.publicationsConteiner {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: 1700px;
+    padding: 0;
+    margin-top: 60px;
+}
+
+.conteiner {
+    display: flex;
+    justify-content: center;
 }

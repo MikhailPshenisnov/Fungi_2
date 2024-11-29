@@ -1,0 +1,7 @@
+.bottonsConteiner {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-self: flex-end;
+    margin-right: 37px;
+}
