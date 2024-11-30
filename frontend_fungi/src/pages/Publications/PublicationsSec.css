@@ -14,14 +14,16 @@
 
 .publication-card {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    margin-bottom: 111px;
+    margin-bottom: 60px;
+    margin-right: 60px;
     cursor: pointer;
     overflow: hidden;
     border-radius: 40px;
     background-color: #ffe8c5;
-    max-width: 1698px;
-    min-height: 310px;
+    max-width: 283px;
+    min-height: 433px;
     width: 100%;
 }
 
@@ -55,7 +57,7 @@
 
 .publicationsConteiner {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
     min-width: 1700px;

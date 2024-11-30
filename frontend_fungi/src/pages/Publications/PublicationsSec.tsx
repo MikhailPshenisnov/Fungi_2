@@ -1,6 +1,6 @@
 import FilterButtons from "../../components/FilterButtons/FilterButtons.tsx";
 // import SortDropdown from "../../components/SortDropdown/SortDropdown.tsx";
-import "./index.css";
+import "./PublicationsSec.css";
 import PublicationsCard from "./PublicationsCard/PublicationsCard.tsx";
 import {TPuplicationsCard} from "./types.ts";
 
@@ -28,11 +28,6 @@ const Publications = () => {
             title: "Путешествия по Европе на поезде",
             src: "https://example.com/images/travel.jpg",
             author: "Ольга Кузнецова",
-        },
-        {
-            title: "Искусственный интеллект и его применение",
-            src: "https://example.com/images/ai.jpg",
-            author: "Дмитрий Соколов",
         },
     ];
 
