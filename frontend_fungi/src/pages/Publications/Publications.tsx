@@ -41,7 +41,7 @@ const Publications = () => {
         <div className="conteiner">
             
             <div className="publications">
-                <FilterButtons/>
+                <FilterButtons targetPath="/publications-sec"/>
                 <div className="publicationsConteiner">
                     {publications.map(publication => (
                         <PublicationsCard card={publication} />

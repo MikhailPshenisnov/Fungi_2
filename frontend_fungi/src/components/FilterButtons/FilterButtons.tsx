@@ -1,17 +1,20 @@
 import { Link } from "react-router-dom";
 import SortDropdown from "../../components/SortDropdown/SortDropdown.tsx";
 import "./index.css";
+import React from "react";
+
+interface FilterButtonsProps {
+    targetPath: string; // Целевой маршрут
+}
 
 
 
-
-
-const FilterButtons = () => {
+const FilterButtons: React.FC<FilterButtonsProps> = ({ targetPath }) => {
 
     return (
         <div className="bottonsConteiner">
             <button> 
-                <Link to="/publications-sec"  >
+                <Link to={ targetPath }  >
                     <img src="./public/images/grid-view.svg" alt="" />
                 </Link>
             </button>

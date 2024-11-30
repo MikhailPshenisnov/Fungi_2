@@ -1,4 +1,5 @@
-import SortDropdown from "../../components/SortDropdown/SortDropdown.tsx";
+import FilterButtons from "../../components/FilterButtons/FilterButtons.tsx";
+// import SortDropdown from "../../components/SortDropdown/SortDropdown.tsx";
 import "./index.css";
 import PublicationsCard from "./PublicationsCard/PublicationsCard.tsx";
 import {TPuplicationsCard} from "./types.ts";
@@ -40,10 +41,7 @@ const Publications = () => {
         <div className="conteiner">
             
             <div className="publications">
-                <div className="bottonsConteiner">
-                    <img src="" alt="" />
-                    <SortDropdown/>
-                </div>
+                <FilterButtons targetPath="/publications"/>
                 <div className="publicationsConteiner">
                     {publications.map(publication => (
                         <PublicationsCard card={publication} />
