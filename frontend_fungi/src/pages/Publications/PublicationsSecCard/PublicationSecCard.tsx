@@ -6,7 +6,7 @@ interface IPublicationsCard {
     card: TPuplicationsCard
 };
 
-const PublicationsCard: React.FC<IPublicationsCard> = (card : TPuplicationsCard) => {
+const PublicationsSecCard: React.FC<IPublicationsCard> = (card : TPuplicationsCard) => {
 
     return (
             <div className="publication-card">
@@ -19,4 +19,4 @@ const PublicationsCard: React.FC<IPublicationsCard> = (card : TPuplicationsCard)
     );
 }
 
-export default PublicationsCard;
+export default PublicationsSecCard;

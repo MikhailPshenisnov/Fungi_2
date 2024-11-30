@@ -1,0 +1,38 @@
+.publication-card {
+    display: flex;
+    align-items: center;
+    margin-bottom: 111px;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 40px;
+    background-color: #ffe8c5;
+    max-width: 1698px;
+    min-height: 310px;
+    width: 100%;
+}
+
+.publication-card img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+.publication-info {
+    display: flex;
+    flex-direction: column;
+    font-family: 'Raleway';
+    font-weight: 600;
+}
+
+.publication-info h3 {
+    margin: 0;
+    font-size: 37px;
+    font-family: 'Raleway';
+    font-weight: 600;
+}
+
+.publication-info p {
+    margin: 5px 0 0;
+    font-size: 0.9em;
+}

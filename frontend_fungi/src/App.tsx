@@ -4,8 +4,9 @@ import {MainPage} from "./pages/MainPage.tsx";
 import "./components/Header/header.tsx";
 import {Header} from "./components/Header/header.tsx";
 import { Footer } from "./components/Footer/footer.tsx";
-import Publications from "./pages/Publications/Publications.tsx";
-import PublicationsSec from "./pages/Publications/PublicationsSec.tsx";
+import PublicationsSec from "./pages/Publications/PublicationsSec/PublicationsSec.tsx";
+import Publications from "./pages/Publications/index.tsx";
+
 // import {Footer} from "./components/Footer/footer.tsx";
 
 export function App() {

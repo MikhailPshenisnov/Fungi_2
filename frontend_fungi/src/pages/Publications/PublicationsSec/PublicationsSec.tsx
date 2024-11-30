@@ -1,8 +1,9 @@
-import FilterButtons from "../../components/FilterButtons/FilterButtons.tsx";
+import FilterButtons from "../../../components/FilterButtons/FilterButtons.tsx";
 // import SortDropdown from "../../components/SortDropdown/SortDropdown.tsx";
 import "./PublicationsSec.css";
-import PublicationsCard from "./PublicationsCard/PublicationsCard.tsx";
-import {TPuplicationsCard} from "./types.ts";
+import PublicationsSecCard from "../PublicationsSecCard/PublicationSecCard.tsx";
+
+import {TPuplicationsCard} from "../types.ts";
 
 
 
@@ -33,18 +34,18 @@ const Publications = () => {
 
 
     return (
-        <div className="conteiner">
+        <div className="conteinerSec">
             
-            <div className="publications">
+            <div className="publicationsSec">
                 <FilterButtons targetPath="/publications"/>
-                <div className="publicationsConteiner">
+                <div className="publicationsSecConteiner">
                     {publications.map(publication => (
-                        <PublicationsCard card={publication} />
+                        <PublicationsSecCard card={publication} />
                     ))}
                 </div>
-                <div className="publicationsConteiner">
+                <div className="publicationsSecConteiner">
                     {publications.map(publication => (
-                        <PublicationsCard card={publication} />
+                        <PublicationsSecCard card={publication} />
                     ))}
                 </div>
                 
