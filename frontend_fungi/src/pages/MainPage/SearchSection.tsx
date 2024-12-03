@@ -1,29 +1,28 @@
 export const SearchSection: React.FC = () => (
     <div className="search-section" style={{ padding: '75px', textAlign: 'center', width: '1652px', height: '313px' }}>
-      <h2 style={{ fontSize: '55px', fontWeight: 'bold', fontFamily: 'Raleway', marginBottom: '76px' }}>
-        Найди гриб мечты – от сыроежки до трюфеля.
-      </h2>
+        <h2 style={{ fontSize: '55px', fontWeight: 'bold', fontFamily: 'Raleway', marginBottom: '76px' }}>
+            Найди гриб мечты – от сыроежки до трюфеля.
+        </h2>
 
       {/* Текст "Удобный поиск" */}
-
         <h2 style={{ fontSize: '50px', fontWeight: 'bold', fontFamily: 'Raleway', marginLeft: '10px', 
                     textAlign: 'left', marginTop: '125px'}}>
           Удобный поиск
         </h2>
 
 
-      <div
-        style={{
-        position: 'relative',
-        width: '1096px',
-        height: '69px',
-        display: 'flex',
-        alignItems: 'center',
-        border: '1px solid #ccc',
-        borderRadius: '40px',
-        marginLeft: 'auto' ,
-        marginTop: '-99px'
-      }}
+        <div
+            style={{
+            position: 'relative',
+            width: '1096px',
+            height: '69px',
+            display: 'flex',
+            alignItems: 'center',
+            border: '2px solid',
+            borderRadius: '40px',
+            marginLeft: 'auto' ,
+            marginTop: '-99px'
+        }}
     >
         
         {/* Кнопка поиска */}
@@ -44,6 +43,7 @@ export const SearchSection: React.FC = () => (
             style={{ width: '50px', height: '42px' }}
             />
         </button>
+
         {/* Поле ввода */}
         <input
             type="text"
@@ -58,6 +58,7 @@ export const SearchSection: React.FC = () => (
             fontFamily: 'Raleway',
             }}
         />
+
         {/* Кнопка сортировки */}
         <button
             style={{
@@ -75,7 +76,9 @@ export const SearchSection: React.FC = () => (
             alt="Sort"
             />
         </button>
-        </div> 
+
+        </div>
+
         {/* Текстовые элементы */}
         <div
         style={{

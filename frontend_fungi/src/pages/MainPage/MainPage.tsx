@@ -1,4 +1,5 @@
 import { Banner } from './Banner';
+import { PublicationsSlider } from './PublicationsSlider';
 import { SearchSection } from './SearchSection';
 import { TeamSection } from './TeamSection';
 
@@ -12,6 +13,7 @@ export function MainPage() {
             />
             <SearchSection />
             <TeamSection />
+            <PublicationsSlider />
         </div>
     )
 }
