@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./index.css";
-import {MainPage} from "./pages/MainPage.tsx";
+import {MainPage} from "./pages/MainPage/MainPage.tsx";
 import "./components/Header/header.tsx";
 import {Header} from "./components/Header/header.tsx";
 import { Footer } from "./components/Footer/footer.tsx";

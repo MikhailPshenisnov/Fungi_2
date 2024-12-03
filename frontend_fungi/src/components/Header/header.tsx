@@ -6,7 +6,7 @@ export function Header(){
             <div>
                 <span className="logo">
                     <NavLink to={"/home"} style={{textDecoration: "none", color: "black"}}>
-                        <img className="logo-img" src="./public/images/logo.png" />
+                        <img className="logo-img" src="/images/logo.png" />
                     </NavLink>
                 </span>
                 <ul className="nav">
@@ -21,7 +21,7 @@ export function Header(){
                     </li>
                     <li>
                         <NavLink to={"/login"} style={{textDecoration: "none", color: "black"}}>
-                            <img className="lk-icon" src="./public/images/user-profile.png" />
+                            <img className="lk-icon" src="/images/user-profile.png" />
                             {/* {!props.authState.isLoggedIn && (
                                 <>Личный кабинет</>
                             )}
@@ -32,8 +32,7 @@ export function Header(){
                         </NavLink>
                     </li>
                 </ul>
-            </div>
-            <div className="presentation"/>
+            </div>            
         </header>
     )
 }
