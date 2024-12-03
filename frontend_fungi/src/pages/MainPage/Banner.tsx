@@ -1,6 +1,6 @@
 interface BannerProps {
-    image: string; // URL изображения
-    title: string; // Текст заголовка
+    image: string;
+    title: string;
   }
   
   export const Banner: React.FC<BannerProps> = ({ image, title }) => (
