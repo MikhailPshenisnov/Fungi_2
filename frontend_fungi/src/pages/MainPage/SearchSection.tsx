@@ -1,8 +1,17 @@
 export const SearchSection: React.FC = () => (
-    <div className="search-section" style={{ padding: '75px', textAlign: 'center', width: '1652px' }}>
+    <div className="search-section" style={{ padding: '75px', textAlign: 'center', width: '1652px', height: '313px' }}>
       <h2 style={{ fontSize: '55px', fontWeight: 'bold', fontFamily: 'Raleway', marginBottom: '76px' }}>
         Найди гриб мечты – от сыроежки до трюфеля.
       </h2>
+
+      {/* Текст "Удобный поиск" */}
+
+        <h2 style={{ fontSize: '50px', fontWeight: 'bold', fontFamily: 'Raleway', marginLeft: '10px', 
+                    textAlign: 'left', marginTop: '125px'}}>
+          Удобный поиск
+        </h2>
+
+
       <div
         style={{
         position: 'relative',
@@ -13,8 +22,10 @@ export const SearchSection: React.FC = () => (
         border: '1px solid #ccc',
         borderRadius: '40px',
         marginLeft: 'auto' ,
+        marginTop: '-99px'
       }}
     >
+        
         {/* Кнопка поиска */}
         <button
             style={{
@@ -64,7 +75,24 @@ export const SearchSection: React.FC = () => (
             alt="Sort"
             />
         </button>
-        </div>         
+        </div> 
+        {/* Текстовые элементы */}
+        <div
+        style={{
+            marginTop: '32px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            maxWidth: '950px',
+            marginLeft: 'auto',
+            marginRight: '70px',
+            textAlign: 'center',
+            fontSize: '32px',
+            fontFamily: 'Raleway',
+        }}
+        >
+        <p style={{marginRight:'30px',}}>В нашем каталоге собраны тысячи видов грибов.</p>
+        <p>Введите название или описание – и начните исследование!</p>
+        </div>        
     </div>
   );
   

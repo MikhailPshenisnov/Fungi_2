@@ -1,6 +1,6 @@
-import React from 'react';
 import { Banner } from './Banner';
 import { SearchSection } from './SearchSection';
+import { TeamSection } from './TeamSection';
 
 
 export function MainPage() {
@@ -11,6 +11,7 @@ export function MainPage() {
                 title='Исследуй мир грибов с Fungi!'
             />
             <SearchSection />
+            <TeamSection />
         </div>
     )
 }
