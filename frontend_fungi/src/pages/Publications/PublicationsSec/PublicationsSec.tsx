@@ -34,20 +34,35 @@ const Publications = () => {
 
 
     return (
-        <div className="conteinerSec">
+        <div className="conteiner-sec">
             
-            <div className="publicationsSec">
+            <div className="publications-sec">
                 <FilterButtons targetPath="/publications"/>
-                <div className="publicationsSecConteiner">
-                    {publications.map(publication => (
-                        <PublicationsSecCard card={publication} />
-                    ))}
+                <div className="special-publications-conteiner">
+                    <h1>Собрали специально для вас!</h1>
+                    <div className="publications-sec-conteiner">
+                        {publications.map(publication => (
+                            <PublicationsSecCard card={publication} />
+                        ))}
+                        <button className="next-button">
+                            <h2>Больше статей</h2>
+                            <img src="./images/arrow.svg" alt="" />
+                        </button>
+                    </div>
                 </div>
-                <div className="publicationsSecConteiner">
-                    {publications.map(publication => (
-                        <PublicationsSecCard card={publication} />
-                    ))}
+                <div className="section-publication-conteiner">
+                    <h1>Заголовок раздела</h1>
+                    <div className="publications-sec-conteiner">
+                        {publications.map(publication => (
+                            <PublicationsSecCard card={publication} />
+                        ))}
+                        <button className="next-button">
+                            <h2>Больше статей</h2>
+                            <img src="./images/arrow.svg" alt="" />
+                        </button>
+                    </div>
                 </div>
+                
                 
             </div>
         </div>

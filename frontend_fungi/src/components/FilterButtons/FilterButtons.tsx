@@ -15,7 +15,7 @@ const FilterButtons: React.FC<FilterButtonsProps> = ({ targetPath }) => {
         <div className="bottonsConteiner">
             <button> 
                 <Link to={ targetPath }  >
-                    <img src="./public/images/grid-view.svg" alt="" />
+                    <img src="./images/grid-view.svg" alt="" />
                 </Link>
             </button>
             <SortDropdown/>

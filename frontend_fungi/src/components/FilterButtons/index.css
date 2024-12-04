@@ -5,3 +5,7 @@
     align-self: flex-end;
     margin-right: 37px;
 }
+button {
+    border: none;
+    background: none;
+}

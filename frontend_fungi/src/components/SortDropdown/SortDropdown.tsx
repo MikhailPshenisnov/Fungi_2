@@ -16,8 +16,8 @@ const SortDropdown = () => {
   return (
     <div className="sort-dropdown">
       <button className="dropdown-toggle" onClick={toggleDropdown}>
-        <span className="arrow">{isOpen ? <img src="./public/images/vector-up.svg"/> : <img src="./public/images/vector.svg"/>}</span>
-        <span><img src="./public/images/group.svg"/></span>
+        <span className="arrow">{isOpen ? <img src="./images/vector-up.svg"/> : <img src="./images/vector.svg"/>}</span>
+        <span><img src="./images/group.svg"/></span>
       </button>
       {isOpen && (
         <div className="dropdown-menu">

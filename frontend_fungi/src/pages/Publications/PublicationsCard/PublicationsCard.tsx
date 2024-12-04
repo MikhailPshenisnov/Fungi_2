@@ -1,12 +1,12 @@
 import React from "react";
 import "./index.css";
-import { TPuplicationsCard} from "../types.ts";
+import { TPublicationsCard} from "../types.ts";
 
 interface IPublicationsCard {
-    card: TPuplicationsCard
+    card: TPublicationsCard
 };
 
-const PublicationsCard: React.FC<IPublicationsCard> = (card : TPuplicationsCard) => {
+const PublicationsCard: React.FC<IPublicationsCard> = (card : TPublicationsCard) => {
 
     return (
             <div className="publication-card">

@@ -1,13 +1,13 @@
 import FilterButtons from "../../components/FilterButtons/FilterButtons.tsx";
 import "./index.css";
 import PublicationsCard from "./PublicationsCard/PublicationsCard.tsx";
-import {TPuplicationsCard} from "./types.ts";
+import {TPublicationsCard} from "./types.ts";
 
 
 
 
 const Publications = () => {
-    const publications: TPuplicationsCard[] = [
+    const publications: TPublicationsCard[] = [
         {
             title: "Инновации в мире технологий",
             src: "https://example.com/images/tech.jpg",
