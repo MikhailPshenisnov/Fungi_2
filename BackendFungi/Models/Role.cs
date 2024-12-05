@@ -3,17 +3,21 @@ namespace BackendFungi.Models;
 public class Role
 {
     public const int MaxNameLength = 30;
-    
-    private Role(Guid id, string name)
+    public const int MinAccessLevel = 0;
+    public const int MaxAccessLevel = 100;
+
+    private Role(Guid id, string name, int accessLevel)
     {
         Id = id;
         Name = name;
+        AccessLevel = accessLevel;
     }
-    
+
     public Guid Id { get; }
     public string Name { get; }
+    public int AccessLevel { get; }
 
-    public static (Role Role, string Error) Create(Guid id, string name)
+    private static string RoleBasicChecks(string name, int accessLevel)
     {
         var error = string.Empty;
 
@@ -21,9 +25,20 @@ public class Role
         {
             error = $"Role name can't be longer than {MaxNameLength} characters or empty";
         }
-        
-        var role = new Role(id, name);
-        
+        else if (accessLevel < MinAccessLevel || accessLevel > MaxAccessLevel)
+        {
+            error = $"Role access level must be between {MinAccessLevel} and {MaxAccessLevel}";
+        }
+
+        return error;
+    }
+
+    public static (Role Role, string Error) Create(Guid id, string name, int accessLevel)
+    {
+        var error = RoleBasicChecks(name, accessLevel);
+
+        var role = new Role(id, name, accessLevel);
+
         return (role, error);
     }
 }

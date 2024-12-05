@@ -79,7 +79,7 @@ public class ArticlesController : ControllerBase
 
     // Getting filtered articles
     [HttpGet]
-    public async Task<IActionResult> GetFilteredArticles([FromQuery] GetFilterArticleRequest request, 
+    public async Task<IActionResult> GetFilteredArticles([FromQuery] ArticleFilterDto request, 
         CancellationToken cancellationToken)
     {
         try

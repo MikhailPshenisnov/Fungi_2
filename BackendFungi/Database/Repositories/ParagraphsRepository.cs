@@ -63,7 +63,7 @@ public class ParagraphsRepository : IParagraphsRepository
         var numUpdated = await _context.Paragraphs
             .Where(p => p.Id == paragraphId)
             .ExecuteDeleteAsync();
-        
+
         if (numUpdated == 0)
         {
             throw new Exception("Unknown paragraph id");

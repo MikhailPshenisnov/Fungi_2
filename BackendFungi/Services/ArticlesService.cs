@@ -1,122 +1,165 @@
-using System.Linq.Expressions;
 using BackendFungi.Abstractions;
-using BackendFungi.Contracts;
-using BackendFungi.Database.Context;
 using BackendFungi.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace BackendFungi.Services;
 
-public class ArticlesService : IArticlesService {
+public class ArticlesService : IArticlesService
+{
     private readonly IArticlesRepository _articlesRepository;
-    private readonly FungiDbContext _context;
 
-
-    public ArticlesService(IArticlesRepository articlesRepository, FungiDbContext context) {
+    public ArticlesService(IArticlesRepository articlesRepository)
+    {
         _articlesRepository = articlesRepository;
-        _context = context;
     }
 
     // Returns an article model based on the article title
-    public async Task<Article> GetArticleAsync(string articleTitle, CancellationToken ct) {
-        try {
-            var articleId = await _articlesRepository.GetArticleId(articleTitle);
+    public async Task<Article> GetArticleAsync(string articleTitle, CancellationToken ct)
+    {
+        try
+        {
+            var allArticles = await _articlesRepository.GetAllArticles();
 
-            var article = await _articlesRepository.GetArticle(articleId);
+            var article = allArticles.FirstOrDefault(a => a.Title == articleTitle);
+            if (article == null)
+                throw new Exception("Unknown article title");
 
             return article;
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             throw new Exception($"Unable to get article \"{articleTitle}\": \"{e.Message}\"");
         }
     }
 
     // Returns a list of all article models
-    public async Task<List<Article>> GetAllArticlesAsync(CancellationToken ct) {
-        try {
+    public async Task<List<Article>> GetAllArticlesAsync(CancellationToken ct)
+    {
+        try
+        {
             var articles = await _articlesRepository.GetAllArticles();
 
-            return articles;
+            return articles.OrderBy(a => a.PublishDate).ToList();
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             throw new Exception($"Unable to get articles: \"{e.Message}\"");
         }
     }
 
-    public async Task<List<ArticleDto>> GetFilteredArticlesAsync(GetFilterArticleRequest request,
-        CancellationToken ct) {
-        var filterArticleQuery = _context.Articles
-            .Include(a => a.Paragraphs)
-            .Where(a => string.IsNullOrEmpty(request.Search) || a.Title.ToLower().Contains(request.Search.ToLower()));
+    // Returns a list of articles after filtering
+    public async Task<List<Article>> GetFilteredArticlesAsync(ArticleFilter articleFilter, CancellationToken ct)
+    {
+        var articles = await _articlesRepository.GetAllArticles();
 
-        filterArticleQuery = request.SortBy?.ToLower() switch {
-            "title" => request.SortOrder == "desc"
-                ? filterArticleQuery.OrderByDescending(article => article.Title)
-                : filterArticleQuery.OrderBy(article => article.Title),
+        try
+        {
+            if (articleFilter.PartOfTitle is not null)
+            {
+                articles = articles
+                    .Where(a => a.Title.Contains(articleFilter.PartOfTitle))
+                    .ToList();
+            }
 
-            _ => request.SortOrder == "desc"
-                ? filterArticleQuery.OrderByDescending(article => article.PublishDate)
-                : filterArticleQuery.OrderBy(article => article.PublishDate)
-        };
+            if (articleFilter.PublishDateFrom is not null)
+            {
+                articles = articles
+                    .Where(a => a.PublishDate >= articleFilter.PublishDateFrom)
+                    .ToList();
+            }
 
-        return await filterArticleQuery
-            .Select(a => new ArticleDto(
-                a.Title,
-                a.PublishDate,
-                a.Paragraphs.Select(p => new ParagraphDto(p.ParagraphText)).ToList()
-            ))
-            .ToListAsync(ct);
+            if (articleFilter.PublishDateTo is not null)
+            {
+                articles = articles
+                    .Where(a => a.PublishDate <= articleFilter.PublishDateTo)
+                    .ToList();
+            }
+
+            if (articleFilter.PartOfAuthorString is not null)
+            {
+                articles = articles
+                    .Where(a => a.AuthorString.Contains(articleFilter.PartOfAuthorString))
+                    .ToList();
+            }
+
+            return articles.OrderBy(x => x.PublishDate).ToList();
+        }
+
+        catch (Exception e)
+        {
+            throw new Exception($"Unable to get filtered articles: \"{e.Message}\"");
+        }
     }
-
 
     // Creates an article and paragraphs for it in the database,
     // returns the id of the created article
-    public async Task<Guid> CreateArticleAsync(Article article, CancellationToken ct) {
-        try {
-            await _articlesRepository.GetArticleId(article.Title);
+    public async Task<Guid> CreateArticleAsync(Article article, CancellationToken ct)
+    {
+        try
+        {
+            var allArticles = await _articlesRepository.GetAllArticles();
+            var existedArticle = allArticles.FirstOrDefault(a => a.Title == article.Title);
+
+            if (existedArticle == null)
+                throw new Exception("Unknown article title");
+
             throw new Exception($"Article \"{article.Title}\" has already existed");
         }
-        catch (Exception e) {
-            if (e.Message == $"Article \"{article.Title}\" has already existed") {
+        catch (Exception e)
+        {
+            if (e.Message == $"Article \"{article.Title}\" has already existed")
+            {
                 throw new Exception($"Unable to create article \"{article.Title}\": \"{e.Message}\"");
             }
 
-            try {
-                var createdArticleId = await _articlesRepository.CreateArticle(article);
+            if (e.Message == "Unknown article title")
+            {
+                try
+                {
+                    await _articlesRepository.CreateArticle(article);
+                    return article.Id;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Unable to create article \"{article.Title}\": \"{ex.Message}\"");
+                }
+            }
 
-                return createdArticleId;
-            }
-            catch (Exception ex) {
-                throw new Exception($"Unable to create article \"{article.Title}\": \"{ex.Message}\"");
-            }
+            throw new Exception($"Unable to create article \"{article.Title}\": \"{e.Message}\"");
         }
     }
 
     // Changes the article parameters to new ones, returns the id of the changed article
-    public async Task<Guid> UpdateArticleAsync(string articleTitle, Article newArticleModel, CancellationToken ct) {
-        try {
-            var existedArticleId = await _articlesRepository.GetArticleId(articleTitle);
+    public async Task<Guid> UpdateArticleAsync(string articleTitle, Article newArticleModel, CancellationToken ct)
+    {
+        try
+        {
+            var allArticles = await _articlesRepository.GetAllArticles();
+            var existedArticle = allArticles.FirstOrDefault(a => a.Title == articleTitle);
 
-            var updatedArticleId = await _articlesRepository
-                .UpdateArticle(existedArticleId, newArticleModel);
+            await _articlesRepository.UpdateArticle(articleTitle, newArticleModel);
 
-            return updatedArticleId;
+            return existedArticle!.Id;
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             throw new Exception($"Unable to update article \"{articleTitle}\": \"{e.Message}\"");
         }
     }
 
     // Deletes an article and returns its id
-    public async Task<Guid> DeleteArticleAsync(string articleTitle, CancellationToken ct) {
-        try {
-            var articleId = await _articlesRepository.GetArticleId(articleTitle);
+    public async Task<Guid> DeleteArticleAsync(string articleTitle, CancellationToken ct)
+    {
+        try
+        {
+            var allArticles = await _articlesRepository.GetAllArticles();
+            var existedArticle = allArticles.FirstOrDefault(a => a.Title == articleTitle);
 
-            var deletedArticleId = await _articlesRepository.DeleteArticle(articleId);
+            await _articlesRepository.DeleteArticle(articleTitle);
 
-            return deletedArticleId;
+            return existedArticle!.Id;
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             throw new Exception($"Unable to delete article \"{articleTitle}\": \"{e.Message}\"");
         }
     }

@@ -23,7 +23,7 @@ public class Doppelganger
         {
             error = $"Doppelganger name can't be longer than {MaxDoppelgangerNameLength} characters or empty";
         }
-        
+
         return error;
     }
 

@@ -111,7 +111,7 @@ public class MushroomsController : ControllerBase
 
     // Getting filtered mushrooms
     [HttpGet]
-    public async Task<IActionResult> GetFilteredMushrooms([FromQuery] GetFilterMushroomRequest filter, 
+    public async Task<IActionResult> GetFilteredMushrooms([FromQuery] MushroomFilterDto filter, 
         CancellationToken cancellationToken)
     {
         try

@@ -1,5 +1,4 @@
 using BackendFungi.Abstractions;
-using BackendFungi.Contracts;
 using BackendFungi.Models;
 
 namespace BackendFungi.Services;
@@ -20,17 +19,21 @@ public class MushroomsService : IMushroomsService
     {
         try
         {
-            var mushroomId = await _mushroomsRepository.GetMushroomId(mushroomName);
+            var allMushrooms = await _mushroomsRepository.GetAllMushrooms();
 
-            var mushroom = await _mushroomsRepository.GetMushroom(mushroomId);
+            var mushroom = allMushrooms.FirstOrDefault(m => m.Name == mushroomName);
+            if (mushroom == null)
+                throw new Exception("Unknown mushroom name");
 
             var doppelgangersMap = new List<bool>();
             foreach (var doppelganger in mushroom.Doppelgangers)
             {
                 try
                 {
-                    // TODO оптимизировать карту доппельгангеров
-                    await _mushroomsRepository.GetMushroomId(doppelganger.DoppelgangerName);
+                    var d = allMushrooms
+                        .FirstOrDefault(m => m.Name == doppelganger.DoppelgangerName);
+                    if (d == null)
+                        throw new Exception("Unknown mushroom name");
 
                     doppelgangersMap.Add(true);
                 }
@@ -54,18 +57,20 @@ public class MushroomsService : IMushroomsService
     {
         try
         {
-            var mushrooms = await _mushroomsRepository.GetAllMushrooms();
+            var allMushrooms = await _mushroomsRepository.GetAllMushrooms();
 
             var result = new List<(Mushroom, List<bool> DoppelgangersMap)>();
-            foreach (var mushroom in mushrooms)
+            foreach (var mushroom in allMushrooms)
             {
                 var doppelgangersMap = new List<bool>();
                 foreach (var doppelganger in mushroom.Doppelgangers)
                 {
                     try
                     {
-                        // TODO оптимизировать карту доппельгангеров
-                        await _mushroomsRepository.GetMushroomId(doppelganger.DoppelgangerName);
+                        var d = allMushrooms
+                            .FirstOrDefault(m => m.Name == doppelganger.DoppelgangerName);
+                        if (d == null)
+                            throw new Exception("Unknown mushroom name");
 
                         doppelgangersMap.Add(true);
                     }
@@ -87,82 +92,117 @@ public class MushroomsService : IMushroomsService
     }
 
     // Returns a list of mushrooms and doppelgangers map for them after filtering
-    public async Task<List<(Mushroom Mushroom, List<bool> DoppelgangersMap)>> 
-        GetFilteredMushroomsAsync(GetFilterMushroomRequest filterMushroomDto, CancellationToken ct)
+    public async Task<List<(Mushroom Mushroom, List<bool> DoppelgangersMap)>>
+        GetFilteredMushroomsAsync(MushroomFilter mushroomFilter, CancellationToken ct)
     {
-        var mushrooms = await _mushroomsRepository.GetAllMushrooms();
-
         try
         {
-            if(filterMushroomDto.PartOfName is not null)
+            var allMushrooms = await _mushroomsRepository.GetAllMushrooms();
+
+            if (mushroomFilter.PartOfName is not null)
             {
-                mushrooms = mushrooms
-                    .Where(
-                    mushroom => mushroom.Name.Contains(filterMushroomDto.PartOfName) || 
-                    mushroom.SynonymousName is not null && mushroom.SynonymousName.Contains(filterMushroomDto.PartOfName)
-                    )
+                allMushrooms = allMushrooms
+                    .Where(m => m.Name.Contains(mushroomFilter.PartOfName) ||
+                                m.SynonymousName is not null &&
+                                m.SynonymousName.Contains(mushroomFilter.PartOfName) ||
+                                m.LatinName is not null &&
+                                m.LatinName.Contains(mushroomFilter.PartOfName))
                     .ToList();
             }
 
-            if(filterMushroomDto.RedBook is not null)
+            if (mushroomFilter.Family is not null)
             {
-                mushrooms = mushrooms
-                    .Where(mushroom => mushroom.RedBook == filterMushroomDto.RedBook)
+                allMushrooms = allMushrooms
+                    .Where(m => m.Family.Contains(mushroomFilter.Family))
                     .ToList();
             }
 
-            if (filterMushroomDto.Eatable is not null)
+            if (mushroomFilter.RedBook is not null)
             {
-                mushrooms = mushrooms
-                    .Where(mushroom => mushroom.Eatable == filterMushroomDto.Eatable)
+                allMushrooms = allMushrooms
+                    .Where(m => m.RedBook == mushroomFilter.RedBook)
                     .ToList();
             }
 
-            if (filterMushroomDto.HasStem is not null)
+            if (mushroomFilter.Eatable is not null)
             {
-                mushrooms = mushrooms
-                    .Where(mushroom => mushroom.HasStem == filterMushroomDto.HasStem)
+                allMushrooms = allMushrooms
+                    .Where(m => m.Eatable == mushroomFilter.Eatable)
                     .ToList();
             }
 
-            if (filterMushroomDto.StemSizeFrom is not null)
+            if (mushroomFilter.HasStem is not null)
             {
-                mushrooms = mushrooms
-                    .Where(mushroom => mushroom.StemSizeFrom >= filterMushroomDto.StemSizeFrom)
+                allMushrooms = allMushrooms
+                    .Where(m => m.HasStem == mushroomFilter.HasStem)
+                    .ToList();
+
+                if (mushroomFilter.HasStem is true)
+                {
+                    if (mushroomFilter.StemSizeFrom is not null)
+                    {
+                        allMushrooms = allMushrooms
+                            .Where(m => m.StemSizeFrom >= mushroomFilter.StemSizeFrom)
+                            .ToList();
+                    }
+
+                    if (mushroomFilter.StemSizeTo is not null)
+                    {
+                        allMushrooms = allMushrooms
+                            .Where(m => m.StemSizeTo <= mushroomFilter.StemSizeTo)
+                            .ToList();
+                    }
+
+                    if (mushroomFilter.StemType is not null)
+                    {
+                        allMushrooms = allMushrooms
+                            .Where(m => m.StemType == mushroomFilter.StemType)
+                            .ToList();
+                    }
+
+                    if (mushroomFilter.StemColor is not null)
+                    {
+                        allMushrooms = allMushrooms
+                            .Where(m => m.StemColor!.Contains(mushroomFilter.StemColor))
+                            .ToList();
+                    }
+                }
+            }
+
+            if (mushroomFilter.CapType is not null)
+            {
+                allMushrooms = allMushrooms
+                    .Where(m => m.CapType == mushroomFilter.CapType)
                     .ToList();
             }
 
-            if (filterMushroomDto.StemSizeTo is not null)
+            if (mushroomFilter.CapColor is not null)
             {
-                mushrooms = mushrooms
-                    .Where(mushroom => mushroom.StemSizeTo <= filterMushroomDto.StemSizeTo)
+                allMushrooms = allMushrooms
+                    .Where(m => m.CapColor.Contains(mushroomFilter.CapColor))
                     .ToList();
             }
 
-            if (filterMushroomDto.StemType is not null)
+            if (mushroomFilter.CapUndersideType is not null)
             {
-                mushrooms = mushrooms
-                    .Where(mushroom => mushroom.StemType == filterMushroomDto.StemType)
+                allMushrooms = allMushrooms
+                    .Where(m => m.CapUndersideType == mushroomFilter.CapUndersideType)
                     .ToList();
             }
 
-            if (filterMushroomDto.StemColor is not null)
-            {
-                mushrooms = mushrooms
-                    .Where(mushroom => mushroom.StemColor == filterMushroomDto.StemColor)
-                    .ToList();
-            }
 
             var result = new List<(Mushroom, List<bool> DoppelgangersMap)>();
-            foreach (var mushroom in mushrooms)
+            foreach (var mushroom in allMushrooms)
             {
                 var doppelgangersMap = new List<bool>();
                 foreach (var doppelganger in mushroom.Doppelgangers)
                 {
                     try
                     {
-                        // TODO оптимизировать карту доппельгангеров
-                        await _mushroomsRepository.GetMushroomId(doppelganger.DoppelgangerName);
+                        var d = allMushrooms
+                            .FirstOrDefault(m => m.Name == doppelganger.DoppelgangerName);
+                        if (d == null)
+                            throw new Exception("Unknown mushroom name");
 
                         doppelgangersMap.Add(true);
                     }
@@ -177,10 +217,9 @@ public class MushroomsService : IMushroomsService
 
             return result;
         }
-
         catch (Exception e)
         {
-            throw new Exception($"Incorrect input data\nMessage: {e.Message}");
+            throw new Exception($"Unable to get filtered mushrooms: \"{e.Message}\"");
         }
     }
 
@@ -190,7 +229,12 @@ public class MushroomsService : IMushroomsService
     {
         try
         {
-            await _mushroomsRepository.GetMushroomId(mushroom.Name);
+            var allMushrooms = await _mushroomsRepository.GetAllMushrooms();
+            var existedMushroom = allMushrooms.FirstOrDefault(m => m.Name == mushroom.Name);
+
+            if (existedMushroom == null)
+                throw new Exception("Unknown mushroom name");
+
             throw new Exception($"Mushroom \"{mushroom.Name}\" has already existed");
         }
         catch (Exception e)
@@ -200,16 +244,20 @@ public class MushroomsService : IMushroomsService
                 throw new Exception($"Unable to create mushroom \"{mushroom.Name}\": \"{e.Message}\"");
             }
 
-            try
+            if (e.Message == "Unknown mushroom name")
             {
-                var createdMushroomId = await _mushroomsRepository.CreateMushroom(mushroom);
+                try
+                {
+                    await _mushroomsRepository.CreateMushroom(mushroom);
+                    return mushroom.Id;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Unable to create mushroom \"{mushroom.Name}\": \"{ex.Message}\"");
+                }
+            }
 
-                return createdMushroomId;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Unable to create mushroom \"{mushroom.Name}\": \"{ex.Message}\"");
-            }
+            throw new Exception($"Unable to create mushroom \"{mushroom.Name}\": \"{e.Message}\"");
         }
     }
 
@@ -218,12 +266,12 @@ public class MushroomsService : IMushroomsService
     {
         try
         {
-            var existedMushroomId = await _mushroomsRepository.GetMushroomId(mushroomName);
+            var allMushrooms = await _mushroomsRepository.GetAllMushrooms();
+            var existedMushroom = allMushrooms.FirstOrDefault(m => m.Name == mushroomName);
 
-            var updatedMushroomId = await _mushroomsRepository
-                .UpdateMushroom(existedMushroomId, newMushroomModel);
+            await _mushroomsRepository.UpdateMushroom(mushroomName, newMushroomModel);
 
-            return updatedMushroomId;
+            return existedMushroom!.Id;
         }
         catch (Exception e)
         {
@@ -236,11 +284,12 @@ public class MushroomsService : IMushroomsService
     {
         try
         {
-            var mushroomId = await _mushroomsRepository.GetMushroomId(mushroomName);
+            var allMushrooms = await _mushroomsRepository.GetAllMushrooms();
+            var existedMushroom = allMushrooms.FirstOrDefault(m => m.Name == mushroomName);
 
-            var deletedMushroomId = await _mushroomsRepository.DeleteMushroom(mushroomId);
+            await _mushroomsRepository.DeleteMushroom(mushroomName);
 
-            return deletedMushroomId;
+            return existedMushroom!.Id;
         }
         catch (Exception e)
         {
