@@ -1,0 +1,52 @@
+.publications-card {
+    display: flex;
+    align-items: center;
+    margin-bottom: 111px;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 40px;
+    background-color: #ffe8c5;
+    max-width: 1698px;
+    min-height: 310px;
+    width: 100%;
+}
+
+.publications-card__image {
+    object-fit: cover;
+    min-height: 262px;
+    height: 100%;
+    width: 100%;
+    max-height: 310px;
+    max-width: 563px;
+}
+
+.publications-card__info {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin: 0 0 0 60px;
+    font-family: 'Raleway';
+    
+}
+
+.publications-card__info h3 {
+    margin: 0;
+    font-size: 49px;
+    font-family: 'Raleway';
+    font-weight: 800;
+}
+
+.publications-card__text {
+    margin: 5px 0 47px;
+    font-size: 48px;
+    font-family: 'Raleway';
+    font-weight: 500;
+}
+
+.publications-card__author {
+    font-size: 36px;
+    font-family: 'Raleway';
+    font-weight: 400;
+}

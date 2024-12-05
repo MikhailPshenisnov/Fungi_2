@@ -14,7 +14,7 @@ export function Header(){
                         <NavLink to={"/about"} style={{textDecoration: "none", color: "black"}}>О нас</NavLink>
                     </li>
                     <li>
-                        <NavLink to={"/contacts"} style={{textDecoration: "none", color: "black"}}>Публикации</NavLink>
+                        <NavLink to={"/publications"} style={{textDecoration: "none", color: "black"}}>Публикации</NavLink>
                     </li>
                     <li>
                         <NavLink to={"/about"} style={{textDecoration: "none", color: "black"}}>Энциклопедия</NavLink>
