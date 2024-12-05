@@ -24,6 +24,7 @@
     flex-direction: column;
     font-family: 'Raleway';
     font-weight: 600;
+    margin: 15px 0px 0px 20px;
 }
 
 .publication-info h3 {
@@ -36,4 +37,15 @@
 .publication-info p {
     margin: 5px 0 0;
     font-size: 0.9em;
+    font-size: 20px;
+    font-family: 'Raleway';
+    font-weight: 700;
+}
+
+.publication-sec-card__image {
+    object-fit: cover;
+    min-height: 262px;
+    height: 100%;
+    min-width: 100%;
+
 }

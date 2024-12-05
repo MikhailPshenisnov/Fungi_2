@@ -2,31 +2,30 @@ import FilterButtons from "../../../components/FilterButtons/FilterButtons.tsx";
 // import SortDropdown from "../../components/SortDropdown/SortDropdown.tsx";
 import "./PublicationsSec.css";
 import PublicationsSecCard from "../PublicationsSecCard/PublicationSecCard.tsx";
-
-import {TPuplicationsCard} from "../types.ts";
+import { TPublicationsCard } from "../types.ts"
 
 
 
 
 const Publications = () => {
-    const publications: TPuplicationsCard[] = [
+    const publications: TPublicationsCard[] = [
         {
-            title: "Инновации в мире технологий",
+            title: "Интригующий заголовок",
             src: "https://example.com/images/tech.jpg",
             author: "Иван Иванов",
         },
         {
-            title: "Экоустойчивость: будущее планеты",
+            title: "Интригующий заголовок",
             src: "https://example.com/images/eco.jpg",
             author: "Мария Петрова",
         },
         {
-            title: "Криптовалюты и блокчейн: новый тренд",
+            title: "Интригующий заголовок",
             src: "https://example.com/images/crypto.jpg",
             author: "Алексей Смирнов",
         },
         {
-            title: "Путешествия по Европе на поезде",
+            title: "Интригующий заголовок",
             src: "https://example.com/images/travel.jpg",
             author: "Ольга Кузнецова",
         },

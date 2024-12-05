@@ -6,14 +6,15 @@ interface IPublicationsCard {
     card: TPublicationsCard
 };
 
-const PublicationsCard: React.FC<IPublicationsCard> = (card : TPublicationsCard) => {
+const PublicationsCard: React.FC<IPublicationsCard> = ({card}) => {
 
     return (
-            <div className="publication-card">
-                <img src={card.src} alt="image1" />
-                <div className="publication-info">
-                    <h3>{card.title}</h3>
-                    <p>Автор статьи:{card.author}</p>
+            <div className="publications-card">
+                <img className="publications-card__image" src='./images/alt-card-image.png'  />
+                <div className="publications-card__info">
+                    <h3 className="publications-card__title">{card.title}</h3>
+                    <p className="publications-card__text">читать продолжение <br/> в источнике.........</p>
+                    <p className="publications-card__author">Автор статьи:{card.author}</p>
                 </div>
             </div>
     );

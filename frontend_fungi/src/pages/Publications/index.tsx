@@ -36,21 +36,17 @@ const Publications = () => {
     ];
 
 
-
     return (
-        <div className="conteiner">
-            
-            <div className="publications">
+        <div className="publications">
+            <div className="publications__wrapper">
                 <FilterButtons targetPath="/publications-sec"/>
-                <div className="publicationsConteiner">
+                <div className="publications__container">
                     {publications.map(publication => (
                         <PublicationsCard card={publication} />
                     ))}
                 </div>
-                
             </div>
         </div>
-            
     );
 }
 
