@@ -6,8 +6,8 @@ import {Header} from "./components/Header/header.tsx";
 import { Footer } from "./components/Footer/footer.tsx";
 import PublicationsSec from "./pages/Publications/PublicationsSec/PublicationsSec.tsx";
 import Publications from "./pages/Publications/index.tsx";
+import AboutUs from "./pages/AboutUs/AboutUs.tsx";
 
-// import {Footer} from "./components/Footer/footer.tsx";
 
 export function App() {
 
@@ -16,7 +16,9 @@ export function App() {
       <BrowserRouter>
       <Header />
         <Routes>
-          <Route path="/" element={<Navigate to="/mainpage"/>}/>
+          <Route path="/about" element={
+            <AboutUs/>
+          }/>
           <Route path="/mainpage" element={
             <MainPage />
           } />

@@ -1,0 +1,36 @@
+.container {
+    text-align: center;
+    padding: 20px;
+}
+
+.heading {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.swiper_container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.swiper-slide img {
+    width: 100%;
+    height: auto;
+    max-width: 300px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.swiper-slide:hover {
+    transform: scale(1.1);
+}
