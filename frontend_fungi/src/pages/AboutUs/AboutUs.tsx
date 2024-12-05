@@ -23,7 +23,7 @@ const AboutUs: React.FC = () => {
       </section>
 
       <section className="features">
-        <h2>Всё о грибах в одном месте!</h2>
+        <h2 className='features-title'>Всё о грибах в одном месте!</h2>
         <div className="feature-cards">
             <SwiperCard/>
         </div>
@@ -31,7 +31,7 @@ const AboutUs: React.FC = () => {
       </section>
       
       <section className="join">
-        <h2>Стань частью грибного сообщества!</h2>
+        <h2 className='features-title'>Стань частью грибного сообщества!</h2>
       </section>
     </div>
   );

@@ -80,10 +80,11 @@
   text-align: center;
 }
 
-h2 {
+.features-title {
   font-size: 64px;
   color: black;
 }
+
 
 .feature-cards {
   display: flex;
