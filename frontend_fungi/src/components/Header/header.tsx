@@ -7,6 +7,7 @@ export function Header(){
                 <span className="logo">
                     <NavLink to={"/home"} style={{textDecoration: "none", color: "black"}}>
                         <img className="logo-img" src="/images/logo.png" />
+                        {/*<img className="logo-img" src="./public/images/png/logo.png" />*/}
                     </NavLink>
                 </span>
                 <ul className="nav">
@@ -14,7 +15,7 @@ export function Header(){
                         <NavLink to={"/about"} style={{textDecoration: "none", color: "black"}}>О нас</NavLink>
                     </li>
                     <li>
-                        <NavLink to={"/contacts"} style={{textDecoration: "none", color: "black"}}>Публикации</NavLink>
+                        <NavLink to={"/publications"} style={{textDecoration: "none", color: "black"}}>Публикации</NavLink>
                     </li>
                     <li>
                         <NavLink to={"/about"} style={{textDecoration: "none", color: "black"}}>Энциклопедия</NavLink>
@@ -22,6 +23,7 @@ export function Header(){
                     <li>
                         <NavLink to={"/login"} style={{textDecoration: "none", color: "black"}}>
                             <img className="lk-icon" src="/images/user-profile.png" />
+                            {/*<img className="lk-icon" src="./public/images/png/user-profile.png" />*/}
                             {/* {!props.authState.isLoggedIn && (
                                 <>Личный кабинет</>
                             )}
@@ -32,7 +34,8 @@ export function Header(){
                         </NavLink>
                     </li>
                 </ul>
-            </div>            
+            </div>
+            <div className="presentation"/>
         </header>
     )
 }

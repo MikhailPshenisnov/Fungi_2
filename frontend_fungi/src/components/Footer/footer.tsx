@@ -5,6 +5,7 @@ export function Footer(){
         <footer>
             <span>
                 <img className="logo-img-footer" src="/images/logo.png" />
+                {/*<img className="logo-img-footer" src="./public/images/png/logo.png" />*/}
                 <h2 style={{color: "#8D8989", fontFamily: "Raleway", marginLeft: "142px", marginTop: "60px"}}>2024, Fungi ©</h2>
             </span>
             <ul className="nav-footer">
@@ -38,6 +39,7 @@ export function Footer(){
 
                 <li>
                     <img className="qr-code-footer" src="/images/qr-code.svg" />
+                    {/*<img className="qr-code-footer" src="./public/images/svg/qr-code.svg" />*/}
                 </li>
             </ul>           
         </footer>
