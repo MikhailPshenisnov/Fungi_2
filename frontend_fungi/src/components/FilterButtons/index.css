@@ -5,7 +5,9 @@
     align-self: flex-end;
     margin-right: 37px;
 }
-button {
+
+.grid-button {
+    margin-right: 22px;
     border: none;
     background: none;
 }

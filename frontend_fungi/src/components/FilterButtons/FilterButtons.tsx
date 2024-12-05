@@ -13,7 +13,7 @@ const FilterButtons: React.FC<FilterButtonsProps> = ({ targetPath }) => {
 
     return (
         <div className="bottonsConteiner">
-            <button> 
+            <button className="grid-button"> 
                 <Link to={ targetPath }  >
                     <img src="./images/grid-view.svg" alt="" />
                 </Link>
