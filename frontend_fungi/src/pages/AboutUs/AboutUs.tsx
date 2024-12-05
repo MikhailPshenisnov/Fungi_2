@@ -18,7 +18,7 @@ const AboutUs: React.FC = () => {
           </p>
           <p className="intro-p-strong"><strong>Цель проекта - облегчить жизнь любителям грибов</strong></p>
         </div>
-        <img src="./public/images/svg/mushroom.svg" alt="mushroom" className="intro-image" />
+        <img src="/images/svg/mushroom.svg" alt="mushroom" className="intro-image" />
 
       </section>
 
