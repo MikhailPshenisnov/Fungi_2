@@ -5,7 +5,10 @@ namespace BackendFungi.Abstractions;
 public interface IArticlesRepository
 {
     Task<string> CreateArticle(Article article);
+
     Task<List<Article>> GetAllArticles();
-    Task<string> UpdateArticle(string articleTitle, Article newArticleModel);
+
+    Task<string> UpdateArticle(string articleTitle, Article newArticle);
+
     Task<string> DeleteArticle(string articleTitle);
 }

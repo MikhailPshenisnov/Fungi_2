@@ -93,7 +93,7 @@ public class MushroomsRepository : IMushroomsRepository
 
     // Gets new parameters for a mushroom, deletes all doppelgangers for the searched mushroom,
     // updates the mushroom parameters and creates new doppelgangers for it
-    public async Task<string> UpdateMushroom(string mushroomName, Mushroom newMushroomModel)
+    public async Task<string> UpdateMushroom(string mushroomName, Mushroom newMushroom)
     {
         var oldMushroom = (await GetAllMushrooms()).FirstOrDefault(m => m.Name == mushroomName);
 
@@ -108,24 +108,24 @@ public class MushroomsRepository : IMushroomsRepository
         await _context.Mushrooms
             .Where(m => m.Name == mushroomName)
             .ExecuteUpdateAsync(x => x
-                .SetProperty(m => m.Name, m => newMushroomModel.Name)
-                .SetProperty(m => m.SynonymousName, m => newMushroomModel.SynonymousName)
-                .SetProperty(m => m.LatinName, m => newMushroomModel.LatinName)
-                .SetProperty(m => m.Family, m => newMushroomModel.Family)
-                .SetProperty(m => m.RedBook, m => newMushroomModel.RedBook)
-                .SetProperty(m => m.Eatable, m => newMushroomModel.Eatable)
-                .SetProperty(m => m.HasStem, m => newMushroomModel.HasStem)
-                .SetProperty(m => m.StemSizeFrom, m => newMushroomModel.StemSizeFrom)
-                .SetProperty(m => m.StemSizeTo, m => newMushroomModel.StemSizeTo)
-                .SetProperty(m => m.StemType, m => newMushroomModel.StemType)
-                .SetProperty(m => m.StemColor, m => newMushroomModel.StemColor)
-                .SetProperty(m => m.CapType, m => newMushroomModel.CapType)
-                .SetProperty(m => m.CapColor, m => newMushroomModel.CapColor)
-                .SetProperty(m => m.CapUndersideType, m => newMushroomModel.CapUndersideType)
-                .SetProperty(m => m.Description, m => newMushroomModel.Description)
-                .SetProperty(m => m.HeaderPhotoLink, m => newMushroomModel.HeaderPhotoLink));
+                .SetProperty(m => m.Name, m => newMushroom.Name)
+                .SetProperty(m => m.SynonymousName, m => newMushroom.SynonymousName)
+                .SetProperty(m => m.LatinName, m => newMushroom.LatinName)
+                .SetProperty(m => m.Family, m => newMushroom.Family)
+                .SetProperty(m => m.RedBook, m => newMushroom.RedBook)
+                .SetProperty(m => m.Eatable, m => newMushroom.Eatable)
+                .SetProperty(m => m.HasStem, m => newMushroom.HasStem)
+                .SetProperty(m => m.StemSizeFrom, m => newMushroom.StemSizeFrom)
+                .SetProperty(m => m.StemSizeTo, m => newMushroom.StemSizeTo)
+                .SetProperty(m => m.StemType, m => newMushroom.StemType)
+                .SetProperty(m => m.StemColor, m => newMushroom.StemColor)
+                .SetProperty(m => m.CapType, m => newMushroom.CapType)
+                .SetProperty(m => m.CapColor, m => newMushroom.CapColor)
+                .SetProperty(m => m.CapUndersideType, m => newMushroom.CapUndersideType)
+                .SetProperty(m => m.Description, m => newMushroom.Description)
+                .SetProperty(m => m.HeaderPhotoLink, m => newMushroom.HeaderPhotoLink));
 
-        foreach (var doppelganger in newMushroomModel.Doppelgangers)
+        foreach (var doppelganger in newMushroom.Doppelgangers)
         {
             await _doppelgangersRepository.CreateDoppelganger(doppelganger);
         }

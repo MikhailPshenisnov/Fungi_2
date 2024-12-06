@@ -68,7 +68,7 @@ public class ArticlesRepository : IArticlesRepository
 
     // Gets new parameters for an article, deletes all paragraphs for the searched article,
     // updates the article parameters and creates new paragraphs for it
-    public async Task<string> UpdateArticle(string articleTitle, Article newArticleModel)
+    public async Task<string> UpdateArticle(string articleTitle, Article newArticle)
     {
         var oldArticle = (await GetAllArticles()).FirstOrDefault(a => a.Title == articleTitle);
 
@@ -83,12 +83,12 @@ public class ArticlesRepository : IArticlesRepository
         await _context.Articles
             .Where(a => a.Title == articleTitle)
             .ExecuteUpdateAsync(x => x
-                .SetProperty(a => a.Title, a => newArticleModel.Title)
-                .SetProperty(a => a.PublishDate, a => newArticleModel.PublishDate)
-                .SetProperty(a => a.AuthorString, a => newArticleModel.AuthorString)
-                .SetProperty(a => a.HeaderPhotoLink, a => newArticleModel.HeaderPhotoLink));
+                .SetProperty(a => a.Title, a => newArticle.Title)
+                .SetProperty(a => a.PublishDate, a => newArticle.PublishDate)
+                .SetProperty(a => a.AuthorString, a => newArticle.AuthorString)
+                .SetProperty(a => a.HeaderPhotoLink, a => newArticle.HeaderPhotoLink));
 
-        foreach (var paragraph in newArticleModel.Paragraphs)
+        foreach (var paragraph in newArticle.Paragraphs)
         {
             await _paragraphsRepository.CreateParagraph(paragraph);
         }

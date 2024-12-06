@@ -262,14 +262,14 @@ public class MushroomsService : IMushroomsService
     }
 
     // Changes the mushroom parameters to new ones, returns the id of the changed mushroom
-    public async Task<Guid> UpdateMushroomAsync(string mushroomName, Mushroom newMushroomModel, CancellationToken ct)
+    public async Task<Guid> UpdateMushroomAsync(string mushroomName, Mushroom newMushroom, CancellationToken ct)
     {
         try
         {
             var allMushrooms = await _mushroomsRepository.GetAllMushrooms();
             var existedMushroom = allMushrooms.FirstOrDefault(m => m.Name == mushroomName);
 
-            await _mushroomsRepository.UpdateMushroom(mushroomName, newMushroomModel);
+            await _mushroomsRepository.UpdateMushroom(mushroomName, newMushroom);
 
             return existedMushroom!.Id;
         }

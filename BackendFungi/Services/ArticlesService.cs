@@ -129,14 +129,14 @@ public class ArticlesService : IArticlesService
     }
 
     // Changes the article parameters to new ones, returns the id of the changed article
-    public async Task<Guid> UpdateArticleAsync(string articleTitle, Article newArticleModel, CancellationToken ct)
+    public async Task<Guid> UpdateArticleAsync(string articleTitle, Article newArticle, CancellationToken ct)
     {
         try
         {
             var allArticles = await _articlesRepository.GetAllArticles();
             var existedArticle = allArticles.FirstOrDefault(a => a.Title == articleTitle);
 
-            await _articlesRepository.UpdateArticle(articleTitle, newArticleModel);
+            await _articlesRepository.UpdateArticle(articleTitle, newArticle);
 
             return existedArticle!.Id;
         }

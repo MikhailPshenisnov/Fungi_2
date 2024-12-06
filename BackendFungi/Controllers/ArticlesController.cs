@@ -83,7 +83,7 @@ public class ArticlesController : ControllerBase
 
     // Getting filtered articles
     [HttpGet]
-    public async Task<IActionResult> GetFilteredArticles([FromBody] ArticleFilterDto articleFilterDto,
+    public async Task<IActionResult> GetFilteredArticles([FromQuery] ArticleFilterDto articleFilterDto,
         CancellationToken cancellationToken)
     {
         try
@@ -161,7 +161,7 @@ public class ArticlesController : ControllerBase
     // Updating an article based on the article title with the received data
     [HttpPut("{articleTitle=}")]
     public async Task<IActionResult> UpdateArticle(string? articleTitle,
-        [FromBody] ArticleDto articleDto, CancellationToken cancellationToken)
+        [FromBody] ArticleDto newArticleDto, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(articleTitle))
             return Ok("\"articleTitle\" parameter is required");
@@ -172,11 +172,11 @@ public class ArticlesController : ControllerBase
 
             var (newArticle, error) = Article.Create(
                 existedArticle.Id,
-                articleDto.Title,
-                articleDto.PublishDate,
-                articleDto.AuthorString,
-                articleDto.HeaderPhotoLink,
-                articleDto.Paragraphs);
+                newArticleDto.Title,
+                newArticleDto.PublishDate,
+                newArticleDto.AuthorString,
+                newArticleDto.HeaderPhotoLink,
+                newArticleDto.Paragraphs);
 
             if (!string.IsNullOrEmpty(error))
             {

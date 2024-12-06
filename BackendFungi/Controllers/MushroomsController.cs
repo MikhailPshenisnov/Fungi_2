@@ -119,7 +119,7 @@ public class MushroomsController : ControllerBase
 
     // Getting filtered mushrooms
     [HttpGet]
-    public async Task<IActionResult> GetFilteredMushrooms([FromBody] MushroomFilterDto mushroomFilterDto,
+    public async Task<IActionResult> GetFilteredMushrooms([FromQuery] MushroomFilterDto mushroomFilterDto,
         CancellationToken cancellationToken)
     {
         try
@@ -231,7 +231,7 @@ public class MushroomsController : ControllerBase
     // Updating a mushroom based on the mushroom name with the received data
     [HttpPut("{mushroomName=}")]
     public async Task<IActionResult> UpdateMushroom(string? mushroomName,
-        [FromBody] MushroomDto mushroomDto, CancellationToken cancellationToken)
+        [FromBody] MushroomDto newMushroomDto, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(mushroomName))
             return Ok("\"mushroomName\" parameter is required");
@@ -243,23 +243,23 @@ public class MushroomsController : ControllerBase
 
             var (newMushroom, error) = Mushroom.Create(
                 existedMushroom.Mushroom.Id,
-                mushroomDto.Name,
-                mushroomDto.SynonymousName,
-                mushroomDto.LatinName,
-                mushroomDto.Family,
-                mushroomDto.RedBook,
-                mushroomDto.Eatable,
-                mushroomDto.HasStem,
-                mushroomDto.StemSizeFrom,
-                mushroomDto.StemSizeTo,
-                mushroomDto.StemType,
-                mushroomDto.StemColor,
-                mushroomDto.CapType,
-                mushroomDto.CapColor,
-                mushroomDto.CapUndersideType,
-                mushroomDto.Description,
-                mushroomDto.HeaderPhotoLink,
-                mushroomDto.Doppelgangers);
+                newMushroomDto.Name,
+                newMushroomDto.SynonymousName,
+                newMushroomDto.LatinName,
+                newMushroomDto.Family,
+                newMushroomDto.RedBook,
+                newMushroomDto.Eatable,
+                newMushroomDto.HasStem,
+                newMushroomDto.StemSizeFrom,
+                newMushroomDto.StemSizeTo,
+                newMushroomDto.StemType,
+                newMushroomDto.StemColor,
+                newMushroomDto.CapType,
+                newMushroomDto.CapColor,
+                newMushroomDto.CapUndersideType,
+                newMushroomDto.Description,
+                newMushroomDto.HeaderPhotoLink,
+                newMushroomDto.Doppelgangers);
 
             if (!string.IsNullOrEmpty(error))
             {
