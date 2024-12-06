@@ -2,8 +2,7 @@
     padding: 20px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    max-width: 1700px;
+    align-items: center
 }
 
 .encyclopedia__header {
@@ -11,31 +10,9 @@
     align-self: self-end;
 }
 
-.encyclopedia__search {
-    margin-top: 20px;
-}
-
-.encyclopedia__search-input {
-    width: 100%;
-    align-self: center;
-    max-width: 600px;
-    padding: 12px 20px;
-    border: 2px solid #ffe8c5;
-    border-radius: 30px;
-    font-size: 16px;
-    font-family: 'Raleway';
-    outline: none;
-    transition: border-color 0.3s;
-}
-
-.encyclopedia__search-input:focus {
-    border-color: #ffa726;
-}
-
 .encyclopedia__section {
     margin-bottom: 40px;
     max-width: 1624px;
-
 }
 
 .encyclopedia__section-title {

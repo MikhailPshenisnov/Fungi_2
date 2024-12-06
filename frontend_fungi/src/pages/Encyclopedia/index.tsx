@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./index.css";
 import { MushroomCard } from "./components/MushroomCard/MushroomCard";
 import FilterButtons from "../../components/shared/ui/FilterButtons/FilterButtons";
+import { SearchBar } from "./components/SearchBar/SearchBar";
 import { TMushroomCard } from "./types";
 
 // Данные о грибах
@@ -62,15 +63,10 @@ export const Encyclopedia: React.FC = () => {
                 <FilterButtons targetPath="/encyclopedia" />
             </div>
 
-            <div className="encyclopedia__search">
-                    <input
-                        type="text"
-                        placeholder="Поиск грибов..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="encyclopedia__search-input"
-                    />
-            </div>
+            <SearchBar 
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+            />
 
             <section className="encyclopedia__section">
                 <h2 className="encyclopedia__section-title">Популярные грибы</h2>

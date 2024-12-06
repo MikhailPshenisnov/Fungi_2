@@ -1,0 +1,45 @@
+.encyclopedia__search {
+    position: relative;
+    width: 1096px;
+    height: 69px;
+    display: flex;
+    align-items: center;
+    border: 2px solid #000;
+    border-radius: 40px;
+    margin: 20px 0;
+}
+
+.encyclopedia__search-button {
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    margin-left: 15px;
+}
+
+.encyclopedia__search-button img {
+    width: 50px;
+    height: 42px;
+}
+
+.encyclopedia__search-input {
+    flex: 1;
+    padding: 0.75rem;
+    margin-left: 10px;
+    font-size: 20px;
+    border: none;
+    outline: none;
+    font-family: 'Raleway';
+}
+
+.encyclopedia__filter-button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+}

@@ -23,26 +23,36 @@ export const MushroomCard: React.FC<MushroomCardProps> = ({
             />
             <div className="mushroom-card__content">
                 <div className="mushroom-card__header">
+                    <p className="mushroom-card__family">{family}</p>
                     <h3 className="mushroom-card__title">{russianName}</h3>
-                    <div className="mushroom-card__icons">
-                        {isEdible && (
-                            <img 
-                                src="/images/svg/edible-icon.svg" 
-                                alt="Съедобный гриб"
-                                title="Съедобный гриб"
-                            />
-                        )}
-                        {isRedBook && (
-                            <img 
-                                src="/images/svg/red-book-icon.svg" 
-                                alt="Занесён в красную книгу"
-                                title="Занесён в красную книгу"
-                            />
-                        )}
-                    </div>
+                    <p className="mushroom-card__latin">{latinName}</p>
                 </div>
-                <p className="mushroom-card__latin">{latinName}</p>
-                <p className="mushroom-card__family">Семейство: {family}</p>
+                <div className="mushroom-card__icons">
+                        {isEdible ? (
+                            <img 
+                                src="/images/svg/mushroom-tags-icons/eatable.svg" 
+                                alt="Съедобный гриб"
+                            />
+                        ) : (
+                            <img 
+                                src="/images/svg/mushroom-tags-icons/not_eatable.svg" 
+                                alt="Несъедобный гриб"
+                            />
+                        )}
+                        {isRedBook ? (
+                            <img 
+                                src="/images/svg/mushroom-tags-icons/redbooked.svg" 
+                                alt="Занесён в красную книгу"
+                            />
+                        ) : (
+                            <img 
+                                src="/images/svg/mushroom-tags-icons/not_redbooked.svg" 
+                                alt="Не занесён в красную книгу"
+                            />
+                        )}
+                </div>
+                
+                
             </div>
         </Card>
     );
