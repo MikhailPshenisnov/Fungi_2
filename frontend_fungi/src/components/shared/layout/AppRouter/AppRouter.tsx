@@ -1,9 +1,9 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { MainPage } from "../../../../pages/MainPage";
-import AboutUs from "../../../../pages/AboutUs";
 import Publications from "../../../../pages/Publications";
+import AboutUs from "../../../../pages/AboutUs";
+import { Encyclopedia } from "../../../../pages/Encyclopedia";
 import PublicationsSec from "../../../../pages/Publications/PublicationsSec";
-
 
 export const AppRouter = () => {
     return (
@@ -13,6 +13,7 @@ export const AppRouter = () => {
             <Route path="/about" element={<AboutUs/>}/>
             <Route path="/publications" element={<Publications />} />
             <Route path="/publications-sec" element={<PublicationsSec />} />
+            <Route path="/encyclopedia" element={<Encyclopedia />} />
             <Route path="*" element={<Navigate to="/mainpage"/>}/>
         </Routes>
     );

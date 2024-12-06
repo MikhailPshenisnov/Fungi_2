@@ -17,7 +17,7 @@ export function Header(){
                         <NavLink to={"/publications"} style={{textDecoration: "none", color: "black"}}>Публикации</NavLink>
                     </li>
                     <li>
-                        <NavLink to={"/about"} style={{textDecoration: "none", color: "black"}}>Энциклопедия</NavLink>
+                        <NavLink to={"/encyclopedia"} style={{textDecoration: "none", color: "black"}}>Энциклопедия</NavLink>
                     </li>
                     <li>
                         <NavLink to={"/login"} style={{textDecoration: "none", color: "black"}}>
