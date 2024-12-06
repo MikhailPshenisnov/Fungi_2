@@ -31,11 +31,15 @@
     
 }
 
-.publications-card__info h3 {
+.publications-card__title {
     margin: 0;
+    max-width: 1000px;
     font-size: 49px;
     font-family: 'Raleway';
     font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .publications-card__text {
@@ -43,7 +47,13 @@
     font-size: 48px;
     font-family: 'Raleway';
     font-weight: 500;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* количество строк */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    max-width: 1000px;
 }
+
 
 .publications-card__author {
     font-size: 36px;
