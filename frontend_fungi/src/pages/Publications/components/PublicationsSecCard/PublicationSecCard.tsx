@@ -1,6 +1,6 @@
 import React from "react";
 import "./index.css";
-import { TPublicationsCard} from "../types.ts";
+import { TPublicationsCard} from "../../types.ts";
 
 interface IPublicationsCard {
     card: TPublicationsCard

@@ -1,8 +1,9 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { MainPage } from "../../pages/MainPage/MainPage";
-import PublicationsSec from "../../pages/Publications/PublicationsSec/PublicationsSec";
-import Publications from "../../pages/Publications";
-import AboutUs from "../../pages/AboutUs/AboutUs";
+import { MainPage } from "../../../../pages/MainPage";
+import AboutUs from "../../../../pages/AboutUs";
+import Publications from "../../../../pages/Publications";
+import PublicationsSec from "../../../../pages/Publications/PublicationsSec";
+
 
 export const AppRouter = () => {
     return (

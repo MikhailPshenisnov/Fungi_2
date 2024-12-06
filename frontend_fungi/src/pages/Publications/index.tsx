@@ -1,6 +1,7 @@
-import FilterButtons from "../../components/FilterButtons/FilterButtons.tsx";
+import FilterButtons from "../../components/shared/ui/FilterButtons/FilterButtons.tsx";
+import PublicationsCard from "./components/PublicationsCard/PublicationsCard.tsx";
 import "./index.css";
-import PublicationsCard from "./PublicationsCard/PublicationsCard.tsx";
+
 import {TPublicationsCard} from "./types.ts";
 
 

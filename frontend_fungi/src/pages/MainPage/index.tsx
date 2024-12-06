@@ -1,7 +1,7 @@
-import { Banner } from './Banner';
-import { PublicationsSlider } from './PublicationsSlider';
-import { SearchSection } from './SearchSection';
-import { TeamSection } from './TeamSection';
+import { Banner } from './components/Banner';
+import { PublicationsSlider } from './components/PublicationsSlider';
+import { SearchSection } from './components/SearchSection';
+import { TeamSection } from './components/TeamSection';
 
 
 export function MainPage() {

@@ -1,6 +1,6 @@
 import React from 'react';
 import './index.css';
-import SwiperCard from "../../components/SwiperCard/ScrollCards.tsx";
+import SwiperCard from "./components/SwiperCard/ScrollCards.tsx";
 
 const AboutUs: React.FC = () => {
   return (

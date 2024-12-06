@@ -1,8 +1,8 @@
-import FilterButtons from "../../../components/FilterButtons/FilterButtons.tsx";
+import FilterButtons from "../../components/shared/ui/FilterButtons/FilterButtons.tsx";
 // import SortDropdown from "../../components/SortDropdown/SortDropdown.tsx";
 import "./PublicationsSec.css";
-import PublicationsSecCard from "../PublicationsSecCard/PublicationSecCard.tsx";
-import { TPublicationsCard } from "../types.ts"
+import PublicationsSecCard from "./components/PublicationsSecCard/PublicationSecCard.tsx";
+import { TPublicationsCard } from "./types.ts"
 
 
 

@@ -1,9 +1,9 @@
 import { BrowserRouter } from "react-router-dom";
 import "./index.css";
-import "./components/Header/header.tsx";
-import { Header } from "./components/Header/header.tsx";
-import { Footer } from "./components/Footer/footer.tsx";
-import { AppRouter } from "./components/AppRouter/AppRouter";
+import "./components/shared/layout/Header/header.tsx";
+import { Header } from "./components/shared/layout/Header/header.tsx";
+import { Footer } from "./components/shared/layout/Footer/footer.tsx";
+import { AppRouter } from "./components/shared/layout/AppRouter/AppRouter.tsx";
 
 export function App() {
 

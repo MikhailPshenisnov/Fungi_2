@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import SortDropdown from "../../components/SortDropdown/SortDropdown.tsx";
+import SortDropdown from "../SortDropdown/SortDropdown";
 import "./index.css";
 import React from "react";
 
