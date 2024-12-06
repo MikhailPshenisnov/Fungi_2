@@ -38,7 +38,7 @@ export const SearchSection: React.FC = () => (
             }}
         >
             <img
-            src="/images/search-icon.png"
+            src="/images/png/search-icon.png"
             alt="Search"
             style={{ width: '50px', height: '42px' }}
             />
@@ -72,7 +72,7 @@ export const SearchSection: React.FC = () => (
             }}
         >
             <img
-            src="/images/filter-search.png"
+            src="/images/png/filter-search.png"
             alt="Sort"
             />
         </button>

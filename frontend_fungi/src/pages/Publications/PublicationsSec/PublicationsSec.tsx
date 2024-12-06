@@ -35,7 +35,6 @@ const Publications = () => {
         }
     ];
 
-
     return (
         <div className="conteiner-sec">
             

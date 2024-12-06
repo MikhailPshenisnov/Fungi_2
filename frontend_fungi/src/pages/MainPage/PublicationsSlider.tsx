@@ -5,7 +5,7 @@ export const PublicationsSlider: React.FC = () => (
         </h2>
 
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-end', marginTop: '50px'}}>
-            
+
             {/* Блок со статьями */}
             <div style={{ display: 'flex', gap: '43px'}}>
 
@@ -21,7 +21,7 @@ export const PublicationsSlider: React.FC = () => (
 
                     {/* Фото статьи */}
                     <img style={{ width: '100%', height: '202px', objectFit: 'cover'}}
-                        src="/images/article-image.png"                        
+                        src="/images/png/article-image.png"                        
                     />
 
                     {/* Название и описание */}
@@ -42,7 +42,7 @@ export const PublicationsSlider: React.FC = () => (
             >
                 <button style={{background: 'none', border: 'none', cursor: 'pointer'}}>
             <img style={{height: 'auto', paddingTop: '73px'}}
-            src="/images/more-article.png"
+            src="/images/png/more-article.png"
             />
         </button>
             </div>

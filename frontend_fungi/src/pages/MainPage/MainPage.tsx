@@ -8,7 +8,7 @@ export function MainPage() {
     return(
         <div className="mainpage">
             <Banner
-                image="/images/banner-mushroom.png"
+                image="/images/png/banner-mushroom.png"
                 title='Исследуй мир грибов с Fungi!'
             />
             <SearchSection />

@@ -10,7 +10,7 @@ const PublicationsCard: React.FC<IPublicationsCard> = ({card}) => {
 
     return (
             <div className="publications-card">
-                <img className="publications-card__image" src='./images/alt-card-image.png'  />
+                <img className="publications-card__image" src='/images/png/alt-card-image.png'  />
                 <div className="publications-card__info">
                     <h3 className="publications-card__title">{card.title}</h3>
                     <p className="publications-card__text">{card.text}</p>

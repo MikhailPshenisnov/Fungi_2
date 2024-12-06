@@ -10,7 +10,7 @@ export const TeamSection: React.FC = () => (
 
         <div style={{ display: 'flex', justifyContent: 'flex-end', width: '1800px' }}>
             <img style={{marginTop: '-232px', }}
-            src="/images/mainpage-mushroom.png"
+            src="/images/png/mainpage-mushroom.png"
             />
         </div>
 
@@ -22,7 +22,7 @@ export const TeamSection: React.FC = () => (
         
         <button style={{background: 'none', border: 'none', cursor: 'pointer'}}>
             <img style={{height: 'auto', paddingTop: '73px'}}
-            src="/images/more-about-us.png"
+            src="/images/png/more-about-us.png"
             />
         </button>
     </div>

@@ -7,15 +7,13 @@ interface FilterButtonsProps {
     targetPath: string; // Целевой маршрут
 }
 
-
-
 const FilterButtons: React.FC<FilterButtonsProps> = ({ targetPath }) => {
 
     return (
         <div className="bottonsConteiner">
             <button className="grid-button"> 
                 <Link to={ targetPath }  >
-                    <img src="./images/grid-view.svg" alt="" />
+                    <img src="/images/svg/grid-view.svg" alt="" />
                 </Link>
             </button>
             <SortDropdown/>
