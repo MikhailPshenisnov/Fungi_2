@@ -1,0 +1,4 @@
+﻿SELECT 'CREATE DATABASE "FungiDB" OWNER postgres'
+WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'FungiDB')
+LIMIT 1;
+CREATE DATABASE "FungiDB" OWNER postgres;
