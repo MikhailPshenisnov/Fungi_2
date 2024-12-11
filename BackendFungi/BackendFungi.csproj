@@ -19,6 +19,7 @@
     <ItemGroup>
       <Folder Include="Database\Context\" />
       <Folder Include="Database\Entities\" />
+      <Folder Include="DockerDb\db-data\" />
     </ItemGroup>
 
 </Project>
