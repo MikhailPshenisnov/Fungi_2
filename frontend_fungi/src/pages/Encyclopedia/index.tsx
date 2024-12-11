@@ -3,60 +3,17 @@ import "./index.css";
 import { MushroomCard } from "./components/MushroomCard/MushroomCard";
 import FilterButtons from "../../components/shared/ui/FilterButtons/FilterButtons";
 import { SearchBar } from "./components/SearchBar/SearchBar";
-import { TMushroomCard } from "./types";
-
-// Данные о грибах
-const mockMushrooms: TMushroomCard[] = [
-    {
-        id: 1,
-        imageUrl: "/images/png/mushrooms/boletus.png",
-        russianName: "Белый гриб",
-        latinName: "Boletus edulis",
-        family: "Болетовые",
-        isEdible: true,
-        isRedBook: false
-    },
-    {
-        id: 2,
-        imageUrl: "/images/png/mushrooms/chanterelle.png",
-        russianName: "Лисичка обыкновенная",
-        latinName: "Cantharellus cibarius",
-        family: "Лисичковые",
-        isEdible: true,
-        isRedBook: false
-    },
-    {
-        id: 3,
-        imageUrl: "/images/png/mushrooms/amanita.png",
-        russianName: "Мухомор красный",
-        latinName: "Amanita muscaria",
-        family: "Аманитовые",
-        isEdible: false,
-        isRedBook: false
-    },
-    {
-        id: 4,
-        imageUrl: "/images/png/mushrooms/russula.png",
-        russianName: "Сыроежка пищевая",
-        latinName: "Russula vesca",
-        family: "Сыроежковые",
-        isEdible: true,
-        isRedBook: false
-    },
-    {
-        id: 5,
-        imageUrl: "/images/png/mushrooms/cortinarius.png",
-        russianName: "Паутинник фиолетовый",
-        latinName: "Cortinarius violaceus",
-        family: "Паутинниковые",
-        isEdible: false,
-        isRedBook: true
-    }
-];
+// import { TMushroomCard } from "./types";
+import { useMushroomData } from "../../hooks/api/useMushroomData";
 
 export const Encyclopedia: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState("");
+    const {data: mushrooms, isLoading, error} = useMushroomData();
     
+    if (isLoading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error.message}</div>;
+    if (!mushrooms || !Array.isArray(mushrooms)) return <div>No mushrooms data available</div>;
+
     return (
         <div className="encyclopedia">
             <div className="encyclopedia__header">
@@ -71,26 +28,24 @@ export const Encyclopedia: React.FC = () => {
             <section className="encyclopedia__section">
                 <h2 className="encyclopedia__section-title">Популярные грибы</h2>
                 <div className="encyclopedia__cards-row">
-                    {mockMushrooms
-                        .map(mushroom => (
-                            <MushroomCard 
-                                key={mushroom.id} 
-                                mushroom={mushroom}
-                            />
-                        ))}
+                    {mushrooms.map(mushroom => (
+                        <MushroomCard
+                            key={mushroom.name}
+                            mushroom={mushroom}
+                        />
+                    ))}
                 </div>
             </section>
 
             <section className="encyclopedia__section">
                 <h2 className="encyclopedia__section-title">Необычные грибы</h2>
                 <div className="encyclopedia__cards-row">
-                    {mockMushrooms
-                        .map(mushroom => (
-                            <MushroomCard 
-                                key={mushroom.id} 
-                                mushroom={mushroom}
-                            />
-                        ))}
+                    {mushrooms.map(mushroom => (
+                        <MushroomCard
+                            key={mushroom.name}
+                            mushroom={mushroom}
+                        />
+                    ))}
                 </div>
             </section>
         </div>

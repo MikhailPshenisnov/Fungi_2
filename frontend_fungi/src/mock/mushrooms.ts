@@ -1,0 +1,181 @@
+import { TMushroomCard } from "../../../pages/Encyclopedia/types";
+
+export const mockMushrooms: TMushroomCard[] = [
+    {
+        name: "Рамария жёлтая",
+        synonymousName: "Рогатик жёлтый, Медвежья лапка, Оленьи рожки, Коралл жёлтый",
+        latinName: "Ramaria flava",
+        family: "Гомфовые",
+        redBook: false,
+        eatable: "Нет",
+        hasStem: false,
+        stemSizeFrom: null,
+        stemSizeTo: null,
+        stemType: null,
+        stemColor: null,
+        capType: "Выпуклая",
+        capColor: "Жёлтый, белый",
+        capUndersideType: "Гладкая",
+        description: "Рамария жёлтая растет на земле в лиственных, хвойных и смешанных лесах в августе — сентябре...",
+        headerPhotoLink: "https://imgur.com/CCJGbdP",
+        doppelgangers: [
+            { name: "Рамария красивая" },
+            { name: "Рамария жёсткая" },
+            { name: "Тупой рогатик" },
+            { name: "Калоцера клейкая" }
+        ]
+    },
+    {
+        name: "Опёнок осенний",
+        synonymousName: "Опёнок настоящий",
+        latinName: "Armillaria mellea",
+        family: "Физалакриевые",
+        redBook: false,
+        eatable: "Нет",
+        hasStem: true,
+        stemSizeFrom: 5.0,
+        stemSizeTo: 15.0,
+        stemType: "Ровная",
+        stemColor: "Желтовато-коричневатый, желтый, оранжевый, оливковый, серый",
+        capType: "Выпуклая",
+        capColor: "Желтовато-коричневатый, желтый, оранжевый, оливковый, серый",
+        capUndersideType: "Пластинчатая",
+        description: "Плодоносит со второй половины июля, и до конца осени на древесине любых видов...",
+        headerPhotoLink: "https://imgur.com/UcCFwPB",
+        doppelgangers: [
+            { name: "Опёнок тёмный" },
+            { name: "Опёнок толстоногий" },
+            { name: "Опёнок луковичноногий" }
+        ]
+    },
+    {
+        name: "Белый гриб",
+        synonymousName: "Боровик, Белый гриб еловый, Жатник, Струень",
+        latinName: "Boletus edulis",
+        family: "Болетовые",
+        redBook: false,
+        eatable: "Да",
+        hasStem: true,
+        stemSizeFrom: 15.0,
+        stemSizeTo: 50.0,
+        stemType: "Утолщенная внизу",
+        stemColor: "Белый, кремовый, светло-коричневый",
+        capType: "Выпуклая",
+        capColor: "Лимонно-жёлтый, белый, охристый, грязно-жёлтый",
+        capUndersideType: "Трубчатая",
+        description: "Белый гриб распространен по всей планете Земля. Единственное место, где он не встречается — это Антарктида...",
+        headerPhotoLink: "https://imgur.com/sj81ZK8",
+        doppelgangers: [
+            { name: "Жёлчный гриб" },
+            { name: "Дубовик обыкновенный" },
+            { name: "Полубелый гриб" }
+        ]
+    },
+    {
+        name: "Лисичка обыкновенная",
+        synonymousName: "Кантарелла",
+        latinName: "Cantharellus cibarius",
+        family: "Кантарелловые",
+        redBook: false,
+        eatable: "Да",
+        hasStem: true,
+        stemSizeFrom: 2.0,
+        stemSizeTo: 6.0,
+        stemType: "Ровная",
+        stemColor: "Желтоватая",
+        capType: "Выпуклая",
+        capColor: "Жёлтая",
+        capUndersideType: "Гладкая",
+        description: "Лисичка обыкновенная — съедобный гриб с характерным ярким жёлтым цветом и плодовым ароматом...",
+        headerPhotoLink: "https://imgur.com/chanterelle",
+        doppelgangers: [
+            { name: "Ложная лисичка" },
+            { name: "Гигрофоропсис оранжевый" }
+        ]
+    },
+    {
+        name: "Свинушка тонкая",
+        synonymousName: "Коровник, Матрёшка , Кобылка, Свинух, Свинарь, Свинорой, Свиное ухо",
+        latinName: "Paxillus involutus",
+        family: "Свинушковые",
+        redBook: false,
+        eatable: "Полусъедобен",
+        hasStem: true,
+        stemSizeFrom: 10.0,
+        stemSizeTo: 15.0,
+        stemType: "Утолщенная вверху",
+        stemColor: "Бело-жёлтая",
+        capType: "Вогнутая",
+        capColor: "Оливково-бурая, охристо-бурая, рыжеватая, ржавая",
+        capUndersideType: "Пластинчатая",
+        description: "Растёт в лиственных и хвойных лесах, чаще всего в молодых березняках...",
+        headerPhotoLink: "https://imgur.com/S5W1xky",
+        doppelgangers: [
+            { name: "Свинушка ольховая" },
+            { name: "Войлочная свинушка" }
+        ]
+    },
+    {
+        name: "Жёлчный гриб",
+        synonymousName: "Горчак, Ложный белый гриб, Ложный подберёзовик",
+        latinName: "Tylopilus felleus",
+        family: "Болетовые",
+        redBook: false,
+        eatable: "Да",
+        hasStem: true,
+        stemSizeFrom: 10.0,
+        stemSizeTo: 40.0,
+        stemType: "Утолщенная внизу",
+        stemColor: "Кремово-охристая, желтоватая, желтовато-бурая",
+        capType: "Выпуклая",
+        capColor: "Бежевый, светло-каштановый, буровато-коричневый",
+        capUndersideType: "Трубчатая",
+        description: "Вид широко распространен по всему миру. Отмечен в Северной Америке, Европе...",
+        headerPhotoLink: "https://imgur.com/GqTRggs",
+        doppelgangers: [
+            { name: "Белый гриб" },
+            { name: "подберёзовик" }
+        ]
+    },
+    {
+        name: "Рядовка лиловоногая",
+        synonymousName: "Рядовка лиловоножковая, Рядовка двухцветная, Синеножка",
+        latinName: "Lepista personata",
+        family: "Рядовковые",
+        redBook: false,
+        eatable: "Нет",
+        hasStem: true,
+        stemSizeFrom: 20.0,
+        stemSizeTo: 30.0,
+        stemType: "Ровная",
+        stemColor: "Серовато-фиолетовый, голубоватый",
+        capType: "Выпуклая",
+        capColor: "Серо-фиолетовый, серый, серо-коричневый, белый",
+        capUndersideType: "Пластинчатая",
+        description: "Рядовка лиловоногая принадлежит к категории южных грибов...",
+        headerPhotoLink: "https://imgur.com/aBeOy3e",
+        doppelgangers: []
+    },
+    {
+        name: "Рядовка тополёвая",
+        synonymousName: "Тополёвка, Песочник тополевый, Песчаник",
+        latinName: "Tricholoma populinum",
+        family: "Рядовковые",
+        redBook: false,
+        eatable: "Нет",
+        hasStem: true,
+        stemSizeFrom: 10.0,
+        stemSizeTo: 20.0,
+        stemType: "Ровная",
+        stemColor: "Розовато-белый, розовато-коричневый",
+        capType: "Выпуклая",
+        capColor: "Розовато-коричневатый",
+        capUndersideType: "Пластинчатая",
+        description: "Рядовка тополёвая растёт с августа по октябрь большими группами...",
+        headerPhotoLink: "https://imgur.com/FmuAkrx",
+        doppelgangers: [
+            { name: "Скученная рядовка" },
+            { name: "Тигровая рядовка" }
+        ]
+    }
+];

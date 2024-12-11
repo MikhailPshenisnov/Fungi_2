@@ -2,6 +2,7 @@ import React from "react";
 import "./MushroomCard.css";
 import { Card } from "../../../../components/shared/ui/base/Card/Card";
 import { TMushroomCard } from "../../types";
+import { useImgurUrl } from "../../../../hooks/common/useImgurUrl";
 
 interface MushroomCardProps {
     mushroom: TMushroomCard;
@@ -12,23 +13,24 @@ export const MushroomCard: React.FC<MushroomCardProps> = ({
     mushroom,
     onClick 
 }) => {
-    const { imageUrl, russianName, latinName, family, isEdible, isRedBook } = mushroom;
+    const { headerPhotoLink, name, latinName, family, eatable, redBook } = mushroom;
+    const imageUrl = useImgurUrl(headerPhotoLink);
 
     return (
         <Card className="mushroom-card" onClick={onClick}>
             <img 
-                className="mushroom-card__image" 
-                src="/images/png/mushrom-card.png" 
-                alt={russianName} 
+                className="mushroom-card__image"
+                src={imageUrl}
+                alt={name} 
             />
             <div className="mushroom-card__content">
                 <div className="mushroom-card__header">
                     <p className="mushroom-card__family">{family}</p>
-                    <h3 className="mushroom-card__title">{russianName}</h3>
+                    <h3 className="mushroom-card__title">{name}</h3>
                     <p className="mushroom-card__latin">{latinName}</p>
                 </div>
                 <div className="mushroom-card__icons">
-                        {isEdible ? (
+                        {eatable === "Да" ? (
                             <img 
                                 src="/images/svg/mushroom-tags-icons/eatable.svg" 
                                 alt="Съедобный гриб"
@@ -39,7 +41,7 @@ export const MushroomCard: React.FC<MushroomCardProps> = ({
                                 alt="Несъедобный гриб"
                             />
                         )}
-                        {isRedBook ? (
+                        {redBook ? (
                             <img 
                                 src="/images/svg/mushroom-tags-icons/redbooked.svg" 
                                 alt="Занесён в красную книгу"
