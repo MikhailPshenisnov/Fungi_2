@@ -24,7 +24,7 @@ public class ArticlesController : ControllerBase
     public async Task<IActionResult> GetArticle(string? articleTitle, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(articleTitle))
-            return BadRequest("\"articleTitle\" parameter is required");
+            return Ok("\"articleTitle\" parameter is required");
 
         try
         {
@@ -37,13 +37,15 @@ public class ArticlesController : ControllerBase
             var response = new ArticleDto(
                 article.Title,
                 article.PublishDate,
+                article.AuthorString,
+                article.HeaderPhotoLink,
                 paragraphs);
 
             return Ok(response);
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return Ok(e.Message);
         }
     }
 
@@ -53,11 +55,11 @@ public class ArticlesController : ControllerBase
     {
         try
         {
-            var articles = await _articlesService.GetAllArticlesAsync(cancellationToken);
+            var allArticles = await _articlesService.GetAllArticlesAsync(cancellationToken);
 
             var response = new List<ArticleDto>();
 
-            foreach (var article in articles)
+            foreach (var article in allArticles)
             {
                 var paragraphs = article.Paragraphs
                     .Select(p => new ParagraphDto(p.ParagraphText))
@@ -66,6 +68,8 @@ public class ArticlesController : ControllerBase
                 response.Add(new ArticleDto(
                     article.Title,
                     article.PublishDate,
+                    article.AuthorString,
+                    article.HeaderPhotoLink,
                     paragraphs));
             }
 
@@ -73,45 +77,74 @@ public class ArticlesController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return Ok(e.Message);
         }
     }
 
     // Getting filtered articles
     [HttpGet]
-    public async Task<IActionResult> GetFilteredArticles([FromQuery] GetFilterArticleRequest request, 
+    public async Task<IActionResult> GetFilteredArticles([FromQuery] ArticleFilterDto articleFilterDto,
         CancellationToken cancellationToken)
     {
         try
         {
-            var articleDtos = await _articlesService
-                .GetFilteredArticlesAsync(request, cancellationToken);
+            var (articleFilter, error) = ArticleFilter.Create(
+                articleFilterDto.PartOfTitle,
+                articleFilterDto.PublishDateFrom,
+                articleFilterDto.PublishDateTo,
+                articleFilterDto.PartOfAuthorString);
 
-            return Ok(articleDtos); // Возвращаем List<ArticleDto> напрямую
+            if (!string.IsNullOrEmpty(error))
+            {
+                return Ok(error);
+            }
+
+            var filteredArticles = await _articlesService
+                .GetFilteredArticlesAsync(articleFilter, cancellationToken);
+
+            var response = new List<ArticleDto>();
+
+            foreach (var article in filteredArticles)
+            {
+                var paragraphs = article.Paragraphs
+                    .Select(p => new ParagraphDto(p.ParagraphText))
+                    .ToList();
+
+                response.Add(new ArticleDto(
+                    article.Title,
+                    article.PublishDate,
+                    article.AuthorString,
+                    article.HeaderPhotoLink,
+                    paragraphs));
+            }
+
+            return Ok(response);
         }
         catch (Exception e)
         {
-            return StatusCode(500, $"An error occurred while retrieving data. \"{e.Message}\"");
+            return Ok(e.Message);
         }
     }
 
 
     // Creating a new article based on the received data
     [HttpPost]
-    public async Task<IActionResult> CreateArticle([FromBody] ArticleDto request,
+    public async Task<IActionResult> CreateArticle([FromBody] ArticleDto articleDto,
         CancellationToken cancellationToken)
     {
         try
         {
             var (article, error) = Article.Create(
                 Guid.NewGuid(),
-                request.Title,
-                request.PublishDate,
-                request.Paragraphs);
+                articleDto.Title,
+                articleDto.PublishDate,
+                articleDto.AuthorString,
+                articleDto.HeaderPhotoLink,
+                articleDto.Paragraphs);
 
             if (!string.IsNullOrEmpty(error))
             {
-                return BadRequest(error);
+                return Ok(error);
             }
 
             var createdArticleId = await _articlesService
@@ -121,41 +154,43 @@ public class ArticlesController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return Ok(e.Message);
         }
     }
 
     // Updating an article based on the article title with the received data
     [HttpPut("{articleTitle=}")]
     public async Task<IActionResult> UpdateArticle(string? articleTitle,
-        [FromBody] ArticleDto newArticle, CancellationToken cancellationToken)
+        [FromBody] ArticleDto newArticleDto, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(articleTitle))
-            return BadRequest("\"articleTitle\" parameter is required");
+            return Ok("\"articleTitle\" parameter is required");
 
         try
         {
-            var existedArticleId = (await _articlesService.GetArticleAsync(articleTitle, cancellationToken)).Id;
+            var existedArticle = await _articlesService.GetArticleAsync(articleTitle, cancellationToken);
 
-            var (newArticleModel, error) = Article.Create(
-                existedArticleId,
-                newArticle.Title,
-                newArticle.PublishDate,
-                newArticle.Paragraphs);
+            var (newArticle, error) = Article.Create(
+                existedArticle.Id,
+                newArticleDto.Title,
+                newArticleDto.PublishDate,
+                newArticleDto.AuthorString,
+                newArticleDto.HeaderPhotoLink,
+                newArticleDto.Paragraphs);
 
             if (!string.IsNullOrEmpty(error))
             {
-                return BadRequest(error);
+                return Ok(error);
             }
 
             var updatedArticleId = await _articlesService
-                .UpdateArticleAsync(articleTitle, newArticleModel, cancellationToken);
+                .UpdateArticleAsync(articleTitle, newArticle, cancellationToken);
 
             return Ok(updatedArticleId);
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return Ok(e.Message);
         }
     }
 
@@ -165,7 +200,7 @@ public class ArticlesController : ControllerBase
         CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(articleTitle))
-            return BadRequest("\"articleTitle\" parameter is required");
+            return Ok("\"articleTitle\" parameter is required");
         try
         {
             var deletedArticleId = await _articlesService
@@ -175,7 +210,7 @@ public class ArticlesController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return Ok(e.Message);
         }
     }
 }

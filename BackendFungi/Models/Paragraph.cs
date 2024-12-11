@@ -9,7 +9,7 @@ public class Paragraph
         ParagraphText = paragraphText;
         SerialNumber = serialNumber;
     }
-    
+
     public Guid Id { get; }
     public Guid ArticleId { get; }
     public string? ParagraphText { get; }
@@ -23,17 +23,17 @@ public class Paragraph
         {
             error = "Serial number can't be less than 0";
         }
-        
+
         return error;
     }
-    
+
     public static (Paragraph Paragraph, string Error)
         Create(Guid id, Guid articleId, string? paragraphText, int serialNumber)
     {
         var error = ParagraphBasicChecks(serialNumber);
-        
+
         var paragraph = new Paragraph(id, articleId, paragraphText, serialNumber);
-        
+
         return (paragraph, error);
     }
 }
