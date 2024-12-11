@@ -10,7 +10,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Our services for controllers
-builder.Services.AddTransient<IFilterArticleService, FilterArticleService>(); // TODO Этот сервис надо будет убрать
 builder.Services.AddTransient<IArticlesService, ArticlesService>();
 builder.Services.AddTransient<IMushroomsService, MushroomsService>();
 
@@ -20,6 +19,8 @@ builder.Services.AddTransient<IParagraphsRepository, ParagraphsRepository>();
 builder.Services.AddTransient<IMushroomsRepository, MushroomsRepository>();
 builder.Services.AddTransient<IDoppelgangersRepository, DoppelgangersRepository>();
 
+// Database context
+builder.Services.AddDbContext<FungiDbContext>();
 
 // CORS settings
 builder.Services.AddCors(options => options.AddPolicy
@@ -31,9 +32,6 @@ builder.Services.AddCors(options => options.AddPolicy
             .AllowCredentials()
     )
 );
-
-// Database context
-builder.Services.AddDbContext<FungiDbContext>();
 
 var app = builder.Build();
 

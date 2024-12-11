@@ -130,3 +130,24 @@ bh_unicode_properties.cache
 # Sublime-github package stores a github token in this file
 # https://packagecontrol.io/packages/sublime-github
 GitHub.sublime-settings
+
+# custom ignore
+# Rider
+.idea/
+*.iml
+
+# VS
+.vscode/
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# .NET build artifacts
+bin/
+obj/
+
+# Migrations folder (if you don't want to version control migrations)
+Migrations/
+

@@ -1,12 +1,7 @@
 using BackendFungi.Abstractions;
 using BackendFungi.Contracts;
-using BackendFungi.Database.Context;
 using BackendFungi.Models;
 using Microsoft.AspNetCore.Mvc;
-
-// TODO Убрать использование YuraFolder и интегрировать все оттуда в сервис грибов
-using BackendFungi.YuraFolder.Models;
-using BackendFungi.YuraFolder.Supports;
 
 namespace BackendFungi.Controllers;
 
@@ -14,18 +9,12 @@ namespace BackendFungi.Controllers;
 [Route("/[action]")]
 public class MushroomsController : ControllerBase
 {
-    // Database contexts
-    // TODO Убрать использование DbContext из контроллера
-    private readonly FungiDbContext _dbContext;
-
     // Services
     private readonly IMushroomsService _mushroomsService;
 
     public MushroomsController(
-        FungiDbContext dbContext, // TODO см. туду на строке 18 этого файла
         IMushroomsService mushroomsService)
     {
-        _dbContext = dbContext; // TODO см. туду на строке 18 этого файла
         _mushroomsService = mushroomsService;
     }
 
@@ -55,6 +44,8 @@ public class MushroomsController : ControllerBase
             var response = new MushroomDtoWithDoppelgangersMap(
                 mushroom.Name,
                 mushroom.SynonymousName,
+                mushroom.LatinName,
+                mushroom.Family,
                 mushroom.RedBook,
                 mushroom.Eatable,
                 mushroom.HasStem,
@@ -62,7 +53,11 @@ public class MushroomsController : ControllerBase
                 mushroom.StemSizeTo,
                 mushroom.StemType,
                 mushroom.StemColor,
+                mushroom.CapType,
+                mushroom.CapColor,
+                mushroom.CapUndersideType,
                 mushroom.Description,
+                mushroom.HeaderPhotoLink,
                 doppelgangers,
                 doppelgangersMap);
 
@@ -70,7 +65,7 @@ public class MushroomsController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return Ok(e.Message);
         }
     }
 
@@ -80,12 +75,12 @@ public class MushroomsController : ControllerBase
     {
         try
         {
-            var mushrooms = await _mushroomsService
+            var allMushrooms = await _mushroomsService
                 .GetAllMushroomsAsync(cancellationToken);
 
             var response = new List<MushroomDtoWithDoppelgangersMap>();
 
-            foreach (var (mushroom, doppelgangersMap) in mushrooms)
+            foreach (var (mushroom, doppelgangersMap) in allMushrooms)
             {
                 var doppelgangers = mushroom.Doppelgangers
                     .Select(d => new DoppelgangerDto(d.DoppelgangerName))
@@ -94,6 +89,8 @@ public class MushroomsController : ControllerBase
                 var mushroomDto = new MushroomDtoWithDoppelgangersMap(
                     mushroom.Name,
                     mushroom.SynonymousName,
+                    mushroom.LatinName,
+                    mushroom.Family,
                     mushroom.RedBook,
                     mushroom.Eatable,
                     mushroom.HasStem,
@@ -101,7 +98,11 @@ public class MushroomsController : ControllerBase
                     mushroom.StemSizeTo,
                     mushroom.StemType,
                     mushroom.StemColor,
+                    mushroom.CapType,
+                    mushroom.CapColor,
+                    mushroom.CapUndersideType,
                     mushroom.Description,
+                    mushroom.HeaderPhotoLink,
                     doppelgangers,
                     doppelgangersMap);
 
@@ -112,43 +113,108 @@ public class MushroomsController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return Ok(e.Message);
         }
     }
 
-    // TODO Нужно исправить метод фильтрации грибов под единый сервис грибов
-    // Getting filtered mushrooms (probably)
+    // Getting filtered mushrooms
     [HttpGet]
-    public IResult GetFilteredMushrooms([FromQuery] MushroomsModel filterValues)
+    public async Task<IActionResult> GetFilteredMushrooms([FromQuery] MushroomFilterDto mushroomFilterDto,
+        CancellationToken cancellationToken)
     {
-        // TODO см. туду на строке 18 этого файла
-        return Results.Json(MushroomsFilter.Filter(filterValues, _dbContext));
+        try
+        {
+            var (mushroomFilter, error) = MushroomFilter.Create(
+                mushroomFilterDto.PartOfName,
+                mushroomFilterDto.Family,
+                mushroomFilterDto.RedBook,
+                mushroomFilterDto.Eatable,
+                mushroomFilterDto.HasStem,
+                mushroomFilterDto.StemSizeFrom,
+                mushroomFilterDto.StemSizeTo,
+                mushroomFilterDto.StemType,
+                mushroomFilterDto.StemColor,
+                mushroomFilterDto.CapType,
+                mushroomFilterDto.CapColor,
+                mushroomFilterDto.CapUndersideType);
+
+            if (!string.IsNullOrEmpty(error))
+            {
+                return Ok(error);
+            }
+
+            var filteredMushrooms =
+                await _mushroomsService.GetFilteredMushroomsAsync(mushroomFilter, cancellationToken);
+
+            var response = new List<MushroomDtoWithDoppelgangersMap>();
+
+            foreach (var (mushroom, doppelgangersMap) in filteredMushrooms)
+            {
+                var doppelgangers = mushroom.Doppelgangers
+                    .Select(d => new DoppelgangerDto(d.DoppelgangerName))
+                    .ToList();
+
+                var mushroomDto = new MushroomDtoWithDoppelgangersMap(
+                    mushroom.Name,
+                    mushroom.SynonymousName,
+                    mushroom.LatinName,
+                    mushroom.Family,
+                    mushroom.RedBook,
+                    mushroom.Eatable,
+                    mushroom.HasStem,
+                    mushroom.StemSizeFrom,
+                    mushroom.StemSizeTo,
+                    mushroom.StemType,
+                    mushroom.StemColor,
+                    mushroom.CapType,
+                    mushroom.CapColor,
+                    mushroom.CapUndersideType,
+                    mushroom.Description,
+                    mushroom.HeaderPhotoLink,
+                    doppelgangers,
+                    doppelgangersMap);
+
+                response.Add(mushroomDto);
+            }
+
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            return Ok(e.Message);
+        }
     }
 
     // Creating a new mushroom based on the received data
     [HttpPost]
-    public async Task<IActionResult> CreateMushroom([FromBody] MushroomDto request,
+    public async Task<IActionResult> CreateMushroom([FromBody] MushroomDto mushroomDto,
         CancellationToken cancellationToken)
     {
         try
         {
             var (mushroom, error) = Mushroom.Create(
                 Guid.NewGuid(),
-                request.Name,
-                request.SynonymousName,
-                request.RedBook,
-                request.Eatable,
-                request.HasStem,
-                request.StemSizeFrom,
-                request.StemSizeTo,
-                request.StemType,
-                request.StemColor,
-                request.Description,
-                request.Doppelgangers);
+                mushroomDto.Name,
+                mushroomDto.SynonymousName,
+                mushroomDto.LatinName,
+                mushroomDto.Family,
+                mushroomDto.RedBook,
+                mushroomDto.Eatable,
+                mushroomDto.HasStem,
+                mushroomDto.StemSizeFrom,
+                mushroomDto.StemSizeTo,
+                mushroomDto.StemType,
+                mushroomDto.StemColor,
+                mushroomDto.CapType,
+                mushroomDto.CapColor,
+                mushroomDto.CapUndersideType,
+                mushroomDto.Description,
+                mushroomDto.HeaderPhotoLink,
+                mushroomDto.Doppelgangers);
 
             if (!string.IsNullOrEmpty(error))
             {
-                return BadRequest(error);
+                return Ok(error);
             }
 
             var createdMushroomId = await _mushroomsService
@@ -158,50 +224,56 @@ public class MushroomsController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return Ok(e.Message);
         }
     }
 
     // Updating a mushroom based on the mushroom name with the received data
     [HttpPut("{mushroomName=}")]
     public async Task<IActionResult> UpdateMushroom(string? mushroomName,
-        [FromBody] MushroomDto newMushroom, CancellationToken cancellationToken)
+        [FromBody] MushroomDto newMushroomDto, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(mushroomName))
-            return BadRequest("\"mushroomName\" parameter is required");
+            return Ok("\"mushroomName\" parameter is required");
 
         try
         {
-            var existedMushroomId = (await _mushroomsService
-                .GetMushroomAsync(mushroomName, cancellationToken)).Mushroom.Id;
+            var existedMushroom =
+                await _mushroomsService.GetMushroomAsync(mushroomName, cancellationToken);
 
-            var (newMushroomModel, error) = Mushroom.Create(
-                existedMushroomId,
-                newMushroom.Name,
-                newMushroom.SynonymousName,
-                newMushroom.RedBook,
-                newMushroom.Eatable,
-                newMushroom.HasStem,
-                newMushroom.StemSizeFrom,
-                newMushroom.StemSizeTo,
-                newMushroom.StemType,
-                newMushroom.StemColor,
-                newMushroom.Description,
-                newMushroom.Doppelgangers);
+            var (newMushroom, error) = Mushroom.Create(
+                existedMushroom.Mushroom.Id,
+                newMushroomDto.Name,
+                newMushroomDto.SynonymousName,
+                newMushroomDto.LatinName,
+                newMushroomDto.Family,
+                newMushroomDto.RedBook,
+                newMushroomDto.Eatable,
+                newMushroomDto.HasStem,
+                newMushroomDto.StemSizeFrom,
+                newMushroomDto.StemSizeTo,
+                newMushroomDto.StemType,
+                newMushroomDto.StemColor,
+                newMushroomDto.CapType,
+                newMushroomDto.CapColor,
+                newMushroomDto.CapUndersideType,
+                newMushroomDto.Description,
+                newMushroomDto.HeaderPhotoLink,
+                newMushroomDto.Doppelgangers);
 
             if (!string.IsNullOrEmpty(error))
             {
-                return BadRequest(error);
+                return Ok(error);
             }
 
             var updatedMushroomId = await _mushroomsService
-                .UpdateMushroomAsync(mushroomName, newMushroomModel, cancellationToken);
+                .UpdateMushroomAsync(mushroomName, newMushroom, cancellationToken);
 
             return Ok(updatedMushroomId);
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return Ok(e.Message);
         }
     }
 
@@ -221,7 +293,7 @@ public class MushroomsController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return Ok(e.Message);
         }
     }
 }

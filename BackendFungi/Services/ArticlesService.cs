@@ -17,9 +17,11 @@ public class ArticlesService : IArticlesService
     {
         try
         {
-            var articleId = await _articlesRepository.GetArticleId(articleTitle);
+            var allArticles = await _articlesRepository.GetAllArticles();
 
-            var article = await _articlesRepository.GetArticle(articleId);
+            var article = allArticles.FirstOrDefault(a => a.Title == articleTitle);
+            if (article == null)
+                throw new Exception("Unknown article title");
 
             return article;
         }
@@ -28,7 +30,7 @@ public class ArticlesService : IArticlesService
             throw new Exception($"Unable to get article \"{articleTitle}\": \"{e.Message}\"");
         }
     }
-    
+
     // Returns a list of all article models
     public async Task<List<Article>> GetAllArticlesAsync(CancellationToken ct)
     {
@@ -36,15 +38,57 @@ public class ArticlesService : IArticlesService
         {
             var articles = await _articlesRepository.GetAllArticles();
 
-            return articles;
+            return articles.OrderBy(a => a.PublishDate).ToList();
         }
         catch (Exception e)
         {
             throw new Exception($"Unable to get articles: \"{e.Message}\"");
         }
     }
-    
-    // TODO реализовать здесь метод сортировки статей
+
+    // Returns a list of articles after filtering
+    public async Task<List<Article>> GetFilteredArticlesAsync(ArticleFilter articleFilter, CancellationToken ct)
+    {
+        var articles = await _articlesRepository.GetAllArticles();
+
+        try
+        {
+            if (articleFilter.PartOfTitle is not null)
+            {
+                articles = articles
+                    .Where(a => a.Title.Contains(articleFilter.PartOfTitle))
+                    .ToList();
+            }
+
+            if (articleFilter.PublishDateFrom is not null)
+            {
+                articles = articles
+                    .Where(a => a.PublishDate >= articleFilter.PublishDateFrom)
+                    .ToList();
+            }
+
+            if (articleFilter.PublishDateTo is not null)
+            {
+                articles = articles
+                    .Where(a => a.PublishDate <= articleFilter.PublishDateTo)
+                    .ToList();
+            }
+
+            if (articleFilter.PartOfAuthorString is not null)
+            {
+                articles = articles
+                    .Where(a => a.AuthorString.Contains(articleFilter.PartOfAuthorString))
+                    .ToList();
+            }
+
+            return articles.OrderBy(x => x.PublishDate).ToList();
+        }
+
+        catch (Exception e)
+        {
+            throw new Exception($"Unable to get filtered articles: \"{e.Message}\"");
+        }
+    }
 
     // Creates an article and paragraphs for it in the database,
     // returns the id of the created article
@@ -52,7 +96,12 @@ public class ArticlesService : IArticlesService
     {
         try
         {
-            await _articlesRepository.GetArticleId(article.Title);
+            var allArticles = await _articlesRepository.GetAllArticles();
+            var existedArticle = allArticles.FirstOrDefault(a => a.Title == article.Title);
+
+            if (existedArticle == null)
+                throw new Exception("Unknown article title");
+
             throw new Exception($"Article \"{article.Title}\" has already existed");
         }
         catch (Exception e)
@@ -62,30 +111,34 @@ public class ArticlesService : IArticlesService
                 throw new Exception($"Unable to create article \"{article.Title}\": \"{e.Message}\"");
             }
 
-            try
+            if (e.Message == "Unknown article title")
             {
-                var createdArticleId = await _articlesRepository.CreateArticle(article);
+                try
+                {
+                    await _articlesRepository.CreateArticle(article);
+                    return article.Id;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Unable to create article \"{article.Title}\": \"{ex.Message}\"");
+                }
+            }
 
-                return createdArticleId;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Unable to create article \"{article.Title}\": \"{ex.Message}\"");
-            }
+            throw new Exception($"Unable to create article \"{article.Title}\": \"{e.Message}\"");
         }
     }
 
     // Changes the article parameters to new ones, returns the id of the changed article
-    public async Task<Guid> UpdateArticleAsync(string articleTitle, Article newArticleModel, CancellationToken ct)
+    public async Task<Guid> UpdateArticleAsync(string articleTitle, Article newArticle, CancellationToken ct)
     {
         try
         {
-            var existedArticleId = await _articlesRepository.GetArticleId(articleTitle);
+            var allArticles = await _articlesRepository.GetAllArticles();
+            var existedArticle = allArticles.FirstOrDefault(a => a.Title == articleTitle);
 
-            var updatedArticleId = await _articlesRepository
-                .UpdateArticle(existedArticleId, newArticleModel);
+            await _articlesRepository.UpdateArticle(articleTitle, newArticle);
 
-            return updatedArticleId;
+            return existedArticle!.Id;
         }
         catch (Exception e)
         {
@@ -98,11 +151,12 @@ public class ArticlesService : IArticlesService
     {
         try
         {
-            var articleId = await _articlesRepository.GetArticleId(articleTitle);
+            var allArticles = await _articlesRepository.GetAllArticles();
+            var existedArticle = allArticles.FirstOrDefault(a => a.Title == articleTitle);
 
-            var deletedArticleId = await _articlesRepository.DeleteArticle(articleId);
+            await _articlesRepository.DeleteArticle(articleTitle);
 
-            return deletedArticleId;
+            return existedArticle!.Id;
         }
         catch (Exception e)
         {

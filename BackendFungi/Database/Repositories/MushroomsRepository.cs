@@ -17,14 +17,16 @@ public class MushroomsRepository : IMushroomsRepository
     }
 
     // Creates a mushroom and doppelgangers to it in the database according to the mushroom model,
-    // returns the id of the created mushroom
-    public async Task<Guid> CreateMushroom(Mushroom mushroom)
+    // returns the name of the created mushroom
+    public async Task<string> CreateMushroom(Mushroom mushroom)
     {
         var mushroomEntity = new Entities.Mushroom
         {
             Id = mushroom.Id,
             Name = mushroom.Name,
             SynonymousName = mushroom.SynonymousName,
+            LatinName = mushroom.LatinName,
+            Family = mushroom.Family,
             RedBook = mushroom.RedBook,
             Eatable = mushroom.Eatable,
             HasStem = mushroom.HasStem,
@@ -32,7 +34,11 @@ public class MushroomsRepository : IMushroomsRepository
             StemSizeTo = mushroom.StemSizeTo,
             StemType = mushroom.StemType,
             StemColor = mushroom.StemColor,
-            Description = mushroom.Description
+            CapType = mushroom.CapType,
+            CapColor = mushroom.CapColor,
+            CapUndersideType = mushroom.CapUndersideType,
+            Description = mushroom.Description,
+            HeaderPhotoLink = mushroom.HeaderPhotoLink
         };
 
         await _context.Mushrooms.AddAsync(mushroomEntity);
@@ -44,7 +50,7 @@ public class MushroomsRepository : IMushroomsRepository
             addedDoppelgangers.Add(await _doppelgangersRepository.CreateDoppelganger(doppelganger));
         }
 
-        return mushroom.Id;
+        return mushroom.Name;
     }
 
     // Gets list of all mushrooms and doppelgangers to them from the database
@@ -65,6 +71,8 @@ public class MushroomsRepository : IMushroomsRepository
                 mushroomEntity.Id,
                 mushroomEntity.Name,
                 mushroomEntity.SynonymousName,
+                mushroomEntity.LatinName,
+                mushroomEntity.Family,
                 mushroomEntity.RedBook,
                 mushroomEntity.Eatable,
                 mushroomEntity.HasStem,
@@ -72,59 +80,25 @@ public class MushroomsRepository : IMushroomsRepository
                 mushroomEntity.StemSizeTo,
                 mushroomEntity.StemType,
                 mushroomEntity.StemColor,
+                mushroomEntity.CapType,
+                mushroomEntity.CapColor,
+                mushroomEntity.CapUndersideType,
                 mushroomEntity.Description,
+                mushroomEntity.HeaderPhotoLink,
                 doppelgangers).Mushroom);
         }
 
         return mushrooms;
     }
 
-    // Finds the mushroom id by name in the database and returns it
-    public async Task<Guid> GetMushroomId(string mushroomName)
-    {
-        var mushroomEntity = await (from mushroom in _context.Mushrooms
-            where mushroom.Name == mushroomName
-            select mushroom).FirstOrDefaultAsync();
-        if (mushroomEntity == null)
-            throw new Exception("Unknown mushroom name");
-
-        return mushroomEntity.Id;
-    }
-
-    // Finds a mushroom by id and returns it
-    public async Task<Mushroom> GetMushroom(Guid mushroomId)
-    {
-        var mushroomEntity = await (from m in _context.Mushrooms
-            where m.Id == mushroomId
-            select m).FirstOrDefaultAsync();
-        if (mushroomEntity == null)
-            throw new Exception("Unknown mushroom name");
-
-        var doppelgangers = await _doppelgangersRepository
-            .GetMushroomDoppelgangers(mushroomEntity.Id);
-
-        var mushroom = Mushroom.Create(
-            mushroomEntity.Id,
-            mushroomEntity.Name,
-            mushroomEntity.SynonymousName,
-            mushroomEntity.RedBook,
-            mushroomEntity.Eatable,
-            mushroomEntity.HasStem,
-            mushroomEntity.StemSizeFrom,
-            mushroomEntity.StemSizeTo,
-            mushroomEntity.StemType,
-            mushroomEntity.StemColor,
-            mushroomEntity.Description,
-            doppelgangers).Mushroom;
-
-        return mushroom;
-    }
-
     // Gets new parameters for a mushroom, deletes all doppelgangers for the searched mushroom,
     // updates the mushroom parameters and creates new doppelgangers for it
-    public async Task<Guid> UpdateMushroom(Guid mushroomId, Mushroom newMushroomModel)
+    public async Task<string> UpdateMushroom(string mushroomName, Mushroom newMushroom)
     {
-        var oldMushroom = await GetMushroom(mushroomId);
+        var oldMushroom = (await GetAllMushrooms()).FirstOrDefault(m => m.Name == mushroomName);
+
+        if (oldMushroom == null)
+            throw new Exception("Unknown mushroom name");
 
         foreach (var doppelganger in oldMushroom.Doppelgangers)
         {
@@ -132,40 +106,46 @@ public class MushroomsRepository : IMushroomsRepository
         }
 
         await _context.Mushrooms
-            .Where(m => m.Id == mushroomId)
+            .Where(m => m.Name == mushroomName)
             .ExecuteUpdateAsync(x => x
-                .SetProperty(m => m.Name, m => newMushroomModel.Name)
-                .SetProperty(m => m.SynonymousName, m => newMushroomModel.SynonymousName)
-                .SetProperty(m => m.RedBook, m => newMushroomModel.RedBook)
-                .SetProperty(m => m.Eatable, m => newMushroomModel.Eatable)
-                .SetProperty(m => m.HasStem, m => newMushroomModel.HasStem)
-                .SetProperty(m => m.StemSizeFrom, m => newMushroomModel.StemSizeFrom)
-                .SetProperty(m => m.StemSizeTo, m => newMushroomModel.StemSizeTo)
-                .SetProperty(m => m.StemType, m => newMushroomModel.StemType)
-                .SetProperty(m => m.StemColor, m => newMushroomModel.StemColor)
-                .SetProperty(m => m.Description, m => newMushroomModel.Description));
+                .SetProperty(m => m.Name, m => newMushroom.Name)
+                .SetProperty(m => m.SynonymousName, m => newMushroom.SynonymousName)
+                .SetProperty(m => m.LatinName, m => newMushroom.LatinName)
+                .SetProperty(m => m.Family, m => newMushroom.Family)
+                .SetProperty(m => m.RedBook, m => newMushroom.RedBook)
+                .SetProperty(m => m.Eatable, m => newMushroom.Eatable)
+                .SetProperty(m => m.HasStem, m => newMushroom.HasStem)
+                .SetProperty(m => m.StemSizeFrom, m => newMushroom.StemSizeFrom)
+                .SetProperty(m => m.StemSizeTo, m => newMushroom.StemSizeTo)
+                .SetProperty(m => m.StemType, m => newMushroom.StemType)
+                .SetProperty(m => m.StemColor, m => newMushroom.StemColor)
+                .SetProperty(m => m.CapType, m => newMushroom.CapType)
+                .SetProperty(m => m.CapColor, m => newMushroom.CapColor)
+                .SetProperty(m => m.CapUndersideType, m => newMushroom.CapUndersideType)
+                .SetProperty(m => m.Description, m => newMushroom.Description)
+                .SetProperty(m => m.HeaderPhotoLink, m => newMushroom.HeaderPhotoLink));
 
-        foreach (var doppelganger in newMushroomModel.Doppelgangers)
+        foreach (var doppelganger in newMushroom.Doppelgangers)
         {
             await _doppelgangersRepository.CreateDoppelganger(doppelganger);
         }
 
-        return mushroomId;
+        return mushroomName;
     }
 
     // Deletes a mushroom, and along with it, thanks to the database settings,
     // all its doppelgangers are deleted, returns the id of the deleted mushroom
-    public async Task<Guid> DeleteMushroom(Guid mushroomId)
+    public async Task<string> DeleteMushroom(string mushroomName)
     {
         var numUpdated = await _context.Mushrooms
-            .Where(m => m.Id == mushroomId)
+            .Where(m => m.Name == mushroomName)
             .ExecuteDeleteAsync();
-        
+
         if (numUpdated == 0)
         {
-            throw new Exception("Unknown mushroom id");
+            throw new Exception("Unknown mushroom Name");
         }
 
-        return mushroomId;
+        return mushroomName;
     }
 }

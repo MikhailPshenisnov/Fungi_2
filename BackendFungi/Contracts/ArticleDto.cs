@@ -2,6 +2,8 @@
 
 public record ArticleDto(
     string Title,
-    DateTime? PublishDate,
+    DateTime PublishDate,
+    string AuthorString,
+    string HeaderPhotoLink,
     List<ParagraphDto> Paragraphs
 );

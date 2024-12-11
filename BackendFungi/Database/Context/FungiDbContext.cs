@@ -34,6 +34,8 @@ public partial class FungiDbContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("Articles_pkey");
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.AuthorString).HasMaxLength(100);
+            entity.Property(e => e.HeaderPhotoLink).HasMaxLength(200);
             entity.Property(e => e.Title).HasMaxLength(255);
         });
 
@@ -52,10 +54,16 @@ public partial class FungiDbContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("Mushrooms_pkey");
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CapColor).HasMaxLength(50);
+            entity.Property(e => e.CapType).HasMaxLength(50);
+            entity.Property(e => e.CapUndersideType).HasMaxLength(50);
             entity.Property(e => e.Eatable).HasMaxLength(15);
+            entity.Property(e => e.Family).HasMaxLength(100);
+            entity.Property(e => e.HeaderPhotoLink).HasMaxLength(200);
+            entity.Property(e => e.LatinName).HasMaxLength(100);
             entity.Property(e => e.Name).HasMaxLength(100);
-            entity.Property(e => e.StemColor).HasMaxLength(100);
-            entity.Property(e => e.StemType).HasMaxLength(30);
+            entity.Property(e => e.StemColor).HasMaxLength(50);
+            entity.Property(e => e.StemType).HasMaxLength(50);
             entity.Property(e => e.SynonymousName).HasMaxLength(100);
         });
 
