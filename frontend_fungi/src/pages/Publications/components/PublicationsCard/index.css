@@ -9,6 +9,12 @@
     max-width: 1698px;
     min-height: 310px;
     width: 100%;
+    transition: all 0.3s ease;
+}
+
+.publications-card:hover {
+    transform: scale(1.01);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
 .publications-card__image {

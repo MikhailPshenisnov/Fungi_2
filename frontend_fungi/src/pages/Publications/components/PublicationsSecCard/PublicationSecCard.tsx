@@ -1,10 +1,10 @@
 import React from "react";
 import "./index.css";
-import { TPublicationsCard } from "../../types";
+import { IPublications } from "../../types";
 import { Card } from "../../../../components/shared/ui/base/Card/Card";
 
 interface IPublicationsCard {
-    card: TPublicationsCard;
+    card: IPublications;
     onClick?: () => void;
 }
 

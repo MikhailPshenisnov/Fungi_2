@@ -3,7 +3,6 @@ import "./index.css";
 import { MushroomCard } from "./components/MushroomCard/MushroomCard";
 import FilterButtons from "../../components/shared/ui/FilterButtons/FilterButtons";
 import { SearchBar } from "./components/SearchBar/SearchBar";
-// import { TMushroomCard } from "./types";
 import { useMushroomData } from "../../hooks/api/useMushroomData";
 
 export const Encyclopedia: React.FC = () => {
