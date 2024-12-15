@@ -1,12 +1,12 @@
 export const SearchSection: React.FC = () => (
-    <div className="search-section" style={{ padding: '75px', textAlign: 'center', width: '1652px', height: '313px' }}>
+    <div className="search-section" style={{ padding: '75px', textAlign: 'center', width: 'auto', height: '313px' }}>
         <h2 style={{ fontSize: '55px', fontWeight: 'bold', fontFamily: 'Raleway', marginBottom: '76px' }}>
             Найди гриб мечты – от сыроежки до трюфеля.
         </h2>
 
       {/* Текст "Удобный поиск" */}
         <h2 style={{ fontSize: '50px', fontWeight: 'bold', fontFamily: 'Raleway', marginLeft: '10px', 
-                    textAlign: 'left', marginTop: '125px'}}>
+                    textAlign: 'center', marginTop: '0px',}}>
           Удобный поиск
         </h2>
 
@@ -14,14 +14,14 @@ export const SearchSection: React.FC = () => (
         <div
             style={{
             position: 'relative',
-            width: '1096px',
+            // width: '1096px',
             height: '69px',
             display: 'flex',
             alignItems: 'center',
             border: '2px solid',
             borderRadius: '40px',
             marginLeft: 'auto' ,
-            marginTop: '-99px'
+            marginTop: '32px',
         }}
     >
         
@@ -87,7 +87,7 @@ export const SearchSection: React.FC = () => (
             justifyContent: 'space-between',
             maxWidth: '950px',
             marginLeft: 'auto',
-            marginRight: '70px',
+            marginRight: 'auto',
             textAlign: 'center',
             fontSize: '32px',
             fontFamily: 'Raleway',

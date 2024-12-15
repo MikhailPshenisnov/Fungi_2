@@ -21,7 +21,8 @@ header{
     background-color: #FFE8C5;
     height: 122px;
     width: 100%;
-    position: relative;
+    position: fixed;
+    z-index: 1000;
 }
 
 header .logo .logo-img{
@@ -118,4 +119,32 @@ footer .ul-block2 li{
     margin-bottom: 16px;
     cursor: pointer;
     transform: translateY(-350%);
+}
+
+.more-about-us{
+    cursor: pointer;
+    transition: opacity 300ms ease;
+}
+
+.more-about-us:hover{
+    opacity: 0.5;
+}
+
+.more-article{
+    cursor: pointer;
+    transition: opacity 300ms ease;
+}
+
+.more-article:hover{
+    opacity: 0.5;
+}
+
+.state-pub-clider{
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.state-pub-clider:hover{
+    transform: scale(1.01);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }

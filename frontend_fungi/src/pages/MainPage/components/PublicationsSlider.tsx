@@ -1,3 +1,5 @@
+import { NavLink } from "react-router-dom"
+
 export const PublicationsSlider: React.FC = () => (
     <div className="publications-slider" style={{textAlign: 'center', height: '618px', width: 'auto'}}>
         <h2 style={{ fontSize: '55px', fontWeight: 'bold', fontFamily: 'Raleway', paddingTop: '72px'}}>
@@ -13,7 +15,7 @@ export const PublicationsSlider: React.FC = () => (
                 {Array(3)
                 .fill(0)
                 .map((_, index) => (
-                    <div
+                    <div className="state-pub-clider"
                         key={index}
                         style={{ width: '415px', height: '404px',overflow: 'hidden',
                                 display: 'flex',flexDirection: 'column', borderRadius: '50px', backgroundColor: '#FFE8C5'}}
@@ -30,7 +32,7 @@ export const PublicationsSlider: React.FC = () => (
                             Грибной мир Подмосковья </h3>
 
                         <p style={{ fontFamily: 'Raleway', fontSize: '16px'}}>
-                        читать продолжение в источнике...
+                        
                         </p>
                     </div>
                     </div>
@@ -38,14 +40,16 @@ export const PublicationsSlider: React.FC = () => (
             </div>
 
             {/* Кнопка "Больше статей" */}
+            <NavLink to={"/publications"}>
             <div style={{ marginLeft: '44px'}}
             >
-                <button style={{background: 'none', border: 'none', cursor: 'pointer'}}>
-            <img style={{height: 'auto', paddingTop: '73px'}}
-            src="/images/png/more-article.png"
-            />
-        </button>
+                <button className="more-article" style={{background: 'none', border: 'none', marginTop: '73px'}}>
+                    <img style={{height: 'auto',}}
+                    src="/images/png/more-article.png"
+                    />
+                </button>
             </div>
+            </NavLink>
         </div>
     </div>
 );

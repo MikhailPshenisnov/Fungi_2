@@ -1,3 +1,5 @@
+import { NavLink } from "react-router-dom";
+
 export const TeamSection: React.FC = () => (
     <div className="team-section" style={{height: '779px', padding: '100px'}}>
         <h2 style={{ fontSize: '64px', fontWeight: 'bold', fontFamily: 'Raleway', paddingTop: '72px'}}>
@@ -20,10 +22,12 @@ export const TeamSection: React.FC = () => (
         - твой лучший друг в изучении грибов
         </h2>
         
-        <button style={{background: 'none', border: 'none', cursor: 'pointer'}}>
-            <img style={{height: 'auto', paddingTop: '73px'}}
+        <NavLink to={"/about"}>
+        <button className="more-about-us" style={{background: 'none', border: 'none', marginTop: '73px'}}>
+            <img style={{height: 'auto',}}
             src="/images/png/more-about-us.png"
             />
         </button>
+        </NavLink>
     </div>
 );
