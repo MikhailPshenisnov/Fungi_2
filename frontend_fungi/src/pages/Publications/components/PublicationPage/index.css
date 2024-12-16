@@ -53,14 +53,15 @@
     background: rgba(255, 255, 255); 
     border-radius: 100px;
     max-width: 1281px;
-    max-height: 120px;
+    min-height: 120px;
     padding: 10px 20px;
+    margin-bottom: 150px;
 }
 
 .publication-page__title {
     font-family: 'Raleway';
     font-size: 48px;
-    font-weight: 800;
+    /* font-weight: 800; */
     text-align: center;
 }
 
@@ -83,7 +84,7 @@
 
 .publication-page__author,
 .publication-page__date {
-    font-size: 18px;
+    font-size: 32px;
     margin: 0;
 }
 
@@ -100,8 +101,8 @@
 }
 
 .publication-page__paragraph {
-    font-size: 20px;
-    line-height: 1.6;
+    font-size: 36px;
+    
     margin-bottom: 20px;
     color: #333;
 }
