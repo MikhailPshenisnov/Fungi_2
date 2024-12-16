@@ -16,6 +16,32 @@ export const MushroomCard: React.FC<MushroomCardProps> = ({
     const { headerPhotoLink, name, latinName, family, eatable, redBook } = mushroom;
     const imageUrl = useImgurUrl(headerPhotoLink);
 
+    const getEdibilityIcon = (eatable: string) => {
+        switch (eatable) {
+            case 'Да':
+                return '/images/svg/mushroom-tags-icons/eatable.svg';
+            case 'Нет':
+                return '/images/svg/mushroom-tags-icons/not_eatable.svg';
+            case 'Полусъедобен':
+                return '/images/svg/mushroom-tags-icons/eatable.svg';
+            default:
+                return '/images/svg/mushroom-tags-icons/eatable.svg';
+        }
+    };
+
+    const getEdibilityTitle = (eatable: string) => {
+        switch (eatable) {
+            case 'Да':
+                return 'Съедобный гриб';
+            case 'Нет':
+                return 'Ядовитый гриб';
+            case 'Полусъедобен':
+                return 'Условно-съедобный гриб';
+            default:
+                return 'Неизвестно';
+        }
+    };
+
     return (
         <Card className="mushroom-card" onClick={onClick}>
             <img 
@@ -30,31 +56,24 @@ export const MushroomCard: React.FC<MushroomCardProps> = ({
                     <p className="mushroom-card__latin">{latinName}</p>
                 </div>
                 <div className="mushroom-card__icons">
-                        {eatable === "Да" ? (
-                            <img 
-                                src="/images/svg/mushroom-tags-icons/eatable.svg" 
-                                alt="Съедобный гриб"
-                            />
-                        ) : (
-                            <img 
-                                src="/images/svg/mushroom-tags-icons/not_eatable.svg" 
-                                alt="Несъедобный гриб"
-                            />
-                        )}
-                        {redBook ? (
-                            <img 
-                                src="/images/svg/mushroom-tags-icons/redbooked.svg" 
-                                alt="Занесён в красную книгу"
-                            />
-                        ) : (
-                            <img 
-                                src="/images/svg/mushroom-tags-icons/not_redbooked.svg" 
-                                alt="Не занесён в красную книгу"
-                            />
-                        )}
+                    <img 
+                        src={getEdibilityIcon(eatable)}
+                        alt={getEdibilityTitle(eatable)}
+                        title={getEdibilityTitle(eatable)}
+                        className="mushroom-card__edibility-icon"
+                    />
+                    {redBook ? (
+                        <img 
+                            src="/images/svg/mushroom-tags-icons/redbooked.svg" 
+                            alt="Занесён в красную книгу"
+                        />
+                    ) : (
+                        <img 
+                            src="/images/svg/mushroom-tags-icons/not_redbooked.svg" 
+                            alt="Не занесён в красную книгу"
+                        />
+                    )}
                 </div>
-                
-                
             </div>
         </Card>
     );

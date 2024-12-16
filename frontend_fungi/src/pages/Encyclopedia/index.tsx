@@ -13,6 +13,14 @@ export const Encyclopedia: React.FC = () => {
     if (error) return <div>Error: {error.message}</div>;
     if (!mushrooms || !Array.isArray(mushrooms)) return <div>No mushrooms data available</div>;
 
+    // Фильтруем ядовитые грибы
+    const edibleMushrooms = mushrooms.filter(mushroom => mushroom.eatable !== "Нет");
+    
+    // Разделяем массив съедобных грибов на две части
+    const halfLength = Math.ceil(edibleMushrooms.length / 2);
+    const firstHalf = edibleMushrooms.slice(0, halfLength);
+    const secondHalf = edibleMushrooms.slice(halfLength);
+
     return (
         <div className="encyclopedia">
             <div className="encyclopedia__header">
@@ -27,7 +35,7 @@ export const Encyclopedia: React.FC = () => {
             <section className="encyclopedia__section">
                 <h2 className="encyclopedia__section-title">Популярные грибы</h2>
                 <div className="encyclopedia__cards-row">
-                    {mushrooms.map(mushroom => (
+                    {firstHalf.map(mushroom => (
                         <MushroomCard
                             key={mushroom.name}
                             mushroom={mushroom}
@@ -39,7 +47,7 @@ export const Encyclopedia: React.FC = () => {
             <section className="encyclopedia__section">
                 <h2 className="encyclopedia__section-title">Необычные грибы</h2>
                 <div className="encyclopedia__cards-row">
-                    {mushrooms.map(mushroom => (
+                    {secondHalf.map(mushroom => (
                         <MushroomCard
                             key={mushroom.name}
                             mushroom={mushroom}
