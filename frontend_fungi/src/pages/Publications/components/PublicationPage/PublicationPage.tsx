@@ -16,13 +16,9 @@ const PublicationPage: React.FC = () => {
     return (
         <div className="publication-page">
             <div className="publication-page__content">
-                <h1 className="publication-page__title">{publication.title}</h1>
-                <img 
-                    className="publication-page__image" 
-                    src={publication.headerPhotoLink} 
-                    alt={publication.title}
-                />
-                <div className="publication-page__info">
+                <div className='publication-page_container'>
+                    <h1 className="publication-page__title">{publication.title}</h1>
+                    <div className="publication-page__info">
                     <p className="publication-page__author">Автор: {publication.authorString}</p>
                     <p className="publication-page__date">
                         {new Date(publication.publishDate).toLocaleDateString('ru-RU', {
@@ -32,6 +28,13 @@ const PublicationPage: React.FC = () => {
                         })}
                     </p>
                 </div>
+                </div>
+                <img 
+                    className="publication-page__image" 
+                    src={publication.headerPhotoLink} 
+                    alt={publication.title}
+                />
+
                 <div className="publication-page__text">
                     {publication.paragraphs.map((paragraph, index) => (
                         paragraph.paragraphText && (
