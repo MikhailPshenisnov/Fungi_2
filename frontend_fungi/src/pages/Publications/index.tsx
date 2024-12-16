@@ -1,4 +1,5 @@
 import FilterButtons from "../../components/shared/ui/FilterButtons/FilterButtons.tsx";
+import SortDropdown from "../../components/shared/ui/SortDropdown/SortDropdown.tsx";
 import { usePublicationData } from "../../hooks/api/usePublicationData.ts";
 import PublicationsCard from "./components/PublicationsCard/PublicationsCard.tsx";
 import "./index.css";
@@ -15,7 +16,7 @@ const Publications = () => {
     return (
         <div className="publications">
             <div className="publications__wrapper">
-                <FilterButtons targetPath="/publications-sec"/>
+                <FilterButtons targetPath="/publications-sec" buttonComponent={<SortDropdown />}/>
                 <div className="publications__container">
                     {publications?.map(publication => (
                         <PublicationsCard 

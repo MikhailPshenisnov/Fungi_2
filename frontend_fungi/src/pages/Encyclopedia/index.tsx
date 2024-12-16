@@ -4,6 +4,9 @@ import { MushroomCard } from "./components/MushroomCard/MushroomCard";
 import FilterButtons from "../../components/shared/ui/FilterButtons/FilterButtons";
 import { SearchBar } from "./components/SearchBar/SearchBar";
 import { useMushroomData } from "../../hooks/api/useMushroomData";
+import FilterButton from "./components/FilterButton/FilterButton";
+
+
 
 export const Encyclopedia: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState("");
@@ -24,7 +27,10 @@ export const Encyclopedia: React.FC = () => {
     return (
         <div className="encyclopedia">
             <div className="encyclopedia__header">
-                <FilterButtons targetPath="/encyclopedia" />
+                <FilterButtons 
+                    targetPath="/encyclopedia" 
+                    buttonComponent={<FilterButton />}
+                />
             </div>
 
             <SearchBar 
