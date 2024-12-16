@@ -1,9 +1,9 @@
 .filter-button {
     position: relative;
     display: inline-block;
-  }
+}
   
-  .dropdown-toggle {
+.dropdown-toggle {
     background: none;
     border: none;
     cursor: pointer;
@@ -11,37 +11,182 @@
     display: flex;
     align-items: center;
     gap: 8px;
-  }
-  
-  .arrow {
+    padding: 8px;
+}
+
+.arrow {
     font-size: 12px;
-  }
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
   
-  .dropdown-menu {
-    position: absolute;
-    top: 100%;
-    right: -420px;  /* Изменено с right: 100% на right: -420px */
+.dropdown-menu {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 8px 0;
-    z-index: 10;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
     width: 400px;
-    
-  }
-  
-  .dropdown-menu button {
-    width: 100%;
-    padding: 8px 16px;
-    text-align: left;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid #eee;
+}
+
+.filter-header h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+}
+
+.close-button {
     background: none;
     border: none;
-    font-size: 14px;
     cursor: pointer;
-  }
-  
-  .dropdown-menu button:hover {
-    background: #f0f0f0;
-  }
-   
+    padding: 4px;
+}
+
+.filter-content {
+    padding: 16px 24px;
+}
+
+.filter-section {
+    margin-bottom: 24px;
+}
+
+.filter-section h4 {
+    margin: 0 0 16px 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: #555;
+}
+
+.filter-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    padding-left: 36px;
+}
+
+.checkbox-label input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.checkbox-custom {
+    position: absolute;
+    left: 0;
+    height: 24px;
+    width: 24px;
+    background-color: #fff;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.checkbox-label:hover .checkbox-custom {
+    border-color: #999;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkbox-custom {
+    background-color: #4CAF50;
+    border-color: #4CAF50;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkbox-custom::after {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 4px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.label-text {
+    font-size: 16px;
+    color: #333;
+}
+
+.filter-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid #eee;
+}
+
+.reset-button, .apply-button {
+    padding: 8px 24px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.reset-button {
+    background: none;
+    border: 1px solid #ddd;
+    color: #666;
+}
+
+.reset-button:hover {
+    background: #f5f5f5;
+}
+
+.apply-button {
+    background: #4CAF50;
+    border: none;
+    color: white;
+}
+
+.apply-button:hover {
+    background: #45a049;
+}
+
+/* Scrollbar styling */
+.dropdown-menu::-webkit-scrollbar {
+    width: 8px;
+}
+
+.dropdown-menu::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
