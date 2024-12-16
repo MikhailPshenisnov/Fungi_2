@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from 'react-router-dom';
 import "./MushroomCard.css";
 import { Card } from "../../../../components/shared/ui/base/Card/Card";
 import { TMushroomCard } from "../../types";
@@ -6,14 +7,13 @@ import { useImgurUrl } from "../../../../hooks/common/useImgurUrl";
 
 interface MushroomCardProps {
     mushroom: TMushroomCard;
-    onClick?: () => void;
 }
 
 export const MushroomCard: React.FC<MushroomCardProps> = ({ 
-    mushroom,
-    onClick 
+    mushroom 
 }) => {
-    const { headerPhotoLink, name, latinName, family, eatable, redBook } = mushroom;
+    const navigate = useNavigate();
+    const { headerPhotoLink, name, latinName, family, eatable, redBook, id } = mushroom;
     const imageUrl = useImgurUrl(headerPhotoLink);
 
     const getEdibilityIcon = (eatable: string) => {
@@ -42,8 +42,12 @@ export const MushroomCard: React.FC<MushroomCardProps> = ({
         }
     };
 
+    const handleClick = () => {
+        navigate(`/encyclopedia/${mushroom.id}`);
+    };
+
     return (
-        <Card className="mushroom-card" onClick={onClick}>
+        <Card className="mushroom-card" onClick={handleClick}>
             <img 
                 className="mushroom-card__image"
                 src={imageUrl}

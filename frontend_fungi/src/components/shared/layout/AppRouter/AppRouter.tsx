@@ -5,6 +5,7 @@ import AboutUs from "../../../../pages/AboutUs";
 import { Encyclopedia } from "../../../../pages/Encyclopedia";
 import PublicationsSec from "../../../../pages/Publications/PublicationsSec";
 import PublicationPage from "../../../../pages/Publications/components/PublicationPage/PublicationPage";
+import { MushroomPage } from "../../../../pages/Encyclopedia/components/MushroomPage";
 
 export const AppRouter = () => {
     return (
@@ -15,6 +16,7 @@ export const AppRouter = () => {
             <Route path="/publications" element={<Publications />} />
             <Route path="/publications-sec" element={<PublicationsSec />} />
             <Route path="/publications/:id" element={<PublicationPage />} />
+            <Route path="/encyclopedia/:mushroomId" element={<MushroomPage />} />         
             <Route path="/encyclopedia" element={<Encyclopedia />} />
             <Route path="*" element={<Navigate to="/mainpage"/>}/>
         </Routes>

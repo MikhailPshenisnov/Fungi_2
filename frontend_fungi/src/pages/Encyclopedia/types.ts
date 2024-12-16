@@ -1,4 +1,5 @@
 export type TMushroomCard = {
+    id: number;
     name: string,
     synonymousName: string,
     latinName: string | null,

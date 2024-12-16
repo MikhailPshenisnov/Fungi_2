@@ -2,6 +2,7 @@ import { TMushroomCard } from "../../../pages/Encyclopedia/types";
 
 export const mockMushrooms: TMushroomCard[] = [
     {
+        id: 1,
         name: "Белый гриб",
         synonymousName: "Боровик, Белый гриб еловый, Жатник, Струень",
         latinName: "Boletus edulis",
@@ -25,6 +26,7 @@ export const mockMushrooms: TMushroomCard[] = [
         ]
     },
     {
+        id: 2,
         name: "Подберёзовик обыкновенный",
         synonymousName: "Обабок, Черныш",
         latinName: "Leccinum scabrum",
@@ -47,6 +49,7 @@ export const mockMushrooms: TMushroomCard[] = [
         ]
     },
     {
+        id: 3,
         name: "Подосиновик красный",
         synonymousName: "Красноголовик, Красюк",
         latinName: "Leccinum aurantiacum",
@@ -68,6 +71,7 @@ export const mockMushrooms: TMushroomCard[] = [
         ]
     },
     {
+        id: 4,
         name: "Лисичка обыкновенная",
         synonymousName: "Кантарелла",
         latinName: "Cantharellus cibarius",
@@ -89,6 +93,7 @@ export const mockMushrooms: TMushroomCard[] = [
         ]
     },
     {
+        id: 5,
         name: "Опёнок осенний",
         synonymousName: "Опёнок настоящий",
         latinName: "Armillaria mellea",
@@ -111,6 +116,7 @@ export const mockMushrooms: TMushroomCard[] = [
         ]
     },
     {
+        id: 6,
         name: "Мухомор красный",
         synonymousName: "Мухомор",
         latinName: "Amanita muscaria",
@@ -132,6 +138,7 @@ export const mockMushrooms: TMushroomCard[] = [
         ]
     },
     {
+        id: 7,
         name: "Сыроежка пищевая",
         synonymousName: "Сыроежка съедобная",
         latinName: "Russula vesca",
@@ -153,6 +160,7 @@ export const mockMushrooms: TMushroomCard[] = [
         ]
     },
     {
+        id: 8,
         name: "Груздь настоящий",
         synonymousName: "Груздь белый",
         latinName: "Lactarius resimus",
@@ -174,6 +182,7 @@ export const mockMushrooms: TMushroomCard[] = [
         ]
     },
     {
+        id: 9,
         name: "Волнушка розовая",
         synonymousName: "Волнушка, Волжанка",
         latinName: "Lactarius torminosus",
@@ -196,6 +205,7 @@ export const mockMushrooms: TMushroomCard[] = [
         ]
     },
     {
+        id: 10,
         name: "Рыжик настоящий",
         synonymousName: "Рыжик сосновый",
         latinName: "Lactarius deliciosus",
@@ -218,6 +228,7 @@ export const mockMushrooms: TMushroomCard[] = [
         ]
     },
     {
+        id: 11,
         name: "Масленок обыкновенный",
         synonymousName: "Масленок поздний",
         latinName: "Suillus luteus",
@@ -239,6 +250,7 @@ export const mockMushrooms: TMushroomCard[] = [
         ]
     },
     {
+        id: 12,
         name: "Шампиньон полевой",
         synonymousName: "Печерица полевая",
         latinName: "Agaricus campestris",
@@ -261,6 +273,7 @@ export const mockMushrooms: TMushroomCard[] = [
         ]
     },
     {
+        id: 13,
         name: "Моховик зеленый",
         synonymousName: "Моховик трещиноватый",
         latinName: "Xerocomellus chrysenteron",
@@ -282,6 +295,7 @@ export const mockMushrooms: TMushroomCard[] = [
         ]
     },
     {
+        id: 14,
         name: "Бледная поганка",
         synonymousName: "Аманита бледная",
         latinName: "Amanita phalloides",
@@ -304,6 +318,7 @@ export const mockMushrooms: TMushroomCard[] = [
         ]
     },
     {
+        id: 15,
         name: "Сморчок конический",
         synonymousName: "Сморчок обыкновенный",
         latinName: "Morchella conica",
@@ -325,6 +340,7 @@ export const mockMushrooms: TMushroomCard[] = [
         ]
     },
     {
+        id: 16,
         name: "Вешенка обыкновенная",
         synonymousName: "Плевротус обыкновенный",
         latinName: "Pleurotus ostreatus",
@@ -346,6 +362,7 @@ export const mockMushrooms: TMushroomCard[] = [
         ]
     },
     {
+        id: 17,
         name: "Дождевик жемчужный",
         synonymousName: "Дождевик настоящий",
         latinName: "Lycoperdon perlatum",
@@ -367,6 +384,7 @@ export const mockMushrooms: TMushroomCard[] = [
         ]
     },
     {
+        id: 18,
         name: "Паутинник фиолетовый",
         synonymousName: "Паутинник красивейший",
         latinName: "Cortinarius violaceus",
@@ -388,6 +406,7 @@ export const mockMushrooms: TMushroomCard[] = [
         ]
     },
     {
+        id: 19,
         name: "Трутовик чешуйчатый",
         synonymousName: "Полипорус чешуйчатый",
         latinName: "Polyporus squamosus",
@@ -409,6 +428,7 @@ export const mockMushrooms: TMushroomCard[] = [
         ]
     },
     {
+        id: 20,
         name: "Гигрофор бурый",
         synonymousName: "Гигрофор красноватый",
         latinName: "Hygrophorus russula",
