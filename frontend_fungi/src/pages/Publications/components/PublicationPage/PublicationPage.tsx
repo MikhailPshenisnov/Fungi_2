@@ -1,10 +1,11 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { usePublicationData } from '../../../../hooks/api/usePublicationData';
 import './index.css';
 
 const PublicationPage: React.FC = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const { data: publications } = usePublicationData();
     
     const publication = publications?.find(p => p.id === id);
@@ -13,21 +14,29 @@ const PublicationPage: React.FC = () => {
         return <div>Публикация не найдена</div>;
     }
 
+    const handleBack = () => {
+        navigate(-1);
+    };
+
     return (
         <div className="publication-page">
             <div className="publication-page__content">
+                <button onClick={handleBack} className="publication-page__back-button">
+                    <img src="/images/svg/arrow.svg" alt="Назад" />
+                    <span>Назад</span>
+                </button>
                 <div className='publication-page_container'>
                     <h1 className="publication-page__title">{publication.title}</h1>
                     <div className="publication-page__info">
-                    <p className="publication-page__author">Автор: {publication.authorString}</p>
-                    <p className="publication-page__date">
-                        {new Date(publication.publishDate).toLocaleDateString('ru-RU', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                        })}
-                    </p>
-                </div>
+                        <p className="publication-page__author">Автор: {publication.authorString}</p>
+                        <p className="publication-page__date">
+                            {new Date(publication.publishDate).toLocaleDateString('ru-RU', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            })}
+                        </p>
+                    </div>
                 </div>
                 <img 
                     className="publication-page__image" 
