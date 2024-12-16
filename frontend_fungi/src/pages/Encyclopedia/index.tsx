@@ -24,9 +24,14 @@ export const Encyclopedia: React.FC = () => {
     if (error) return <div>Error: {error.message}</div>;
     if (!mushrooms || !Array.isArray(mushrooms)) return <div>No mushrooms data available</div>;
 
-    const isFiltersActive = filters.edibility.length > 0 || filters.capType.length > 0 || searchQuery;
+    const isFiltersActive = filters.edibility.length > 0 || filters.capType.length > 0;
+    const isSearchActive = searchQuery.trim() !== "";
 
-    const filteredMushrooms = mushrooms.filter(mushroom => {
+    // Сначала применяем фильтры
+    const filteredByTypeMushrooms = mushrooms.filter(mushroom => {
+        // Если фильтры не активны, пропускаем все грибы
+        if (!isFiltersActive) return true;
+
         // Применяем фильтры по съедобности
         if (filters.edibility.length > 0) {
             const edibilityMatch = filters.edibility.some(filter => {
@@ -61,19 +66,21 @@ export const Encyclopedia: React.FC = () => {
             if (!capTypeMatch) return false;
         }
 
-        // Применяем поиск по названию
-        if (searchQuery) {
-            return mushroom.name.toLowerCase().includes(searchQuery.toLowerCase());
-        }
-
         return true;
     });
 
-    // Разделяем грибы на категории только если нет активных фильтров
-    const edibleMushrooms = !isFiltersActive 
+    // Затем применяем поиск к отфильтрованным грибам
+    const searchedMushrooms = isSearchActive
+        ? filteredByTypeMushrooms.filter(mushroom =>
+            mushroom.name.toLowerCase().includes(searchQuery.toLowerCase())
+          )
+        : filteredByTypeMushrooms;
+
+    // Если нет ни фильтров, ни поиска, разделяем по категориям
+    const edibleMushrooms = !isFiltersActive && !isSearchActive
         ? mushrooms.filter(mushroom => mushroom.eatable === "Да")
         : [];
-    const semiEdibleMushrooms = !isFiltersActive 
+    const semiEdibleMushrooms = !isFiltersActive && !isSearchActive
         ? mushrooms.filter(mushroom => mushroom.eatable === "Условно")
         : [];
 
@@ -91,13 +98,15 @@ export const Encyclopedia: React.FC = () => {
                 setSearchQuery={setSearchQuery}
             />
 
-            {isFiltersActive ? (
+            {(isFiltersActive || isSearchActive) ? (
                 <section className="encyclopedia__section">
                     <h2 className="encyclopedia__section-title">
-                        {filteredMushrooms.length > 0 ? 'Найденные грибы' : 'Грибы не найдены'}
+                        {searchedMushrooms.length > 0 
+                            ? `Найдено грибов: ${searchedMushrooms.length}` 
+                            : 'Грибы не найдены'}
                     </h2>
                     <div className="encyclopedia__cards-row">
-                        {filteredMushrooms.map(mushroom => (
+                        {searchedMushrooms.map(mushroom => (
                             <MushroomCard
                                 key={mushroom.name}
                                 mushroom={mushroom}
