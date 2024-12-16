@@ -35,7 +35,7 @@ const Publications = () => {
                 <div className="section-publication-conteiner">
                     <h1 className="publications-sec__title" >Заголовок раздела</h1>
                     <div className="publications-sec-conteiner">
-                        {publications?.slice(0, 5).map((publication) => (
+                        {publications?.slice(0, 4).map((publication) => (
                             <PublicationsSecCard 
                                 key={publication.id}
                                 card={publication} 
