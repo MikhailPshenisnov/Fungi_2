@@ -2,22 +2,27 @@ import FilterButtons from "../../components/shared/ui/FilterButtons/FilterButton
 import { usePublicationData } from "../../hooks/api/usePublicationData.ts";
 import PublicationsCard from "./components/PublicationsCard/PublicationsCard.tsx";
 import "./index.css";
-
-import {TPublicationsCard} from "./types.ts";
-
-
-
+import { useNavigate } from "react-router-dom";
 
 const Publications = () => {
     const {data: publications, isLoading, error} = usePublicationData();
+    const navigate = useNavigate();
+
+    const handleCardClick = (id: string) => {
+        navigate(`/publications/${id}`);
+    };
     
     return (
         <div className="publications">
             <div className="publications__wrapper">
                 <FilterButtons targetPath="/publications-sec"/>
                 <div className="publications__container">
-                    {publications.map(publication => (
-                        <PublicationsCard card={publication} />
+                    {publications?.map(publication => (
+                        <PublicationsCard 
+                            key={publication.id}
+                            card={publication} 
+                            onClick={() => handleCardClick(publication.id)}
+                        />
                     ))}
                 </div>
             </div>

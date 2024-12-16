@@ -12,6 +12,9 @@ const Publications = () => {
         navigate(`/publications/${id}`);
     };
 
+    // Получаем последние 4 статьи для второго раздела
+    const recentPublications = publications?.slice(-4).reverse();
+
     return (
         <div className="conteiner-sec">
             <div className="publications-sec">
@@ -33,9 +36,9 @@ const Publications = () => {
                     </div>
                 </div>
                 <div className="section-publication-conteiner">
-                    <h1 className="publications-sec__title" >Заголовок раздела</h1>
+                    <h1 className="publications-sec__title" >Недавние публикации</h1>
                     <div className="publications-sec-conteiner">
-                        {publications?.slice(0, 4).map((publication) => (
+                        {recentPublications?.map((publication) => (
                             <PublicationsSecCard 
                                 key={publication.id}
                                 card={publication} 

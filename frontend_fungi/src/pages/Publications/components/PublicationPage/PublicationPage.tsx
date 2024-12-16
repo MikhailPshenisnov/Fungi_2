@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { usePublicationData } from '../../../../hooks/api/usePublicationData';
 import './index.css';
@@ -7,6 +7,7 @@ const PublicationPage: React.FC = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { data: publications } = usePublicationData();
+    const [imageError, setImageError] = useState(false);
     
     const publication = publications?.find(p => p.id === id);
 
@@ -16,6 +17,10 @@ const PublicationPage: React.FC = () => {
 
     const handleBack = () => {
         navigate(-1);
+    };
+
+    const handleImageError = () => {
+        setImageError(true);
     };
 
     return (
@@ -40,8 +45,9 @@ const PublicationPage: React.FC = () => {
                 </div>
                 <img 
                     className="publication-page__image" 
-                    src={publication.headerPhotoLink} 
+                    src={imageError ? "/images/png/alt-card-image.png" : publication.headerPhotoLink}
                     alt={publication.title}
+                    onError={handleImageError}
                 />
 
                 <div className="publication-page__text">

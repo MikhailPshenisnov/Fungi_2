@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FC } from "react";
 import "./index.css";
 import { IPublications } from "../../types";
 import { Card } from "../../../../components/shared/ui/base/Card/Card";
@@ -8,13 +8,18 @@ interface IPublicationsCard {
     onClick?: () => void;
 }
 
-const PublicationsSecCard: React.FC<IPublicationsCard> = ({ card, onClick }) => {
+const PublicationsSecCard: FC<IPublicationsCard> = ({ card, onClick }) => {
+    const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+        e.currentTarget.src = "/images/png/alt-card-image.png";
+    };
+
     return (
         <Card className="publication-sec-card" onClick={onClick}>
             <img 
                 className="publication-sec-card__image" 
-                src="/images/png/alt-card-image.png" 
-                alt="image1" 
+                src={card.headerPhotoLink} 
+                alt={card.title}
+                onError={handleImageError}
             />
             <div className="publication-info">
                 <h3 className="publications-sec-card__title">{card.title}</h3>
