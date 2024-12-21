@@ -5,6 +5,8 @@ import FilterButtons from "../../components/shared/ui/FilterButtons/FilterButton
 import { SearchBar } from "./components/SearchBar/SearchBar";
 import { useMushroomData } from "../../hooks/api/useMushroomData";
 import FilterButton from "./components/FilterButton/FilterButton";
+import { MushroomFilter } from "./components/MushroomFilter/MushroomFilter";
+
 
 interface FilterState {
     edibility: string[];
@@ -24,64 +26,22 @@ export const Encyclopedia: React.FC = () => {
     if (error) return <div>Error: {error.message}</div>;
     if (!mushrooms || !Array.isArray(mushrooms)) return <div>No mushrooms data available</div>;
 
-    const isFiltersActive = filters.edibility.length > 0 || filters.capType.length > 0;
-    const isSearchActive = searchQuery.trim() !== "";
-
-    // Сначала применяем фильтры
-    const filteredByTypeMushrooms = mushrooms.filter(mushroom => {
-        // Если фильтры не активны, пропускаем все грибы
-        if (!isFiltersActive) return true;
-
-        // Применяем фильтры по съедобности
-        if (filters.edibility.length > 0) {
-            const edibilityMatch = filters.edibility.some(filter => {
-                switch (filter) {
-                    case 'edible':
-                        return mushroom.eatable === "Да";
-                    case 'semi-edible':
-                        return mushroom.eatable === "Условно";
-                    case 'inedible':
-                        return mushroom.eatable === "Нет";
-                    default:
-                        return true;
-                }
-            });
-            if (!edibilityMatch) return false;
-        }
-
-        // Применяем фильтры по типу шляпки
-        if (filters.capType.length > 0) {
-            const capTypeMatch = filters.capType.some(filter => {
-                switch (filter) {
-                    case 'convex':
-                        return mushroom.cap_type === "Выпуклая";
-                    case 'flat':
-                        return mushroom.cap_type === "Плоская";
-                    case 'funnel':
-                        return mushroom.cap_type === "Воронковидная";
-                    default:
-                        return true;
-                }
-            });
-            if (!capTypeMatch) return false;
-        }
-
-        return true;
+    const {
+        filteredMushrooms,
+        isFiltersActive,
+        isSearchActive
+    } = MushroomFilter({
+        mushrooms,
+        filters,
+        searchQuery
     });
-
-    // Затем применяем поиск к отфильтрованным грибам
-    const searchedMushrooms = isSearchActive
-        ? filteredByTypeMushrooms.filter(mushroom =>
-            mushroom.name.toLowerCase().includes(searchQuery.toLowerCase())
-          )
-        : filteredByTypeMushrooms;
 
     // Если нет ни фильтров, ни поиска, разделяем по категориям
     const edibleMushrooms = !isFiltersActive && !isSearchActive
         ? mushrooms.filter(mushroom => mushroom.eatable === "Да")
         : [];
     const semiEdibleMushrooms = !isFiltersActive && !isSearchActive
-        ? mushrooms.filter(mushroom => mushroom.eatable === "Условно")
+        ? mushrooms.filter(mushroom => mushroom.eatable === "Полусъедобен")
         : [];
 
     return (
@@ -101,12 +61,12 @@ export const Encyclopedia: React.FC = () => {
             {(isFiltersActive || isSearchActive) ? (
                 <section className="encyclopedia__section">
                     <h2 className="encyclopedia__section-title">
-                        {searchedMushrooms.length > 0 
-                            ? `Найдено грибов: ${searchedMushrooms.length}` 
+                        {filteredMushrooms.length > 0 
+                            ? `Найдено грибов: ${filteredMushrooms.length}` 
                             : 'Грибы не найдены'}
                     </h2>
                     <div className="encyclopedia__cards-row">
-                        {searchedMushrooms.map(mushroom => (
+                        {filteredMushrooms.map(mushroom => (
                             <MushroomCard
                                 key={mushroom.name}
                                 mushroom={mushroom}

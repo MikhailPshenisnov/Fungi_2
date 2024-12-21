@@ -11,8 +11,9 @@
 }
 
 .encyclopedia__section {
-    margin-bottom: 40px;
-    max-width: 1624px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 1624px;
 }
 
 .encyclopedia__section-title {

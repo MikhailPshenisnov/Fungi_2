@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
 import "./index.css";
 import React, { ReactNode } from "react";
+import GridButton from "../GridButton";
 
 interface FilterButtonsProps {
     targetPath: string;
@@ -11,11 +11,7 @@ const FilterButtons: React.FC<FilterButtonsProps> = ({ targetPath, buttonCompone
 
     return (
         <div className="bottonsConteiner">
-            <button className="grid-button"> 
-                <Link to={ targetPath }  >
-                    <img src="/images/svg/grid-view.svg" alt="" />
-                </Link>
-            </button>
+            <GridButton targetPath={targetPath} />
             {buttonComponent}
         </div>
             
