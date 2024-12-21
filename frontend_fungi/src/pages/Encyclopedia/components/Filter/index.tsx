@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { FilterDropdown } from "./FilterDropdown";
-import "./FilterButton.css";
+import React, { useState } from "react";
+import { OpenFilterMenuButton } from "../../../../components/shared/ui/base/Filter/OpenFilterMenuButton";
+import { FilterMenuMushroom } from "./FilterMenuMushroom";
 
-interface FilterButtonProps {
+interface OpenMushroomFilterMenuButtonProps {
   filters: {
     edibility: string[];
     capType: string[];
@@ -10,7 +10,10 @@ interface FilterButtonProps {
   setFilters: (filters: { edibility: string[]; capType: string[] }) => void;
 }
 
-const FilterButton: React.FC<FilterButtonProps> = ({ filters, setFilters }) => {
+const OpenMushroomFilterMenuButton: React.FC<OpenMushroomFilterMenuButtonProps> = ({
+  filters,
+  setFilters
+}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => setIsOpen(!isOpen);
@@ -38,14 +41,9 @@ const FilterButton: React.FC<FilterButtonProps> = ({ filters, setFilters }) => {
 
   return (
     <div className="filter-button">
-      <button className="dropdown-toggle" onClick={toggleDropdown}>
-        <span><img src="/images/svg/group.svg"/></span>
-        <span className="arrow">
-          {isOpen ? <img src="/images/svg/vector-up.svg"/> : <img src="/images/svg/vector.svg"/>}
-        </span>
-      </button>
+      <OpenFilterMenuButton isOpen={isOpen} onToggle={toggleDropdown} />
       
-      <FilterDropdown
+      <FilterMenuMushroom
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         filters={filters}
@@ -57,4 +55,4 @@ const FilterButton: React.FC<FilterButtonProps> = ({ filters, setFilters }) => {
   );
 };
 
-export default FilterButton;
+export default OpenMushroomFilterMenuButton;

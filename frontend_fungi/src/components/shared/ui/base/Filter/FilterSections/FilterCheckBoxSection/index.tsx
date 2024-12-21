@@ -1,18 +1,19 @@
 import React from "react";
+import "./styles.css";
 
 interface FilterOption {
   value: string;
   label: string;
 }
 
-interface FilterSectionProps {
+interface FilterCheckBoxSectionProps {
   title: string;
   options: FilterOption[];
   selectedValues: string[];
   onOptionChange: (value: string) => void;
 }
 
-export const FilterSection: React.FC<FilterSectionProps> = ({
+export const FilterCheckBoxSection: React.FC<FilterCheckBoxSectionProps> = ({
   title,
   options,
   selectedValues,

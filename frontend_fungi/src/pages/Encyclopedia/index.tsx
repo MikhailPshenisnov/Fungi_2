@@ -4,8 +4,8 @@ import { MushroomCard } from "./components/MushroomCard/MushroomCard";
 import FilterButtons from "../../components/shared/ui/FilterButtons/FilterButtons";
 import { SearchBar } from "./components/SearchBar/SearchBar";
 import { useMushroomData } from "../../hooks/api/useMushroomData";
-import FilterButton from "./components/FilterButton/FilterButton";
 import { MushroomFilter } from "./components/MushroomFilter/MushroomFilter";
+import OpenMushroomFilterMenuButton from "./components/Filter";
 
 
 interface FilterState {
@@ -49,7 +49,7 @@ export const Encyclopedia: React.FC = () => {
             <div className="encyclopedia__header">
                 <FilterButtons 
                     targetPath="/encyclopedia" 
-                    buttonComponent={<FilterButton filters={filters} setFilters={setFilters} />}
+                    buttonComponent={<OpenMushroomFilterMenuButton filters={filters} setFilters={setFilters} />}
                 />
             </div>
 
