@@ -1,15 +1,15 @@
 ﻿services:
   postgres:
     image: postgres:16
-    container_name: postgres-container
+    container_name: fungi-postgres-container
     restart: always
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: admin
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5454:5432"
     volumes:
-      - ./db-data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
       - ./init-scripts:/docker-entrypoint-initdb.d
 
 volumes:
