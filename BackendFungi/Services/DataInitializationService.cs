@@ -8,24 +8,25 @@ namespace BackendFungi.Services;
 public class DataInitializationService : IDataInitializationService
 {
     private readonly IConfiguration _configuration;
-    private readonly IRolesService _rolesService;
-    private readonly IUsersService _usersService;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    private static DateTime LastInitializationCheckDate { get; set; }
+    private DateTime LastInitializationCheckDate { get; set; }
 
-    public DataInitializationService(IConfiguration configuration, IRolesService rolesService,
-        IUsersService usersService)
+    public DataInitializationService(IConfiguration configuration, IServiceScopeFactory serviceScopeFactory)
     {
         _configuration = configuration;
-        _rolesService = rolesService;
-        _usersService = usersService;
+        _serviceScopeFactory = serviceScopeFactory;
     }
 
     public async Task InitializeData(CancellationToken cancellationToken)
     {
+        using var scope = _serviceScopeFactory.CreateScope();
+        var rolesService = scope.ServiceProvider.GetRequiredService<IRolesService>();
+        var usersService = scope.ServiceProvider.GetRequiredService<IUsersService>();
+
         var dataInitializationConfig = _configuration.GetSection("DataInitialization");
 
-        var allRoles = await _rolesService.GetFilteredRolesAsync(null, cancellationToken);
+        var allRoles = await rolesService.GetFilteredRolesAsync(null, cancellationToken);
 
         var existingSuperUserRole = allRoles
             .FirstOrDefault(r => r.AccessLevel == (int)AccessLevelEnumerator.SuperUser);
@@ -40,7 +41,7 @@ public class DataInitializationService : IDataInitializationService
                 throw new InitializationException($"Incorrect data format while initialization process, unable to " +
                                                   $"create a role model: {superUserRoleError}");
 
-            await _rolesService.CreateRoleAsync(superUserRole, cancellationToken);
+            await rolesService.CreateRoleAsync(superUserRole, cancellationToken);
         }
 
         var existingCommonUserRole = allRoles
@@ -56,16 +57,16 @@ public class DataInitializationService : IDataInitializationService
                 throw new InitializationException($"Incorrect data format while initialization process, unable to " +
                                                   $"create a role model: {commonUserRoleError}");
 
-            await _rolesService.CreateRoleAsync(commonUserRole, cancellationToken);
+            await rolesService.CreateRoleAsync(commonUserRole, cancellationToken);
         }
 
-        var allUsers = await _usersService.GetFilteredUsersAsync(null, cancellationToken);
+        var allUsers = await usersService.GetFilteredUsersAsync(null, cancellationToken);
 
         var existingSuperUser = allUsers
             .FirstOrDefault(u => u.Role.AccessLevel == (int)AccessLevelEnumerator.SuperUser);
         if (existingSuperUser is null)
         {
-            var superUserRole = (await _rolesService.GetFilteredRolesAsync(null, cancellationToken))
+            var superUserRole = (await rolesService.GetFilteredRolesAsync(null, cancellationToken))
                 .FirstOrDefault(r => r.AccessLevel == (int)AccessLevelEnumerator.SuperUser);
 
             var (superUser, superUserError) = User.Create(
@@ -80,7 +81,7 @@ public class DataInitializationService : IDataInitializationService
                 throw new InitializationException($"Incorrect data format while initialization process, unable to " +
                                                   $"create a user model: {superUserError}");
 
-            await _usersService.CreateUserAsync(superUser, cancellationToken);
+            await usersService.CreateUserAsync(superUser, cancellationToken);
         }
 
         LastInitializationCheckDate = DateTime.Now;
