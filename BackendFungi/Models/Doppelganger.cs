@@ -2,7 +2,7 @@ namespace BackendFungi.Models;
 
 public class Doppelganger
 {
-    public const int MaxDoppelgangerNameLength = 100;
+    public const int MaxDoppelgangerNameLength = 128;
 
     private Doppelganger(Guid id, Guid mushroomId, string doppelgangerName)
     {
@@ -15,11 +15,11 @@ public class Doppelganger
     public Guid MushroomId { get; }
     public string DoppelgangerName { get; }
 
-    private static string DoppelgangerBasicChecks(string doppelgangerName)
+    private string BasicChecks()
     {
         var error = string.Empty;
 
-        if (string.IsNullOrEmpty(doppelgangerName) || doppelgangerName.Length > MaxDoppelgangerNameLength)
+        if (string.IsNullOrEmpty(DoppelgangerName) || DoppelgangerName.Length > MaxDoppelgangerNameLength)
         {
             error = $"Doppelganger name can't be longer than {MaxDoppelgangerNameLength} characters or empty";
         }
@@ -27,13 +27,12 @@ public class Doppelganger
         return error;
     }
 
-    public static (Doppelganger Doppelganger, string Error)
-        Create(Guid id, Guid mushroomId, string doppelgangerName)
+    public static (Doppelganger Doppelganger, string Error) Create(Guid id, Guid mushroomId, string doppelgangerName)
     {
-        var error = DoppelgangerBasicChecks(doppelgangerName);
+        var doppelganger = new Doppelganger(id, mushroomId, doppelgangerName);
 
-        var article = new Doppelganger(id, mushroomId, doppelgangerName);
+        var error = doppelganger.BasicChecks();
 
-        return (article, error);
+        return (doppelganger, error);
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace BackendFungi.Models;
+﻿namespace BackendFungi.Models.Filters;
 
 public class ArticleFilter
 {
@@ -16,15 +16,15 @@ public class ArticleFilter
     public DateTime? PublishDateTo { get; }
     public string? PartOfAuthorString { get; }
 
-    private static string ArticleFilterBasicChecks(DateTime? publishDateFrom, DateTime? publishDateTo)
+    private string BasicChecks()
     {
         var error = string.Empty;
 
-        if (publishDateFrom is not null && publishDateFrom > DateTime.Now)
+        if (PublishDateFrom > DateTime.Now)
         {
             error = "Publish date from can't be from the future";
         }
-        else if (publishDateFrom is not null && publishDateTo is not null && publishDateFrom > publishDateTo)
+        else if (PublishDateFrom > PublishDateTo)
         {
             error = "Wrong order of publish date from and publish date to";
         }
@@ -35,9 +35,9 @@ public class ArticleFilter
     public static (ArticleFilter ArticleFilter, string Error) Create(string? partOfTitle, DateTime? publishDateFrom,
         DateTime? publishDateTo, string? partOfAuthorString)
     {
-        var error = ArticleFilterBasicChecks(publishDateFrom, publishDateTo);
-
         var articleFilter = new ArticleFilter(partOfTitle, publishDateFrom, publishDateTo, partOfAuthorString);
+
+        var error = articleFilter.BasicChecks();
 
         return (articleFilter, error);
     }

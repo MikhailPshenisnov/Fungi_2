@@ -9,8 +9,8 @@
     ports:
       - "5454:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - fungi_postgres_data:/var/lib/postgresql/data
       - ./init-scripts:/docker-entrypoint-initdb.d
 
 volumes:
-  postgres_data:
+  fungi_postgres_data:

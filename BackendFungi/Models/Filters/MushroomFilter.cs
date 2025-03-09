@@ -1,4 +1,4 @@
-﻿namespace BackendFungi.Models;
+﻿namespace BackendFungi.Models.Filters;
 
 public class MushroomFilter
 {
@@ -33,12 +33,11 @@ public class MushroomFilter
     public string? CapColor { get; }
     public string? CapUndersideType { get; }
 
-    private static string MushroomFilterBasicChecks(int? stemSizeFrom, int? stemSizeTo)
+    private string BasicChecks()
     {
         var error = string.Empty;
 
-
-        if (stemSizeFrom is not null && stemSizeTo is not null && stemSizeFrom > stemSizeTo)
+        if (StemSizeFrom > StemSizeTo)
         {
             error = "Wrong order of stem size from and stem size to";
         }
@@ -50,10 +49,10 @@ public class MushroomFilter
         bool? redBook, string? eatable, bool? hasStem, int? stemSizeFrom, int? stemSizeTo, string? stemType,
         string? stemColor, string? capType, string? capColor, string? capUndersideType)
     {
-        var error = MushroomFilterBasicChecks(stemSizeFrom, stemSizeTo);
-
         var mushroomFilter = new MushroomFilter(partOfName, family, redBook, eatable, hasStem, stemSizeFrom, stemSizeTo,
             stemType, stemColor, capType, capColor, capUndersideType);
+
+        var error = mushroomFilter.BasicChecks();
 
         return (mushroomFilter, error);
     }

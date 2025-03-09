@@ -1,4 +1,5 @@
 ﻿using BackendFungi.Database.Entities;
+using EntityFramework.Exceptions.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 
 namespace BackendFungi.Database.Context;
@@ -26,17 +27,22 @@ public partial class FungiDbContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql(_configuration["ConnectionString"]);
+    {
+        optionsBuilder.UseNpgsql(_configuration.GetConnectionString("FungiDbContext"))
+            .UseExceptionProcessor();
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Article>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("Articles_pkey");
+            entity.HasIndex(e => e.Title, "articles_unique_title").IsUnique();
             entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.AuthorString).HasMaxLength(100);
-            entity.Property(e => e.HeaderPhotoLink).HasMaxLength(200);
-            entity.Property(e => e.Title).HasMaxLength(255);
+            entity.Property(e => e.AuthorString).HasMaxLength(128);
+            entity.Property(e => e.ExtraPhotoLinks).HasMaxLength(1024);
+            entity.Property(e => e.HeaderPhotoLink).HasMaxLength(256);
+            entity.Property(e => e.Title).HasMaxLength(256);
         });
 
         modelBuilder.Entity<Doppelganger>(entity =>
@@ -44,7 +50,7 @@ public partial class FungiDbContext : DbContext
             entity.HasKey(e => e.Id).HasName("Doppelgangers_pkey");
             entity.HasIndex(e => e.MushroomId, "fki_Doppelgangers_MushroomId_fkey");
             entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.DoppelgangerName).HasMaxLength(100);
+            entity.Property(e => e.DoppelgangerName).HasMaxLength(128);
             entity.HasOne(d => d.Mushroom).WithMany(p => p.Doppelgangers)
                 .HasForeignKey(d => d.MushroomId)
                 .HasConstraintName("Doppelgangers_MushroomId_fkey");
@@ -53,18 +59,20 @@ public partial class FungiDbContext : DbContext
         modelBuilder.Entity<Mushroom>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("Mushrooms_pkey");
+            entity.HasIndex(e => e.Name, "mushrooms_unique_name").IsUnique();
             entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.CapColor).HasMaxLength(50);
-            entity.Property(e => e.CapType).HasMaxLength(50);
-            entity.Property(e => e.CapUndersideType).HasMaxLength(50);
-            entity.Property(e => e.Eatable).HasMaxLength(15);
-            entity.Property(e => e.Family).HasMaxLength(100);
-            entity.Property(e => e.HeaderPhotoLink).HasMaxLength(200);
-            entity.Property(e => e.LatinName).HasMaxLength(100);
-            entity.Property(e => e.Name).HasMaxLength(100);
-            entity.Property(e => e.StemColor).HasMaxLength(50);
-            entity.Property(e => e.StemType).HasMaxLength(50);
-            entity.Property(e => e.SynonymousName).HasMaxLength(100);
+            entity.Property(e => e.CapColor).HasMaxLength(64);
+            entity.Property(e => e.CapType).HasMaxLength(64);
+            entity.Property(e => e.CapUndersideType).HasMaxLength(64);
+            entity.Property(e => e.Eatable).HasMaxLength(16);
+            entity.Property(e => e.ExtraPhotoLinks).HasMaxLength(1024);
+            entity.Property(e => e.Family).HasMaxLength(128);
+            entity.Property(e => e.HeaderPhotoLink).HasMaxLength(256);
+            entity.Property(e => e.LatinName).HasMaxLength(128);
+            entity.Property(e => e.Name).HasMaxLength(128);
+            entity.Property(e => e.StemColor).HasMaxLength(64);
+            entity.Property(e => e.StemType).HasMaxLength(64);
+            entity.Property(e => e.SynonymousName).HasMaxLength(128);
         });
 
         modelBuilder.Entity<Paragraph>(entity =>
@@ -80,21 +88,24 @@ public partial class FungiDbContext : DbContext
         modelBuilder.Entity<Role>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("Roles_pkey");
+            entity.HasIndex(e => e.Name, "roles_unique_name").IsUnique();
             entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Name).HasMaxLength(30);
+            entity.Property(e => e.Name).HasMaxLength(32);
         });
 
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("Users_pkey");
             entity.HasIndex(e => e.RoleId, "fki_Users_RoleId_fkey");
+            entity.HasIndex(e => e.Email, "users_unique_email").IsUnique();
+            entity.HasIndex(e => e.Username, "users_unique_username").IsUnique();
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Email).HasMaxLength(128);
             entity.Property(e => e.PasswordHash).HasMaxLength(128);
             entity.Property(e => e.Username).HasMaxLength(128);
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
                 .HasForeignKey(d => d.RoleId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("Users_RoleId_fkey");
         });
 
