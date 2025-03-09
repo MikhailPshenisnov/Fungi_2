@@ -1,6 +1,7 @@
-namespace BackendFungi.Contracts;
+namespace BackendFungi.Contracts.Other;
 
-public record MushroomDtoWithDoppelgangersMap(
+public record MushroomDto(
+    Guid Id,
     string Name,
     string? SynonymousName,
     string? LatinName,
@@ -17,6 +18,6 @@ public record MushroomDtoWithDoppelgangersMap(
     string CapUndersideType,
     string Description,
     string HeaderPhotoLink,
-    List<DoppelgangerDto> Doppelgangers,
-    List<bool> DoppelgangersMap
+    List<string>? ExtraPhotoLinks,
+    List<DoppelgangerDto> Doppelgangers
 );

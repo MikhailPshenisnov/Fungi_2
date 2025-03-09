@@ -1,6 +1,6 @@
-﻿namespace BackendFungi.Contracts;
+namespace BackendFungi.Contracts.Requests.MushroomsRequests;
 
-public record MushroomFilterDto(
+public record GetFilteredMushroomsRequest(
     string? PartOfName,
     string? Family,
     bool? RedBook,

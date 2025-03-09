@@ -1,6 +1,6 @@
-namespace BackendFungi.Contracts;
+namespace BackendFungi.Contracts.Requests.MushroomsRequests;
 
-public record MushroomDto(
+public record CreateMushroomRequest(
     string Name,
     string? SynonymousName,
     string? LatinName,
@@ -17,5 +17,6 @@ public record MushroomDto(
     string CapUndersideType,
     string Description,
     string HeaderPhotoLink,
-    List<DoppelgangerDto> Doppelgangers
+    List<string>? ExtraPhotoLinks,
+    List<string> Doppelgangers
 );

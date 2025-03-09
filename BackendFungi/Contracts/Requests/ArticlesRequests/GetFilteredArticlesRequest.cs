@@ -1,6 +1,6 @@
-﻿namespace BackendFungi.Contracts;
+namespace BackendFungi.Contracts.Requests.ArticlesRequests;
 
-public record ArticleFilterDto(
+public record GetFilteredArticlesRequest(
     string? PartOfTitle,
     DateTime? PublishDateFrom,
     DateTime? PublishDateTo,
