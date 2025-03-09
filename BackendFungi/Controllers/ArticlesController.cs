@@ -1,15 +1,19 @@
-using BackendFungi.Abstractions;
-using BackendFungi.Contracts;
+using BackendFungi.Abstractions.Services;
+using BackendFungi.Contracts.Other;
+using BackendFungi.Contracts.Requests.ArticlesRequests;
+using BackendFungi.Contracts.Responses;
+using BackendFungi.Contracts.Responses.ArticlesResponses;
+using BackendFungi.Exceptions.SpecificExceptions;
 using BackendFungi.Models;
+using BackendFungi.Models.Filters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackendFungi.Controllers;
 
 [ApiController]
-[Route("/[action]")]
+[Route("[controller]/[action]")]
 public class ArticlesController : ControllerBase
 {
-    // Services
     private readonly IArticlesService _articlesService;
 
     public ArticlesController(IArticlesService articlesService)
@@ -17,200 +21,144 @@ public class ArticlesController : ControllerBase
         _articlesService = articlesService;
     }
 
-    /* Query set for articles */
-
-    // Getting an article by title
-    [HttpGet("{articleTitle=}")]
-    public async Task<IActionResult> GetArticle(string? articleTitle, CancellationToken cancellationToken)
-    {
-        if (string.IsNullOrEmpty(articleTitle))
-            return Ok("\"articleTitle\" parameter is required");
-
-        try
-        {
-            var article = await _articlesService.GetArticleAsync(articleTitle, cancellationToken);
-
-            var paragraphs = article.Paragraphs
-                .Select(p => new ParagraphDto(p.ParagraphText))
-                .ToList();
-
-            var response = new ArticleDto(
-                article.Title,
-                article.PublishDate,
-                article.AuthorString,
-                article.HeaderPhotoLink,
-                paragraphs);
-
-            return Ok(response);
-        }
-        catch (Exception e)
-        {
-            return Ok(e.Message);
-        }
-    }
-
-    // Getting all articles
     [HttpGet]
-    public async Task<IActionResult> GetAllArticles(CancellationToken cancellationToken)
-    {
-        try
-        {
-            var allArticles = await _articlesService.GetAllArticlesAsync(cancellationToken);
-
-            var response = new List<ArticleDto>();
-
-            foreach (var article in allArticles)
-            {
-                var paragraphs = article.Paragraphs
-                    .Select(p => new ParagraphDto(p.ParagraphText))
-                    .ToList();
-
-                response.Add(new ArticleDto(
-                    article.Title,
-                    article.PublishDate,
-                    article.AuthorString,
-                    article.HeaderPhotoLink,
-                    paragraphs));
-            }
-
-            return Ok(response);
-        }
-        catch (Exception e)
-        {
-            return Ok(e.Message);
-        }
-    }
-
-    // Getting filtered articles
-    [HttpGet]
-    public async Task<IActionResult> GetFilteredArticles([FromQuery] ArticleFilterDto articleFilterDto,
+    public async Task<IActionResult> GetArticle([FromQuery] GetArticleRequest request,
         CancellationToken cancellationToken)
     {
-        try
-        {
-            var (articleFilter, error) = ArticleFilter.Create(
-                articleFilterDto.PartOfTitle,
-                articleFilterDto.PublishDateFrom,
-                articleFilterDto.PublishDateTo,
-                articleFilterDto.PartOfAuthorString);
+        var article = await _articlesService
+            .GetArticleAsync(request.ArticleId, cancellationToken);
 
-            if (!string.IsNullOrEmpty(error))
-            {
-                return Ok(error);
-            }
-
-            var filteredArticles = await _articlesService
-                .GetFilteredArticlesAsync(articleFilter, cancellationToken);
-
-            var response = new List<ArticleDto>();
-
-            foreach (var article in filteredArticles)
-            {
-                var paragraphs = article.Paragraphs
-                    .Select(p => new ParagraphDto(p.ParagraphText))
-                    .ToList();
-
-                response.Add(new ArticleDto(
+        var response = new BaseResponse<GetArticleResponse>(
+            new GetArticleResponse(
+                new ArticleDto(
+                    article.Id,
                     article.Title,
                     article.PublishDate,
                     article.AuthorString,
                     article.HeaderPhotoLink,
-                    paragraphs));
-            }
+                    article.ExtraPhotoLinks,
+                    article.Paragraphs
+                        .Select(paragraph =>
+                            new ParagraphDto(
+                                paragraph.Id,
+                                paragraph.ArticleId,
+                                paragraph.ParagraphText,
+                                paragraph.SerialNumber,
+                                paragraph.IsSubtitle))
+                        .ToList())),
+            null);
 
-            return Ok(response);
-        }
-        catch (Exception e)
-        {
-            return Ok(e.Message);
-        }
+        return Ok(response);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetFilteredArticles([FromQuery] GetFilteredArticlesRequest request,
+        CancellationToken cancellationToken)
+    {
+        var (articleFilter, articleFilterError) = ArticleFilter
+            .Create(request.PartOfTitle,
+                request.PublishDateFrom,
+                request.PublishDateTo,
+                request.PartOfAuthorString);
 
-    // Creating a new article based on the received data
+        if (!string.IsNullOrEmpty(articleFilterError))
+            throw new ConversionException($"Incorrect data format: {articleFilterError}");
+
+        var filteredArticles = await _articlesService
+            .GetFilteredArticlesAsync(articleFilter, cancellationToken);
+
+        var response = new BaseResponse<GetFilteredArticlesResponse>(
+            new GetFilteredArticlesResponse(
+                filteredArticles
+                    .Select(article =>
+                        new ArticleDto(
+                            article.Id,
+                            article.Title,
+                            article.PublishDate,
+                            article.AuthorString,
+                            article.HeaderPhotoLink,
+                            article.ExtraPhotoLinks,
+                            article.Paragraphs
+                                .Select(paragraph =>
+                                    new ParagraphDto(
+                                        paragraph.Id,
+                                        paragraph.ArticleId,
+                                        paragraph.ParagraphText,
+                                        paragraph.SerialNumber,
+                                        paragraph.IsSubtitle))
+                                .ToList()))
+                    .ToList()),
+            null);
+
+        return Ok(response);
+    }
+
     [HttpPost]
-    public async Task<IActionResult> CreateArticle([FromBody] ArticleDto articleDto,
+    public async Task<IActionResult> CreateArticle([FromBody] CreateArticleRequest request,
         CancellationToken cancellationToken)
     {
-        try
-        {
-            var (article, error) = Article.Create(
-                Guid.NewGuid(),
-                articleDto.Title,
-                articleDto.PublishDate,
-                articleDto.AuthorString,
-                articleDto.HeaderPhotoLink,
-                articleDto.Paragraphs);
+        var (article, articleError) = Article
+            .Create(Guid.NewGuid(),
+                request.Title,
+                request.PublishDate,
+                request.AuthorString,
+                request.HeaderPhotoLink,
+                request.ExtraPhotoLinks,
+                request.ArticleText.Split('\n').ToList());
 
-            if (!string.IsNullOrEmpty(error))
-            {
-                return Ok(error);
-            }
+        if (!string.IsNullOrEmpty(articleError))
+            throw new ConversionException($"Incorrect data format: {articleError}");
 
-            var createdArticleId = await _articlesService
-                .CreateArticleAsync(article, cancellationToken);
+        var createdArticleId = await _articlesService
+            .CreateArticleAsync(article, cancellationToken);
 
-            return Ok(createdArticleId);
-        }
-        catch (Exception e)
-        {
-            return Ok(e.Message);
-        }
+        var response = new BaseResponse<CreateArticleResponse>(
+            new CreateArticleResponse(
+                createdArticleId),
+            null);
+
+        return Ok(response);
     }
 
-    // Updating an article based on the article title with the received data
-    [HttpPut("{articleTitle=}")]
-    public async Task<IActionResult> UpdateArticle(string? articleTitle,
-        [FromBody] ArticleDto newArticleDto, CancellationToken cancellationToken)
-    {
-        if (string.IsNullOrEmpty(articleTitle))
-            return Ok("\"articleTitle\" parameter is required");
-
-        try
-        {
-            var existedArticle = await _articlesService.GetArticleAsync(articleTitle, cancellationToken);
-
-            var (newArticle, error) = Article.Create(
-                existedArticle.Id,
-                newArticleDto.Title,
-                newArticleDto.PublishDate,
-                newArticleDto.AuthorString,
-                newArticleDto.HeaderPhotoLink,
-                newArticleDto.Paragraphs);
-
-            if (!string.IsNullOrEmpty(error))
-            {
-                return Ok(error);
-            }
-
-            var updatedArticleId = await _articlesService
-                .UpdateArticleAsync(articleTitle, newArticle, cancellationToken);
-
-            return Ok(updatedArticleId);
-        }
-        catch (Exception e)
-        {
-            return Ok(e.Message);
-        }
-    }
-
-    // Deleting an article by title
-    [HttpDelete("{articleTitle=}")]
-    public async Task<IActionResult> DeleteArticle(string? articleTitle,
+    [HttpPut]
+    public async Task<IActionResult> UpdateArticle([FromBody] UpdateArticleRequest request,
         CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(articleTitle))
-            return Ok("\"articleTitle\" parameter is required");
-        try
-        {
-            var deletedArticleId = await _articlesService
-                .DeleteArticleAsync(articleTitle, cancellationToken);
+        var (newArticle, newArticleError) = Article
+            .Create(request.ArticleId,
+                request.NewTitle,
+                request.NewPublishDate,
+                request.NewAuthorString,
+                request.NewHeaderPhotoLink,
+                request.NewExtraPhotoLinks,
+                request.NewArticleText.Split('\n').ToList());
 
-            return Ok(deletedArticleId);
-        }
-        catch (Exception e)
-        {
-            return Ok(e.Message);
-        }
+        if (!string.IsNullOrEmpty(newArticleError))
+            throw new ConversionException($"Incorrect data format: {newArticleError}");
+
+        var updatedArticleId = await _articlesService
+            .UpdateArticleAsync(request.ArticleId, newArticle, cancellationToken);
+
+        var response = new BaseResponse<UpdateArticleResponse>(
+            new UpdateArticleResponse(
+                updatedArticleId),
+            null);
+
+        return Ok(response);
+    }
+
+    [HttpDelete]
+    public async Task<IActionResult> DeleteArticle([FromQuery] DeleteArticleRequest request,
+        CancellationToken cancellationToken)
+    {
+        var deletedArticleId = await _articlesService
+            .DeleteArticleAsync(request.ArticleId, cancellationToken);
+
+        var response = new BaseResponse<DeleteArticleResponse>(
+            new DeleteArticleResponse(
+                deletedArticleId),
+            null);
+
+        return Ok(response);
     }
 }
