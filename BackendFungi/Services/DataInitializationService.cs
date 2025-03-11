@@ -69,7 +69,7 @@ public class DataInitializationService : IDataInitializationService
             var (commonUserRole, commonUserRoleError) = Role.Create(
                 Guid.NewGuid(),
                 dataInitializationConfig["DefaultCommonUserRoleName"] ?? string.Empty,
-                (int)AccessLevelEnumerator.SuperUser);
+                (int)AccessLevelEnumerator.CommonUser);
 
             if (!string.IsNullOrEmpty(commonUserRoleError))
                 throw new InitializationException($"Incorrect data format while initialization process, unable to " +
