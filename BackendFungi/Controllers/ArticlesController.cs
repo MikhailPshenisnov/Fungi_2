@@ -6,6 +6,8 @@ using BackendFungi.Contracts.Responses.ArticlesResponses;
 using BackendFungi.Exceptions.SpecificExceptions;
 using BackendFungi.Models;
 using BackendFungi.Models.Filters;
+using BackendFungi.Models.Other;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackendFungi.Controllers;
@@ -14,10 +16,12 @@ namespace BackendFungi.Controllers;
 [Route("[controller]/[action]")]
 public class ArticlesController : ControllerBase
 {
+    private readonly IAccessCheckService _accessCheckService;
     private readonly IArticlesService _articlesService;
 
-    public ArticlesController(IArticlesService articlesService)
+    public ArticlesController(IAccessCheckService accessCheckService, IArticlesService articlesService)
     {
+        _accessCheckService = accessCheckService;
         _articlesService = articlesService;
     }
 
@@ -93,10 +97,16 @@ public class ArticlesController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateArticle([FromBody] CreateArticleRequest request,
         CancellationToken cancellationToken)
     {
+        await _accessCheckService.CheckAccessLevel(
+            HttpContext,
+            (int)AccessLevelEnumerator.Editor,
+            cancellationToken);
+
         var (article, articleError) = Article
             .Create(Guid.NewGuid(),
                 request.Title,
@@ -120,10 +130,16 @@ public class ArticlesController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize]
     [HttpPut]
     public async Task<IActionResult> UpdateArticle([FromBody] UpdateArticleRequest request,
         CancellationToken cancellationToken)
     {
+        await _accessCheckService.CheckAccessLevel(
+            HttpContext,
+            (int)AccessLevelEnumerator.Editor,
+            cancellationToken);
+
         var (newArticle, newArticleError) = Article
             .Create(request.ArticleId,
                 request.NewTitle,
@@ -147,10 +163,16 @@ public class ArticlesController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize]
     [HttpDelete]
     public async Task<IActionResult> DeleteArticle([FromQuery] DeleteArticleRequest request,
         CancellationToken cancellationToken)
     {
+        await _accessCheckService.CheckAccessLevel(
+            HttpContext,
+            (int)AccessLevelEnumerator.JuniorAdministratorMin,
+            cancellationToken);
+
         var deletedArticleId = await _articlesService
             .DeleteArticleAsync(request.ArticleId, cancellationToken);
 

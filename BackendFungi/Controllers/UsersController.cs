@@ -5,6 +5,8 @@ using BackendFungi.Contracts.Responses;
 using BackendFungi.Contracts.Responses.UsersResponses;
 using BackendFungi.Exceptions.SpecificExceptions;
 using BackendFungi.Models.Filters;
+using BackendFungi.Models.Other;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackendFungi.Controllers;
@@ -13,15 +15,19 @@ namespace BackendFungi.Controllers;
 [Route("[controller]/[action]")]
 public class UsersController : ControllerBase
 {
+    private readonly IAccessCheckService _accessCheckService;
     private readonly IRolesService _rolesService;
     private readonly IUsersService _usersService;
 
-    public UsersController(IUsersService usersService, IRolesService rolesService)
+    public UsersController(IAccessCheckService accessCheckService, IUsersService usersService,
+        IRolesService rolesService)
     {
+        _accessCheckService = accessCheckService;
         _rolesService = rolesService;
         _usersService = usersService;
     }
 
+    [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetUser([FromQuery] GetUserRequest request,
         CancellationToken cancellationToken)
@@ -45,10 +51,16 @@ public class UsersController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetFilteredUsers([FromQuery] GetFilteredUsersRequest request,
         CancellationToken cancellationToken)
     {
+        await _accessCheckService.CheckAccessLevel(
+            HttpContext,
+            (int)AccessLevelEnumerator.JuniorAdministratorMin,
+            cancellationToken);
+
         var (userFilter, userFilterError) = UserFilter
             .Create(request.PartOfUsername,
                 request.PartOfEmail,
@@ -79,10 +91,16 @@ public class UsersController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request,
         CancellationToken cancellationToken)
     {
+        var u = await _accessCheckService.CheckAccessLevel(
+            HttpContext,
+            (int)AccessLevelEnumerator.JuniorAdministratorMin,
+            cancellationToken);
+
         var role = await _rolesService.GetRoleAsync(request.RoleId, cancellationToken);
 
         var (user, userError) = Models.User
@@ -96,6 +114,9 @@ public class UsersController : ControllerBase
         if (!string.IsNullOrEmpty(userError))
             throw new ConversionException($"Incorrect data format: {userError}");
 
+        if (u.Role.AccessLevel >= user.Role.AccessLevel)
+            throw new AccessException("The user does not have sufficient access rights");
+
         var createdUserId = await _usersService
             .CreateUserAsync(user, cancellationToken);
 
@@ -107,10 +128,16 @@ public class UsersController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize]
     [HttpPut]
     public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequest request,
         CancellationToken cancellationToken)
     {
+        var u = await _accessCheckService.CheckAccessLevel(
+            HttpContext,
+            (int)AccessLevelEnumerator.JuniorAdministratorMin,
+            cancellationToken);
+
         var newRole = await _rolesService.GetRoleAsync(request.NewRoleId, cancellationToken);
 
         var (newUser, newUserError) = Models.User
@@ -124,6 +151,15 @@ public class UsersController : ControllerBase
         if (!string.IsNullOrEmpty(newUserError))
             throw new ConversionException($"Incorrect data format: {newUserError}");
 
+        if (u.Role.AccessLevel >= newUser.Role.AccessLevel)
+            throw new AccessException("The user does not have sufficient access rights");
+
+        var existingUser = await _usersService
+            .GetUserAsync(request.UserId, cancellationToken);
+
+        if (u.Role.AccessLevel >= existingUser.Role.AccessLevel)
+            throw new AccessException("The user does not have sufficient access rights");
+
         var updatedUserId = await _usersService
             .UpdateUserAsync(request.UserId, newUser, cancellationToken);
 
@@ -135,10 +171,22 @@ public class UsersController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize]
     [HttpDelete]
     public async Task<IActionResult> DeleteUser([FromQuery] DeleteUserRequest request,
         CancellationToken cancellationToken)
     {
+        var u = await _accessCheckService.CheckAccessLevel(
+            HttpContext,
+            (int)AccessLevelEnumerator.AdministratorMin,
+            cancellationToken);
+
+        var existingUser = await _usersService
+            .GetUserAsync(request.UserId, cancellationToken);
+
+        if (u.Role.AccessLevel >= existingUser.Role.AccessLevel)
+            throw new AccessException("The user does not have sufficient access rights");
+
         var deletedUserId = await _usersService
             .DeleteUserAsync(request.UserId, cancellationToken);
 

@@ -6,6 +6,8 @@ using BackendFungi.Contracts.Responses.MushroomsResponses;
 using BackendFungi.Exceptions.SpecificExceptions;
 using BackendFungi.Models;
 using BackendFungi.Models.Filters;
+using BackendFungi.Models.Other;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackendFungi.Controllers;
@@ -14,11 +16,12 @@ namespace BackendFungi.Controllers;
 [Route("[controller]/[action]")]
 public class MushroomsController : ControllerBase
 {
+    private readonly IAccessCheckService _accessCheckService;
     private readonly IMushroomsService _mushroomsService;
 
-    public MushroomsController(
-        IMushroomsService mushroomsService)
+    public MushroomsController(IAccessCheckService accessCheckService, IMushroomsService mushroomsService)
     {
+        _accessCheckService = accessCheckService;
         _mushroomsService = mushroomsService;
     }
 
@@ -134,10 +137,16 @@ public class MushroomsController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateMushroom([FromBody] CreateMushroomRequest request,
         CancellationToken cancellationToken)
     {
+        await _accessCheckService.CheckAccessLevel(
+            HttpContext,
+            (int)AccessLevelEnumerator.Editor,
+            cancellationToken);
+
         var (mushroom, mushroomError) = Mushroom
             .Create(Guid.NewGuid(),
                 request.Name,
@@ -173,10 +182,16 @@ public class MushroomsController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize]
     [HttpPut]
     public async Task<IActionResult> UpdateMushroom([FromBody] UpdateMushroomRequest request,
         CancellationToken cancellationToken)
     {
+        await _accessCheckService.CheckAccessLevel(
+            HttpContext,
+            (int)AccessLevelEnumerator.Editor,
+            cancellationToken);
+
         var (newMushroom, newMushroomError) = Mushroom
             .Create(request.MushroomId,
                 request.NewName,
@@ -212,10 +227,16 @@ public class MushroomsController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize]
     [HttpDelete]
     public async Task<IActionResult> DeleteMushroom([FromQuery] DeleteMushroomRequest request,
         CancellationToken cancellationToken)
     {
+        await _accessCheckService.CheckAccessLevel(
+            HttpContext,
+            (int)AccessLevelEnumerator.JuniorAdministratorMin,
+            cancellationToken);
+
         var deletedMushroomId = await _mushroomsService
             .DeleteMushroomAsync(request.MushroomId, cancellationToken);
 

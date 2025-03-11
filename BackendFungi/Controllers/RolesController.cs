@@ -6,6 +6,8 @@ using BackendFungi.Contracts.Responses.RolesResponses;
 using BackendFungi.Exceptions.SpecificExceptions;
 using BackendFungi.Models;
 using BackendFungi.Models.Filters;
+using BackendFungi.Models.Other;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackendFungi.Controllers;
@@ -14,13 +16,16 @@ namespace BackendFungi.Controllers;
 [Route("[controller]/[action]")]
 public class RolesController : ControllerBase
 {
+    private readonly IAccessCheckService _accessCheckService;
     private readonly IRolesService _rolesService;
 
-    public RolesController(IRolesService rolesService)
+    public RolesController(IAccessCheckService accessCheckService, IRolesService rolesService)
     {
+        _accessCheckService = accessCheckService;
         _rolesService = rolesService;
     }
 
+    [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetRole([FromQuery] GetRoleRequest request, CancellationToken cancellationToken)
     {
@@ -38,10 +43,16 @@ public class RolesController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetFilteredRoles([FromQuery] GetFilteredRolesRequest request,
         CancellationToken cancellationToken)
     {
+        await _accessCheckService.CheckAccessLevel(
+            HttpContext,
+            (int)AccessLevelEnumerator.JuniorAdministratorMin,
+            cancellationToken);
+
         var (roleFilter, roleFilterError) = RoleFilter
             .Create(request.PartOfName,
                 request.AccessLevelFrom,
@@ -67,10 +78,16 @@ public class RolesController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateRole([FromBody] CreateRoleRequest request,
         CancellationToken cancellationToken)
     {
+        var user = await _accessCheckService.CheckAccessLevel(
+            HttpContext,
+            (int)AccessLevelEnumerator.JuniorAdministratorMin,
+            cancellationToken);
+
         var (role, roleError) = Role
             .Create(Guid.NewGuid(),
                 request.Name,
@@ -78,6 +95,9 @@ public class RolesController : ControllerBase
 
         if (!string.IsNullOrEmpty(roleError))
             throw new ConversionException($"Incorrect data format: {roleError}");
+
+        if (user.Role.AccessLevel >= role.AccessLevel)
+            throw new AccessException("The user does not have sufficient access rights");
 
         var createdRoleId = await _rolesService
             .CreateRoleAsync(role, cancellationToken);
@@ -90,10 +110,16 @@ public class RolesController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize]
     [HttpPut]
     public async Task<IActionResult> UpdateRole([FromBody] UpdateRoleRequest request,
         CancellationToken cancellationToken)
     {
+        var user = await _accessCheckService.CheckAccessLevel(
+            HttpContext,
+            (int)AccessLevelEnumerator.JuniorAdministratorMin,
+            cancellationToken);
+
         var (newRole, newRoleError) = Role
             .Create(request.RoleId,
                 request.NewName,
@@ -101,6 +127,15 @@ public class RolesController : ControllerBase
 
         if (!string.IsNullOrEmpty(newRoleError))
             throw new ConversionException($"Incorrect data format: {newRoleError}");
+
+        if (user.Role.AccessLevel >= newRole.AccessLevel)
+            throw new AccessException("The user does not have sufficient access rights");
+
+        var existingRole = await _rolesService
+            .GetRoleAsync(request.RoleId, cancellationToken);
+
+        if (user.Role.AccessLevel >= existingRole.AccessLevel)
+            throw new AccessException("The user does not have sufficient access rights");
 
         var updatedRoleId = await _rolesService
             .UpdateRoleAsync(request.RoleId, newRole, cancellationToken);
@@ -113,10 +148,22 @@ public class RolesController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize]
     [HttpDelete]
     public async Task<IActionResult> DeleteRole([FromQuery] DeleteRoleRequest request,
         CancellationToken cancellationToken)
     {
+        var user = await _accessCheckService.CheckAccessLevel(
+            HttpContext,
+            (int)AccessLevelEnumerator.AdministratorMin,
+            cancellationToken);
+
+        var existingRole = await _rolesService
+            .GetRoleAsync(request.RoleId, cancellationToken);
+
+        if (user.Role.AccessLevel >= existingRole.AccessLevel)
+            throw new AccessException("The user does not have sufficient access rights");
+
         var deletedRoleId = await _rolesService
             .DeleteRoleAsync(request.RoleId, cancellationToken);
 

@@ -24,6 +24,25 @@ public class DataInitializationService : IDataInitializationService
         var rolesService = scope.ServiceProvider.GetRequiredService<IRolesService>();
         var usersService = scope.ServiceProvider.GetRequiredService<IUsersService>();
 
+        var configCheck = new List<string?>
+            {
+                _configuration["ConnectionStrings:FungiDbContext"],
+                _configuration["Jwt:Key"],
+                _configuration["Jwt:Issuer"],
+                _configuration["Jwt:Audience"],
+                _configuration["Frontend:FrontendAddress"],
+                _configuration["DataInitialization:DefaultSuperUserRoleName"],
+                _configuration["DataInitialization:DefaultCommonUserRoleName"],
+                _configuration["DataInitialization:DefaultSuperUserUsername"],
+                _configuration["DataInitialization:DefaultSuperUserPassword"]
+            }
+            .Select(x => x is null)
+            .ToList()
+            .Any();
+        
+        if (configCheck)
+            throw new InitializationException("The configuration lacks the necessary information");
+
         var dataInitializationConfig = _configuration.GetSection("DataInitialization");
 
         var allRoles = await rolesService.GetFilteredRolesAsync(null, cancellationToken);
