@@ -1,21 +1,21 @@
-using BackendFungi.Contracts;
-
 namespace BackendFungi.Models;
 
 public class Article
 {
-    public const int MaxTitleLength = 255;
-    public const int MaxAuthorStringLength = 100;
-    public const int MaxHeaderPhotoLinkLength = 200;
+    public const int MaxTitleLength = 256;
+    public const int MaxAuthorStringLength = 128;
+    public const int MaxHeaderPhotoLinkLength = 256;
+    public const int MaxExtraPhotoLinksLength = 1024;
 
-    private Article(Guid id, string title, DateTime publishDate,
-        string authorString, string headerPhotoLink, List<Paragraph> paragraphs)
+    private Article(Guid id, string title, DateTime publishDate, string authorString, string headerPhotoLink,
+        List<string>? extraPhotoLinks, List<Paragraph> paragraphs)
     {
         Id = id;
         Title = title;
         PublishDate = publishDate;
         AuthorString = authorString;
         HeaderPhotoLink = headerPhotoLink;
+        ExtraPhotoLinks = extraPhotoLinks;
         Paragraphs = paragraphs;
     }
 
@@ -24,40 +24,46 @@ public class Article
     public DateTime PublishDate { get; }
     public string AuthorString { get; }
     public string HeaderPhotoLink { get; }
+    public List<string>? ExtraPhotoLinks { get; }
     public List<Paragraph> Paragraphs { get; }
 
-    private static string ArticleBasicChecks(string title, DateTime publishDate, string authorString,
-        string headerPhotoLink, List<ParagraphDto>? paragraphsDto = null, List<Paragraph>? paragraphs = null)
+    private string BasicChecks()
     {
-        if (paragraphsDto is null && paragraphs is null)
-        {
-            throw new ArgumentException("At least one type of paragraph list is required");
-        }
-
         var error = string.Empty;
 
-        if (string.IsNullOrEmpty(title) || title.Length > MaxTitleLength)
+        if (string.IsNullOrEmpty(Title) || Title.Length > MaxTitleLength)
         {
             error = $"Title can't be longer than {MaxTitleLength} characters or empty";
         }
-        else if (publishDate > DateTime.Now)
+        else if (PublishDate > DateTime.Now)
         {
             error = "Publish date can't be from the future";
         }
-        else if (string.IsNullOrEmpty(authorString) || authorString.Length > MaxAuthorStringLength)
+        else if (string.IsNullOrEmpty(AuthorString) || AuthorString.Length > MaxAuthorStringLength)
         {
             error = $"Author string can't be longer than {MaxAuthorStringLength} characters or empty";
         }
-        else if (string.IsNullOrEmpty(headerPhotoLink) || headerPhotoLink.Length > MaxHeaderPhotoLinkLength)
+        else if (string.IsNullOrEmpty(HeaderPhotoLink) || HeaderPhotoLink.Length > MaxHeaderPhotoLinkLength)
         {
             error = $"Header photo link can't be longer than {MaxHeaderPhotoLinkLength} characters or empty";
         }
-        else if (!string.IsNullOrEmpty(headerPhotoLink) && !headerPhotoLink.Contains("imgur.com"))
+        else if (!HeaderPhotoLink.Contains("imgur.com"))
         {
-            error = $"Header photo link must be a link to an image on imgur.com";
+            error = "Header photo link must be a link to an image on imgur.com";
         }
-        else if ((paragraphsDto is not null && paragraphsDto.Count == 0) ||
-                 (paragraphs is not null && paragraphs.Count == 0))
+        else if (ExtraPhotoLinks is not null && ExtraPhotoLinks.Count == 0)
+        {
+            error = "Extra photo links must contain at least one link or be null";
+        }
+        else if (ExtraPhotoLinks is not null && string.Join(';', ExtraPhotoLinks).Length > MaxExtraPhotoLinksLength)
+        {
+            error = $"Extra photo links string can't be longer than {MaxExtraPhotoLinksLength} characters";
+        }
+        else if (ExtraPhotoLinks is not null && !ExtraPhotoLinks.All(x => x.Contains("imgur.com")))
+        {
+            error = "Photo link must be a link to an image on imgur.com";
+        }
+        else if (Paragraphs.Count == 0)
         {
             error = "The article must contain paragraphs";
         }
@@ -66,42 +72,53 @@ public class Article
     }
 
     public static (Article Article, string Error) Create(Guid id, string title, DateTime publishDate,
-        string authorString, string headerPhotoLink, List<ParagraphDto> paragraphs)
+        string authorString, string headerPhotoLink, List<string>? extraPhotoLinks, List<string> paragraphs)
     {
-        var error = ArticleBasicChecks(title, publishDate, authorString,
-            headerPhotoLink, paragraphsDto: paragraphs);
+        var error = string.Empty;
 
         var universalPublishDate = publishDate.ToUniversalTime();
 
         var paragraphList = new List<Paragraph>();
-        for (var i = 0; i < paragraphs.Count; i++)
+        for (var serialNumber = 0; serialNumber < paragraphs.Count; serialNumber++)
         {
-            var (p, e) = Paragraph.Create(Guid.NewGuid(), id, paragraphs[i].ParagraphText, i);
-
-            if (!string.IsNullOrEmpty(e))
+            var isSubtitle = false;
+            if (paragraphs[serialNumber].StartsWith("~"))
             {
-                if (string.IsNullOrEmpty(error))
-                {
-                    error = $"One of the paragraphs caused an error \"{e}\"";
-                }
+                isSubtitle = true;
+                paragraphs[serialNumber] = paragraphs[serialNumber].Remove(0, 1);
+            }
+            else if (paragraphs[serialNumber].StartsWith("\\~"))
+            {
+                paragraphs[serialNumber] = paragraphs[serialNumber].Remove(0, 1);
             }
 
-            paragraphList.Add(p);
+            var (paragraph, paragraphError) = Paragraph.Create(Guid.NewGuid(), id, paragraphs[serialNumber],
+                serialNumber, isSubtitle);
+
+            if (!string.IsNullOrEmpty(paragraphError) && string.IsNullOrEmpty(error))
+                error = $"One of the paragraphs caused an error: {paragraphError}";
+
+            paragraphList.Add(paragraph);
         }
 
-        var article = new Article(id, title, universalPublishDate, authorString, headerPhotoLink, paragraphList);
+        var article = new Article(id, title, universalPublishDate, authorString, headerPhotoLink, extraPhotoLinks,
+            paragraphList);
+
+        if (string.IsNullOrEmpty(error))
+            error = article.BasicChecks();
 
         return (article, error);
     }
 
     public static (Article Article, string Error) Create(Guid id, string title, DateTime publishDate,
-        string authorString, string headerPhotoLink, List<Paragraph> paragraphs)
+        string authorString, string headerPhotoLink, List<string>? extraPhotoLinks, List<Paragraph> paragraphs)
     {
-        var error = ArticleBasicChecks(title, publishDate, authorString, headerPhotoLink, paragraphs: paragraphs);
-
         var universalPublishDate = publishDate.ToUniversalTime();
 
-        var article = new Article(id, title, universalPublishDate, authorString, headerPhotoLink, paragraphs);
+        var article = new Article(id, title, universalPublishDate, authorString, headerPhotoLink, extraPhotoLinks,
+            paragraphs);
+
+        var error = article.BasicChecks();
 
         return (article, error);
     }

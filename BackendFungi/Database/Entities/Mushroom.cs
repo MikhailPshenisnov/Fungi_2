@@ -19,6 +19,7 @@ public partial class Mushroom
     public string CapUndersideType { get; set; } = null!;
     public string Description { get; set; } = null!;
     public string HeaderPhotoLink { get; set; } = null!;
+    public string? ExtraPhotoLinks { get; set; }
 
     public virtual ICollection<Doppelganger> Doppelgangers { get; set; } = new List<Doppelganger>();
 }

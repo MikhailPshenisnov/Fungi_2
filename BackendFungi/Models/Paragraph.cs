@@ -2,24 +2,26 @@ namespace BackendFungi.Models;
 
 public class Paragraph
 {
-    private Paragraph(Guid id, Guid articleId, string? paragraphText, int serialNumber)
+    private Paragraph(Guid id, Guid articleId, string paragraphText, int serialNumber, bool isSubtitle)
     {
         Id = id;
         ArticleId = articleId;
         ParagraphText = paragraphText;
         SerialNumber = serialNumber;
+        IsSubtitle = isSubtitle;
     }
 
     public Guid Id { get; }
     public Guid ArticleId { get; }
-    public string? ParagraphText { get; }
+    public string ParagraphText { get; }
     public int SerialNumber { get; }
+    public bool IsSubtitle { get; }
 
-    private static string ParagraphBasicChecks(int serialNumber)
+    private string ParagraphBasicChecks()
     {
         var error = string.Empty;
 
-        if (serialNumber < 0)
+        if (SerialNumber < 0)
         {
             error = "Serial number can't be less than 0";
         }
@@ -28,11 +30,11 @@ public class Paragraph
     }
 
     public static (Paragraph Paragraph, string Error)
-        Create(Guid id, Guid articleId, string? paragraphText, int serialNumber)
+        Create(Guid id, Guid articleId, string paragraphText, int serialNumber, bool isSubtitle)
     {
-        var error = ParagraphBasicChecks(serialNumber);
+        var paragraph = new Paragraph(id, articleId, paragraphText, serialNumber, isSubtitle);
 
-        var paragraph = new Paragraph(id, articleId, paragraphText, serialNumber);
+        var error = paragraph.ParagraphBasicChecks();
 
         return (paragraph, error);
     }

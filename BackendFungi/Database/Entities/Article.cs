@@ -7,6 +7,7 @@ public partial class Article
     public DateTime PublishDate { get; set; }
     public string AuthorString { get; set; } = null!;
     public string HeaderPhotoLink { get; set; } = null!;
+    public string? ExtraPhotoLinks { get; set; }
 
     public virtual ICollection<Paragraph> Paragraphs { get; set; } = new List<Paragraph>();
 }

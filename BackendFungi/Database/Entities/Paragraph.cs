@@ -4,8 +4,9 @@ public partial class Paragraph
 {
     public Guid Id { get; set; }
     public Guid ArticleId { get; set; }
-    public string? ParagraphText { get; set; }
+    public string ParagraphText { get; set; } = null!;
     public int SerialNumber { get; set; }
+    public bool IsSubtitle { get; set; }
 
     public virtual Article Article { get; set; } = null!;
 }

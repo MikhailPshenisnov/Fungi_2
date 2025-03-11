@@ -1,160 +1,51 @@
-using BackendFungi.Abstractions;
-using BackendFungi.Contracts;
+using BackendFungi.Abstractions.Services;
+using BackendFungi.Contracts.Other;
+using BackendFungi.Contracts.Requests.MushroomsRequests;
+using BackendFungi.Contracts.Responses;
+using BackendFungi.Contracts.Responses.MushroomsResponses;
+using BackendFungi.Exceptions.SpecificExceptions;
 using BackendFungi.Models;
+using BackendFungi.Models.Filters;
+using BackendFungi.Models.Other;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackendFungi.Controllers;
 
 [ApiController]
-[Route("/[action]")]
+[Route("[controller]/[action]")]
 public class MushroomsController : ControllerBase
 {
-    // Services
+    private readonly IAccessCheckService _accessCheckService;
     private readonly IMushroomsService _mushroomsService;
 
-    public MushroomsController(
-        IMushroomsService mushroomsService)
+    public MushroomsController(IAccessCheckService accessCheckService, IMushroomsService mushroomsService)
     {
+        _accessCheckService = accessCheckService;
         _mushroomsService = mushroomsService;
     }
 
-    /* Query set for mushrooms */
+    /*
+        DEFINITION OF "DOPPELGANGERS MAP":
+        A doppelgangers map is a list of boolean values that matches the length of the list of mushroom doppelgangers,
+        where each value corresponds in position to one mushroom doppelganger from the list and shows whether it is in
+        the mushroom table, so that on the frontend you can give a link to it
+    */
 
-    /* DEFINITION OF "DOPPELGANGERS MAP":
-     A doppelgangers map is a list of boolean values that matches the length of the list of mushroom doppelgangers,
-     where each value corresponds in position to one mushroom doppelganger from the list and shows whether it is in
-     the mushroom table, so that on the frontend you can give a link to it */
-
-    // Getting a mushroom and its doppelgangers map by mushroom name
-    [HttpGet("{mushroomName=}")]
-    public async Task<IActionResult> GetMushroom(string? mushroomName, CancellationToken cancellationToken)
-    {
-        if (string.IsNullOrEmpty(mushroomName))
-            return BadRequest("\"mushroomName\" parameter is required");
-
-        try
-        {
-            var (mushroom, doppelgangersMap) = (await _mushroomsService
-                .GetMushroomAsync(mushroomName, cancellationToken));
-
-            var doppelgangers = mushroom.Doppelgangers
-                .Select(d => new DoppelgangerDto(d.DoppelgangerName))
-                .ToList();
-
-            var response = new MushroomDtoWithDoppelgangersMap(
-                mushroom.Name,
-                mushroom.SynonymousName,
-                mushroom.LatinName,
-                mushroom.Family,
-                mushroom.RedBook,
-                mushroom.Eatable,
-                mushroom.HasStem,
-                mushroom.StemSizeFrom,
-                mushroom.StemSizeTo,
-                mushroom.StemType,
-                mushroom.StemColor,
-                mushroom.CapType,
-                mushroom.CapColor,
-                mushroom.CapUndersideType,
-                mushroom.Description,
-                mushroom.HeaderPhotoLink,
-                doppelgangers,
-                doppelgangersMap);
-
-            return Ok(response);
-        }
-        catch (Exception e)
-        {
-            return Ok(e.Message);
-        }
-    }
-
-    // Getting all mushrooms and theirs doppelgangers maps
     [HttpGet]
-    public async Task<IActionResult> GetAllMushrooms(CancellationToken cancellationToken)
-    {
-        try
-        {
-            var allMushrooms = await _mushroomsService
-                .GetAllMushroomsAsync(cancellationToken);
-
-            var response = new List<MushroomDtoWithDoppelgangersMap>();
-
-            foreach (var (mushroom, doppelgangersMap) in allMushrooms)
-            {
-                var doppelgangers = mushroom.Doppelgangers
-                    .Select(d => new DoppelgangerDto(d.DoppelgangerName))
-                    .ToList();
-
-                var mushroomDto = new MushroomDtoWithDoppelgangersMap(
-                    mushroom.Name,
-                    mushroom.SynonymousName,
-                    mushroom.LatinName,
-                    mushroom.Family,
-                    mushroom.RedBook,
-                    mushroom.Eatable,
-                    mushroom.HasStem,
-                    mushroom.StemSizeFrom,
-                    mushroom.StemSizeTo,
-                    mushroom.StemType,
-                    mushroom.StemColor,
-                    mushroom.CapType,
-                    mushroom.CapColor,
-                    mushroom.CapUndersideType,
-                    mushroom.Description,
-                    mushroom.HeaderPhotoLink,
-                    doppelgangers,
-                    doppelgangersMap);
-
-                response.Add(mushroomDto);
-            }
-
-            return Ok(response);
-        }
-        catch (Exception e)
-        {
-            return Ok(e.Message);
-        }
-    }
-
-    // Getting filtered mushrooms
-    [HttpGet]
-    public async Task<IActionResult> GetFilteredMushrooms([FromQuery] MushroomFilterDto mushroomFilterDto,
+    public async Task<IActionResult> GetMushroom([FromQuery] GetMushroomRequest request,
         CancellationToken cancellationToken)
     {
-        try
-        {
-            var (mushroomFilter, error) = MushroomFilter.Create(
-                mushroomFilterDto.PartOfName,
-                mushroomFilterDto.Family,
-                mushroomFilterDto.RedBook,
-                mushroomFilterDto.Eatable,
-                mushroomFilterDto.HasStem,
-                mushroomFilterDto.StemSizeFrom,
-                mushroomFilterDto.StemSizeTo,
-                mushroomFilterDto.StemType,
-                mushroomFilterDto.StemColor,
-                mushroomFilterDto.CapType,
-                mushroomFilterDto.CapColor,
-                mushroomFilterDto.CapUndersideType);
+        var (mushroom, doppelgangersMap) = await _mushroomsService
+            .GetMushroomAsync(request.MushroomId, cancellationToken);
 
-            if (!string.IsNullOrEmpty(error))
-            {
-                return Ok(error);
-            }
+        if (mushroom.Doppelgangers.Count != doppelgangersMap.Count)
+            throw new IntegrityException("Length of doppelgangers is not equal to doppelgangers map length");
 
-            var filteredMushrooms =
-                await _mushroomsService.GetFilteredMushroomsAsync(mushroomFilter, cancellationToken);
-
-            var response = new List<MushroomDtoWithDoppelgangersMap>();
-
-            foreach (var (mushroom, doppelgangersMap) in filteredMushrooms)
-            {
-                var doppelgangers = mushroom.Doppelgangers
-                    .Select(d => new DoppelgangerDto(d.DoppelgangerName))
-                    .ToList();
-
-                var mushroomDto = new MushroomDtoWithDoppelgangersMap(
+        var response = new BaseResponse<GetMushroomResponse>(
+            new GetMushroomResponse(
+                new MushroomDto(
+                    mushroom.Id,
                     mushroom.Name,
                     mushroom.SynonymousName,
                     mushroom.LatinName,
@@ -171,129 +62,189 @@ public class MushroomsController : ControllerBase
                     mushroom.CapUndersideType,
                     mushroom.Description,
                     mushroom.HeaderPhotoLink,
-                    doppelgangers,
-                    doppelgangersMap);
+                    mushroom.ExtraPhotoLinks,
+                    mushroom.Doppelgangers
+                        .Select((doppelganger, i) =>
+                            new DoppelgangerDto(
+                                doppelganger.Id,
+                                doppelganger.MushroomId,
+                                doppelganger.DoppelgangerName,
+                                doppelgangersMap[i]))
+                        .ToList())),
+            null);
 
-                response.Add(mushroomDto);
-            }
-
-            return Ok(response);
-        }
-        catch (Exception e)
-        {
-            return Ok(e.Message);
-        }
+        return Ok(response);
     }
 
-    // Creating a new mushroom based on the received data
+    [HttpGet]
+    public async Task<IActionResult> GetFilteredMushrooms([FromQuery] GetFilteredMushroomsRequest request,
+        CancellationToken cancellationToken)
+    {
+        var (mushroomFilter, mushroomFilterError) = MushroomFilter
+            .Create(request.PartOfName,
+                request.Family,
+                request.RedBook,
+                request.Eatable,
+                request.HasStem,
+                request.StemSizeFrom,
+                request.StemSizeTo,
+                request.StemType,
+                request.StemColor,
+                request.CapType,
+                request.CapColor,
+                request.CapUndersideType);
+
+        if (!string.IsNullOrEmpty(mushroomFilterError))
+            throw new ConversionException($"Incorrect data format: {mushroomFilterError}");
+
+        var filteredMushrooms = await _mushroomsService
+            .GetFilteredMushroomsAsync(mushroomFilter, cancellationToken);
+
+        var response = new BaseResponse<GetFilteredMushroomsResponse>(
+            new GetFilteredMushroomsResponse(
+                filteredMushrooms
+                    .Select(x =>
+                        new MushroomDto(
+                            x.Mushroom.Id,
+                            x.Mushroom.Name,
+                            x.Mushroom.SynonymousName,
+                            x.Mushroom.LatinName,
+                            x.Mushroom.Family,
+                            x.Mushroom.RedBook,
+                            x.Mushroom.Eatable,
+                            x.Mushroom.HasStem,
+                            x.Mushroom.StemSizeFrom,
+                            x.Mushroom.StemSizeTo,
+                            x.Mushroom.StemType,
+                            x.Mushroom.StemColor,
+                            x.Mushroom.CapType,
+                            x.Mushroom.CapColor,
+                            x.Mushroom.CapUndersideType,
+                            x.Mushroom.Description,
+                            x.Mushroom.HeaderPhotoLink,
+                            x.Mushroom.ExtraPhotoLinks,
+                            x.Mushroom.Doppelgangers
+                                .Select((doppelganger, i) =>
+                                    new DoppelgangerDto(
+                                        doppelganger.Id,
+                                        doppelganger.MushroomId,
+                                        doppelganger.DoppelgangerName,
+                                        x.DoppelgangersMap[i]))
+                                .ToList()))
+                    .ToList()),
+            null);
+
+        return Ok(response);
+    }
+
+    [Authorize]
     [HttpPost]
-    public async Task<IActionResult> CreateMushroom([FromBody] MushroomDto mushroomDto,
+    public async Task<IActionResult> CreateMushroom([FromBody] CreateMushroomRequest request,
         CancellationToken cancellationToken)
     {
-        try
-        {
-            var (mushroom, error) = Mushroom.Create(
-                Guid.NewGuid(),
-                mushroomDto.Name,
-                mushroomDto.SynonymousName,
-                mushroomDto.LatinName,
-                mushroomDto.Family,
-                mushroomDto.RedBook,
-                mushroomDto.Eatable,
-                mushroomDto.HasStem,
-                mushroomDto.StemSizeFrom,
-                mushroomDto.StemSizeTo,
-                mushroomDto.StemType,
-                mushroomDto.StemColor,
-                mushroomDto.CapType,
-                mushroomDto.CapColor,
-                mushroomDto.CapUndersideType,
-                mushroomDto.Description,
-                mushroomDto.HeaderPhotoLink,
-                mushroomDto.Doppelgangers);
+        await _accessCheckService.CheckAccessLevel(
+            HttpContext,
+            (int)AccessLevelEnumerator.Editor,
+            cancellationToken);
 
-            if (!string.IsNullOrEmpty(error))
-            {
-                return Ok(error);
-            }
+        var (mushroom, mushroomError) = Mushroom
+            .Create(Guid.NewGuid(),
+                request.Name,
+                request.SynonymousName,
+                request.LatinName,
+                request.Family,
+                request.RedBook,
+                request.Eatable,
+                request.HasStem,
+                request.StemSizeFrom,
+                request.StemSizeTo,
+                request.StemType,
+                request.StemColor,
+                request.CapType,
+                request.CapColor,
+                request.CapUndersideType,
+                request.Description,
+                request.HeaderPhotoLink,
+                request.ExtraPhotoLinks,
+                request.Doppelgangers);
 
-            var createdMushroomId = await _mushroomsService
-                .CreateMushroomAsync(mushroom, cancellationToken);
+        if (!string.IsNullOrEmpty(mushroomError))
+            throw new ConversionException($"Incorrect data format: {mushroomError}");
 
-            return Ok(createdMushroomId);
-        }
-        catch (Exception e)
-        {
-            return Ok(e.Message);
-        }
+        var createdMushroomId = await _mushroomsService
+            .CreateMushroomAsync(mushroom, cancellationToken);
+
+        var response = new BaseResponse<CreateMushroomResponse>(
+            new CreateMushroomResponse(
+                createdMushroomId),
+            null);
+
+        return Ok(response);
     }
 
-    // Updating a mushroom based on the mushroom name with the received data
-    [HttpPut("{mushroomName=}")]
-    public async Task<IActionResult> UpdateMushroom(string? mushroomName,
-        [FromBody] MushroomDto newMushroomDto, CancellationToken cancellationToken)
-    {
-        if (string.IsNullOrEmpty(mushroomName))
-            return Ok("\"mushroomName\" parameter is required");
-
-        try
-        {
-            var existedMushroom =
-                await _mushroomsService.GetMushroomAsync(mushroomName, cancellationToken);
-
-            var (newMushroom, error) = Mushroom.Create(
-                existedMushroom.Mushroom.Id,
-                newMushroomDto.Name,
-                newMushroomDto.SynonymousName,
-                newMushroomDto.LatinName,
-                newMushroomDto.Family,
-                newMushroomDto.RedBook,
-                newMushroomDto.Eatable,
-                newMushroomDto.HasStem,
-                newMushroomDto.StemSizeFrom,
-                newMushroomDto.StemSizeTo,
-                newMushroomDto.StemType,
-                newMushroomDto.StemColor,
-                newMushroomDto.CapType,
-                newMushroomDto.CapColor,
-                newMushroomDto.CapUndersideType,
-                newMushroomDto.Description,
-                newMushroomDto.HeaderPhotoLink,
-                newMushroomDto.Doppelgangers);
-
-            if (!string.IsNullOrEmpty(error))
-            {
-                return Ok(error);
-            }
-
-            var updatedMushroomId = await _mushroomsService
-                .UpdateMushroomAsync(mushroomName, newMushroom, cancellationToken);
-
-            return Ok(updatedMushroomId);
-        }
-        catch (Exception e)
-        {
-            return Ok(e.Message);
-        }
-    }
-
-    // Deleting a mushroom by name
-    [HttpDelete("{mushroomName=}")]
-    public async Task<IActionResult> DeleteMushroom(string? mushroomName,
+    [Authorize]
+    [HttpPut]
+    public async Task<IActionResult> UpdateMushroom([FromBody] UpdateMushroomRequest request,
         CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(mushroomName))
-            return BadRequest("\"mushroomName\" parameter is required");
-        try
-        {
-            var deletedMushroomId = await _mushroomsService
-                .DeleteMushroomAsync(mushroomName, cancellationToken);
+        await _accessCheckService.CheckAccessLevel(
+            HttpContext,
+            (int)AccessLevelEnumerator.Editor,
+            cancellationToken);
 
-            return Ok(deletedMushroomId);
-        }
-        catch (Exception e)
-        {
-            return Ok(e.Message);
-        }
+        var (newMushroom, newMushroomError) = Mushroom
+            .Create(request.MushroomId,
+                request.NewName,
+                request.NewSynonymousName,
+                request.NewLatinName,
+                request.NewFamily,
+                request.NewRedBook,
+                request.NewEatable,
+                request.NewHasStem,
+                request.NewStemSizeFrom,
+                request.NewStemSizeTo,
+                request.NewStemType,
+                request.NewStemColor,
+                request.NewCapType,
+                request.NewCapColor,
+                request.NewCapUndersideType,
+                request.NewDescription,
+                request.NewHeaderPhotoLink,
+                request.NewExtraPhotoLinks,
+                request.NewDoppelgangers);
+
+        if (!string.IsNullOrEmpty(newMushroomError))
+            throw new ConversionException($"Incorrect data format: {newMushroomError}");
+
+        var updatedMushroomId = await _mushroomsService
+            .UpdateMushroomAsync(request.MushroomId, newMushroom, cancellationToken);
+
+        var response = new BaseResponse<UpdateMushroomResponse>(
+            new UpdateMushroomResponse(
+                updatedMushroomId),
+            null);
+
+        return Ok(response);
+    }
+
+    [Authorize]
+    [HttpDelete]
+    public async Task<IActionResult> DeleteMushroom([FromQuery] DeleteMushroomRequest request,
+        CancellationToken cancellationToken)
+    {
+        await _accessCheckService.CheckAccessLevel(
+            HttpContext,
+            (int)AccessLevelEnumerator.JuniorAdministratorMin,
+            cancellationToken);
+
+        var deletedMushroomId = await _mushroomsService
+            .DeleteMushroomAsync(request.MushroomId, cancellationToken);
+
+        var response = new BaseResponse<DeleteMushroomResponse>(
+            new DeleteMushroomResponse(
+                deletedMushroomId),
+            null);
+
+        return Ok(response);
     }
 }
