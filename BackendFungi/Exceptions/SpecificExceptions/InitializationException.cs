@@ -8,8 +8,7 @@ public class InitializationException : ExpectedException
     {
     }
 
-    public InitializationException(string message)
-        : base(message)
+    public InitializationException(string message) : base(message)
     {
     }
 

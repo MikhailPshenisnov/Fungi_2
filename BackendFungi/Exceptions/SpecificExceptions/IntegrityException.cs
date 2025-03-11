@@ -8,8 +8,7 @@ public class IntegrityException : ExpectedException
     {
     }
 
-    public IntegrityException(string message)
-        : base(message)
+    public IntegrityException(string message) : base(message)
     {
     }
 

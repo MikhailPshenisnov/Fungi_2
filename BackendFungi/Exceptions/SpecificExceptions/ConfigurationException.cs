@@ -8,8 +8,7 @@ public class ConfigurationException : ExpectedException
     {
     }
 
-    public ConfigurationException(string message)
-        : base(message)
+    public ConfigurationException(string message) : base(message)
     {
     }
 

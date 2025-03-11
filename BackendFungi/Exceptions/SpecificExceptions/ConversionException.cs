@@ -8,8 +8,7 @@ public class ConversionException : ExpectedException
     {
     }
 
-    public ConversionException(string message)
-        : base(message)
+    public ConversionException(string message) : base(message)
     {
     }
 

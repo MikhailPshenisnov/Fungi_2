@@ -1,6 +1,7 @@
 using BackendFungi.Abstractions.Repositories;
 using BackendFungi.Abstractions.Services;
 using BackendFungi.Database.Context;
+using BackendFungi.Exceptions.SpecificExceptions;
 using BackendFungi.Middlewares;
 using BackendFungi.Repositories;
 using BackendFungi.Services;
@@ -10,7 +11,6 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Main services ASP.NET Core
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -38,7 +38,7 @@ builder.Services.AddAuthentication(options =>
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]
-                                       ?? throw new ArgumentException("JWT-key is missing")))
+                                       ?? throw new ConfigurationException("JWT-key is missing")))
         };
     });
 builder.Services.AddAuthorization();
@@ -69,7 +69,7 @@ builder.Services.AddDbContext<FungiDbContext>();
 builder.Services.AddCors(options => options.AddPolicy(
     "FungiApiPolicy", b => b
         .WithOrigins(builder.Configuration["Frontend:FrontendAddress"]
-                     ?? throw new ArgumentException("Frontend address is missing"))
+                     ?? throw new ConfigurationException("Frontend address is missing"))
         .AllowAnyHeader()
         .AllowAnyMethod()
         .AllowCredentials()));
@@ -86,7 +86,7 @@ app.UseMiddleware<DataInitializationMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// CORS
+// CORS settings
 app.UseCors("FungiApiPolicy");
 
 // Swagger

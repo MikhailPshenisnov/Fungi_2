@@ -8,8 +8,7 @@ public class UnknownIdentifierException : ExpectedException
     {
     }
 
-    public UnknownIdentifierException(string message)
-        : base(message)
+    public UnknownIdentifierException(string message) : base(message)
     {
     }
 

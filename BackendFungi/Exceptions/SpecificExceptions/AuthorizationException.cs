@@ -8,8 +8,7 @@ public class AuthorizationException : ExpectedException
     {
     }
 
-    public AuthorizationException(string message)
-        : base(message)
+    public AuthorizationException(string message) : base(message)
     {
     }
 

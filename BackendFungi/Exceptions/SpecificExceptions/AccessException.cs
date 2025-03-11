@@ -8,8 +8,7 @@ public class AccessException : ExpectedException
     {
     }
 
-    public AccessException(string message)
-        : base(message)
+    public AccessException(string message) : base(message)
     {
     }
 

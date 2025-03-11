@@ -13,8 +13,7 @@ public partial class FungiDbContext : DbContext
         _configuration = configuration;
     }
 
-    public FungiDbContext(DbContextOptions<FungiDbContext> options, IConfiguration configuration)
-        : base(options)
+    public FungiDbContext(DbContextOptions<FungiDbContext> options, IConfiguration configuration) : base(options)
     {
         _configuration = configuration;
     }

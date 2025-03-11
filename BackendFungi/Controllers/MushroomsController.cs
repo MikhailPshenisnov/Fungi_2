@@ -40,7 +40,7 @@ public class MushroomsController : ControllerBase
             .GetMushroomAsync(request.MushroomId, cancellationToken);
 
         if (mushroom.Doppelgangers.Count != doppelgangersMap.Count)
-            throw new Exception("Service error");
+            throw new IntegrityException("Length of doppelgangers is not equal to doppelgangers map length");
 
         var response = new BaseResponse<GetMushroomResponse>(
             new GetMushroomResponse(

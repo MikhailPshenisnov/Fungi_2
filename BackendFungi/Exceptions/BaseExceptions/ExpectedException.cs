@@ -6,8 +6,7 @@ public class ExpectedException : Exception
     {
     }
 
-    protected ExpectedException(string message)
-        : base(message)
+    protected ExpectedException(string message) : base(message)
     {
     }
 
