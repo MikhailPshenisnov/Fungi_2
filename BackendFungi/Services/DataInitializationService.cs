@@ -24,7 +24,7 @@ public class DataInitializationService : IDataInitializationService
         var rolesService = scope.ServiceProvider.GetRequiredService<IRolesService>();
         var usersService = scope.ServiceProvider.GetRequiredService<IUsersService>();
 
-        var configCheck = new List<string?>
+        var configCheckList = new List<string?>
             {
                 _configuration["ConnectionStrings:FungiDbContext"],
                 _configuration["Jwt:Key"],
@@ -37,10 +37,9 @@ public class DataInitializationService : IDataInitializationService
                 _configuration["DataInitialization:DefaultSuperUserPassword"]
             }
             .Select(x => x is null)
-            .ToList()
-            .Any();
+            .ToList();
         
-        if (configCheck)
+        if (configCheckList.Contains(true))
             throw new InitializationException("The configuration lacks the necessary information");
 
         var dataInitializationConfig = _configuration.GetSection("DataInitialization");
