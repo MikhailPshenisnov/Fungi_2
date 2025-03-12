@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native';
 import CardsList from './components/CardsList';
-import EncyclopediaScreen from './components/EncyclopediaScreen';
+import EncyclopediaList from './components/EncyclopediaList';
 import ProfileScreen from './components/ProfileScreen';
 
 const data = [
@@ -11,18 +11,48 @@ const data = [
   { title: 'Редкие и необычные грибы леса', imageSource: require('./assets/image/card.png') },
 ];
 
+const encycdata = [
+  { type: 'Болетовые (Boletaceae)', 
+    title: 'Подосиновик желто-бурый', 
+    description: 'Léccinum versipélle',
+    imageSource: require('./assets/image/podosinovik.jpg') },
+
+  { type: 'Болетовые (Boletaceae)',
+    title: 'Белый гриб', 
+    description: 'Boletus edulis', 
+    imageSource: require('./assets/image/white.jpg') },
+
+  { type: 'Лисичковые',
+    title: 'Лисичка обыкновенная', 
+    description: 'Cantharellus cibarius', 
+    imageSource: require('./assets/image/fox.jpg') },
+
+  { type: 'Шампиньоновые',
+    title: 'Шампиньон полевой', 
+    description: 'Agaricus campestris', 
+    imageSource: require('./assets/image/shampinon.jpg') },
+];
+
 const App = () => {
   const [activeScreen, setActiveScreen] = useState('Карточки');
   const [searchText, setSearchText] = useState('');
 
+  const filteredData = data.filter(item =>
+    item.title.toLowerCase().includes(searchText.toLowerCase())
+  );
+
+  const filteredEncycData = encycdata.filter(item =>
+    item.title.toLowerCase().includes(searchText.toLowerCase())
+  );
+
   const renderScreen = () => {
     switch (activeScreen) {
       case 'Энциклопедия':
-        return <EncyclopediaScreen />;
+        return <EncyclopediaList encycdata={filteredEncycData} />;
       case 'Карточки':
-        return <CardsList cardsdata={data} />;
+        return <CardsList cardsdata={filteredData} />;
       case 'Профиль':
-        return <ProfileScreen />;
+        return <ProfileScreen/>;
       default:
         return null;
     }
@@ -68,6 +98,7 @@ const App = () => {
           value={searchText}
           onChangeText={setSearchText}
         />
+        
       </View>
       <View style={styles.content}>
         {renderScreen()}

@@ -1,10 +1,8 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-
 import Card from './Card'
 
 const CardsList = ({ cardsdata }) => {
-
     return (
         <View style={styles.cardContainer}>
         <ScrollView>
