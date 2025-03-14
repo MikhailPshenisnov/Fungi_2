@@ -1,94 +1,94 @@
 .filter-section {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .filter-section h4 {
-  margin-bottom: 12px;
-  font-size: 16px;
-  font-weight: 500;
-  color: #333;
+    margin-bottom: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
 }
 
 .filter-options {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .checkbox-label {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  position: relative;
-  padding-left: 32px;
-  user-select: none;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    padding-left: 32px;
+    user-select: none;
 }
 
-.checkbox-label input[type="checkbox"] {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
+.checkbox-label input[type='checkbox'] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
 }
 
 .checkbox-custom {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 20px;
-  width: 20px;
-  background-color: #fff;
-  border: 2px solid #ddd;
-  border-radius: 4px;
-  transition: all 0.2s ease;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #fff;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    transition: all 0.2s ease;
 }
 
 .checkbox-label:hover input ~ .checkbox-custom {
-  border-color: #999;
+    border-color: #999;
 }
 
 .checkbox-label input:checked ~ .checkbox-custom {
-  background-color: #4CAF50;
-  border-color: #4CAF50;
+    background-color: #4caf50;
+    border-color: #4caf50;
 }
 
 .checkbox-custom:after {
-  content: "";
-  position: absolute;
-  display: none;
-  left: 6px;
-  top: 2px;
-  width: 4px;
-  height: 10px;
-  border: solid white;
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
+    content: '';
+    position: absolute;
+    display: none;
+    left: 6px;
+    top: 2px;
+    width: 4px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
 }
 
 .checkbox-label input:checked ~ .checkbox-custom:after {
-  display: block;
+    display: block;
 }
 
 .label-text {
-  font-size: 14px;
-  color: #333;
-  margin-left: 8px;
+    font-size: 14px;
+    color: #333;
+    margin-left: 8px;
 }
 
 /* Анимация при нажатии */
 .checkbox-label:active .checkbox-custom {
-  transform: scale(0.9);
+    transform: scale(0.9);
 }
 
 /* Стили для disabled состояния */
 .checkbox-label input:disabled ~ .checkbox-custom {
-  background-color: #eee;
-  border-color: #ddd;
-  cursor: not-allowed;
+    background-color: #eee;
+    border-color: #ddd;
+    cursor: not-allowed;
 }
 
 .checkbox-label input:disabled ~ .label-text {
-  color: #999;
-  cursor: not-allowed;
+    color: #999;
+    cursor: not-allowed;
 }

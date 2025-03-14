@@ -7,7 +7,7 @@
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 999;
 }
-  
+
 .dropdown-menu {
     position: fixed;
     top: 50%;
@@ -65,7 +65,7 @@
     border-top: 1px solid #eee;
 }
 
-.reset-button, 
+.reset-button,
 .apply-button {
     padding: 8px 24px;
     border-radius: 6px;
@@ -85,7 +85,7 @@
 }
 
 .apply-button {
-    background: #4CAF50;
+    background: #4caf50;
     border: none;
     color: white;
 }

@@ -34,7 +34,6 @@
     justify-content: center;
     margin: 0 0 0 60px;
     font-family: 'Raleway';
-    
 }
 
 .publications-card__title {
@@ -59,7 +58,6 @@
     overflow: hidden;
     max-width: 1000px;
 }
-
 
 .publications-card__author {
     font-size: 36px;

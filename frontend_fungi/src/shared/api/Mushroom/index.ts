@@ -1,1 +1,1 @@
-export { fetchMushroomData } from "./fetchMushroomData";
+export { fetchMushroomData } from './fetchMushroomData';

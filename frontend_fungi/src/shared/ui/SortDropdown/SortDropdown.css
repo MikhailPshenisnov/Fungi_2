@@ -1,9 +1,9 @@
 .sort-dropdown {
     position: relative;
     display: inline-block;
-  }
-  
-  .dropdown-toggle {
+}
+
+.dropdown-toggle {
     background: none;
     border: none;
     cursor: pointer;
@@ -11,13 +11,13 @@
     display: flex;
     align-items: center;
     gap: 8px;
-  }
-  
-  .arrow {
+}
+
+.arrow {
     font-size: 12px;
-  }
-  
-  .dropdown-menu {
+}
+
+.dropdown-menu {
     position: absolute;
     top: 100%;
     left: 0;
@@ -28,10 +28,9 @@
     padding: 8px 0;
     z-index: 10;
     width: 150px;
-    
-  }
-  
-  .dropdown-menu button {
+}
+
+.dropdown-menu button {
     width: 100%;
     padding: 8px 16px;
     text-align: left;
@@ -39,9 +38,8 @@
     border: none;
     font-size: 14px;
     cursor: pointer;
-  }
-  
-  .dropdown-menu button:hover {
+}
+
+.dropdown-menu button:hover {
     background: #f0f0f0;
-  }
-   
+}

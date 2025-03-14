@@ -1,23 +1,56 @@
-import {NavLink} from "react-router-dom";
+import { NavLink } from 'react-router-dom';
 
-export function Footer(){
+export function Footer() {
     return (
         <footer>
             <span>
                 <img className="logo-img-footer" src="/images/png/logo.png" />
-                <h2 style={{color: "#8D8989", fontFamily: "Raleway", marginLeft: "142px", marginTop: "60px"}}>2024, Fungi ©</h2>
+                <h2
+                    style={{
+                        color: '#8D8989',
+                        fontFamily: 'Raleway',
+                        marginLeft: '142px',
+                        marginTop: '60px',
+                    }}
+                >
+                    2024, Fungi ©
+                </h2>
             </span>
             <ul className="nav-footer">
                 <li>
                     <ul className="ul-block1">
                         <li>
-                            <NavLink to={"/about"} style={{textDecoration: "none", color: "black"}}>О нас</NavLink>
+                            <NavLink
+                                to={'/about'}
+                                style={{
+                                    textDecoration: 'none',
+                                    color: 'black',
+                                }}
+                            >
+                                О нас
+                            </NavLink>
                         </li>
                         <li>
-                        <NavLink to={"/publications"} style={{textDecoration: "none", color: "black"}}>Публикации</NavLink>
+                            <NavLink
+                                to={'/publications'}
+                                style={{
+                                    textDecoration: 'none',
+                                    color: 'black',
+                                }}
+                            >
+                                Публикации
+                            </NavLink>
                         </li>
                         <li>
-                        <NavLink to={"/encyclopedia"} style={{textDecoration: "none", color: "black"}}>Энциклопедия</NavLink>
+                            <NavLink
+                                to={'/encyclopedia'}
+                                style={{
+                                    textDecoration: 'none',
+                                    color: 'black',
+                                }}
+                            >
+                                Энциклопедия
+                            </NavLink>
                         </li>
                     </ul>
                 </li>
@@ -25,21 +58,48 @@ export function Footer(){
                 <li>
                     <ul className="ul-block2">
                         <li>
-                            <NavLink to={"/about"} style={{textDecoration: "none", color: "black"}}>Вход</NavLink>
+                            <NavLink
+                                to={'/about'}
+                                style={{
+                                    textDecoration: 'none',
+                                    color: 'black',
+                                }}
+                            >
+                                Вход
+                            </NavLink>
                         </li>
                         <li>
-                        <NavLink to={"/about"} style={{textDecoration: "none", color: "black"}}>Регистрация</NavLink>
+                            <NavLink
+                                to={'/about'}
+                                style={{
+                                    textDecoration: 'none',
+                                    color: 'black',
+                                }}
+                            >
+                                Регистрация
+                            </NavLink>
                         </li>
                         <li>
-                        <NavLink to={"/about"} style={{textDecoration: "none", color: "black"}}>Обратная связь</NavLink>
+                            <NavLink
+                                to={'/about'}
+                                style={{
+                                    textDecoration: 'none',
+                                    color: 'black',
+                                }}
+                            >
+                                Обратная связь
+                            </NavLink>
                         </li>
                     </ul>
                 </li>
 
                 <li>
-                    <img className="qr-code-footer" src="/images/svg/qr-code.svg" />
+                    <img
+                        className="qr-code-footer"
+                        src="/images/svg/qr-code.svg"
+                    />
                 </li>
-            </ul>           
+            </ul>
         </footer>
-    )
+    );
 }

@@ -21,7 +21,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    background: #FFFFFF;
+    background: #ffffff;
     border: none;
     border-radius: 50px;
     padding: 12px 24px;
@@ -44,13 +44,13 @@
 }
 
 .publication-page__back-button:hover {
-    background: #FFE8C5;
+    background: #ffe8c5;
     transform: translateX(-5px);
 }
 
 .publication-page_container {
     position: absolute;
-    background: rgba(255, 255, 255); 
+    background: rgba(255, 255, 255);
     border-radius: 100px;
     max-width: 1281px;
     min-height: 120px;
@@ -90,7 +90,7 @@
 
 .publication-page__text {
     font-family: 'Raleway';
-    background: #F5F3F3;
+    background: #f5f3f3;
     border-radius: 100px;
     padding-inline: 100px;
     padding-top: 25px;
@@ -102,7 +102,7 @@
 
 .publication-page__paragraph {
     font-size: 36px;
-    
+
     margin-bottom: 20px;
     color: #333;
 }
