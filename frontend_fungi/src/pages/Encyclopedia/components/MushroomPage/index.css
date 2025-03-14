@@ -18,7 +18,7 @@
     position: absolute;
     top: 20px;
     left: 20px;
-    background: #FFFFFF;
+    background: #ffffff;
     border: none;
     border-radius: 50px;
     padding: 12px 24px;
@@ -35,13 +35,13 @@
 }
 
 .mushroom-page__back-button:hover {
-    background: #FFE8C5;
+    background: #ffe8c5;
     transform: translateX(-5px);
 }
 
 .mushroom-page_container {
     position: absolute;
-    background: rgba(255, 255, 255); 
+    background: rgba(255, 255, 255);
     border-radius: 100px;
     max-width: 1281px;
     min-height: 120px;
@@ -102,7 +102,7 @@
 
 .mushroom-page__text {
     font-family: 'Raleway';
-    background: #F5F3F3;
+    background: #f5f3f3;
     border-radius: 100px;
     padding: 40px 100px;
     width: 100%;
@@ -162,7 +162,7 @@
 }
 
 .mushroom-page__doppelgangers li::before {
-    content: "•";
+    content: '•';
     position: absolute;
     left: 0;
     color: #333;

@@ -1,7 +1,7 @@
-import React, { FC } from "react";
-import "./index.css";
-import { IPublications } from "../../types";
-import { Card } from "../../../../components/shared/ui/base/Card/Card";
+import React, { FC } from 'react';
+import './index.css';
+import { IPublications } from '../../types';
+import { Card } from '@shared/ui/Card';
 
 interface IPublicationsCard {
     card: IPublications;
@@ -9,15 +9,17 @@ interface IPublicationsCard {
 }
 
 const PublicationsSecCard: FC<IPublicationsCard> = ({ card, onClick }) => {
-    const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-        e.currentTarget.src = "/images/png/alt-card-image.png";
+    const handleImageError = (
+        e: React.SyntheticEvent<HTMLImageElement, Event>
+    ) => {
+        e.currentTarget.src = '/images/png/alt-card-image.png';
     };
 
     return (
         <Card className="publication-sec-card" onClick={onClick}>
-            <img 
-                className="publication-sec-card__image" 
-                src={card.headerPhotoLink} 
+            <img
+                className="publication-sec-card__image"
+                src={card.headerPhotoLink}
                 alt={card.title}
                 onError={handleImageError}
             />
@@ -27,6 +29,6 @@ const PublicationsSecCard: FC<IPublicationsCard> = ({ card, onClick }) => {
             </div>
         </Card>
     );
-}
+};
 
 export default PublicationsSecCard;

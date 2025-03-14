@@ -1,0 +1,18 @@
+.dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown-toggle:hover {
+    opacity: 0.8;
+}
+
+.arrow {
+    display: flex;
+    align-items: center;
+}

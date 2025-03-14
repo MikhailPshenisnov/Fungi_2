@@ -1,0 +1,1 @@
+export { fetchMushroomData } from './fetchMushroomData';

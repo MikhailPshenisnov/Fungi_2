@@ -1,19 +1,19 @@
-import React from "react";
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import "./MushroomCard.css";
-import { Card } from "../../../../components/shared/ui/base/Card/Card";
-import { TMushroomCard } from "../../types";
-import { useImgurUrl } from "../../../../hooks/common/useImgurUrl";
+import './MushroomCard.css';
+import { TMushroomCard } from '../../types';
+
+import { Card } from '@shared/ui/Card';
+import { useImgurUrl } from '@shared/hooks';
 
 interface MushroomCardProps {
     mushroom: TMushroomCard;
 }
 
-export const MushroomCard: React.FC<MushroomCardProps> = ({ 
-    mushroom 
-}) => {
+export const MushroomCard: React.FC<MushroomCardProps> = ({ mushroom }) => {
     const navigate = useNavigate();
-    const { headerPhotoLink, name, latinName, family, eatable, redBook, id } = mushroom;
+    const { headerPhotoLink, name, latinName, family, eatable, redBook } =
+        mushroom;
     const imageUrl = useImgurUrl(headerPhotoLink);
 
     const getEdibilityIcon = (eatable: string) => {
@@ -48,11 +48,7 @@ export const MushroomCard: React.FC<MushroomCardProps> = ({
 
     return (
         <Card className="mushroom-card" onClick={handleClick}>
-            <img 
-                className="mushroom-card__image"
-                src={imageUrl}
-                alt={name} 
-            />
+            <img className="mushroom-card__image" src={imageUrl} alt={name} />
             <div className="mushroom-card__content">
                 <div className="mushroom-card__header">
                     <p className="mushroom-card__family">{family}</p>
@@ -60,20 +56,20 @@ export const MushroomCard: React.FC<MushroomCardProps> = ({
                     <p className="mushroom-card__latin">{latinName}</p>
                 </div>
                 <div className="mushroom-card__icons">
-                    <img 
+                    <img
                         src={getEdibilityIcon(eatable)}
                         alt={getEdibilityTitle(eatable)}
                         title={getEdibilityTitle(eatable)}
                         className="mushroom-card__edibility-icon"
                     />
                     {redBook ? (
-                        <img 
-                            src="/images/svg/mushroom-tags-icons/redbooked.svg" 
+                        <img
+                            src="/images/svg/mushroom-tags-icons/redbooked.svg"
                             alt="Занесён в красную книгу"
                         />
                     ) : (
-                        <img 
-                            src="/images/svg/mushroom-tags-icons/not_redbooked.svg" 
+                        <img
+                            src="/images/svg/mushroom-tags-icons/not_redbooked.svg"
                             alt="Не занесён в красную книгу"
                         />
                     )}

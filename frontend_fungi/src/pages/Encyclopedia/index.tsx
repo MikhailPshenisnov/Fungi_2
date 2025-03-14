@@ -1,12 +1,11 @@
-import React, { useState } from "react";
-import "./index.css";
-import { MushroomCard } from "./components/MushroomCard/MushroomCard";
-import FilterButtons from "../../components/shared/ui/FilterButtons/FilterButtons";
-import { SearchBar } from "./components/SearchBar/SearchBar";
-import { useMushroomData } from "../../hooks/api/useMushroomData";
-import { MushroomFilter } from "./components/MushroomFilter/MushroomFilter";
-import OpenMushroomFilterMenuButton from "./components/Filter";
-
+import React, { useState } from 'react';
+import './index.css';
+import { MushroomCard } from './components/MushroomCard/MushroomCard';
+import { SearchBar } from './components/SearchBar/SearchBar';
+import { useMushroomData } from '../../shared/hooks/useMushroomData';
+import { MushroomFilter } from './components/MushroomFilter/MushroomFilter';
+import OpenMushroomFilterMenuButton from './components/Filter';
+import { FilterButtons } from '@shared/ui';
 
 interface FilterState {
     edibility: string[];
@@ -14,61 +13,68 @@ interface FilterState {
 }
 
 export const Encyclopedia: React.FC = () => {
-    const [searchQuery, setSearchQuery] = useState("");
+    const [searchQuery, setSearchQuery] = useState('');
     const [filters, setFilters] = useState<FilterState>({
         edibility: [],
-        capType: []
+        capType: [],
     });
-    
-    const {data: mushrooms, isLoading, error} = useMushroomData();
-    
+
+    const { data: mushrooms, isLoading, error } = useMushroomData();
+
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
-    if (!mushrooms || !Array.isArray(mushrooms)) return <div>No mushrooms data available</div>;
+    if (!mushrooms || !Array.isArray(mushrooms))
+        return <div>No mushrooms data available</div>;
 
-    const {
-        filteredMushrooms,
-        isFiltersActive,
-        isSearchActive
-    } = MushroomFilter({
-        mushrooms,
-        filters,
-        searchQuery
-    });
+    const { filteredMushrooms, isFiltersActive, isSearchActive } =
+        MushroomFilter({
+            mushrooms,
+            filters,
+            searchQuery,
+        });
 
     // Если нет ни фильтров, ни поиска, разделяем по категориям
-    const edibleMushrooms = !isFiltersActive && !isSearchActive
-        ? mushrooms.filter(mushroom => mushroom.eatable === "Да")
-        : [];
-    const semiEdibleMushrooms = !isFiltersActive && !isSearchActive
-        ? mushrooms.filter(mushroom => mushroom.eatable === "Полусъедобен")
-        : [];
+    const edibleMushrooms =
+        !isFiltersActive && !isSearchActive
+            ? mushrooms.filter((mushroom) => mushroom.eatable === 'Да')
+            : [];
+    const semiEdibleMushrooms =
+        !isFiltersActive && !isSearchActive
+            ? mushrooms.filter(
+                  (mushroom) => mushroom.eatable === 'Полусъедобен'
+              )
+            : [];
 
     return (
         <div className="encyclopedia">
             <div className="encyclopedia__header">
-                <FilterButtons 
-                    targetPath="/encyclopedia" 
-                    buttonComponent={<OpenMushroomFilterMenuButton filters={filters} setFilters={setFilters} />}
+                <FilterButtons
+                    targetPath="/encyclopedia"
+                    buttonComponent={
+                        <OpenMushroomFilterMenuButton
+                            filters={filters}
+                            setFilters={setFilters}
+                        />
+                    }
                 />
             </div>
 
-            <SearchBar 
+            <SearchBar
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
             />
 
-            {(isFiltersActive || isSearchActive) ? (
+            {isFiltersActive || isSearchActive ? (
                 <section className="encyclopedia__section">
                     <h2 className="encyclopedia__section-title">
-                        {filteredMushrooms.length > 0 
-                            ? `Найдено грибов: ${filteredMushrooms.length}` 
+                        {filteredMushrooms.length > 0
+                            ? `Найдено грибов: ${filteredMushrooms.length}`
                             : 'Грибы не найдены'}
                     </h2>
                     <div className="encyclopedia__cards-row">
-                        {filteredMushrooms.map(mushroom => (
+                        {filteredMushrooms.map((mushroom) => (
                             <MushroomCard
-                                key={mushroom.name}
+                                key={mushroom.id}
                                 mushroom={mushroom}
                             />
                         ))}
@@ -77,11 +83,13 @@ export const Encyclopedia: React.FC = () => {
             ) : (
                 <>
                     <section className="encyclopedia__section">
-                        <h2 className="encyclopedia__section-title">Съедобные грибы</h2>
+                        <h2 className="encyclopedia__section-title">
+                            Съедобные грибы
+                        </h2>
                         <div className="encyclopedia__cards-row">
-                            {edibleMushrooms.map(mushroom => (
+                            {edibleMushrooms.map((mushroom) => (
                                 <MushroomCard
-                                    key={mushroom.name}
+                                    key={mushroom.id}
                                     mushroom={mushroom}
                                 />
                             ))}
@@ -89,11 +97,13 @@ export const Encyclopedia: React.FC = () => {
                     </section>
 
                     <section className="encyclopedia__section">
-                        <h2 className="encyclopedia__section-title">Условно-съедобные грибы</h2>
+                        <h2 className="encyclopedia__section-title">
+                            Условно-съедобные грибы
+                        </h2>
                         <div className="encyclopedia__cards-row">
-                            {semiEdibleMushrooms.map(mushroom => (
+                            {semiEdibleMushrooms.map((mushroom) => (
                                 <MushroomCard
-                                    key={mushroom.name}
+                                    key={mushroom.id}
                                     mushroom={mushroom}
                                 />
                             ))}
