@@ -1,36 +1,33 @@
 import { useMemo } from 'react';
 
-interface FilterConfig<T> {
+interface FilterConfig<T extends Record<string, unknown>> {
     filters: Record<string, string[]>;
     filterMappings: Record<
         string,
-        {
-            field: keyof T;
-            valueMap: Record<string, string>;
-        }
+        { field: keyof T; valueMap: Record<string, string> }
     >;
-    searchField?: keyof T;
-    searchQuery?: string;
+    searchField: keyof T;
+    searchQuery: string;
+    data: T[];
 }
 
-export const useFilter = <T extends Record<string, any>>({
+export const useFilter = <T extends Record<string, unknown>>({
     data,
     filters,
     filterMappings,
     searchField,
     searchQuery = '',
-}: FilterConfig<T> & { data: T[] }) => {
+}: FilterConfig<T>) => {
     const isFiltersActive = Object.values(filters).some(
         (filterValues) => filterValues.length > 0
     );
     const isSearchActive = searchQuery.trim() !== '';
 
     const filteredData = useMemo(() => {
-        // First apply filters
+        // 1. Применяем фильтры
         const filteredByType = data.filter((item) => {
             if (!isFiltersActive) return true;
 
-            // Check each filter category
             return Object.entries(filters).every(
                 ([filterKey, activeFilters]) => {
                     if (activeFilters.length === 0) return true;
@@ -46,7 +43,7 @@ export const useFilter = <T extends Record<string, any>>({
             );
         });
 
-        // Then apply search if needed
+        // 2. Применяем поиск
         if (isSearchActive && searchField) {
             return filteredByType.filter((item) => {
                 const fieldValue = String(item[searchField]).toLowerCase();
@@ -55,7 +52,15 @@ export const useFilter = <T extends Record<string, any>>({
         }
 
         return filteredByType;
-    }, [data, filters, searchQuery, isFiltersActive, isSearchActive]);
+    }, [
+        data,
+        filters,
+        searchQuery,
+        isFiltersActive,
+        isSearchActive,
+        filterMappings,
+        searchField,
+    ]); // ✅ Добавлен isSearchActive
 
     return {
         filteredData,

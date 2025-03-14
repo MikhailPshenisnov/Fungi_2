@@ -1,27 +1,17 @@
 import { useFilter } from '@shared/hooks/useFilter';
-import { TMushroomCard } from '@pages/Encyclopedia/types';
-
-interface FilterState {
-    edibility: string[];
-    capType: string[];
-}
-
-interface Mushroom extends TMushroomCard {}
-
-interface MushroomFilterProps {
-    mushrooms: Mushroom[];
-    filters: FilterState;
-    searchQuery: string;
-}
+import { MushroomFilterProps, IMushroom } from './types';
 
 export const MushroomFilter = ({
     mushrooms,
     filters,
     searchQuery,
 }: MushroomFilterProps) => {
-    const filterMappings = {
+    const filterMappings: Record<
+        string,
+        { field: keyof IMushroom; valueMap: Record<string, string> }
+    > = {
         edibility: {
-            field: 'eatable' as const,
+            field: 'eatable',
             valueMap: {
                 edible: 'Да',
                 'semi-edible': 'Полусъедобен',
@@ -29,7 +19,7 @@ export const MushroomFilter = ({
             },
         },
         capType: {
-            field: 'cap_type' as const,
+            field: 'capType',
             valueMap: {
                 convex: 'Выпуклая',
                 flat: 'Плоская',
@@ -39,7 +29,7 @@ export const MushroomFilter = ({
     };
 
     const { filteredData, isFiltersActive, isSearchActive } =
-        useFilter<Mushroom>({
+        useFilter<IMushroom>({
             data: mushrooms,
             filters,
             filterMappings,

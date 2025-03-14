@@ -62,7 +62,6 @@ const SwiperCard = () => {
             spaceBetween={50}
             slidesPerView={3}
             onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex + 1)} // Обновление активного индекса
-            onSwiper={(swiper) => console.log(swiper)}
             pagination={{ clickable: true }}
         >
             {slides.map((slide, index) => (
