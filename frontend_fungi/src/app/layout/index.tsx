@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
-import { Header } from "../../components/shared/layout/Header/header";
-import { Footer } from "../../components/shared/layout/Footer/footer";
+import { Header } from "@modules/Header/header";
+import { Footer } from "@modules/Footer/footer";
 import "./index.css";
 
 interface LayoutProps {

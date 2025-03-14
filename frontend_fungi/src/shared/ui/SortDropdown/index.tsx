@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./SortDropdown.css"; // Для стилей
 
-const SortDropdown = () => {
+export const SortDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   // const [selectedSort, setSelectedSort] = useState("По дате");
 
@@ -16,12 +16,19 @@ const SortDropdown = () => {
   return (
     <div className="sort-dropdown">
       <button className="dropdown-toggle" onClick={toggleDropdown}>
-        <span><img src="/images/svg/group.svg"/></span>
-        <span className="arrow">{isOpen ? <img src="/images/svg/vector-up.svg"/> : <img src="/images/svg/vector.svg"/>}</span>
+        <span>
+          <img src="/images/svg/group.svg" />
+        </span>
+        <span className="arrow">
+          {isOpen ? (
+            <img src="/images/svg/vector-up.svg" />
+          ) : (
+            <img src="/images/svg/vector.svg" />
+          )}
+        </span>
       </button>
       {isOpen && (
         <div className="dropdown-menu">
-            
           <button onClick={() => handleSortChange("По дате")}>
             По дате <span>↑↓</span>
           </button>
@@ -33,5 +40,3 @@ const SortDropdown = () => {
     </div>
   );
 };
-
-export default SortDropdown;

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { OpenFilterMenuButton } from "../../../../components/shared/ui/base/Filter/OpenFilterMenuButton";
 import { FilterMenuMushroom } from "./FilterMenuMushroom";
+import { OpenFilterMenuButton } from "@shared/ui/base/Filter/OpenFilterMenuButton";
 
 interface OpenMushroomFilterMenuButtonProps {
   filters: {
@@ -10,27 +10,29 @@ interface OpenMushroomFilterMenuButtonProps {
   setFilters: (filters: { edibility: string[]; capType: string[] }) => void;
 }
 
-const OpenMushroomFilterMenuButton: React.FC<OpenMushroomFilterMenuButtonProps> = ({
-  filters,
-  setFilters
-}) => {
+const OpenMushroomFilterMenuButton: React.FC<
+  OpenMushroomFilterMenuButtonProps
+> = ({ filters, setFilters }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => setIsOpen(!isOpen);
 
-  const handleCheckboxChange = (category: 'edibility' | 'capType', value: string) => {
+  const handleCheckboxChange = (
+    category: "edibility" | "capType",
+    value: string
+  ) => {
     setFilters({
       ...filters,
       [category]: filters[category].includes(value)
-        ? filters[category].filter(item => item !== value)
-        : [...filters[category], value]
+        ? filters[category].filter((item) => item !== value)
+        : [...filters[category], value],
     });
   };
 
   const handleReset = () => {
     setFilters({
       edibility: [],
-      capType: []
+      capType: [],
     });
     setIsOpen(false);
   };
@@ -42,7 +44,7 @@ const OpenMushroomFilterMenuButton: React.FC<OpenMushroomFilterMenuButtonProps> 
   return (
     <div className="filter-button">
       <OpenFilterMenuButton isOpen={isOpen} onToggle={toggleDropdown} />
-      
+
       <FilterMenuMushroom
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
