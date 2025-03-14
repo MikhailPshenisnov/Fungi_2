@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import "./index.css";
 import { MushroomCard } from "./components/MushroomCard/MushroomCard";
 import { SearchBar } from "./components/SearchBar/SearchBar";
-import { useMushroomData } from "../../shared/api/useMushroomData";
+import { useMushroomData } from "../../shared/hooks/useMushroomData";
 import { MushroomFilter } from "./components/MushroomFilter/MushroomFilter";
 import OpenMushroomFilterMenuButton from "./components/Filter";
-import FilterButtons from "@shared/ui/FilterButtons";
+import { FilterButtons } from "@shared/ui";
 
 interface FilterState {
   edibility: string[];
@@ -69,7 +69,7 @@ export const Encyclopedia: React.FC = () => {
           </h2>
           <div className="encyclopedia__cards-row">
             {filteredMushrooms.map((mushroom) => (
-              <MushroomCard key={mushroom.name} mushroom={mushroom} />
+              <MushroomCard key={mushroom.id} mushroom={mushroom} />
             ))}
           </div>
         </section>
@@ -79,7 +79,7 @@ export const Encyclopedia: React.FC = () => {
             <h2 className="encyclopedia__section-title">Съедобные грибы</h2>
             <div className="encyclopedia__cards-row">
               {edibleMushrooms.map((mushroom) => (
-                <MushroomCard key={mushroom.name} mushroom={mushroom} />
+                <MushroomCard key={mushroom.id} mushroom={mushroom} />
               ))}
             </div>
           </section>
@@ -90,7 +90,7 @@ export const Encyclopedia: React.FC = () => {
             </h2>
             <div className="encyclopedia__cards-row">
               {semiEdibleMushrooms.map((mushroom) => (
-                <MushroomCard key={mushroom.name} mushroom={mushroom} />
+                <MushroomCard key={mushroom.id} mushroom={mushroom} />
               ))}
             </div>
           </section>

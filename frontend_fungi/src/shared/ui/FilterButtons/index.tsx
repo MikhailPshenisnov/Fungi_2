@@ -1,6 +1,6 @@
+import { GridButton } from "../GridButton";
 import "./index.css";
 import React, { ReactNode } from "react";
-import GridButton from "../GridButton";
 
 interface FilterButtonsProps {
   targetPath: string;

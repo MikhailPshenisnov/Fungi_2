@@ -12,7 +12,7 @@ interface MushroomCardProps {
 
 export const MushroomCard: React.FC<MushroomCardProps> = ({ mushroom }) => {
   const navigate = useNavigate();
-  const { headerPhotoLink, name, latinName, family, eatable, redBook, id } =
+  const { headerPhotoLink, name, latinName, family, eatable, redBook } =
     mushroom;
   const imageUrl = useImgurUrl(headerPhotoLink);
 

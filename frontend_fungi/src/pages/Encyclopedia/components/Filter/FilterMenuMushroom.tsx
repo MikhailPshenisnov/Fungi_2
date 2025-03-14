@@ -1,6 +1,5 @@
+import { FilterMenu, FilterCheckBoxSection } from "@modules/Filter";
 import React from "react";
-import { FilterMenu } from "@shared/ui/base/Filter/FilterMenu";
-import { FilterCheckBoxSection } from "@shared/ui/base/Filter/FilterSections/FilterCheckBoxSection";
 
 interface FilterMenuMushroomProps {
   isOpen: boolean;

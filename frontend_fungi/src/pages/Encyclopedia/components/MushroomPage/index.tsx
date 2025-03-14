@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useMushroomData } from "../../../../shared/api/useMushroomData";
+import { useMushroomData } from "../../../../shared/hooks/useMushroomData";
 import "./index.css";
 // import arrowIcon from '../../../../assets/icons/arrow-right.svg';
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { usePublicationData } from "../../../../shared/api/usePublicationData";
+import { usePublicationData } from "../../../../shared/hooks/usePublicationData";
 import "./index.css";
 
 const PublicationPage: React.FC = () => {
@@ -34,7 +34,7 @@ const PublicationPage: React.FC = () => {
           <h1 className="publication-page__title">{publication.title}</h1>
           <div className="publication-page__info">
             <p className="publication-page__author">
-              Автор: {publication.authorString}
+              Автор: {publication.author}
             </p>
             <p className="publication-page__date">
               {new Date(publication.publishDate).toLocaleDateString("ru-RU", {
@@ -59,9 +59,9 @@ const PublicationPage: React.FC = () => {
         <div className="publication-page__text">
           {publication.paragraphs.map(
             (paragraph, index) =>
-              paragraph.paragraphText && (
+              paragraph && (
                 <p key={index} className="publication-page__paragraph">
-                  {paragraph.paragraphText}
+                  {paragraph}
                 </p>
               )
           )}

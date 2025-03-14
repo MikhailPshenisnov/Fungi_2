@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FilterMenuMushroom } from "./FilterMenuMushroom";
-import { OpenFilterMenuButton } from "@shared/ui/base/Filter/OpenFilterMenuButton";
+import { OpenFilterMenuButton } from "@modules/Filter";
 
 interface OpenMushroomFilterMenuButtonProps {
   filters: {

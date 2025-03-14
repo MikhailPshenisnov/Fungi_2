@@ -1,0 +1,1 @@
+export { fetchPublicationData } from "./fetchPublicationData";

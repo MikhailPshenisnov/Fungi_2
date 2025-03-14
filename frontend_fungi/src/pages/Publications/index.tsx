@@ -1,9 +1,8 @@
-import FilterButtons from "@shared/ui/FilterButtons/index.tsx";
-import SortDropdown from "@shared/ui/SortDropdown/index.tsx";
 import PublicationsCard from "./components/PublicationsCard/PublicationsCard.tsx";
 import "./index.css";
 import { useNavigate } from "react-router-dom";
-import { usePublicationData } from "@shared/api/usePublicationData.ts";
+import { usePublicationData } from "@shared/hooks/usePublicationData.ts";
+import { FilterButtons, SortDropdown } from "@shared/ui/index.ts";
 
 const Publications = () => {
   const { data: publications } = usePublicationData();
