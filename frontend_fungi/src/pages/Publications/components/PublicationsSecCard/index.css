@@ -11,6 +11,7 @@
     min-width: 283px;
     min-height: 433px;
     width: 100%;
+    max-width: 280px;
 }
 
 .publication-sec-card img {

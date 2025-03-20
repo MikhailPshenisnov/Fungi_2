@@ -3,6 +3,7 @@ import PublicationsSecCard from './components/PublicationsSecCard/PublicationSec
 import { useNavigate } from 'react-router-dom';
 import { usePublicationData } from '@shared/hooks/usePublicationData.ts';
 import { FilterButtons, SortDropdown } from '@shared/ui/index.ts';
+import { Pagination } from '@modules/Pagination';
 
 const Publications = () => {
     const { data: publications } = usePublicationData();
@@ -12,8 +13,6 @@ const Publications = () => {
         navigate(`/publications/${id}`);
     };
 
-    // Получаем последние 4 статьи для второго раздела
-    const recentPublications = publications?.slice(-4).reverse();
 
     return (
         <div className="conteiner-sec">
@@ -22,46 +21,18 @@ const Publications = () => {
                     targetPath="/publications"
                     buttonComponent={<SortDropdown />}
                 />
-                <div className="special-publications-conteiner">
-                    <h1 className="publications-sec__title">
-                        Собрали специально для вас!
-                    </h1>
-                    <div className="publications-sec-conteiner">
-                        {publications
-                            ?.slice(0, 4)
-                            .map((publication) => (
-                                <PublicationsSecCard
-                                    key={publication.id}
-                                    card={publication}
-                                    onClick={() =>
-                                        handleCardClick(publication.id)
-                                    }
-                                />
-                            ))}
-                        <button className="next-button">
-                            <h2>Больше статей</h2>
-                            <img src="/images/svg/arrow.svg" alt="" />
-                        </button>
-                    </div>
-                </div>
-                <div className="section-publication-conteiner">
-                    <h1 className="publications-sec__title">
-                        Недавние публикации
-                    </h1>
-                    <div className="publications-sec-conteiner">
-                        {recentPublications?.map((publication) => (
-                            <PublicationsSecCard
-                                key={publication.id}
-                                card={publication}
-                                onClick={() => handleCardClick(publication.id)}
-                            />
-                        ))}
-                        <button className="next-button">
-                            <h2>Больше статей</h2>
-                            <img src="/images/svg/arrow.svg" alt="" />
-                        </button>
-                    </div>
-                </div>
+                <Pagination
+                    data={publications}
+                    tittle={'Рекомендуем к прочтению'}
+                    itemsPerPage={15}
+                    card={(publication) => (
+                        <PublicationsSecCard
+                            key={publication.id}
+                            card={publication}
+                            onClick={() => handleCardClick(publication.id)}
+                        />
+                    )}
+                />
             </div>
         </div>
     );

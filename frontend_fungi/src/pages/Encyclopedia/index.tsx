@@ -6,6 +6,7 @@ import { useMushroomData } from '../../shared/hooks/useMushroomData';
 import { MushroomFilter } from './components/MushroomFilter/MushroomFilter';
 import OpenMushroomFilterMenuButton from './components/Filter';
 import { FilterButtons } from '@shared/ui';
+import { Pagination } from '@modules/Pagination';
 
 interface FilterState {
     edibility: string[];
@@ -34,16 +35,11 @@ export const Encyclopedia: React.FC = () => {
         });
 
     // Если нет ни фильтров, ни поиска, разделяем по категориям
-    const edibleMushrooms =
+    const PopularMushrooms =
         !isFiltersActive && !isSearchActive
-            ? mushrooms.filter((mushroom) => mushroom.eatable === 'Да')
+            ? mushrooms.sort(() => Math.random() - 0.5).slice(0, 5)
             : [];
-    const semiEdibleMushrooms =
-        !isFiltersActive && !isSearchActive
-            ? mushrooms.filter(
-                  (mushroom) => mushroom.eatable === 'Полусъедобен'
-              )
-            : [];
+    const AllMushrooms = !isFiltersActive && !isSearchActive ? mushrooms : [];
 
     return (
         <div className="encyclopedia">
@@ -84,10 +80,10 @@ export const Encyclopedia: React.FC = () => {
                 <>
                     <section className="encyclopedia__section">
                         <h2 className="encyclopedia__section-title">
-                            Съедобные грибы
+                            Популярные Грибы
                         </h2>
                         <div className="encyclopedia__cards-row">
-                            {edibleMushrooms.map((mushroom) => (
+                            {PopularMushrooms.map((mushroom) => (
                                 <MushroomCard
                                     key={mushroom.id}
                                     mushroom={mushroom}
@@ -96,19 +92,17 @@ export const Encyclopedia: React.FC = () => {
                         </div>
                     </section>
 
-                    <section className="encyclopedia__section">
-                        <h2 className="encyclopedia__section-title">
-                            Условно-съедобные грибы
-                        </h2>
-                        <div className="encyclopedia__cards-row">
-                            {semiEdibleMushrooms.map((mushroom) => (
-                                <MushroomCard
-                                    key={mushroom.id}
-                                    mushroom={mushroom}
-                                />
-                            ))}
-                        </div>
-                    </section>
+                    <Pagination
+                        data={AllMushrooms}
+                        tittle={'Все грибы'}
+                        itemsPerPage={10}
+                        card={(mushroom) => (
+                            <MushroomCard
+                                key={mushroom.id}
+                                mushroom={mushroom}
+                            />
+                        )}
+                    />
                 </>
             )}
         </div>

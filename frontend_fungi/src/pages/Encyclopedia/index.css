@@ -11,6 +11,8 @@
 }
 
 .encyclopedia__section {
+    display: flex;
+    flex-direction: column;
     margin-top: 20px;
     margin-bottom: 20px;
     width: 1624px;
@@ -20,7 +22,8 @@
     font-family: 'Raleway';
     font-weight: 600;
     font-size: 55px;
-    margin: 0px 0px 20px 187px;
+    margin: 0px 0px 20px 0px;
+    text-align: center;
     color: #333;
 }
 
