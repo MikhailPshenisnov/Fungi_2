@@ -1,0 +1,31 @@
+# чтобы поднять stack: cmd/powershell находясь в этой папке > docker-compose up --build
+services:
+  fungi-db:
+    image: postgres
+    container_name: fungi-db
+    environment:
+      POSTGRES_DB: FungiDB
+      POSTGRES_USER: fungi
+      POSTGRES_PASSWORD: fungi
+      PGPORT: 5531
+    volumes:
+      - pg_fungi_data:/var/lib/postgresql/data
+      - ./DBInit:/docker-entrypoint-initdb.d  
+    ports:
+      - "5531:5531"
+
+  fungi-backend:
+    container_name: fungi-backend
+    build:
+      context: ./BackendFungi
+    ports:
+      - "5228:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__FungiDb=${DB_CONNECTION_STRING}
+    depends_on:
+      - fungi-db
+
+
+volumes:
+  pg_fungi_data:
