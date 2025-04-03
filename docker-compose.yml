@@ -19,9 +19,9 @@ services:
     build:
       context: ./BackendFungi
     ports:
-      - "5228:8080"
+      - "5000:80"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_ENVIRONMENT=Docker
       - ConnectionStrings__FungiDb=${DB_CONNECTION_STRING}
     depends_on:
       - fungi-db

@@ -8,6 +8,7 @@ using BackendFungi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,7 +45,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 // Service for data initialization
-builder.Services.AddSingleton<IDataInitializationService, DataInitializationService>();
+// builder.Services.AddSingleton<IDataInitializationService, DataInitializationService>();
 
 // Services for access rights demarcation
 builder.Services.AddScoped<IAccessCheckService, AccessCheckService>();
@@ -63,7 +64,8 @@ builder.Services.AddScoped<IRolesRepository, RolesRepository>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 
 // Database context
-builder.Services.AddDbContext<FungiDbContext>();
+builder.Services.AddDbContext<FungiDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("FungiDbContext")));
 
 // CORS policy
 builder.Services.AddCors(options => options.AddPolicy(
@@ -80,7 +82,7 @@ var app = builder.Build();
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
 // Data initialization middleware
-app.UseMiddleware<DataInitializationMiddleware>();
+// app.UseMiddleware<DataInitializationMiddleware>();
 
 // Authentication and authorization
 app.UseAuthentication();
@@ -90,33 +92,36 @@ app.UseAuthorization();
 app.UseCors("FungiApiPolicy");
 
 // Swagger
-if (app.Environment.IsDevelopment())
-{
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Docker")){
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsEnvironment("Docker"))
+{
+    app.UseHttpsRedirection();
+}
+
 app.MapControllers();
 
 // Data initialization
-using (var scope = app.Services.CreateScope())
-{
-    try
-    {
-        var dataInitializationService = scope.ServiceProvider.GetRequiredService<IDataInitializationService>();
-        await dataInitializationService.InitializeData(CancellationToken.None);
-
-        var logger = scope.ServiceProvider.GetRequiredService<ILogger<IDataInitializationService>>();
-        logger.LogInformation("Start initialization completed successfully");
-    }
-    catch (Exception e)
-    {
-        var logger = scope.ServiceProvider.GetRequiredService<ILogger<IDataInitializationService>>();
-        logger.LogCritical(e, "An error occurred during start initialization process");
-
-        Environment.Exit(1);
-    }
-}
+// using (var scope = app.Services.CreateScope())
+// {
+//     try
+//     {
+//         var dataInitializationService = scope.ServiceProvider.GetRequiredService<IDataInitializationService>();
+//         await dataInitializationService.InitializeData(CancellationToken.None);
+//
+//         var logger = scope.ServiceProvider.GetRequiredService<ILogger<IDataInitializationService>>();
+//         logger.LogInformation("Start initialization completed successfully");
+//     }
+//     catch (Exception e)
+//     {
+//         var logger = scope.ServiceProvider.GetRequiredService<ILogger<IDataInitializationService>>();
+//         logger.LogCritical(e, "An error occurred during start initialization process");
+//
+//         Environment.Exit(1);
+//     }
+// }
 
 app.Run();
