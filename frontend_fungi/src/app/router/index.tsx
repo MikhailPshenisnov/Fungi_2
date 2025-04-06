@@ -1,11 +1,11 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { MainPage } from '../../pages/MainPage';
-import Publications from '../../pages/Publications';
-import AboutUs from '../../pages/AboutUs';
-import { Encyclopedia } from '../../pages/Encyclopedia';
-import PublicationsSec from '../../pages/Publications/PublicationsSec';
-import PublicationPage from '../../pages/Publications/components/PublicationPage/PublicationPage';
-import { MushroomPage } from '../../pages/Encyclopedia/components/MushroomPage';
+import { MainPage } from '@pages/main-page';
+import Publications from '@pages//publications';
+import AboutUs from '@pages/about-us';
+import { Encyclopedia } from '@pages/encyclopedia';
+import PublicationsSec from '@pages/publications';
+import PublicationPage from '@pages/publications';
+import { MushroomPage } from '@pages/encyclopedia/components/MushroomPage';
 
 export const AppRouter = () => {
     return (
