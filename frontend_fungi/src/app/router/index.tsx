@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { MainPage } from '@pages/main-page';
 import Publications from '@pages//publications';
-import AboutUs from '@pages/about-us';
+import AboutUs from '@pages/about-us/components/about-us-page/AboutUsPage.tsx';
 import { Encyclopedia } from '@pages/encyclopedia';
 import PublicationsSec from '@pages/publications';
 import PublicationPage from '@pages/publications';
