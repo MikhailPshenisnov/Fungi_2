@@ -4,7 +4,7 @@ import { usePagination } from '@modules/Pagination/lib/hooks/usePagination/usePa
 import { ArrowSvg } from '@shared/ui';
 
 interface IPaginationProps<T> {
-    data: T[];
+    data: T[] | undefined;
     card: (item: T) => React.JSX.Element;
     tittle: string;
     itemsPerPage: number;

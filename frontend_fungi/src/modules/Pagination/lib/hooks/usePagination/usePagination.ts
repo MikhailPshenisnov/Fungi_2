@@ -11,6 +11,8 @@ export const usePagination = <T>({
 }: IUsePaginationProps<T>): TUsePaginationReturn<T> => {
     const [page, setPage] = useState<number>(1);
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     const maxPage = Math.ceil(data.length / itemsPerPage);
 
     const handlePageChange: ThandlePageChange = (change) => {

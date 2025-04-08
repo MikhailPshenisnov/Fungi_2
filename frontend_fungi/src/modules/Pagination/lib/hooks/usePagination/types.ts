@@ -1,5 +1,5 @@
 export interface IUsePaginationProps<T> {
-    data: T[];
+    data: T[] | undefined;
     itemsPerPage: number;
 }
 
