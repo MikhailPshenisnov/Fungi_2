@@ -1,14 +1,9 @@
 import React from 'react';
 import { FC } from 'react';
-import { IPublications } from '../../types.ts';
-import './index.css';
+import './PublicationsCard.css';
+import { IPublicationsCardProps } from '@pages/publications/model/types.ts';
 
-interface IPublicationsCard {
-    card: IPublications;
-    onClick?: () => void;
-}
-
-const PublicationsCard: FC<IPublicationsCard> = ({ card, onClick }) => {
+export const PublicationsCard: FC<IPublicationsCardProps> = ({ card, onClick }) => {
     const handleImageError = (
         e: React.SyntheticEvent<HTMLImageElement, Event>
     ) => {
@@ -35,5 +30,3 @@ const PublicationsCard: FC<IPublicationsCard> = ({ card, onClick }) => {
         </div>
     );
 };
-
-export default PublicationsCard;

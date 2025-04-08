@@ -1,6 +1,6 @@
-import PublicationsCard from '@pages/publications/components/PublicationsCard/PublicationsCard.tsx';
-import { IPublications } from '@pages/publications/types.ts';
+import { IPublications } from '@pages/publications/model/types.ts';
 import { useNavigate } from 'react-router-dom';
+import { PublicationsCard } from '@pages/publications/components/publications-card';
 
 interface Props {
     publications: IPublications[] | undefined;

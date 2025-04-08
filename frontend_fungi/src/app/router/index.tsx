@@ -1,10 +1,9 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { MainPage } from '@pages/main-page';
 import { AboutUsPage } from '@pages/about-us';
+import { PublicationPage, PublicationsPage } from '@pages/publications';
 import { Encyclopedia } from '@pages/encyclopedia';
 import { MushroomPage } from '@pages/encyclopedia/components/MushroomPage';
-import { PublicationsPage } from '@pages/publications';
-import PublicationPage from '@pages/publications/components/PublicationPage/PublicationPage';
 
 export const AppRouter = () => {
     return (

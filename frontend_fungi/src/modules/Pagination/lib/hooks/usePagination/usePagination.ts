@@ -22,6 +22,8 @@ export const usePagination = <T>({
         });
     };
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     const paginatedItems: T[] = data.slice(
         itemsPerPage * (page - 1),
         itemsPerPage * page

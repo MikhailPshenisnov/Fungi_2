@@ -1,4 +1,4 @@
-import { IPublications } from '../../../pages/Publications/types';
+import { IPublications } from '@pages/publications/model/types.ts';
 
 export const mockPublications: IPublications[] = [
     {

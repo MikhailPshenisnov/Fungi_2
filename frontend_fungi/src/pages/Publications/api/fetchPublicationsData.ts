@@ -1,7 +1,7 @@
-import { IPublications } from '@pages/Publications/types';
+import { IPublications } from '../model/types.ts';
 import axios from 'axios';
 
-export const fetchPublicationData = async (): Promise<IPublications[]> => {
+export const fetchPublicationsData = async (): Promise<IPublications[]> => {
     try {
         const response = await axios.get('http://localhost:5000/publications');
         return response.data;

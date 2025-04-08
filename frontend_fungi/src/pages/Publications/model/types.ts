@@ -17,3 +17,8 @@ export interface IPublications {
     headerPhotoLink: string;
     paragraphs: string[];
 }
+
+export interface IPublicationsCardProps {
+    card: IPublications;
+    onClick?: () => void;
+}
