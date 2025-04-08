@@ -20,10 +20,10 @@
 .pagination__cards-row {
     display: flex;
     justify-content: start;
-    width: 1624px;
+    width: 1595px;
     flex-wrap: wrap;
-    overflow-x: auto;
-    gap: 20px;
+    overflow-x: visible;
+    gap: 45px;
     padding: 10px 0;
     -ms-overflow-style: none;
     scrollbar-width: none;

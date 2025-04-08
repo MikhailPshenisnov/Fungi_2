@@ -1,5 +1,5 @@
 import { IPublications } from '../../model/types.ts';
-import { PublicationsWideCard } from '../publications-wide-card';
+import { PublicationsCard } from '../publications-card';
 import { Pagination } from "@modules/Pagination";
 import { useNavigate } from 'react-router-dom';
 
@@ -20,7 +20,7 @@ export const CardPublicationsView: React.FC<Props> = ({ publications }) => {
             tittle={'Рекомендуем к прочтению'}
             itemsPerPage={15}
             card={(publication) => (
-                <PublicationsWideCard
+                <PublicationsCard
                     key={publication.id}
                     card={publication}
                     onClick={() => handleCardClick(publication.id)}

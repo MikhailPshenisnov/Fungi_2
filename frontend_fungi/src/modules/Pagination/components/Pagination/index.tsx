@@ -1,5 +1,5 @@
 import React from 'react';
-import '@modules/Pagination/components/Pagination/index.css';
+import './index.css';
 import { usePagination } from '@modules/Pagination/lib/hooks/usePagination/usePagination.ts';
 import { ArrowSvg } from '@shared/ui';
 

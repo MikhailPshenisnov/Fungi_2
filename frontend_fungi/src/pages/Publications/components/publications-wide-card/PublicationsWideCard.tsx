@@ -1,7 +1,7 @@
-import React, { FC } from 'react';
-import { Card } from '@shared/ui/Card';
-import { IPublicationsCardProps } from '../../model/types.ts';
+import React from 'react';
+import { FC } from 'react';
 import './PublicationsWideCard.css';
+import { IPublicationsCardProps } from '@pages/publications/model/types.ts';
 
 export const PublicationsWideCard: FC<IPublicationsCardProps> = ({ card, onClick }) => {
     const handleImageError = (
@@ -11,17 +11,22 @@ export const PublicationsWideCard: FC<IPublicationsCardProps> = ({ card, onClick
     };
 
     return (
-        <Card className="publication-sec-card" onClick={onClick}>
+        <div className="publications-card" onClick={onClick}>
             <img
-                className="publication-sec-card__image"
+                className="publications-card__image"
                 src={card.headerPhotoLink}
                 alt={card.title}
                 onError={handleImageError}
             />
-            <div className="publication-info">
-                <h3 className="publications-sec-card__title">{card.title}</h3>
-                <p>читать продолжение в источнике...</p>
+            <div className="publications-card__info">
+                <h2 className="publications-card__title">{card.title}</h2>
+                <p className="publications-card__text">
+                    {card.paragraphs || 'читать статью......'}
+                </p>
+                <p className="publications-card__author">
+                    Автор статьи: {card.author}
+                </p>
             </div>
-        </Card>
+        </div>
     );
 };
