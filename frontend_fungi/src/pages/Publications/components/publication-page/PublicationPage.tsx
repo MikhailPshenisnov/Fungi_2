@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 export const PublicationPage: React.FC = () => {
-    const { id} = useParams();
+    const { id } = useParams();
     const navigate = useNavigate();
     const { data: publication } = usePublication(id);
     const [imageError, setImageError] = useState(false);

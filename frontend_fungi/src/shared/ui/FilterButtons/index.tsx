@@ -8,7 +8,7 @@ interface FilterButtonsProps {
 }
 
 export const FilterButtons: React.FC<FilterButtonsProps> = ({
-                                                                onClick,
+    onClick,
     buttonComponent,
 }) => {
     return (

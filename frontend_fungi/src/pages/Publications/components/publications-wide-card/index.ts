@@ -1,1 +1,1 @@
-export { PublicationsWideCard } from './PublicationsWideCard.tsx'
+export { PublicationsWideCard } from './PublicationsWideCard.tsx';

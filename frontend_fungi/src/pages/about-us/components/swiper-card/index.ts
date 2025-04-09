@@ -1,1 +1,1 @@
-export { SwiperCard } from './SwiperCard.tsx'
+export { SwiperCard } from './SwiperCard.tsx';

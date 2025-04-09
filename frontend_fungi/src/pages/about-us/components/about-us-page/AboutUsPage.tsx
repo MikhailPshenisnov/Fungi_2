@@ -1,5 +1,5 @@
 import React from 'react';
-import './AboutUsPage.css'
+import './AboutUsPage.css';
 import { SwiperCard } from '../swiper-card';
 
 export const AboutUsPage: React.FC = () => {

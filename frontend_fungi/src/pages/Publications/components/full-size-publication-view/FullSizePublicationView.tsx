@@ -5,7 +5,7 @@ import { PublicationsWideCard } from '../publications-wide-card';
 interface Props {
     publications: IPublications[] | undefined;
 }
-export const FullSizePublicationView: React.FC<Props> = ({publications}) => {
+export const FullSizePublicationView: React.FC<Props> = ({ publications }) => {
     const navigate = useNavigate();
 
     const handleCardClick = (id: string) => {
@@ -23,4 +23,4 @@ export const FullSizePublicationView: React.FC<Props> = ({publications}) => {
             ))}
         </div>
     );
-}
+};

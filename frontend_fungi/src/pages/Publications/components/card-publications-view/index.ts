@@ -1,1 +1,1 @@
-export { CardPublicationsView } from "./CardPublicationsView";
+export { CardPublicationsView } from './CardPublicationsView';

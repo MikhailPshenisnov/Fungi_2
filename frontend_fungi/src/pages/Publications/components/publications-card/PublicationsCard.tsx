@@ -3,7 +3,10 @@ import { Card } from '@shared/ui/Card';
 import { IPublicationsCardProps } from '../../model/types.ts';
 import './PublicationsCard.css';
 
-export const PublicationsCard: FC<IPublicationsCardProps> = ({ card, onClick }) => {
+export const PublicationsCard: FC<IPublicationsCardProps> = ({
+    card,
+    onClick,
+}) => {
     const handleImageError = (
         e: React.SyntheticEvent<HTMLImageElement, Event>
     ) => {

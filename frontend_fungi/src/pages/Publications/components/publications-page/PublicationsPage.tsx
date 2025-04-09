@@ -15,12 +15,11 @@ export const PublicationsPage = () => {
                     onClick={() => setCardView(!cardView)}
                     buttonComponent={<SortDropdown />}
                 />
-                {
-                    cardView ?
-                        <CardPublicationsView publications={publications} />
-                        :
-                        <FullSizePublicationView publications={publications} />
-                }
+                {cardView ? (
+                    <CardPublicationsView publications={publications} />
+                ) : (
+                    <FullSizePublicationView publications={publications} />
+                )}
             </div>
         </div>
     );

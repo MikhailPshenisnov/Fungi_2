@@ -1,6 +1,6 @@
 import { IPublications } from '../../model/types.ts';
 import { PublicationsCard } from '../publications-card';
-import { Pagination } from "@modules/Pagination";
+import { Pagination } from '@modules/Pagination';
 import { useNavigate } from 'react-router-dom';
 
 interface Props {
@@ -28,4 +28,4 @@ export const CardPublicationsView: React.FC<Props> = ({ publications }) => {
             )}
         />
     );
-}
+};

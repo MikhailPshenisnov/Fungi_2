@@ -3,7 +3,10 @@ import { FC } from 'react';
 import './PublicationsWideCard.css';
 import { IPublicationsCardProps } from '@pages/publications/model/types.ts';
 
-export const PublicationsWideCard: FC<IPublicationsCardProps> = ({ card, onClick }) => {
+export const PublicationsWideCard: FC<IPublicationsCardProps> = ({
+    card,
+    onClick,
+}) => {
     const handleImageError = (
         e: React.SyntheticEvent<HTMLImageElement, Event>
     ) => {
