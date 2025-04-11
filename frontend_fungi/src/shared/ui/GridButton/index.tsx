@@ -1,15 +1,11 @@
-import { Link } from 'react-router-dom';
-
 interface IGridButton {
-    targetPath: string;
+    onClick: () => void;
 }
 
-export const GridButton: React.FC<IGridButton> = ({ targetPath }) => {
+export const GridButton: React.FC<IGridButton> = ({ onClick }) => {
     return (
-        <button className="grid-button">
-            <Link to={targetPath}>
-                <img src="/images/svg/grid-view.svg" alt="" />
-            </Link>
+        <button className="grid-button" onClick={onClick}>
+            <img src="/images/svg/grid-view.svg" alt="" />
         </button>
     );
 };

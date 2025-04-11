@@ -3,17 +3,17 @@ import './index.css';
 import React, { ReactNode } from 'react';
 
 interface FilterButtonsProps {
-    targetPath: string;
+    onClick: () => void;
     buttonComponent: ReactNode;
 }
 
 export const FilterButtons: React.FC<FilterButtonsProps> = ({
-    targetPath,
+    onClick,
     buttonComponent,
 }) => {
     return (
         <div className="bottonsConteiner">
-            <GridButton targetPath={targetPath} />
+            <GridButton onClick={onClick} />
             {buttonComponent}
         </div>
     );

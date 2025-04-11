@@ -1,14 +1,12 @@
 import React, { FC } from 'react';
-import './index.css';
-import { IPublications } from '../../types';
 import { Card } from '@shared/ui/Card';
+import { IPublicationsCardProps } from '../../model/types.ts';
+import './PublicationsCard.css';
 
-interface IPublicationsCard {
-    card: IPublications;
-    onClick?: () => void;
-}
-
-const PublicationsSecCard: FC<IPublicationsCard> = ({ card, onClick }) => {
+export const PublicationsCard: FC<IPublicationsCardProps> = ({
+    card,
+    onClick,
+}) => {
     const handleImageError = (
         e: React.SyntheticEvent<HTMLImageElement, Event>
     ) => {
@@ -30,5 +28,3 @@ const PublicationsSecCard: FC<IPublicationsCard> = ({ card, onClick }) => {
         </Card>
     );
 };
-
-export default PublicationsSecCard;

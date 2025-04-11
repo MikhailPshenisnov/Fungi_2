@@ -1,0 +1,1 @@
+export { PublicationPage } from './PublicationPage.tsx';

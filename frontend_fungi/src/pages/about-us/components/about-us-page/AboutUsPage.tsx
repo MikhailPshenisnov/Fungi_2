@@ -1,8 +1,8 @@
 import React from 'react';
-import './index.css';
-import SwiperCard from './components/SwiperCard/ScrollCards.tsx';
+import './AboutUsPage.css';
+import { SwiperCard } from '../swiper-card';
 
-const AboutUs: React.FC = () => {
+export const AboutUsPage: React.FC = () => {
     return (
         <div className="about">
             <section className="intro">
@@ -47,5 +47,3 @@ const AboutUs: React.FC = () => {
         </div>
     );
 };
-
-export default AboutUs;

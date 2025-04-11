@@ -30,6 +30,7 @@
 .encyclopedia__cards-row {
     display: flex;
     max-width: 1624px;
+    justify-content: space-between;
     flex-wrap: nowrap;
     overflow-x: auto;
     gap: 20px;

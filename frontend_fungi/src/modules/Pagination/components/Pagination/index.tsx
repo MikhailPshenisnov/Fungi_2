@@ -1,10 +1,10 @@
 import React from 'react';
-import '@modules/Pagination/components/Pagination/index.css';
+import './index.css';
 import { usePagination } from '@modules/Pagination/lib/hooks/usePagination/usePagination.ts';
 import { ArrowSvg } from '@shared/ui';
 
 interface IPaginationProps<T> {
-    data: T[];
+    data: T[] | undefined;
     card: (item: T) => React.JSX.Element;
     tittle: string;
     itemsPerPage: number;

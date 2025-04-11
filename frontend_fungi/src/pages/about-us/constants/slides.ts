@@ -1,11 +1,4 @@
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { useState } from 'react';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/scrollbar';
-
-const slides = [
+export const slides = [
     {
         id: 1,
         src: '/images/svg/slider-icon-1.svg',
@@ -52,42 +45,3 @@ const slides = [
         text: 'на сайте есть коллекция анекдотов на грибную тематику, шоу-кулинария и интервью с медицинским экспертом, который даст советы по приготовлению и использованию грибов без вреда для здоровья.',
     },
 ];
-
-const SwiperCard = () => {
-    const [activeIndex, setActiveIndex] = useState(1); // Отслеживание активного слайда
-
-    return (
-        <Swiper
-            modules={[]}
-            spaceBetween={50}
-            slidesPerView={3}
-            onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex + 1)} // Обновление активного индекса
-            pagination={{ clickable: true }}
-        >
-            {slides.map((slide, index) => (
-                <SwiperSlide key={slide.id}>
-                    <div
-                        className={`card ${
-                            index === activeIndex ? 'active-card' : ''
-                        }`} // Условное добавление класса для активного слайда
-                    >
-                        <div className="card-icon-container">
-                            <img
-                                src={slide.src}
-                                alt="icon"
-                                className={`icon ${
-                                    index === activeIndex ? '' : 'active-icon'
-                                }`}
-                            />
-                        </div>
-                        {index === activeIndex && ( // Если слайд активный, показать текст
-                            <p className="active-text">{slide.text}</p>
-                        )}
-                    </div>
-                </SwiperSlide>
-            ))}
-        </Swiper>
-    );
-};
-
-export default SwiperCard;

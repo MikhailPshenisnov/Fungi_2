@@ -1,15 +1,13 @@
+import './PublicationPage.css';
+import { usePublication } from '../../model/hooks';
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { usePublicationData } from '../../../../shared/hooks/usePublicationData';
-import './index.css';
 
-const PublicationPage: React.FC = () => {
+export const PublicationPage: React.FC = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { data: publications } = usePublicationData();
+    const { data: publication } = usePublication(id);
     const [imageError, setImageError] = useState(false);
-
-    const publication = publications?.find((p) => p.id === id);
 
     if (!publication) {
         return <div>Публикация не найдена</div>;
@@ -80,5 +78,3 @@ const PublicationPage: React.FC = () => {
         </div>
     );
 };
-
-export default PublicationPage;

@@ -1,20 +1,17 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { MainPage } from '../../pages/MainPage';
-import Publications from '../../pages/Publications';
-import AboutUs from '../../pages/AboutUs';
-import { Encyclopedia } from '../../pages/Encyclopedia';
-import PublicationsSec from '../../pages/Publications/PublicationsSec';
-import PublicationPage from '../../pages/Publications/components/PublicationPage/PublicationPage';
-import { MushroomPage } from '../../pages/Encyclopedia/components/MushroomPage';
+import { MainPage } from '@pages/main-page';
+import { AboutUsPage } from '@pages/about-us';
+import { PublicationPage, PublicationsPage } from '@pages/publications';
+import { Encyclopedia } from '@pages/encyclopedia';
+import { MushroomPage } from '@pages/encyclopedia/components/MushroomPage';
 
 export const AppRouter = () => {
     return (
         <Routes>
             <Route path="/" element={<Navigate to="/mainpage" />} />
             <Route path="/mainpage" element={<MainPage />} />
-            <Route path="/about" element={<AboutUs />} />
-            <Route path="/publications" element={<Publications />} />
-            <Route path="/publications-sec" element={<PublicationsSec />} />
+            <Route path="/about" element={<AboutUsPage />} />
+            <Route path="/publications" element={<PublicationsPage />} />
             <Route path="/publications/:id" element={<PublicationPage />} />
             <Route
                 path="/encyclopedia/:mushroomId"
