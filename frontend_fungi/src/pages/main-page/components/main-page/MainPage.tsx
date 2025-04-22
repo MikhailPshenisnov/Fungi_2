@@ -2,6 +2,7 @@ import "./MainPage.css";
 import React from "react";
 import MainBanner from "../main-banner/MainBanner.tsx";
 import StatsBanner from "../stats-banner/StatsBanner.tsx"
+import SurveyBanner from "../survey-banner/SurveyBanner.tsx";
 
 export const MainPage: React.FC = () => {
 
@@ -10,6 +11,7 @@ export const MainPage: React.FC = () => {
             <div className="main-page__content">
                 <MainBanner />
                 <StatsBanner />
+                <SurveyBanner />
             </div>
         </div>
     );
