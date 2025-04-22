@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { MainPage } from '@pages/main-page';
+import { MainPage } from '@pages/main-page/components/main-page/MainPage.tsx';
 import { AboutUsPage } from '@pages/about-us';
 import { PublicationPage, PublicationsPage } from '@pages/publications';
 import { Encyclopedia } from '@pages/encyclopedia';

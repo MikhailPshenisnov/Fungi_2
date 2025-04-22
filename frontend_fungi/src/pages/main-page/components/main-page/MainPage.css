@@ -1,0 +1,14 @@
+.main-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-page__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    position: relative;
+}
