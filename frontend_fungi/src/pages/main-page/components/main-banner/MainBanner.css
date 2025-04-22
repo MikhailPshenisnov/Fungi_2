@@ -1,0 +1,100 @@
+.main-banner {
+    width: 1248px;
+    height: 538px;
+    background: #F9F9F9;
+    display: flex;
+    justify-content: center;
+}
+
+.banner-content {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    margin-top: 118px;
+}
+
+.banner-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-right: 40px;
+    width: 507px;
+    font-family: Raleway;
+    align-items: flex-start;
+}
+
+.banner-top-sign {
+    color: #201F1F;
+    opacity: 50%;
+    margin-bottom: 25px;
+}
+
+.banner-title {
+    font-size: 65px;
+    font-weight: bold;
+    color: #201F1F;
+    margin-bottom: 25px;
+    line-height: 120%;
+    letter-spacing: -3px;
+}
+
+.banner-description {
+    text-align: justify;
+    font-size: 19px;
+    color: #444444;
+    margin-bottom: 32px;
+    line-height: 28px;
+    max-width: 499px;
+}
+
+.banner-buttons {
+    display: flex;
+    gap: 18px;
+}
+
+.explore-button, .pro-button {
+    font-family: Raleway;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 59px;
+}
+
+.explore-button {
+    background-color: #B28550;
+    color: white;
+    border: none;
+    width: 156px;
+}
+
+.pro-button {
+    background-color: transparent;
+    color: #B28550;
+    border: 2px solid #B28550;
+    width: 110px;
+}
+
+.explore-button:hover {
+    opacity: 0.7;
+}
+
+.pro-button:hover {
+    opacity: 0.7;
+}
+
+.banner-image {
+    margin-top: 20px;
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+}
+
+.banner-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
