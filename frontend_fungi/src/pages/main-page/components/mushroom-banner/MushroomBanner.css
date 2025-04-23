@@ -1,0 +1,106 @@
+.mushroom-banner {
+    width: 1248px;
+    height: 725px;
+    margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Raleway;
+}
+
+.mushroom-title {
+    font-size: 45px;
+    margin-bottom: 85px;
+    text-align: center;
+}
+
+.mushroom-grid {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 66px;
+}
+
+.mushroom-card {
+    width: 297px;
+    height: 444px;
+    border-radius: 30px;
+    background: #FFFFFF;
+    box-shadow: 6px 72px 70px #E5E5E5;
+}
+
+.mushroom-image {
+    height: 222px;
+    background-position: center;
+}
+
+.mushroom-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.mushroom-family {
+    height: 50px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 50px;
+    font-size: 19px;
+    color: #653D00;
+}
+
+.mushroom-name {
+    height: 55px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 24px;
+}
+
+.mushroom-latin {
+    height: 50px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 50px;
+    font-size: 16px;
+    font-style: italic;
+    color: #B28550;
+}
+
+.mushroom-icons {
+    margin-top: auto;
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.mushroom-icon {
+    width: 50px;
+    height: 50px;
+    transition: transform 0.3s ease;
+}
+
+.mushroom-icon:hover {
+    transform: scale(1.1);
+}
+
+.all-mushrooms-button {
+    align-self: flex-end;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 20px;
+    color: #ACADB9;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.all-mushrooms-button:hover {
+    background: #FFE8C4;
+}
+
+.arrow-icon {
+    width: 16px;
+    height: 16px;
+}
