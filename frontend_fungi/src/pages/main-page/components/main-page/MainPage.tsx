@@ -5,6 +5,7 @@ import StatsBanner from "../stats-banner/StatsBanner.tsx"
 import SurveyBanner from "../survey-banner/SurveyBanner.tsx";
 import PublicationsBanner from "../publications-banner/PublicationsBanner.tsx";
 import MushroomBanner from "../mushroom-banner/MushroomBanner.tsx";
+import AuthorBanner from "../author-banner/AuthorBanner.tsx";
 
 export const MainPage: React.FC = () => {
 
@@ -14,8 +15,12 @@ export const MainPage: React.FC = () => {
                 <MainBanner />
                 <StatsBanner />
                 <SurveyBanner />
+                <hr className="main-page__hr" />
                 <PublicationsBanner />
+                <hr className="main-page__hr" />
                 <MushroomBanner />
+                <hr className="main-page__hr" />
+                <AuthorBanner />
             </div>
         </div>
     );
