@@ -8,6 +8,8 @@ using BackendFungi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,8 +46,10 @@ builder.Services.AddAuthentication(options =>
     });
 builder.Services.AddAuthorization();
 
+/*
 // Service for data initialization
-// builder.Services.AddSingleton<IDataInitializationService, DataInitializationService>();
+builder.Services.AddSingleton<IDataInitializationService, DataInitializationService>();
+*/
 
 // Services for access rights demarcation
 builder.Services.AddScoped<IAccessCheckService, AccessCheckService>();
@@ -62,6 +66,9 @@ builder.Services.AddScoped<IArticlesRepository, ArticlesRepository>();
 builder.Services.AddScoped<IMushroomsRepository, MushroomsRepository>();
 builder.Services.AddScoped<IRolesRepository, RolesRepository>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+
+// Service for correct response data wrapping
+builder.Services.AddSingleton<IActionResultExecutor<ObjectResult>, CustomObjectResultExecutor>();
 
 // Database context
 builder.Services.AddDbContext<FungiDbContext>(options =>
@@ -81,8 +88,13 @@ var app = builder.Build();
 // Error handling middleware
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
+// Middleware for wrapping response data in basic http errors
+app.UseMiddleware<StatusCodeMiddleware>();
+
+/*
 // Data initialization middleware
-// app.UseMiddleware<DataInitializationMiddleware>();
+app.UseMiddleware<DataInitializationMiddleware>();
+*/
 
 // Authentication and authorization
 app.UseAuthentication();
@@ -92,7 +104,8 @@ app.UseAuthorization();
 app.UseCors("FungiApiPolicy");
 
 // Swagger
-if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Docker")){
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Docker"))
+{
     app.UseSwagger();
     app.UseSwaggerUI();
 }
@@ -104,24 +117,26 @@ if (!app.Environment.IsEnvironment("Docker"))
 
 app.MapControllers();
 
+/*
 // Data initialization
-// using (var scope = app.Services.CreateScope())
-// {
-//     try
-//     {
-//         var dataInitializationService = scope.ServiceProvider.GetRequiredService<IDataInitializationService>();
-//         await dataInitializationService.InitializeData(CancellationToken.None);
-//
-//         var logger = scope.ServiceProvider.GetRequiredService<ILogger<IDataInitializationService>>();
-//         logger.LogInformation("Start initialization completed successfully");
-//     }
-//     catch (Exception e)
-//     {
-//         var logger = scope.ServiceProvider.GetRequiredService<ILogger<IDataInitializationService>>();
-//         logger.LogCritical(e, "An error occurred during start initialization process");
-//
-//         Environment.Exit(1);
-//     }
-// }
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        var dataInitializationService = scope.ServiceProvider.GetRequiredService<IDataInitializationService>();
+        await dataInitializationService.InitializeData(CancellationToken.None);
+
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<IDataInitializationService>>();
+        logger.LogInformation("Start initialization completed successfully");
+    }
+    catch (Exception e)
+    {
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<IDataInitializationService>>();
+        logger.LogCritical(e, "An error occurred during start initialization process");
+
+        Environment.Exit(1);
+    }
+}
+*/
 
 app.Run();
