@@ -1,9 +1,7 @@
 .main-banner {
     width: 1500px;
     height: 606px;
-    background: #F9F9F9;
     display: flex;
-    justify-content: center;
     margin-top: 238px;
 }
 
@@ -11,7 +9,7 @@
     display: flex;
     width: 100%;
     height: 100%;
-    box-sizing: border-box;
+    font-family: Raleway;
 }
 
 .banner-text {
@@ -20,61 +18,67 @@
     flex-direction: column;
     padding-right: 40px;
     width: 507px;
-    font-family: Raleway;
     align-items: flex-start;
 }
 
 .banner-top-sign {
     color: #201F1F;
-    opacity: 50%;
     margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    opacity: 50%;
 }
 
 .banner-title {
-    font-size: 65px;
+    font-size: 75px;
     font-weight: bold;
-    color: #201F1F;
-    margin-bottom: 25px;
+    color: #323142;
+    margin-bottom: 26px;
     line-height: 120%;
     letter-spacing: -3px;
 }
 
 .banner-description {
     text-align: justify;
-    font-size: 19px;
+    font-size: 23px;
     color: #444444;
-    margin-bottom: 32px;
+    margin-bottom: 34px;
     line-height: 28px;
-    max-width: 499px;
+    max-width: 630px;
+    opacity: 70%;
 }
 
 .banner-buttons {
     display: flex;
-    gap: 18px;
+    gap: 20px;
 }
 
 .explore-button, .pro-button {
-    font-family: Raleway;
     font-weight: bold;
     font-size: 16px;
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
     height: 59px;
+    align-items: center;
+    justify-content: center;
 }
 
 .explore-button {
-    background-color: #B28550;
-    color: white;
+    background-color: #FFE8C5;
+    color: #323142;
     border: none;
-    width: 156px;
+    width: 163px;
+    font-size: 16px;
+    letter-spacing: 0px;
 }
 
 .pro-button {
     background-color: transparent;
-    color: #B28550;
-    border: 2px solid #B28550;
-    width: 110px;
+    color: #E6C49C;
+    border: 2px solid #E6C49C;
+    width: 139px;
 }
 
 .explore-button:hover {
@@ -86,7 +90,6 @@
 }
 
 .banner-image {
-    margin-top: 20px;
     flex: 1;
     display: flex;
     align-items: flex-start;
