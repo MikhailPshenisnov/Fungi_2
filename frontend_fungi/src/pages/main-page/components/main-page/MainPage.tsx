@@ -15,11 +15,11 @@ export const MainPage: React.FC = () => {
                 <MainBanner />
                 <StatsBanner />
                 <SurveyBanner />
-                <hr className="main-page__hr" />
+                <hr className="main-page__hr_1" />
                 <PublicationsBanner />
-                <hr className="main-page__hr" />
+                <hr className="main-page__hr_2" />
                 <MushroomBanner />
-                <hr className="main-page__hr" />
+                <hr className="main-page__hr_3" />
                 <AuthorBanner />
             </div>
         </div>

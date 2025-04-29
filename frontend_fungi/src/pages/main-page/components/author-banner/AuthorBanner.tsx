@@ -6,7 +6,7 @@ const AuthorBanner: React.FC = () => {
         <div className="author-banner-container">
             <div className="author-banner">
                 <div className="author-content">
-                    <h2 className="author-title">Стань автором статей</h2>
+                    <h2 className="author-title">СТАНЬ АВТОРОМ СТАТЕЙ</h2>
                     <div className="author-form">
                         <input
                             type="email"
@@ -14,7 +14,7 @@ const AuthorBanner: React.FC = () => {
                             className="email-input"
                         />
                         <button type="submit" className="submit-button">
-                            Отправить
+                            ОТПРАВИТЬ
                         </button>
                     </div>
                 </div>

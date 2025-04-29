@@ -17,7 +17,6 @@
     display: flex;
     align-items: center;
     padding-left: 68px;
-    box-sizing: border-box;
 }
 
 .author-banner::before {
@@ -28,20 +27,20 @@
     right: 0;
     bottom: 0;
     background-image: url('../../../../public/images/png/mask-mushroom.png');
-    background-size: cover;
+    background-size: contain;
 }
 
 .author-content {
     position: relative;
-    z-index: 1;
+    z-index: 0;
 }
 
 .author-title {
     font-size: 50px;
-    margin-bottom: 11px;
-    color: #ffffff;
+    margin-bottom: 39px;
+    color: #656471;
     font-weight: bolder;
-    filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.25));
+    opacity: 80%;
 }
 
 .author-form {
@@ -87,7 +86,7 @@
     position: absolute;
     right: 0;
     bottom: 0;
-    z-index: 2;
+    z-index: 1;
 }
 
 .plate-image {

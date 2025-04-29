@@ -1,10 +1,10 @@
 .main-banner {
-    width: 1248px;
-    height: 538px;
+    width: 1500px;
+    height: 606px;
     background: #F9F9F9;
     display: flex;
     justify-content: center;
-    margin-top: 253px;
+    margin-top: 238px;
 }
 
 .banner-content {
@@ -97,9 +97,4 @@
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
-}
-
-.main-page__hr{
-    width: 1248px;
-    color: #CBCBCB;
 }

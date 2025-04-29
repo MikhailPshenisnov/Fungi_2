@@ -13,3 +13,21 @@
     position: relative;
     background: #F9F9F9;
 }
+
+.main-page__hr_1{
+    width: 1720px;
+    color: #CBCBCB;
+    margin-top: 86px;
+}
+
+.main-page__hr_2{
+    width: 1720px;
+    color: #CBCBCB;
+    margin-top: 189px;
+}
+
+.main-page__hr_3{
+    width: 1720px;
+    color: #CBCBCB;
+    margin-top: 116px;
+}

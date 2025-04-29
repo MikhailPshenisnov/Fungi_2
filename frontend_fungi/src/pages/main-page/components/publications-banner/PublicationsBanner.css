@@ -1,10 +1,10 @@
 .publications-banner {
-    width: 1248px;
-    height: 640px;
+    width: 1500px;
+    height: 521px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 100px;
+    margin-top: 190px;
     font-family: Raleway;
 }
 
