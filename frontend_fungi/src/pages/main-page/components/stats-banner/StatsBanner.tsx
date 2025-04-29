@@ -6,7 +6,7 @@ const StatsBanner: React.FC = () => {
         <div className="stats-banner">
             <div className="stats-banner-content">
                 <div className="stats-text-block">
-                    <h2 className="stats-heading">10K+</h2>
+                    <h2 className="stats-heading">1K+</h2>
                     <p className="stats-description">Грибов в нашей базе</p>
                 </div>
 
@@ -16,7 +16,7 @@ const StatsBanner: React.FC = () => {
                 </div>
 
                 <div className="stats-text-block">
-                    <h2 className="stats-heading">99.99%</h2>
+                    <h2 className="stats-heading">8 из 10</h2>
                     <p className="stats-description">Грибников выбирают нас</p>
                 </div>
             </div>

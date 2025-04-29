@@ -8,47 +8,47 @@
 .survey-banner-content {
     display: flex;
     width: 100%;
-    gap: 217px;
+    gap: 107px;
 }
 
-.phone-image-container {
-    flex: 1;
+.person-image-container {
     display: flex;
+    align-items: flex-end;
 }
 
-.phone-image {
-    max-width: 100%;
-    max-height: 625px;
-    height: auto;
-    object-fit: contain;
+.person-image {
+    width: 777px;
+    height: 693px;
 }
 
 .text-content {
-    width: 553px;
+    width: 616px;
     align-items: flex-start;
-    justify-content: center;
+    justify-content: flex-end;
     display: flex;
     flex-direction: column;
     font-family: Raleway;
 }
 
 .survey-heading {
-    font-size: 45px;
+    font-size: 50px;
     font-weight: bold;
-    margin-bottom: 28px;
-    color: #767676;
+    line-height: 61px;
+    margin-bottom: 66px;
+    color: #323142;
     text-transform: capitalize;
 }
 
 .survey-list {
     list-style-type: none;
-    padding: 0;
+    max-width: 541px;
 }
 
 .survey-list-item {
     color: #676767;
-    font-size: 22px;
-    margin-bottom: 28px;
+    font-size: 24px;
+    line-height: 30px;
+    margin-bottom: 26px;
     position: relative;
     padding-left: 30px;
 }
@@ -62,19 +62,21 @@
 }
 
 .button-container {
+    margin-top: 66px;
     display: flex;
-    align-items: center;
-    width: 331px;
-    height: 165px;
+    align-items: flex-start;
+    width: 346px;
+    height: 164px;
 }
 
 .survey-button {
     font-size: 18px;
     font-weight: bold;
-    background-color: #B28550;
+    text-transform: capitalize;
+    background-color: #FFE8C4;
     width: 184px;
     height: 63px;
-    color: white;
+    color: #323142;
     border: none;
     border-radius: 15px;
     cursor: pointer;
@@ -86,5 +88,7 @@
 }
 
 .decoration {
-    padding-top: 80px;
+    position: absolute;
+    margin-top: 50px;
+    margin-left: 140px;
 }

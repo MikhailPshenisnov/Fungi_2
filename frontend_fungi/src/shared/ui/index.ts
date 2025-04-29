@@ -4,3 +4,4 @@ export { Card } from './Card';
 export { GridButton } from './GridButton/index';
 export { ArrowSvg } from './svg-components';
 export { LineMainBannerSignSVG } from './svg-components';
+export { DecorationSVG } from './svg-components';
