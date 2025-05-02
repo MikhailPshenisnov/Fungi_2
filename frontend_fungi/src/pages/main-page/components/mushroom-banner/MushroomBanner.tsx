@@ -74,10 +74,10 @@ const MushroomBanner: React.FC = () => {
                 ))}
             </div>
 
-            <div className="all-mushrooms-button">
+            <button className="all-mushrooms-button">
                 <span>Все грибы</span>
                 <img src={'../../../../../public/images/svg/arrow-right.svg'} alt="" className="arrow-icon" />
-            </div>
+            </button>
         </div>
     );
 };

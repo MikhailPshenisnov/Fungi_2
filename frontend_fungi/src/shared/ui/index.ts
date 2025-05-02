@@ -9,3 +9,5 @@ export { FavouriteSVG } from './svg-components';
 export { StarSVG } from './svg-components';
 export { EatableSVG } from './svg-components';
 export { RedbookedSVG } from './svg-components';
+export { QuotesSVG } from './svg-components';
+export { ReviewStarsSVG } from './svg-components';

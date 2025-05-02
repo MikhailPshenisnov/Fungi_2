@@ -51,10 +51,10 @@ const PublicationsBanner: React.FC = () => {
                 ))}
             </div>
 
-            <div className="all-articles-button">
+            <button className="all-articles-button">
                 <span>Все статьи</span>
                 <img src={'../../../../../public/images/svg/arrow-right.svg'} alt="" className="arrow-icon" />
-            </div>
+            </button>
         </div>
     );
 };

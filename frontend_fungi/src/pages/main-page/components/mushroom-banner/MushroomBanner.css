@@ -90,9 +90,12 @@
     color: #ACADB9;
     cursor: pointer;
     padding: 8px 16px;
+    border: none;
+    background: none;
     margin-right: 100px;
     border-radius: 15px;
     transition: all 0.3s ease;
+    font-family: Raleway;
 }
 
 .all-mushrooms-button:hover {
