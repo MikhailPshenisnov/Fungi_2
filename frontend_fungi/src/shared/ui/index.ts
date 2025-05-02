@@ -5,3 +5,5 @@ export { GridButton } from './GridButton/index';
 export { ArrowSvg } from './svg-components';
 export { LineMainBannerSignSVG } from './svg-components';
 export { DecorationSVG } from './svg-components';
+export { FavouriteSVG } from './svg-components';
+export { StarSVG } from './svg-components';
