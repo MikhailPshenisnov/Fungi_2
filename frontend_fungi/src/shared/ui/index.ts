@@ -7,3 +7,5 @@ export { LineMainBannerSignSVG } from './svg-components';
 export { DecorationSVG } from './svg-components';
 export { FavouriteSVG } from './svg-components';
 export { StarSVG } from './svg-components';
+export { EatableSVG } from './svg-components';
+export { RedbookedSVG } from './svg-components';

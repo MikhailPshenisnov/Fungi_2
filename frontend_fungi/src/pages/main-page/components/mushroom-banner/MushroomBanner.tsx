@@ -1,14 +1,15 @@
 import React from 'react';
 import './MushroomBanner.css';
+import {EatableSVG, FavouriteSVG, RedbookedSVG} from '@shared/ui';
 
 const MushroomBanner: React.FC = () => {
     const mushrooms = [
         {
             image: '../../../../../public/images/png/mushroom1.png',
-            family: 'Болетовые (Boletaceae)',
+            family: 'Болетовые',
             name: 'Подосиновик желто-бурый',
             latin: 'Léccinum versipélle',
-            type: 'edible',
+            type: 'eatable',
             redBookStatus: 'not-in'
         },
         {
@@ -16,7 +17,7 @@ const MushroomBanner: React.FC = () => {
             family: 'Вёшенковые',
             name: 'Вёшенка устричная',
             latin: 'Pleurotus ostreatus',
-            type: 'edible',
+            type: 'eatable',
             redBookStatus: 'not-in'
         },
         {
@@ -24,7 +25,7 @@ const MushroomBanner: React.FC = () => {
             family: 'Аманитовые',
             name: 'Мухомор красный',
             latin: 'Amanita muscaria',
-            type: 'poisonous',
+            type: 'not_eatable',
             redBookStatus: 'not-in'
         },
         {
@@ -32,14 +33,22 @@ const MushroomBanner: React.FC = () => {
             family: 'Масленковые',
             name: 'Маслёнок желто-бурый',
             latin: 'Suillus variegatus',
-            type: 'edible',
+            type: 'eatable',
+            redBookStatus: 'not-in'
+        },
+        {
+            image: '../../../../../public/images/png/mushroom4.png',
+            family: 'Масленковые',
+            name: 'Маслёнок желто-бурый',
+            latin: 'Suillus variegatus',
+            type: 'eatable',
             redBookStatus: 'not-in'
         }
     ];
 
     return (
         <div className="mushroom-banner">
-            <h2 className="mushroom-title">Наши <span style={{color: "#B28550", fontWeight: "bold"}}>Грибы</span></h2>
+            <h2 className="mushroom-title">Наши <span style={{color: "#E6C49C", fontWeight: "bold"}}>Грибы</span></h2>
 
             <div className="mushroom-grid">
                 {mushrooms.map((mushroom, index) => (
@@ -47,23 +56,18 @@ const MushroomBanner: React.FC = () => {
                         <div
                             className="mushroom-image"
                             style={{ backgroundImage: `url(${mushroom.image})` }}
-                        ></div>
+                        >
+                            <button className="favourite-button">
+                                <FavouriteSVG />
+                            </button>
+                        </div>
                         <div className="mushroom-content">
-                            <p className="mushroom-family">{mushroom.family}</p>
+                            <div className="mushroom-family">{mushroom.family}</div>
                             <h3 className="mushroom-name">{mushroom.name}</h3>
                             <p className="mushroom-latin">{mushroom.latin}</p>
                             <div className="mushroom-icons">
-                                <img
-                                    src={mushroom.type === 'edible' ? '../../../../../public/images/svg/eatable.svg' : '../../../../../public/images/svg/not_eatable.svg'}
-                                    alt={mushroom.type === 'edible' ? 'Съедобный' : 'Ядовитый'}
-                                    className="mushroom-icon"
-                                />
-                                <img
-                                    src={mushroom.redBookStatus === 'in' ? '../../../../../public/images/svg/redbooked.svg' : '../../../../../public/images/svg/not_redbooked.svg'}
-                                    alt={mushroom.redBookStatus === 'in' ? 'В Красной книге' : 'Не в Красной книге'}
-                                    className="mushroom-icon"
-                                    data-status={mushroom.redBookStatus}
-                                />
+                                <RedbookedSVG redBookStatus={mushroom.redBookStatus} />
+                                <EatableSVG type={mushroom.type} />
                             </div>
                         </div>
                     </div>

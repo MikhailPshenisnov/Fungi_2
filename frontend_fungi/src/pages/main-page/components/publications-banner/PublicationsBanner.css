@@ -19,7 +19,7 @@
 .publications-grid {
     display: flex;
     gap: 50px;
-    margin-bottom: 60px;
+    margin-bottom: 100px;
 }
 
 .publication-card {
@@ -109,7 +109,7 @@
 
 .all-articles-button {
     align-self: flex-end;
-    margin-right: 90px;
+    margin-right: 100px;
     display: flex;
     align-items: center;
     gap: 20px;
