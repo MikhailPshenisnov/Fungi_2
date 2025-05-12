@@ -1,0 +1,10 @@
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 409px;
+    list-style-type: none;
+    font-family: Raleway, serif;
+    font-size: 20px;
+    font-weight: 600;
+}
