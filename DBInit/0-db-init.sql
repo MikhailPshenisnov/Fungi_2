@@ -45,8 +45,7 @@ CREATE TABLE public."Users" (
   "Email" character varying(128),
   "PasswordHash" character varying(128) NOT NULL,
   "RoleId" uuid NOT NULL,
-  FOREIGN KEY ("RoleId") REFERENCES public."Roles" ("Id")
-  MATCH SIMPLE ON UPDATE NO ACTION ON DELETE RESTRICT
+  FOREIGN KEY ("RoleId") REFERENCES public."Roles" ("Id") ON DELETE RESTRICT
 );
 CREATE INDEX "fki_Users_RoleId_fkey" ON public."Users" USING btree ("RoleId");
 CREATE UNIQUE INDEX users_unique_email ON public."Users" USING btree ("Email");
@@ -58,8 +57,7 @@ CREATE TABLE public."Paragraphs" (
   "ParagraphText" text NOT NULL,
   "SerialNumber" integer NOT NULL,
   "IsSubtitle" boolean NOT NULL,
-  FOREIGN KEY ("ArticleId") REFERENCES public."Articles" ("Id")
-  MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
+  FOREIGN KEY ("ArticleId") REFERENCES public."Articles" ("Id") ON DELETE CASCADE
 );
 CREATE INDEX "fki_Paragraphs_ArticleId_fkey" ON public."Paragraphs" USING btree ("ArticleId");
 
@@ -67,7 +65,22 @@ CREATE TABLE public."Doppelgangers" (
   "Id" uuid PRIMARY KEY NOT NULL,
   "MushroomId" uuid NOT NULL,
   "DoppelgangerName" character varying(128) NOT NULL,
-  FOREIGN KEY ("MushroomId") REFERENCES public."Mushrooms" ("Id")
-  MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
+  FOREIGN KEY ("MushroomId") REFERENCES public."Mushrooms" ("Id") ON DELETE CASCADE
 );
 CREATE INDEX "fki_Doppelgangers_MushroomId_fkey" ON public."Doppelgangers" USING btree ("MushroomId");
+
+CREATE TABLE public."ArticleLikes" (
+  "Id" serial primary key,
+  "ArticleId" uuid NOT NULL REFERENCES public."Articles" ("Id") ON DELETE CASCADE,
+  "UserId" uuid NOT NULL REFERENCES public."Users" ("Id") ON DELETE CASCADE,
+  "LikeDate" timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT article_likes_unique_user_article UNIQUE ("ArticleId", "UserId")
+);
+
+CREATE TABLE public."MushroomLikes" (
+  "Id" serial primary key,
+  "MushroomId" uuid NOT NULL REFERENCES public."Mushrooms" ("Id") ON DELETE CASCADE,
+  "UserId" uuid NOT NULL REFERENCES public."Users" ("Id") ON DELETE CASCADE,
+  "LikeDate" timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT mushroom_likes_unique_user_mushroom UNIQUE ("MushroomId", "UserId")
+);
