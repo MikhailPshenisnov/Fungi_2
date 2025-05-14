@@ -70,7 +70,7 @@ CREATE TABLE public."Doppelgangers" (
 CREATE INDEX "fki_Doppelgangers_MushroomId_fkey" ON public."Doppelgangers" USING btree ("MushroomId");
 
 CREATE TABLE public."ArticleLikes" (
-  "Id" serial primary key,
+  "Id" uuid PRIMARY KEY NOT NULL,
   "ArticleId" uuid NOT NULL REFERENCES public."Articles" ("Id") ON DELETE CASCADE,
   "UserId" uuid NOT NULL REFERENCES public."Users" ("Id") ON DELETE CASCADE,
   "LikeDate" timestamp with time zone NOT NULL DEFAULT now(),
@@ -78,7 +78,7 @@ CREATE TABLE public."ArticleLikes" (
 );
 
 CREATE TABLE public."MushroomLikes" (
-  "Id" serial primary key,
+  "Id" uuid PRIMARY KEY NOT NULL,
   "MushroomId" uuid NOT NULL REFERENCES public."Mushrooms" ("Id") ON DELETE CASCADE,
   "UserId" uuid NOT NULL REFERENCES public."Users" ("Id") ON DELETE CASCADE,
   "LikeDate" timestamp with time zone NOT NULL DEFAULT now(),

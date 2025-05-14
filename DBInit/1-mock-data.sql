@@ -53,27 +53,41 @@ VALUES ('3a4b5c6d-7e8f-9a0b-1c2d-3e4f5a6b7c8d', '0d1e2f3a-4b5c-6d7e-8f9a-0b1c2d3
         'Никогда не собирайте грибы, в которых вы не уверены.', 1, false),
        ('5c6d7e8f-9a0b-1c2d-3e4f-5a6b7c8d9e0f', '1e2f3a4b-5c6d-7e8f-9a0b-1c2d3e4f5a6b', '1. Бледная поганка', 0, true);
 
--- Insert article likes (теперь без указания Id, так как он serial)
-INSERT INTO public."ArticleLikes" ("ArticleId", "UserId", "LikeDate") VALUES
+-- Insert article likes
+INSERT INTO public."ArticleLikes" ("Id", "ArticleId", "UserId", "LikeDate")
+VALUES
 -- Лайки для статьи "Как отличить съедобные грибы от ядовитых"
-('0d1e2f3a-4b5c-6d7e-8f9a-0b1c2d3e4f5a', 'd3eebc99-9c0b-4ef8-bb6d-6bb9bd380a14', '2023-08-15 10:15:00+03'), -- админ
-('0d1e2f3a-4b5c-6d7e-8f9a-0b1c2d3e4f5a', 'e4eebc99-9c0b-4ef8-bb6d-6bb9bd380a15', '2023-08-15 11:30:00+03'), -- редактор
-('0d1e2f3a-4b5c-6d7e-8f9a-0b1c2d3e4f5a', 'f5eebc99-9c0b-4ef8-bb6d-6bb9bd380a16', '2023-08-16 09:45:00+03'), -- пользователь
+('9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f', '0d1e2f3a-4b5c-6d7e-8f9a-0b1c2d3e4f5a', 'd3eebc99-9c0b-4ef8-bb6d-6bb9bd380a14',
+ '2023-08-15 10:15:00+03'), -- админ
+('0d1e2f3a-4b5c-6d7e-8f9a-0b1c2d3e4f5a', '0d1e2f3a-4b5c-6d7e-8f9a-0b1c2d3e4f5a', 'e4eebc99-9c0b-4ef8-bb6d-6bb9bd380a15',
+ '2023-08-15 11:30:00+03'), -- редактор
+('1e2f3a4b-5c6d-7e8f-9a0b-1c2d3e4f5a6b', '0d1e2f3a-4b5c-6d7e-8f9a-0b1c2d3e4f5a', 'f5eebc99-9c0b-4ef8-bb6d-6bb9bd380a16',
+ '2023-08-16 09:45:00+03'), -- пользователь
 
 -- Лайки для статьи "Топ-5 самых опасных грибов России"
-('1e2f3a4b-5c6d-7e8f-9a0b-1c2d3e4f5a6b', 'd3eebc99-9c0b-4ef8-bb6d-6bb9bd380a14', '2023-09-01 15:00:00+03'), -- админ
-('1e2f3a4b-5c6d-7e8f-9a0b-1c2d3e4f5a6b', 'f5eebc99-9c0b-4ef8-bb6d-6bb9bd380a16', '2023-09-02 12:20:00+03'); -- пользователь
+('2f3a4b5c-6d7e-8f9a-0b1c-2d3e4f5a6b7c', '1e2f3a4b-5c6d-7e8f-9a0b-1c2d3e4f5a6b', 'd3eebc99-9c0b-4ef8-bb6d-6bb9bd380a14',
+ '2023-09-01 15:00:00+03'), -- админ
+('3a4b5c6d-7e8f-9a0b-1c2d-3e4f5a6b7c8d', '1e2f3a4b-5c6d-7e8f-9a0b-1c2d3e4f5a6b', 'f5eebc99-9c0b-4ef8-bb6d-6bb9bd380a16',
+ '2023-09-02 12:20:00+03');
+-- пользователь
 
--- Insert mushroom likes (также без указания Id)
-INSERT INTO public."MushroomLikes" ("MushroomId", "UserId", "LikeDate") VALUES
+-- Insert mushroom likes
+INSERT INTO public."MushroomLikes" ("Id", "MushroomId", "UserId", "LikeDate")
+VALUES
 -- Лайки для Белого гриба
-('1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d', 'd3eebc99-9c0b-4ef8-bb6d-6bb9bd380a14', '2023-08-10 08:00:00+03'), -- админ
-('1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d', 'e4eebc99-9c0b-4ef8-bb6d-6bb9bd380a15', '2023-08-10 09:15:00+03'), -- редактор
-('1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d', 'f5eebc99-9c0b-4ef8-bb6d-6bb9bd380a16', '2023-08-11 10:30:00+03'), -- пользователь
+('4b5c6d7e-8f9a-0b1c-2d3e-4f5a6b7c8d9e', '1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d', 'd3eebc99-9c0b-4ef8-bb6d-6bb9bd380a14',
+ '2023-08-10 08:00:00+03'), -- админ
+('5c6d7e8f-9a0b-1c2d-3e4f-5a6b7c8d9e0f', '1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d', 'e4eebc99-9c0b-4ef8-bb6d-6bb9bd380a15',
+ '2023-08-10 09:15:00+03'), -- редактор
+('6d7e8f9a-0b1c-2d3e-4f5a-6b7c8d9e0f1a', '1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d', 'f5eebc99-9c0b-4ef8-bb6d-6bb9bd380a16',
+ '2023-08-11 10:30:00+03'), -- пользователь
 
 -- Лайки для Мухомора красного
-('2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e', 'e4eebc99-9c0b-4ef8-bb6d-6bb9bd380a15', '2023-08-12 11:45:00+03'), -- редактор
-('2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e', 'f5eebc99-9c0b-4ef8-bb6d-6bb9bd380a16', '2023-08-13 12:00:00+03'), -- пользователь
+('7e8f9a0b-1c2d-3e4f-5a6b-7c8d9e0f1a2b', '2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e', 'e4eebc99-9c0b-4ef8-bb6d-6bb9bd380a15',
+ '2023-08-12 11:45:00+03'), -- редактор
+('8f9a0b1c-2d3e-4f5a-6b7c-8d9e0f1a2b3c', '2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e', 'f5eebc99-9c0b-4ef8-bb6d-6bb9bd380a16',
+ '2023-08-13 12:00:00+03'), -- пользователь
 
 -- Лайки для Бледной поганки
-('3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f', 'd3eebc99-9c0b-4ef8-bb6d-6bb9bd380a14', '2023-08-14 13:15:00+03'); -- админ
+('9a0b1c2d-3e4f-5a6b-7c8d-9e0f1a2b3c4d', '3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f', 'd3eebc99-9c0b-4ef8-bb6d-6bb9bd380a14',
+ '2023-08-14 13:15:00+03'); -- админ
