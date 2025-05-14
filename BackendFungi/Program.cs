@@ -60,12 +60,16 @@ builder.Services.AddScoped<IArticlesService, ArticlesService>();
 builder.Services.AddScoped<IMushroomsService, MushroomsService>();
 builder.Services.AddScoped<IRolesService, RolesService>();
 builder.Services.AddScoped<IUsersService, UsersService>();
+builder.Services.AddScoped<IArticleLikesService, ArticleLikesService>();
+builder.Services.AddScoped<IMushroomLikesService, MushroomLikesService>();
 
 // Services for repositories
 builder.Services.AddScoped<IArticlesRepository, ArticlesRepository>();
 builder.Services.AddScoped<IMushroomsRepository, MushroomsRepository>();
 builder.Services.AddScoped<IRolesRepository, RolesRepository>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+builder.Services.AddScoped<IArticleLikesRepository, ArticleLikesRepository>();
+builder.Services.AddScoped<IMushroomLikesRepository, MushroomLikesRepository>();
 
 // Service for correct response data wrapping
 builder.Services.AddSingleton<IActionResultExecutor<ObjectResult>, CustomObjectResultExecutor>();
