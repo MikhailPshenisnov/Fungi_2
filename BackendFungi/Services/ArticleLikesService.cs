@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using BackendFungi.Abstractions.Repositories;
 using BackendFungi.Abstractions.Services;
 
@@ -12,8 +13,9 @@ public class ArticleLikesService : IArticleLikesService
         _likesRepository = likesRepository;
     }
 
-    public async Task<bool> ToggleLikeAsync(Guid articleId, Guid userId, CancellationToken ct)
+    public async Task<bool> ToggleLikeAsync(Guid articleId, ClaimsPrincipal user, CancellationToken ct)
     {
+        var userId = GetUserId(user);
         return await _likesRepository.ToggleLikeAsync(articleId, userId, ct);
     }
 
@@ -22,8 +24,14 @@ public class ArticleLikesService : IArticleLikesService
         return await _likesRepository.GetLikesCountAsync(articleId, ct);
     }
 
-    public async Task<bool> HasUserLikedAsync(Guid articleId, Guid userId, CancellationToken ct)
+    public async Task<bool> HasUserLikedAsync(Guid articleId, ClaimsPrincipal user, CancellationToken ct)
     {
+        var userId = GetUserId(user);
         return await _likesRepository.HasUserLikedAsync(articleId, userId, ct);
+    }
+
+    private static Guid GetUserId(ClaimsPrincipal user)
+    {
+        return Guid.Parse(user.FindFirst("UserId")?.Value ?? throw new UnauthorizedAccessException());
     }
 }
