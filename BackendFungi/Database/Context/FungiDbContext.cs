@@ -24,6 +24,8 @@ public partial class FungiDbContext : DbContext
     public virtual DbSet<Paragraph> Paragraphs { get; set; }
     public virtual DbSet<Role> Roles { get; set; }
     public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<ArticleLike> ArticleLikes { get; set; }
+    public virtual DbSet<MushroomLike> MushroomLikes { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -106,6 +108,50 @@ public partial class FungiDbContext : DbContext
                 .HasForeignKey(d => d.RoleId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("Users_RoleId_fkey");
+        });
+        
+        modelBuilder.Entity<ArticleLike>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("ArticleLikes_pkey");
+            entity.HasIndex(e => e.ArticleId, "fki_ArticleLikes_ArticleId_fkey");
+            entity.HasIndex(e => e.UserId, "fki_ArticleLikes_UserId_fkey");
+            entity.Property(e => e.Id).ValueGeneratedNever();
+        
+            entity.HasOne(d => d.Article)
+                .WithMany()
+                .HasForeignKey(d => d.ArticleId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("ArticleLikes_ArticleId_fkey");
+            
+            entity.HasOne(d => d.User)
+                .WithMany()
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("ArticleLikes_UserId_fkey");
+            
+            entity.HasIndex(e => new { e.ArticleId, e.UserId }, "article_likes_unique_user_article").IsUnique();
+        });
+
+        modelBuilder.Entity<MushroomLike>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("MushroomLikes_pkey");
+            entity.HasIndex(e => e.MushroomId, "fki_MushroomLikes_MushroomId_fkey");
+            entity.HasIndex(e => e.UserId, "fki_MushroomLikes_UserId_fkey");
+            entity.Property(e => e.Id).ValueGeneratedNever();
+        
+            entity.HasOne(d => d.Mushroom)
+                .WithMany()
+                .HasForeignKey(d => d.MushroomId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("MushroomLikes_MushroomId_fkey");
+            
+            entity.HasOne(d => d.User)
+                .WithMany()
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("MushroomLikes_UserId_fkey");
+            
+            entity.HasIndex(e => new { e.MushroomId, e.UserId }, "mushroom_likes_unique_user_mushroom").IsUnique();
         });
 
         OnModelCreatingPartial(modelBuilder);

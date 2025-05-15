@@ -22,7 +22,6 @@
 
     <ItemGroup>
       <Folder Include="Database\Context\" />
-      <Folder Include="Database\Entities\" />
     </ItemGroup>
 
 </Project>

@@ -7,12 +7,11 @@ services:
       POSTGRES_DB: FungiDB
       POSTGRES_USER: fungi
       POSTGRES_PASSWORD: fungi
-      PGPORT: 5531
     volumes:
       - pg_fungi_data:/var/lib/postgresql/data
       - ./DBInit:/docker-entrypoint-initdb.d  
     ports:
-      - "5531:5531"
+      - "5531:5432"
 
   fungi-backend:
     container_name: fungi-backend

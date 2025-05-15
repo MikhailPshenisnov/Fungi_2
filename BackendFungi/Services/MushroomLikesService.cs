@@ -1,0 +1,37 @@
+using System.Security.Claims;
+using BackendFungi.Abstractions.Repositories;
+using BackendFungi.Abstractions.Services;
+
+namespace BackendFungi.Services;
+
+public class MushroomLikesService : IMushroomLikesService
+{
+    private readonly IMushroomLikesRepository _likesRepository;
+
+    public MushroomLikesService(IMushroomLikesRepository likesRepository)
+    {
+        _likesRepository = likesRepository;
+    }
+
+    public async Task<bool> ToggleLikeAsync(Guid mushroomId, ClaimsPrincipal user, CancellationToken ct)
+    {
+        var userId = GetUserId(user);
+        return await _likesRepository.ToggleLikeAsync(mushroomId, userId, ct);
+    }
+
+    public async Task<int> GetLikesCountAsync(Guid mushroomId, CancellationToken ct)
+    {
+        return await _likesRepository.GetLikesCountAsync(mushroomId, ct);
+    }
+
+    public async Task<bool> HasUserLikedAsync(Guid mushroomId, ClaimsPrincipal user, CancellationToken ct)
+    {
+        var userId = GetUserId(user);
+        return await _likesRepository.HasUserLikedAsync(mushroomId, userId, ct);
+    }
+    
+    private static Guid GetUserId(ClaimsPrincipal user)
+    {
+        return Guid.Parse(user.FindFirst("UserId")?.Value ?? throw new UnauthorizedAccessException());
+    }
+}
