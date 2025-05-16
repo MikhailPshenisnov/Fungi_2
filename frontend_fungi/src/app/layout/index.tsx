@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Header } from '@modules/Header/header';
+import { Header } from '@modules/header/components/header/Header.tsx';
 import { Footer } from '@modules/Footer/footer';
 import './index.css';
 

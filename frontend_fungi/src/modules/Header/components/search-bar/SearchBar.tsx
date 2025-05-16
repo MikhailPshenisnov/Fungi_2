@@ -1,0 +1,25 @@
+import './SearchBar.css';
+
+export const SearchBar = () => {
+    return (
+        <form className="search-bar" action="/search" method="get">
+            <div className="search-bar__input">
+                <svg width="29" height="32" viewBox="0 0 29 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M6.84179 7.51203C9.90177 4.15219 14.7157 4.09011 17.5947 7.25138C20.4736 10.4127 20.4171 15.6986 17.3573 19.0585C14.2974 22.4184 9.48348 22.4803 6.60442 19.3191C3.72537 16.1578 3.78183 10.872 6.84179 7.51203Z"
+                        stroke="#606060" stroke-width="2" />
+                    <path d="M18.0625 20.4482L21.8981 24.5573" stroke="#606060" stroke-width="3"
+                          stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <input
+                    className="search-bar__text"
+                    type="search"
+                    name="q"
+                    placeholder="Поиск"
+                    aria-label="Поиск по сайту"
+                />
+            </div>
+            <button className="search-bar__btn" type="submit">Найти</button>
+        </form>
+    );
+}
