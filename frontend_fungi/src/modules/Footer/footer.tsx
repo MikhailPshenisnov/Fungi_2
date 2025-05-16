@@ -9,8 +9,8 @@ export function Footer() {
                     style={{
                         color: '#8D8989',
                         fontFamily: 'Raleway',
-                        marginLeft: '142px',
-                        marginTop: '60px',
+                        paddingLeft: '142px',
+                        paddingTop: '60px',
                     }}
                 >
                     2024, Fungi ©

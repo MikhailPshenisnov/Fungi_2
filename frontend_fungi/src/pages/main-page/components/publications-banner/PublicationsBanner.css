@@ -1,0 +1,134 @@
+.publications-banner {
+    width: 1500px;
+    height: 521px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 190px;
+    font-family: Raleway;
+}
+
+.publications-title {
+    font-size: 45px;
+    margin-bottom: 85px;
+    text-align: center;
+    color: #323142;
+    line-height: 25px;
+}
+
+.publications-grid {
+    display: flex;
+    gap: 50px;
+    margin-bottom: 100px;
+}
+
+.publication-card {
+    width: 400px;
+    height: 300px;
+    border-radius: 30px;
+    background: #FFFFFF;
+    box-shadow: 6px 72px 70px #E5E5E5;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-image {
+    height: 175px;
+    background-size: cover;
+    background-position: center;
+}
+
+.card-content {
+    padding: 10px 30px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.trend-badge {
+    width: 66px;
+    height: 25px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #E4C39C;
+    background: #FDF2E1;
+    border-radius: 6px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 25px;
+}
+
+.card-title {
+    margin-top: 5px;
+    font-size: 25px;
+    line-height: 1.3;
+}
+
+.card-footer {
+    display: flex;
+    margin-top: 10px;
+    color: #8E97A6;
+}
+
+.read-time {
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.star-icon {
+    width: 17px;
+    height: 17px;
+    margin-right: 10px;
+    padding-top: 3px;
+}
+
+.rating {
+    font-size: 20px;
+}
+
+.favorite-button {
+    width: 35px;
+    height: 35px;
+    background: #FFE8C4;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    position: absolute;
+    right: 30px;
+    bottom: 12px;
+    transition: all 0.3s ease;
+    justify-content: center;
+    align-items: center;
+}
+
+.favorite-button:hover {
+    opacity: 0.7;
+}
+
+.all-articles-button {
+    align-self: flex-end;
+    margin-right: 100px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 20px;
+    color: #ACADB9;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 15px;
+    border: none;
+    background: none;
+    transition: all 0.3s ease;
+    font-family: Raleway;
+}
+
+.all-articles-button:hover {
+    background: #FFE8C4;
+}
+
+.arrow-icon {
+    width: 16px;
+    height: 16px;
+}

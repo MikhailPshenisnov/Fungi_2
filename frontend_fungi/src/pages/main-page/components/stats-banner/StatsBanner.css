@@ -1,0 +1,44 @@
+.stats-banner {
+    background-image: url("../../../../../public/images/png/background-stats-banner.png");
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: flex;
+    width: 100%;
+    height: 200px;
+    margin-top: 113px;
+}
+
+.stats-banner-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 200px;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    font-family: Raleway;
+}
+
+.stats-text-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stats-heading {
+    color: #606060;
+    font-size: 43px;
+    font-weight: bold;
+    margin: 0 0 11px 0;
+    line-height: 1.2;
+    font-family: sans-serif;
+}
+
+.stats-description {
+    color: #5A5A5A;
+    font-size: 14px;
+    max-width: 600px;
+    color: #5A5A5A;
+}
