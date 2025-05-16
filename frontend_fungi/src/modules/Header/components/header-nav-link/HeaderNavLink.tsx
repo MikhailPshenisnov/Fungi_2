@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import React from 'react';
 
 interface Props {
@@ -7,7 +7,6 @@ interface Props {
 }
 
 export const HeaderNavLink: React.FC<Props> = ({ link, linkName}) => {
-    // const location = useLocation();
 
     return (
         <li>

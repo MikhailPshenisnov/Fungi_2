@@ -12,10 +12,13 @@ export function Header() {
                          className="site-logo" />
                     <h1 className="site-title">Fungi</h1>
                 </a>
-                <SearchBar/>
+                <SearchBar />
                 <Navbar />
+                <div className="toggle-buttons">
+                    <button className="btn inactive">Вход</button>
+                    <button className="btn active">Регистрация</button>
+                </div>
             </div>
-            <div className="presentation" />
         </header>
     );
 }
