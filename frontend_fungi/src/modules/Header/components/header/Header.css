@@ -8,12 +8,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    border: none;
 }
 
 .header__container {
     display: flex;
     width: 100%;
-    margin: 22px 100px 24px 100px;
+    margin: 22px 100px 0px 100px;
+    padding-bottom: 24px;
+    border-bottom: solid #CBCBCB 3px;
     justify-content: space-between;
 }
 
@@ -30,6 +33,37 @@
     font-weight: 600;
 }
 
+.btn {
+    font-family: Raleway, serif;
+    font-size: 20px;
+    font-weight: 800;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    color: #333;
+    background-color: transparent;
+    transition: background-color 0.3s;
+}
+
+.toggle-buttons {
+    display: inline-flex;
+    border: 3px solid #ffe8c8;
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+.btn.inactive {
+    background-color: white;
+    border-radius: 14px;
+    color: #606060;
+}
+
+
+.btn.active {
+    background-color: #ffe8c8;
+    border-radius: 14px;
+    color: #323142;
+}
 
 
 input[type="search"]::-webkit-search-cancel-button {
