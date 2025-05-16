@@ -1,0 +1,127 @@
+.mushroom-banner {
+    width: 1500px;
+    height: 668px;
+    margin-top: 116px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Raleway;
+}
+
+.mushroom-title {
+    font-size: 45px;
+    margin-bottom: 85px;
+    text-align: center;
+}
+
+.mushroom-grid {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 100px;
+}
+
+.mushroom-card {
+    width: 227px;
+    height: 391px;
+    border-radius: 35px;
+    background: #FFFFFF;
+    box-shadow: 6px 50px 70px #E5E5E5;
+}
+
+.mushroom-image {
+    height: 201px;
+    width: 227px;
+    background-position: center;
+    border-top-left-radius: 35px;
+    border-top-right-radius: 35px;
+}
+
+.mushroom-content {
+    flex-direction: column;
+    align-items: center;
+    margin-left: 24px;
+}
+
+.mushroom-family {
+    width: 117px;
+    height: 25px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #E4C39C;
+    background: #FDF2E1;
+    border-radius: 6px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 25px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.mushroom-name {
+    height: 46px;
+    width: 180px;
+    font-size: 20px;
+    line-height: 24.5px;
+    text-align: left;
+    color: #323142;
+}
+
+.mushroom-latin {
+    height: 50px;
+    text-align: left;
+    line-height: 50px;
+    font-size: 15px;
+    color: #B28550;
+}
+
+.mushroom-icons {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    align-items: center;
+}
+
+.all-mushrooms-button {
+    align-self: flex-end;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 20px;
+    color: #ACADB9;
+    cursor: pointer;
+    padding: 8px 16px;
+    border: none;
+    background: none;
+    margin-right: 100px;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    font-family: Raleway;
+}
+
+.all-mushrooms-button:hover {
+    background: #FFE8C4;
+}
+
+.arrow-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.favourite-button {
+    width: 35px;
+    height: 35px;
+    background: #FFE8C4;
+    border: none;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    margin-top: 17px;
+    margin-left: 174px;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.favourite-button:hover {
+    opacity: 0.7;
+}

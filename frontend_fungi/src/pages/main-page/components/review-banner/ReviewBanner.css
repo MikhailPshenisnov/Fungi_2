@@ -1,0 +1,140 @@
+.review-banner {
+    width: 100%;
+    max-width: 1920px;
+    height: 637px;
+    margin-top: 147px;
+    background: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    font-family: Raleway;
+}
+
+.review-title {
+    font-size: 45px;
+    margin-bottom: 91px;
+    line-height: 25.6px;
+    text-align: center;
+    color: #323142;
+}
+
+.reviews-container {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 50px;
+    cursor: grab;
+}
+
+.reviews-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.reviews-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+    margin: 0px 500px 0px 500px;
+}
+
+.reviews-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.reviews-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.reviews-scroll-wrapper {
+    display: flex;
+    gap: 30px;
+    padding: 0 110px;
+    width: max-content;
+}
+
+.review-card {
+    width: 472px;
+    height: 320px;
+    background: white;
+    border-radius: 25px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    position: relative;
+    flex-shrink: 0;
+}
+
+.quote-icon {
+    position: absolute;
+    top: 28px;
+    right: 18px;
+    width: 58px;
+    height: 44px;
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    margin-left: 18px;
+    margin-top: 15px;
+}
+
+.user-photo {
+    width: 71px;
+    height: 71px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 21px;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-size: 20px;
+    margin: 0 0 5px 0;
+    color: #333;
+}
+
+.user-time {
+    font-size: 16px;
+    margin: 0;
+    color: #777;
+}
+
+.review-text {
+    font-size: 18px;
+    line-height: 26.1px;
+    color: #636363;
+    margin: 20px 25px 25px 25px;
+    max-height: 131px;
+    font-style: italic;
+    text-align: justify;
+}
+
+.review-rating {
+    display: flex;
+    margin-left: 18px;
+}
+
+.all-reviews-button{
+    align-self: flex-end;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 20px;
+    color: #ACADB9;
+    cursor: pointer;
+    padding: 8px 16px;
+    border: none;
+    background: none;
+    margin-right: 328px;
+    margin-top: 100px;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    font-family: Raleway;
+}
+
+.all-reviews-button:hover {
+    background: #FFE8C4;
+}

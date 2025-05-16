@@ -1,0 +1,43 @@
+.main-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-page__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    position: relative;
+    background: #F9F9F9;
+}
+
+.main-page__hr_1{
+    width: 1720px;
+    color: #CBCBCB;
+    margin-top: 86px;
+    opacity: 50%;
+}
+
+.main-page__hr_2{
+    width: 1720px;
+    color: #CBCBCB;
+    margin-top: 189px;
+    opacity: 50%;
+}
+
+.main-page__hr_3{
+    width: 1720px;
+    color: #CBCBCB;
+    margin-top: 116px;
+    opacity: 50%;
+}
+
+.main-page__hr_4{
+    width: 1720px;
+    color: #CBCBCB;
+    margin-top: 146px;
+    opacity: 50%;
+}
