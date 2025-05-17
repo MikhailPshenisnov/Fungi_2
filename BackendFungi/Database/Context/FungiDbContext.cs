@@ -26,6 +26,7 @@ public partial class FungiDbContext : DbContext
     public virtual DbSet<User> Users { get; set; }
     public virtual DbSet<ArticleLike> ArticleLikes { get; set; }
     public virtual DbSet<MushroomLike> MushroomLikes { get; set; }
+    public virtual DbSet<ArticleMushroom> ArticleMushrooms { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -152,6 +153,30 @@ public partial class FungiDbContext : DbContext
                 .HasConstraintName("MushroomLikes_UserId_fkey");
             
             entity.HasIndex(e => new { e.MushroomId, e.UserId }, "mushroom_likes_unique_user_mushroom").IsUnique();
+        });
+
+        modelBuilder.Entity<ArticleMushroom>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("ArticleMushrooms_pkey");
+            entity.HasIndex(e => e.ArticleId, "fki_ArticleMushrooms_ArticleId_fkey");
+            entity.HasIndex(e => e.MushroomId, "fki_ArticleMushrooms_MushroomId_fkey");
+            entity.Property(e => e.Id).ValueGeneratedNever();
+
+            entity.HasOne(d => d.Article)
+                .WithMany()
+                .HasForeignKey(d => d.ArticleId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("ArticleMushrooms_ArticleId_fkey");
+
+            entity.HasOne(d => d.Mushroom)
+                .WithMany()
+                .HasForeignKey(d => d.MushroomId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("ArticleMushrooms_MushroomId_fkey");
+
+            entity.HasIndex(e => new { e.ArticleId, e.MushroomId })
+                .IsUnique()
+                .HasDatabaseName("article_mushroom_unique");
         });
 
         OnModelCreatingPartial(modelBuilder);
