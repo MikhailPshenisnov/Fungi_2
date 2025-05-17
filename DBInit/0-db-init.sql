@@ -84,3 +84,10 @@ CREATE TABLE public."MushroomLikes" (
   "LikeDate" timestamp with time zone NOT NULL DEFAULT now(),
   CONSTRAINT mushroom_likes_unique_user_mushroom UNIQUE ("MushroomId", "UserId")
 );
+
+CREATE TABLE public."ArticleMushrooms" (
+  "Id" uuid PRIMARY KEY NOT NULL,
+  "ArticleId" uuid NOT NULL REFERENCES public."Articles"("Id") ON DELETE CASCADE,
+  "MushroomId" uuid NOT NULL REFERENCES public."Mushrooms"("Id") ON DELETE CASCADE
+);
+CREATE UNIQUE INDEX "article_mushroom_unique" ON public."ArticleMushrooms" ("ArticleId", "MushroomId");
