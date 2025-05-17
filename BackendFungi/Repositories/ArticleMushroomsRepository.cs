@@ -33,7 +33,7 @@ public class ArticleMushroomsRepository : IArticleMushroomsRepository
         await _context.ArticleMushrooms.AddAsync(NewArticleMushroom);
         await _context.SaveChangesAsync();
 
-        return NewArticleMushroom.Id;
+        return articleId;
     }
 
     public async Task<Guid> DeleteMushroomFromArticle(Guid articleId, Guid mushroomId, CancellationToken ct)
