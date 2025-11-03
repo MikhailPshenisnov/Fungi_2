@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import './index.css';
 import { MushroomCard } from './components/MushroomCard/MushroomCard';
 import { SearchBar } from './components/SearchBar/SearchBar';
-import { useMushroomData } from '../../shared/hooks/useMushroomData';
-import { MushroomFilter } from './components/MushroomFilter/MushroomFilter';
+import { useMushroomFilter } from './components/MushroomFilter/MushroomFilter';
 import OpenMushroomFilterMenuButton from './components/Filter';
 import { FilterButtons } from '@shared/ui';
 import { Pagination } from '@modules/Pagination';
+import { useGetMushroomsQuery } from '@shared/api/endpoints';
+import { mockMushrooms } from '@shared/const/mock/mushrooms';
 
 interface FilterState {
     edibility: string[];
     capType: string[];
+    [key: string]: string[];
 }
 
 export const Encyclopedia: React.FC = () => {
@@ -20,32 +22,48 @@ export const Encyclopedia: React.FC = () => {
         capType: [],
     });
 
-    const { data: mushrooms, isLoading, error } = useMushroomData();
-
-    if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error.message}</div>;
-    if (!mushrooms || !Array.isArray(mushrooms))
-        return <div>No mushrooms data available</div>;
+    const {
+        data: mushrooms = mockMushrooms,
+        isLoading,
+        isError,
+        error,
+    } = useGetMushroomsQuery();
 
     const { filteredMushrooms, isFiltersActive, isSearchActive } =
-        MushroomFilter({
-            mushrooms,
+        useMushroomFilter({
+            mushrooms: Array.isArray(mushrooms) ? mushrooms : [],
             filters,
             searchQuery,
         });
 
+    if (isLoading) return <div>Loading...</div>;
+    if (isError)
+        return (
+            <div>
+                Error: {(error as any)?.status || 'Не удалось загрузить данные'}
+            </div>
+        );
+    if (!Array.isArray(mushrooms) || mushrooms.length === 0)
+        return <div>No mushrooms data available</div>;
+
     // Если нет ни фильтров, ни поиска, разделяем по категориям
     const PopularMushrooms =
         !isFiltersActive && !isSearchActive
-            ? mushrooms.sort(() => Math.random() - 0.5).slice(0, 5)
+            ? mushrooms
+                  .slice()
+                  .sort(() => Math.random() - 0.5)
+                  .slice(0, 5)
             : [];
-    const AllMushrooms = !isFiltersActive && !isSearchActive ? mushrooms : [];
+
+    const AllMushrooms =
+        !isFiltersActive && !isSearchActive ? mushrooms : filteredMushrooms;
 
     return (
         <div className="encyclopedia">
             <div className="encyclopedia__header">
                 <FilterButtons
-                    targetPath="/encyclopedia"
+                    // targetPath="/encyclopedia"
+                    onClick={() => {}}
                     buttonComponent={
                         <OpenMushroomFilterMenuButton
                             filters={filters}

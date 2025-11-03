@@ -23,11 +23,19 @@ export const PublicationsWideCard: FC<IPublicationsCardProps> = ({
             />
             <div className="publications-card__info">
                 <h2 className="publications-card__title">{card.title}</h2>
-                <p className="publications-card__text">
-                    {card.paragraphs || 'читать статью......'}
-                </p>
+                {card.paragraphs ? (
+                    card.paragraphs.map((p, _) => (
+                        <p className="publications-card__text">
+                            {p.paragraphText}
+                        </p>
+                    ))
+                ) : (
+                    <p className="publications-card__text">
+                        {card.paragraphs || 'читать статью......'}
+                    </p>
+                )}
                 <p className="publications-card__author">
-                    Автор статьи: {card.author}
+                    Автор статьи: {card.authorString}
                 </p>
             </div>
         </div>

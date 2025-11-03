@@ -2,20 +2,24 @@ export type TPublicationsCard = {
     title: string;
     src: string;
     text: string;
-    author: string;
+    authorString: string;
 };
 
-// export interface IParagraphPublication {
-//   paragraph?: string | null;
-// }
+export interface IParagraphPublication {
+    articleId: string;
+    id: string;
+    paragraphText: string;
+    isSubtitle: boolean;
+    serialNumber: number;
+}
 
 export interface IPublications {
     id: string;
     title: string;
     publishDate: string; // ISO строка даты
-    author: string;
+    authorString: string;
     headerPhotoLink: string;
-    paragraphs: string[];
+    paragraphs: IParagraphPublication[];
 }
 
 export interface IPublicationsCardProps {

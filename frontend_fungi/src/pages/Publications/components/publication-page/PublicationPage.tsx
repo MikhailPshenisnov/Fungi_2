@@ -1,15 +1,14 @@
 import './PublicationPage.css';
-import { usePublication } from '../../model/hooks';
+import { useGetPublicationByIdQuery } from '@shared/api/endpoints/publicationsApi';
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { PublicationsCard } from '../publications-card';
 import { mockPublications } from '@shared/const/mock/publications';
 
-
 export const PublicationPage: React.FC = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { data: publication } = usePublication(id);
+    const { data: publication } = useGetPublicationByIdQuery(id || '');
     const [imageError, setImageError] = useState(false);
 
     if (!publication) {
@@ -29,7 +28,7 @@ export const PublicationPage: React.FC = () => {
     return (
         <div className="publication-page">
             <div className="publication-page__content">
-                <div className='publication-page__info-container'>
+                <div className="publication-page__info-container">
                     <div className="publication-page_container">
                         <button
                             onClick={handleBack}
@@ -38,37 +37,37 @@ export const PublicationPage: React.FC = () => {
                             <img src="/images/svg/arrow.svg" alt="Назад" />
                             <span>Назад</span>
                         </button>
-                    
+
                         <h1 className="publication-page__title">
                             {publication.title}
                         </h1>
-                        
+
                         <p className="publication-page__author">
-                            Автор: {publication.author}
+                            Автор: {publication.authorString}
                         </p>
                     </div>
-                    <div className='publication-page__like-button'>
-                        <button className='publication-page__like-button-img'>
-                            <img src="/images/svg/bookmark.svg" alt="Сохранить" />
+                    <div className="publication-page__like-button">
+                        <button className="publication-page__like-button-img">
+                            <img
+                                src="/images/svg/bookmark.svg"
+                                alt="Сохранить"
+                            />
                         </button>
-                        
                     </div>
-                    
-                    
                 </div>
                 <img
-                        className="publication-page__image"
-                        src={
-                            imageError
-                                ? '/images/png/alt-card-image.png'
-                                : publication.headerPhotoLink
-                        }
-                        alt={publication.title}
-                        onError={handleImageError}
-                    />
+                    className="publication-page__image"
+                    src={
+                        imageError
+                            ? '/images/png/alt-card-image.png'
+                            : publication.headerPhotoLink
+                    }
+                    alt={publication.title}
+                    onError={handleImageError}
+                />
 
-                <div className='publication-page__main-info'>
-                    <div className='publication-page__main-text'>
+                <div className="publication-page__main-info">
+                    <div className="publication-page__main-text">
                         <div className="publication-page__text">
                             {publication.paragraphs.map(
                                 (paragraph, index) =>
@@ -77,22 +76,26 @@ export const PublicationPage: React.FC = () => {
                                             key={index}
                                             className="publication-page__paragraph"
                                         >
-                                            {paragraph}
+                                            {paragraph.paragraphText}
                                         </p>
                                     )
                             )}
                         </div>
                     </div>
-                    <div className='publication-text__recommendation'>
+                    <div className="publication-text__recommendation">
                         <h3>Рекомендуемые статьи</h3>
                         <div className="publication-text__recommendations-container">
-                        {recommendedPublications.map((publication) => (
-                            <PublicationsCard
-                            key={publication.id}
-                            card={publication}
-                            onClick={() => navigate(`/publications/${publication.id}`)}
-                            />
-                        ))}
+                            {recommendedPublications.map((publication) => (
+                                <PublicationsCard
+                                    key={publication.id}
+                                    card={publication}
+                                    onClick={() =>
+                                        navigate(
+                                            `/publications/${publication.id}`
+                                        )
+                                    }
+                                />
+                            ))}
                         </div>
                     </div>
                 </div>

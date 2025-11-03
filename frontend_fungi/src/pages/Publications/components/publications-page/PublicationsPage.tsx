@@ -1,12 +1,14 @@
 import './PublicationsPage.css';
 import { CardPublicationsView } from '../card-publications-view';
 import { FullSizePublicationView } from '../full-size-publication-view';
-import { usePublicationsData } from '../../model/hooks';
+import { useGetPublicationsQuery } from '@shared/api/endpoints/publicationsApi';
 import { useState } from 'react';
 import { FilterButtons, SortDropdown } from '@shared/ui/index.ts';
+import { mockPublications } from '@shared/const/mock/publications';
 
 export const PublicationsPage = () => {
-    const { data: publications } = usePublicationsData();
+    const { data: publications = mockPublications } = useGetPublicationsQuery();
+
     const [cardView, setCardView] = useState(false);
     return (
         <div className="publications">

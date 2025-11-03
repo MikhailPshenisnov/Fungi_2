@@ -1,6 +1,6 @@
-import { TMushroomCard } from '../../../pages/Encyclopedia/types';
+import { IMushroom } from '@pages/encyclopedia/components/MushroomFilter/types';
 
-export const mockMushrooms: TMushroomCard[] = [
+export const mockMushrooms: IMushroom[] = [
     {
         id: 1,
         name: 'Белый гриб',
@@ -84,7 +84,7 @@ export const mockMushrooms: TMushroomCard[] = [
         stemSizeTo: 6.0,
         stemType: 'Ровная',
         stemColor: 'Жёлтый',
-        capType: 'Воронковидная',
+        capType: 'Выпуклая',
         capColor: 'Жёлтый, оранжево-жёлтый',
         capUndersideType: 'Складчатая',
         description:
@@ -327,7 +327,7 @@ export const mockMushrooms: TMushroomCard[] = [
         stemSizeTo: 10.0,
         stemType: 'Ровная',
         stemColor: 'Белый, кремовый',
-        capType: 'Коническая',
+        capType: 'Вдавленная',
         capColor: 'Коричневый, темно-коричневый',
         capUndersideType: 'Ячеистая',
         description:
@@ -348,7 +348,7 @@ export const mockMushrooms: TMushroomCard[] = [
         stemSizeTo: 5.0,
         stemType: 'Боковая',
         stemColor: 'Белый',
-        capType: 'Раковинообразная',
+        capType: 'Плоская',
         capColor: 'Серый, буроватый',
         capUndersideType: 'Пластинчатая',
         description:
@@ -369,7 +369,7 @@ export const mockMushrooms: TMushroomCard[] = [
         stemSizeTo: 3.0,
         stemType: 'Ложная',
         stemColor: 'Белый',
-        capType: 'Шаровидная',
+        capType: 'Вдавленная',
         capColor: 'Белый, позже коричневый',
         capUndersideType: 'Нет',
         description:
@@ -411,7 +411,7 @@ export const mockMushrooms: TMushroomCard[] = [
         stemSizeTo: 5.0,
         stemType: 'Боковая',
         stemColor: 'Черноватый у основания',
-        capType: 'Веерообразная',
+        capType: 'Выпуклая',
         capColor: 'Желтовато-коричневый с тёмными чешуйками',
         capUndersideType: 'Трубчатая',
         description:

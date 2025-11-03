@@ -1,13 +1,15 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useMushroomData } from '../../../../shared/hooks/useMushroomData';
+// import { useMushroomData } from '../../../../shared/hooks/useMushroomData';
 import './index.css';
+import { TMushroomCard } from '@pages/encyclopedia/types';
 // import arrowIcon from '../../../../assets/icons/arrow-right.svg';
 
 export const MushroomPage: React.FC = () => {
     const navigate = useNavigate();
     const { mushroomId } = useParams<{ mushroomId: string }>();
-    const { data: mushrooms } = useMushroomData();
+    // const { data: mushrooms } = useMushroomData();
+    const { data: mushrooms } = { data: [] as TMushroomCard[] };
 
     if (!mushrooms || !mushroomId) {
         return <div>Loading...</div>;

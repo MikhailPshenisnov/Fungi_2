@@ -1,7 +1,7 @@
 import { useFilter } from '@shared/hooks/useFilter';
 import { MushroomFilterProps, IMushroom } from './types';
 
-export const MushroomFilter = ({
+export const useMushroomFilter = ({
     mushrooms,
     filters,
     searchQuery,

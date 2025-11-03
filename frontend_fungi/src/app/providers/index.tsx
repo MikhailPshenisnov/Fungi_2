@@ -1,11 +1,12 @@
 import { IWithProviderProps } from './types';
-import { WithQueryClient } from './with-query-client';
 import { WithRouter } from './with-router';
+import { Provider as ReduxProvider } from 'react-redux';
+import { store } from './store';
 
 export const Providers: React.FC<IWithProviderProps> = ({ children }) => {
     return (
-        <WithRouter>
-            <WithQueryClient>{children}</WithQueryClient>
-        </WithRouter>
+        <ReduxProvider store={store}>
+            <WithRouter>{children}</WithRouter>
+        </ReduxProvider>
     );
 };
