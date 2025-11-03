@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, Alert, TouchableOpacity } from 'react-native';
 
-const EncyclopediaList = ({ type, title, description, imageSource }) => {
+const Encyclopedia = ({ type, title, description, imageSource }) => {
     const handlePress = () => {
         Alert.alert("Карточка нажата", title);
     };
@@ -23,44 +23,42 @@ const EncyclopediaList = ({ type, title, description, imageSource }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 10,
-  },
   card: {
     backgroundColor: '#452929',
     borderRadius: 23,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'stretch', 
     marginVertical: 10,
-    height: 180,
+    minHeight: 150, 
     overflow: 'hidden',
   },
   cardContent: {
     flex: 1,
-    padding: 10,
+    padding: 15, 
+    justifyContent: 'center', 
   },
   type: {
     fontSize: 13,
     color: '#c79078',
     fontWeight: 'bold',
-    paddingBottom: 15,
+    paddingBottom: 8, 
   },
   title: {
-    fontSize: 20,
+    fontSize: 18, 
     fontWeight: 'bold',
     color: '#ffffff',
-    paddingBottom: 15
+    paddingBottom: 8, 
   },
   description: {
-    fontSize: 14,
+    fontSize: 12, 
     color: '#9A796E',
-    marginVertical: 5,
+    marginVertical: 3, 
     fontWeight: 'bold',
   },
   iconContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 8, 
   },
   icon: {
     width: 25,
@@ -69,11 +67,11 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   image: {
-    width: '50%',
+    width: 100, 
     height: '100%',
     borderTopRightRadius: 23,
     borderBottomRightRadius: 23,
   },
 });
 
-export default EncyclopediaList;
+export default Encyclopedia;

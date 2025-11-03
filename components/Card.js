@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, Alert, TouchableOpacity } from 'react-na
 
 const Card = ({ title, imageSource }) => {
     const handlePress = () => {
-        Alert.alert("Карточка нажата", title);
+        Alert.alert("Карточка нажата", String(title));
     };
 
     return (

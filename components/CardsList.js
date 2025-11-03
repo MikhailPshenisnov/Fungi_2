@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#000',
     },
     cardContainer: {
+        flex: 1,
         justifyContent: 'center',
     },
 });

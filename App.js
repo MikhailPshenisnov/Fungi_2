@@ -1,187 +1,108 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native';
-import CardsList from './components/CardsList';
-import EncyclopediaList from './components/EncyclopediaList';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
+import { Image } from 'react-native';
+
+
+import EncyclopediaScreen from './components/EncyclopediaScreen';
+import CardsScreen from './components/CardsScreen'; 
 import ProfileScreen from './components/ProfileScreen';
 
-const data = [
-  { title: 'Как избежать опасных и ядовитых грибов', imageSource: require('./assets/image/card.png') },
-  { title: 'Трюфели в твоем регионе: секреты поиска', imageSource: require('./assets/image/card.png') },
-  { title: 'Советы по хранению засолке грибов', imageSource: require('./assets/image/card.png') },
-  { title: 'Редкие и необычные грибы леса', imageSource: require('./assets/image/card.png') },
-];
 
-const encycdata = [
-  { type: 'Болетовые (Boletaceae)', 
-    title: 'Подосиновик желто-бурый', 
-    description: 'Léccinum versipélle',
-    imageSource: require('./assets/image/podosinovik.jpg') },
+const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
-  { type: 'Болетовые (Boletaceae)',
-    title: 'Белый гриб', 
-    description: 'Boletus edulis', 
-    imageSource: require('./assets/image/white.jpg') },
 
-  { type: 'Лисичковые',
-    title: 'Лисичка обыкновенная', 
-    description: 'Cantharellus cibarius', 
-    imageSource: require('./assets/image/fox.jpg') },
+function EncyclopediaStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen 
+        name="Encyclopedia" 
+        component={EncyclopediaScreen} 
+        options={{ 
+          title: 'Энциклопедия',
+          headerStyle: { backgroundColor: '#452929' },
+          headerTintColor: '#ffffff',
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
 
-  { type: 'Шампиньоновые',
-    title: 'Шампиньон полевой', 
-    description: 'Agaricus campestris', 
-    imageSource: require('./assets/image/shampinon.jpg') },
-];
+
+function CardsStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen 
+        name="Cards" 
+        component={CardsScreen} 
+        options={{ 
+          title: 'Публикации',
+          headerStyle: { backgroundColor: '#452929' },
+          headerTintColor: '#ffffff',
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
 
 const App = () => {
-  const [activeScreen, setActiveScreen] = useState('Карточки');
-  const [searchText, setSearchText] = useState('');
-
-  const filteredData = data.filter(item =>
-    item.title.toLowerCase().includes(searchText.toLowerCase())
-  );
-
-  const filteredEncycData = encycdata.filter(item =>
-    item.title.toLowerCase().includes(searchText.toLowerCase())
-  );
-
-  const renderScreen = () => {
-    switch (activeScreen) {
-      case 'Энциклопедия':
-        return <EncyclopediaList encycdata={filteredEncycData} />;
-      case 'Карточки':
-        return <CardsList cardsdata={filteredData} />;
-      case 'Профиль':
-        return <ProfileScreen/>;
-      default:
-        return null;
-    }
-  };
-
-  const getHeaderTitle = () => {
-    switch (activeScreen) {
-      case 'Энциклопедия':
-        return 'Энциклопедия';
-      case 'Карточки':
-        return 'Публикации';
-      case 'Профиль':
-        return 'Профиль';
-      default:
-        return '';
-    }
-  };
-
-  const getIconSource = (screen) => {
-    if (screen === 'Энциклопедия') {
-      return activeScreen === 'Энциклопедия'
-        ? require('./assets/image/encyclopedia2.png')
-        : require('./assets/image/encyclopedia.png');
-    } else if (screen === 'Карточки') {
-      return activeScreen === 'Карточки'
-        ? require('./assets/image/cards2.png')
-        : require('./assets/image/cards.png');
-    } else if (screen === 'Профиль') {
-      return activeScreen === 'Профиль'
-        ? require('./assets/image/profile2.png')
-        : require('./assets/image/profile.png');
-    }
-    return '';
-  };
-
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>{getHeaderTitle()}</Text>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Поиск..."
-          value={searchText}
-          onChangeText={setSearchText}
-        />
+    <NavigationContainer>
+      <Tab.Navigator 
         
-      </View>
-      <View style={styles.content}>
-        {renderScreen()}
-      </View>
-      <View style={styles.tabBar}>
-        <TouchableOpacity
-          style={styles.tabItem}
-          onPress={() => setActiveScreen('Энциклопедия')}
-        >
-          <Image
-            source={getIconSource('Энциклопедия')}
-            style={[styles.tabIcon, activeScreen === 'Энциклопедия' && styles.activeTabIcon]}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.tabItem}
-          onPress={() => setActiveScreen('Карточки')}
-        >
-          <Image
-            source={getIconSource('Карточки')}
-            style={[styles.tabIcon, activeScreen === 'Карточки' && styles.activeTabIcon]}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.tabItem}
-          onPress={() => setActiveScreen('Профиль')}
-        >
-          <Image
-            source={getIconSource('Профиль')}
-            style={[styles.tabIcon, activeScreen === 'Профиль' && styles.activeTabIcon]}
-          />
-        </TouchableOpacity>
-      </View>
-    </View>
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconSource;
+
+            if (route.name === 'Энциклопедия') {
+              iconSource = focused 
+                ? require('./assets/image/encyclopedia2.png')
+                : require('./assets/image/encyclopedia.png');
+            } else if (route.name === 'Карточки') {
+              iconSource = focused 
+                ? require('./assets/image/cards2.png')
+                : require('./assets/image/cards.png');
+            } else if (route.name === 'Профиль') {
+              iconSource = focused 
+                ? require('./assets/image/profile2.png')
+                : require('./assets/image/profile.png');
+            }
+
+            return <Image source={iconSource} style={{ width: size, height: size }} />;
+          },
+          tabBarActiveTintColor: '#ffffff',
+          tabBarInactiveTintColor: '#888888',
+          tabBarStyle: {
+            backgroundColor: '#452929',
+            paddingBottom: 5,
+            paddingTop: 5,
+          },
+          
+        })}
+      >
+        <Tab.Screen 
+          name="Энциклопедия" 
+          component={EncyclopediaStack}
+          options={{ headerShown: false }}
+        />
+        <Tab.Screen 
+          name="Карточки" 
+          component={CardsStack} 
+          options={{ headerShown: false }}
+        />
+        <Tab.Screen 
+          name="Профиль" 
+          component={ProfileScreen}
+          options={{ 
+            headerStyle: { backgroundColor: '#452929' },
+            headerTintColor: '#ffffff',
+          }}
+        />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'black',
-  },
-  header: {
-    flex: 0.20, // 20% от высоты экрана
-    backgroundColor: '#452929',
-    paddingTop: 20,
-    padding: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerText: {
-    color: '#ffffff',
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  searchInput: {
-    backgroundColor: '#573737',
-    borderRadius: 5,
-    padding: 10,
-    width: '90%', // 90% от ширины экрана
-    color: '#fff',
-    marginTop: 10,
-  },
-  content: {
-    flex: 1,
-  },
-  tabBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    backgroundColor: '#452929',
-    padding: 25,
-    borderTopWidth: 1,
-    borderTopColor: '#452929', // Изменен цвет верхней границы
-  },
-  tabItem: {
-    alignItems: 'center',
-  },
-  tabIcon: {
-    backgroundColor: '#452929',
-    width: 35,
-    height: 35,
-    },
-});
 
 export default App;
