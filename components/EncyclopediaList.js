@@ -1,9 +1,9 @@
-// components/EncyclopediaList.js
 import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-import Encyclopedia from './Encyclopedia'; // 👈 Исправляем импорт!
+import Encyclopedia from './Encyclopedia';
 
-const EncyclopediaList = ({encycdata}) => {
+const EncyclopediaList = ({ encycdata, navigation }) => {
+
     return (
         <View style={styles.cardContainer}>
             <ScrollView>
@@ -13,8 +13,10 @@ const EncyclopediaList = ({encycdata}) => {
                         key={index} 
                         type={item.type} 
                         title={item.title} 
+                        latyn={item.latyn} 
                         description={item.description} 
                         imageSource={item.imageSource} 
+                        navigation={navigation} 
                       />
                     ))}
                 </View>
@@ -29,8 +31,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#000',
     },
     cardContainer: {
-        flex: 1,
         justifyContent: 'center',
+    },
+    errorText: {
+        color: '#fff',
+        textAlign: 'center',
+        marginTop: 20,
     },
 });
 

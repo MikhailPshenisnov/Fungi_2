@@ -1,9 +1,17 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 
-const Encyclopedia = ({ type, title, description, imageSource }) => {
+const Encyclopedia = ({ type, title, latyn, description, imageSource, navigation }) => {
     const handlePress = () => {
-        Alert.alert("Карточка нажата", title);
+        navigation.navigate('FungiDetails', { 
+            mushroom: {
+                type,
+                title, 
+                latyn,
+                description,
+                imageSource
+            }
+        });
     };
 
     return (
@@ -11,7 +19,7 @@ const Encyclopedia = ({ type, title, description, imageSource }) => {
             <View style={styles.cardContent}>
                 <Text style={styles.type}>{type}</Text>
                 <Text style={styles.title}>{title}</Text>
-                <Text style={styles.description}>{description}</Text>
+                <Text style={styles.latyn}>{latyn}</Text>
                 <View style={styles.iconContainer}>
                     <Image source={require('../assets/image/icon1.png')} style={styles.icon} />
                     <Image source={require('../assets/image/icon2.png')} style={styles.icon} />
@@ -49,11 +57,12 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     paddingBottom: 8, 
   },
-  description: {
+  latyn: {
     fontSize: 12, 
     color: '#9A796E',
     marginVertical: 3, 
     fontWeight: 'bold',
+    fontStyle: 'italic',
   },
   iconContainer: {
     flexDirection: 'row',
