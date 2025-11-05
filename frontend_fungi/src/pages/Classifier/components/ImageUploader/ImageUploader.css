@@ -1,0 +1,213 @@
+.photo-input {
+    flex: 1;
+    max-width: 705px;
+    height: 719px;
+    padding-top: 45px;
+    position: relative;
+    animation: fadeIn 0.5s ease-out 0.1s both;
+}
+
+.photo-input__content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.photo-input__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 30px;
+    padding: 0 28px;
+}
+
+.photo-input__icon {
+    width: 8px;
+    height: 25px;
+    background: #ffe8c4;
+    border-radius: 4px;
+}
+
+.photo-input__header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #323142;
+    margin: 0;
+    font-family: 'Raleway', sans-serif;
+}
+
+.photo-input__area {
+    background: #fff;
+    border-radius: 25px;
+    box-sizing: border-box;
+    filter: drop-shadow(5.95px 35px 18px rgba(229, 229, 229, 0.7));
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    padding: 28px;
+}
+
+.photo-input__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    text-align: center;
+    margin: auto;
+}
+
+.photo-input__empty img {
+    width: 48px;
+    height: 48px;
+}
+
+.photo-input__empty div {
+    font-size: 18px;
+    color: #666;
+    font-weight: bold;
+    font-family: 'Raleway', sans-serif;
+}
+
+.photo-input__preview {
+    position: relative;
+    width: 100%;
+    max-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.photo-input__image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 15px;
+}
+
+.photo-input__clear {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.8);
+    color: #333;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.photo-input__clear:hover {
+    background: #fff;
+    transform: scale(1.1);
+}
+
+.photo-input__buttons {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    justify-content: center;
+}
+
+.photo-input__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 70px;
+    width: 160px;
+    padding: 0 20px;
+    border: none;
+    border-radius: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    font-family: 'Raleway', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #fff4e3;
+    color: #323142;
+    filter: drop-shadow(0px 4px 2px rgba(229, 229, 229, 0.7));
+}
+
+.photo-input__btn img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.photo-input__btn:hover {
+    transform: translateY(-2px);
+    filter: drop-shadow(0px 6px 4px rgba(229, 229, 229, 0.8));
+    background: #ffe8c4;
+}
+
+.photo-input__btn:active {
+    transform: translateY(0);
+}
+
+.photo-input__btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.classify-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    height: 70px;
+    width: 100%;
+    border: none;
+    border-radius: 15px;
+    font-family: 'Raleway', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #ffe8c4;
+    color: #323142;
+    filter: drop-shadow(0px 4px 2px rgba(229, 229, 229, 0.7));
+}
+
+.classify-btn h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+    transition: color 0.3s ease;
+}
+
+.classify-btn:hover {
+    transform: translateY(-2px);
+    filter: drop-shadow(0px 6px 4px rgba(229, 229, 229, 0.8));
+    background: #ffd699;
+}
+
+.classify-btn:hover h3 {
+    color: #000;
+}
+
+.classify-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

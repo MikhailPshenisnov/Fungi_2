@@ -4,6 +4,7 @@ import { AboutUsPage } from '@pages/about-us';
 import { PublicationPage, PublicationsPage } from '@pages/publications';
 import { Encyclopedia } from '@pages/encyclopedia';
 import { MushroomPage } from '@pages/encyclopedia/components/MushroomPage';
+import { ClassifierPage } from '@pages/Classifier';
 
 export const AppRouter = () => {
     return (
@@ -17,8 +18,10 @@ export const AppRouter = () => {
                 path="/encyclopedia/:mushroomId"
                 element={<MushroomPage />}
             />
+            <Route path="/classifier" element={<ClassifierPage/>} />
             <Route path="/encyclopedia" element={<Encyclopedia />} />
             <Route path="*" element={<Navigate to="/mainpage" />} />
+            
         </Routes>
     );
 };

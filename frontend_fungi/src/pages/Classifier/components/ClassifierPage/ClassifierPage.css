@@ -1,0 +1,312 @@
+.classifier {
+    font-family: Raleway, sans-serif;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    margin-top: 40px;
+}
+.classifier_content {
+    width: 100%;
+    max-width: 1790px;
+    margin: 0 auto;
+    padding: 0 28px;
+    box-sizing: border-box;
+}
+.classifier_title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #323142;
+    text-align: left;
+    margin-bottom: 40px;
+    font-family: Arial, sans-serif;
+}
+.classifier_blocks {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    align-items: flex-start;
+}
+.fungi_info_block,
+.photo_input_block,
+.results_block {
+    padding: 45px 0 0;
+    position: relative;
+}
+.fungi_info_block,
+.photo_input_block,
+.results_block {
+    flex: 1;
+    max-width: 705px;
+    height: 719px;
+}
+.block_content,
+.results_content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.block_header,
+.results_header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 30px;
+    padding: 0 28px;
+}
+.header_icon,
+.results_icon {
+    width: 8px;
+    height: 25px;
+    background: #ffe8c4;
+    border-radius: 4px;
+}
+.block_header h3,
+.results_header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #323142;
+    margin: 0;
+    font-family: 'Raleway';
+}
+.block_text {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #acadb9;
+    flex-grow: 1;
+    font-family: Arial, sans-serif;
+    padding: 0 28px;
+}
+.input_area {
+    background: white;
+    border-radius: 25px;
+    box-sizing: border-box;
+    filter: drop-shadow(5.95px 35px 18px rgba(229, 229, 229, 0.7));
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    padding: 28px 28px;
+}
+.results_area {
+    border-radius: 25px;
+    box-sizing: border-box;
+    filter: drop-shadow(5.95px 35px 18px rgba(229, 229, 229, 0.7));
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+.results_area-empty {
+    background: white;
+    border-radius: 25px;
+    box-sizing: border-box;
+    filter: drop-shadow(5.95px 35px 18px rgba(229, 229, 229, 0.7));
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    padding: 28px 28px;
+}
+.input_empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    text-align: center;
+    margin: auto;
+}
+.input_empty img {
+    width: 48px;
+    height: 48px;
+    display: block;
+}
+.input_empty div {
+    font-size: 18px;
+    color: #666;
+    font-size: bold;
+    font-family: Raleway, sans-serif;
+}
+.camera_body {
+    width: 80px;
+    height: 60px;
+    border: 2px solid #1e1e1e;
+    border-radius: 4px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.camera_lens {
+    width: 30px;
+    height: 30px;
+    border: 2px solid #1e1e1e;
+    border-radius: 50%;
+}
+.input_buttons {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    justify-content: center;
+}
+.input_btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 70px;
+    width: 160px;
+    padding: 0 20px;
+    border: none;
+    border-radius: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    font-family: Raleway, sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #fff4e3;
+    color: #323142;
+    filter: drop-shadow(0px 4px 2px rgba(229, 229, 229, 0.7));
+    min-width: 120px;
+}
+.take_photo,
+.upload_photo {
+    background: #fff4e3;
+    color: #323142;
+}
+.input_btn:hover {
+    transform: translateY(-2px);
+    filter: drop-shadow(0px 6px 4px rgba(229, 229, 229, 0.8));
+}
+.input_btn:active {
+    transform: translateY(0);
+} /* Стили для блока результатов */
+.results_display {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 28px;
+    color: #acadb9;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+.results_placeholder {
+    font-size: 16px;
+    line-height: 1.6;
+    max-width: 400px;
+}
+.classifier_warning {
+    width: 100%;
+    max-width: 1790px;
+    height: 198px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 35px 28px;
+    box-sizing: border-box;
+    margin: 0 auto;
+}
+.warning_content {
+    width: 1720px;
+    height: 128px;
+    background: white;
+    border-radius: 25px;
+    padding: 20px 30px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 1.4;
+    color: #333;
+    filter: drop-shadow(5.95px 35px 18px rgba(229, 229, 229, 0.7));
+}
+.fungi_info_block .block_text,
+.results_placeholder {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid #e9ecef;
+}
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 25px;
+    z-index: 1;
+}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.fungi_info_block,
+.photo_input_block,
+.results_block {
+    animation: fadeIn 0.5s ease-out;
+}
+.photo_input_block {
+    animation-delay: 0.1s;
+}
+.results_block {
+    animation-delay: 0.2s;
+}
+.fungi_info_display {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.fungi_image_preview {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    overflow: hidden;
+    background: #f8f8f8;
+}
+.fungi_image_preview img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+.fungi_details {
+    padding: 15px;
+}
+.fungi_details h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #323142;
+    margin-bottom: 10px;
+    font-family: 'Raleway', sans-serif;
+}
+.fungi_details p {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.4;
+    margin-bottom: 15px;
+}

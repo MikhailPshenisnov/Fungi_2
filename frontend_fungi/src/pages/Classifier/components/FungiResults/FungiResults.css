@@ -1,0 +1,362 @@
+.fungi-results {
+    width: 100%;
+    height: 100%;
+}
+
+.fungi-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 28px 28px 20px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.header-icon {
+    width: 8px;
+    height: 25px;
+    background: #ffe8c4;
+    border-radius: 4px;
+}
+
+.card-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #323142;
+    margin: 0;
+    font-family: 'Raleway', sans-serif;
+}
+
+.results-content {
+    flex: 1;
+    border-radius: 25px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 28px 28px;
+    gap: 10px;
+    overflow-y: auto;
+}
+
+.probability-bars {
+    display: flex;
+    margin-top: 25px;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.probability-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.probability-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #323142;
+    font-family: 'Raleway', sans-serif;
+}
+
+.probability_title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #323142;
+    font-family: 'Raleway', sans-serif;
+    text-align: center;
+    align-items: center;
+}
+
+.probabilit_subtitle {
+    font-size: 16px;
+    font-weight: 500;
+    color: #323142;
+    text-align: center;
+    align-items: center;
+    font-family: 'Raleway', sans-serif;
+}
+
+.probability-bar {
+    position: relative;
+    width: 100%;
+}
+
+.bar-background {
+    position: relative;
+    flex: 1;
+    height: 20px;
+    background: #eaeaea;
+    border-radius: 10px;
+}
+
+.bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.5s ease-in-out;
+    position: relative;
+}
+
+.bar-fill.edible {
+    background: #b28550;
+}
+
+.bar-fill.poisonous {
+    background: #ffe8c4;
+}
+
+.bar-fill.confidence {
+    background: #ffe8c4;
+}
+
+.bar-fill.accuracy {
+    background: #ffe8c4;
+}
+
+.probability-value {
+    position: absolute;
+    top: -22px; /* поднимаем над баром */
+    right: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #323142;
+    font-family: 'Raleway', sans-serif;
+}
+
+.fungi-details {
+    width: 100%;
+    height: 100%;
+    margin-top: 20px;
+    background: white;
+    border-radius: 25px;
+    padding: 20px 30px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 1.4;
+    color: #333;
+
+    filter: drop-shadow(5.95px 35px 18px rgba(229, 229, 229, 0.7));
+}
+
+.detail-section h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #323142;
+    margin: 0 0 8px 0;
+    font-family: 'Raleway', sans-serif;
+}
+
+.fungi-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #b28550;
+    margin: 0;
+    font-family: 'Raleway', sans-serif;
+}
+
+.fungi-characteristics {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.fungi-characteristics li {
+    font-size: 14px;
+    color: #323142;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-family: 'Raleway', sans-serif;
+}
+
+.fungi-characteristics strong {
+    font-weight: 600;
+}
+
+.warning-section {
+    background: #fff3f3;
+    border: 1px solid #ffcdd2;
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.warning-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.warning-text {
+    font-size: 14px;
+    color: #d32f2f;
+    line-height: 1.4;
+    font-family: 'Raleway', sans-serif;
+}
+
+.warning-text strong {
+    font-weight: 700;
+}
+
+/* Анимации */
+.probability-item {
+    animation: slideInUp 0.5s ease-out;
+}
+
+.probability-item:nth-child(1) {
+    animation-delay: 0.1s;
+}
+.probability-item:nth-child(2) {
+    animation-delay: 0.2s;
+}
+.probability-item:nth-child(3) {
+    animation-delay: 0.3s;
+}
+.probability-item:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.detail-section {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.detail-section:nth-child(1) {
+    animation-delay: 0.5s;
+}
+.detail-section:nth-child(2) {
+    animation-delay: 0.6s;
+}
+
+.warning-section {
+    animation: pulse 2s infinite;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(244, 67, 54, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(244, 67, 54, 0);
+    }
+}
+
+/* Адаптивность */
+@media (max-width: 1400px) {
+    .results-content {
+        padding: 15px 20px;
+        gap: 20px;
+    }
+
+    .probability-bars {
+        gap: 15px;
+    }
+}
+
+@media (max-width: 900px) {
+    .card-header {
+        padding: 20px 20px 15px;
+    }
+
+    .results-content {
+        padding: 15px;
+        gap: 15px;
+    }
+
+    .probability-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .probability-value {
+        text-align: left;
+    }
+}
+
+@media (max-width: 600px) {
+    .fungi-card {
+        border-radius: 20px;
+    }
+
+    .card-header {
+        padding: 15px 15px 12px;
+    }
+
+    .card-header h3 {
+        font-size: 16px;
+    }
+
+    .results-content {
+        padding: 12px 15px;
+        gap: 12px;
+    }
+
+    .probability-item {
+        gap: 6px;
+    }
+
+    .probability-label {
+        font-size: 13px;
+    }
+
+    .bar-background {
+        height: 16px;
+    }
+
+    .probability-value {
+        font-size: 13px;
+    }
+
+    .fungi-name {
+        font-size: 16px;
+    }
+
+    .fungi-characteristics li {
+        font-size: 13px;
+    }
+
+    .warning-section {
+        padding: 12px;
+    }
+
+    .warning-text {
+        font-size: 13px;
+    }
+}
