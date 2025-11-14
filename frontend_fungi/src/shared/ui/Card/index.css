@@ -1,0 +1,27 @@
+.base-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 40px;
+    background-color: #ffe8c5;
+    min-width: 283px;
+    min-height: 433px;
+    width: 100%;
+    background: #ffe8c5;
+    transition: all 0.3s ease;
+}
+
+.base-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Медиа-запросы для адаптивности */
+@media (max-width: 768px) {
+    .base-card {
+        min-width: 240px;
+        min-height: 380px;
+    }
+}

@@ -1,0 +1,46 @@
+.search-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    border: 3px solid #FFE8C4;
+    border-radius: 20px;
+    width: 630px;
+    height: 62px;
+}
+
+.search-bar img {
+    width: 71px;
+    height: 71px;
+}
+
+.search-bar__btn {
+    background-color: #FFE8C4;
+    border: none;
+    border-radius: 0px 17px 17px 0px;
+    height: 62px;
+    width: 95px;
+    font-family: Raleway, serif;
+    color: #323142;
+    font-size: 24px;
+    font-weight: 600;
+    padding: 16px 8px;
+}
+
+.search-bar__input {
+    display: flex;
+    width: 100%;
+    padding: 16px;
+}
+
+.search-bar__text {
+    width: 100%;
+    font-family: Raleway, serif;
+    font-size: 20px;
+    font-weight: 400;
+    border: none;        /* чтобы не было стандартной рамки */
+    outline: none;       /* чтобы не было «обводки» при фокусе */
+    box-shadow: none;
+    margin-left: 5px;
+
+}

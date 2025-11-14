@@ -1,0 +1,94 @@
+.survey-banner {
+    width: 1500px;
+    height: 728px;
+    display: flex;
+    margin-top: 86px;
+}
+
+.survey-banner-content {
+    display: flex;
+    width: 100%;
+    gap: 107px;
+}
+
+.person-image-container {
+    display: flex;
+    align-items: flex-end;
+}
+
+.person-image {
+    width: 777px;
+    height: 693px;
+}
+
+.text-content {
+    width: 616px;
+    align-items: flex-start;
+    justify-content: flex-end;
+    display: flex;
+    flex-direction: column;
+    font-family: Raleway;
+}
+
+.survey-heading {
+    font-size: 50px;
+    font-weight: bold;
+    line-height: 61px;
+    margin-bottom: 66px;
+    color: #323142;
+    text-transform: capitalize;
+}
+
+.survey-list {
+    list-style-type: none;
+    max-width: 541px;
+}
+
+.survey-list-item {
+    color: #676767;
+    font-size: 24px;
+    line-height: 30px;
+    margin-bottom: 26px;
+    position: relative;
+    padding-left: 30px;
+}
+
+.survey-list-item:before {
+    content: "•";
+    position: absolute;
+    padding-left: 10px;
+    left: 0;
+    color: #000000;
+}
+
+.button-container {
+    margin-top: 66px;
+    display: flex;
+    align-items: flex-start;
+    width: 346px;
+    height: 164px;
+}
+
+.survey-button {
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: capitalize;
+    background-color: #FFE8C4;
+    width: 184px;
+    height: 63px;
+    color: #323142;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.survey-button:hover {
+    opacity: 0.7;
+}
+
+.decoration {
+    position: absolute;
+    margin-top: 50px;
+    margin-left: 140px;
+}

@@ -1,0 +1,55 @@
+.encyclopedia {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.encyclopedia__header {
+    margin-bottom: 30px;
+    align-self: self-end;
+}
+
+.encyclopedia__section {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 1624px;
+}
+
+.encyclopedia__section-title {
+    font-family: 'Raleway';
+    font-weight: 600;
+    font-size: 55px;
+    margin: 0px 0px 20px 0px;
+    text-align: center;
+    color: #333;
+}
+
+.encyclopedia__cards-row {
+    display: flex;
+    max-width: 1624px;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 20px;
+    padding: 10px 0;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.encyclopedia__cards-row::-webkit-scrollbar {
+    display: none;
+}
+
+/* Медиа-запросы для адаптивности */
+@media (max-width: 768px) {
+    .encyclopedia {
+        padding: 10px;
+    }
+
+    .encyclopedia__section-title {
+        font-size: 20px;
+    }
+}

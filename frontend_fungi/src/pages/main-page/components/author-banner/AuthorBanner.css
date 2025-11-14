@@ -1,0 +1,97 @@
+.author-banner-container {
+    width: 1248px;
+    height: 350px;
+    position: relative;
+    margin-top: 100px;
+    margin-bottom: 100px;
+    font-family: Raleway;
+}
+
+.author-banner {
+    background: #FFE8C4;
+    width: 1248px;
+    height: 280px;
+    border-radius: 30px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    padding-left: 68px;
+}
+
+.author-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('../../../../public/images/png/mask-mushroom.png');
+    background-size: contain;
+}
+
+.author-content {
+    position: relative;
+    z-index: 0;
+}
+
+.author-title {
+    font-size: 50px;
+    margin-bottom: 39px;
+    color: #656471;
+    font-weight: bolder;
+    opacity: 80%;
+}
+
+.author-form {
+    display: flex;
+    align-items: center;
+}
+
+.email-input {
+    width: 452px;
+    height: 68px;
+    border-radius: 15px;
+    border: none;
+    padding: 0 20px;
+    font-size: 17px;
+    outline: none;
+    filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.25));
+}
+
+.email-input::placeholder {
+    color: #878787;
+}
+
+.submit-button {
+    position: absolute;
+    width: 136px;
+    height: 53px;
+    background: #FFE8C4;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    color: #2C2C2C;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 350px;
+}
+
+.submit-button:hover {
+    opacity: 0.7;
+}
+
+.plate-container {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+}
+
+.plate-image {
+    width: 312px;
+    height: 312px;
+    filter: drop-shadow(0 10px 4px rgba(0, 0, 0, 0.25));
+}

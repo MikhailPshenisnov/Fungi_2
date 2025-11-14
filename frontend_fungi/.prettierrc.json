@@ -1,0 +1,28 @@
+{
+  "semi": true,
+  "trailingComma": "es5",
+  "singleQuote": true,
+  "printWidth": 80,
+  "tabWidth": 4,
+  "overrides": [
+    {
+      "files": [
+        "*.json",
+        "*.yaml",
+        "*.yml",
+        "*.config.js",
+        "*.config.ts",
+        ".*rc"
+      ],
+      "options": {
+        "tabWidth": 2
+      }
+    },
+    {
+      "files": ["*.scss"],
+      "options": {
+        "tabWidth": 4
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;1,300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,600;1,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,300;1,300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,600;1,600&display=swap');
+
+.publications {
+    display: flex;
+    justify-content: center;
+}
+
+.publications__wrapper {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 1700px;
+}
+
+.publications__container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: 1700px;
+    padding: 0;
+    margin-top: 60px;
+}
+
+.conteiner {
+    display: flex;
+    justify-content: center;
+}

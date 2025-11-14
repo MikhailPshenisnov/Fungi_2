@@ -1,0 +1,50 @@
+.pagination__container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 1624px;
+}
+
+.pagination__title {
+    font-family: 'Raleway';
+    font-weight: 600;
+    font-size: 55px;
+    margin: 0px 0px 20px 0px;
+    text-align: center;
+    color: #333;
+}
+
+.pagination__cards-row {
+    display: flex;
+    justify-content: start;
+    width: 1595px;
+    flex-wrap: wrap;
+    overflow-x: visible;
+    gap: 45px;
+    padding: 10px 0;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.buttons__container {
+    width: 296px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.arrow_button {
+    background: none;
+    border: none;
+}
+
+.pagination__counter {
+    font-family: 'Raleway';
+    font-weight: 500;
+    font-size: 55px;
+    color: #653d00;
+    padding-bottom: 16px;
+}

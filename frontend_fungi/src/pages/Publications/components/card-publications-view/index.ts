@@ -1,0 +1,1 @@
+export { CardPublicationsView } from './CardPublicationsView';
