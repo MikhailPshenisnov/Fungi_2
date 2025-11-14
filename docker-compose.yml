@@ -1,7 +1,7 @@
 # чтобы поднять stack: cmd/powershell находясь в этой папке > docker-compose up --build
 services:
   fungi-db:
-    image: postgres
+    image: postgres:17
     container_name: fungi-db
     environment:
       POSTGRES_DB: FungiDB

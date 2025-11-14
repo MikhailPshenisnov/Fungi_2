@@ -18,7 +18,8 @@ public class CustomObjectResultExecutor : ObjectResultExecutor
 
     public override async Task ExecuteAsync(ActionContext context, ObjectResult result)
     {
-        if (result.Value is BaseResponse<object>)
+        if (result.Value?.GetType().IsGenericType == true && 
+            result.Value.GetType().GetGenericTypeDefinition() == typeof(BaseResponse<>))
         {
             await base.ExecuteAsync(context, result);
             return;
