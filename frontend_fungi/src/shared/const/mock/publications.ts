@@ -5,7 +5,7 @@ export const mockPublications: IPublications[] = [
         id: 'white-mushroom',
         title: 'Белый гриб: царь леса и его полезные свойства',
         publishDate: '2024-04-27T08:00:00Z',
-        author: 'Иван Петров',
+        authorString: 'Иван Петров',
         headerPhotoLink: '/images/png/mushrom-articles/belye_griby.jpg',
         paragraphs: [
             'Белый гриб (Boletus edulis) по праву считается царём леса. Его величественный вид, насыщенный аромат и богатый вкус завоевали сердца грибников и гурманов по всему миру. Этот гриб не только украшение лесов, но и кладезь полезных веществ, что делает его незаменимым в кулинарии и народной медицине.',
@@ -17,7 +17,7 @@ export const mockPublications: IPublications[] = [
         id: 'chanterelles',
         title: 'Лисички: природные антибиотики в мире грибов',
         publishDate: '2024-04-25T10:30:00Z',
-        author: 'Мария Соколова',
+        authorString: 'Мария Соколова',
         headerPhotoLink: '/images/png/mushrom-articles/lees_grib.jpg',
         paragraphs: [
             'Лисички (Cantharellus cibarius) - одни из самых узнаваемых съедобных грибов, которые славятся не только своим ярким внешним видом, но и уникальными лечебными свойствами. Эти грибы содержат природные антибиотики, что делает их особенно ценными для здоровья человека.',
@@ -29,7 +29,7 @@ export const mockPublications: IPublications[] = [
         id: 'honey-fungus',
         title: 'Опята: осенние дары пней и поваленных деревьев',
         publishDate: '2024-04-20T09:15:00Z',
-        author: 'Александр Грибов',
+        authorString: 'Александр Грибов',
         headerPhotoLink: '/images/png/mushrom-articles/opyata.jpg',
         paragraphs: [
             'Опята (Armillaria mellea) - удивительные грибы, которые появляются большими семьями на пнях и поваленных деревьях преимущественно осенью. Эти грибы известны своей способностью образовывать огромные колонии, связанные подземной грибницей.',
@@ -41,7 +41,7 @@ export const mockPublications: IPublications[] = [
         id: 'fly-agaric',
         title: 'Мухоморы: красивые, но опасные обитатели леса',
         publishDate: '2024-04-15T14:20:00Z',
-        author: 'Елена Лесная',
+        authorString: 'Елена Лесная',
         headerPhotoLink: '/images/png/mushrom-articles/mucha.webp',
         paragraphs: [
             'Мухомор красный (Amanita muscaria) - один из самых узнаваемых грибов в мире. Его яркая красная шляпка с белыми крапинками стала символом сказочного леса и часто появляется в детских книгах и мультфильмах.',
@@ -53,7 +53,7 @@ export const mockPublications: IPublications[] = [
         id: 'birch-bolete',
         title: 'Подберёзовики: скромные красавцы берёзовых рощ',
         publishDate: '2024-04-10T11:45:00Z',
-        author: 'Павел Грибников',
+        authorString: 'Павел Грибников',
         headerPhotoLink:
             '/images/png/mushrom-articles/podosinovik-seryi-1.webp',
         paragraphs: [
@@ -66,7 +66,7 @@ export const mockPublications: IPublications[] = [
         id: 'saffron-milk-cap',
         title: 'Рыжики: оранжевое золото хвойного леса',
         publishDate: '2024-04-05T16:00:00Z',
-        author: 'Анна Грибоедова',
+        authorString: 'Анна Грибоедова',
         headerPhotoLink: 'public/images/png/mushrom-articles/rijik.webp',
         paragraphs: [
             'Рыжик (Lactarius deliciosus) - один из самых ценных съедобных грибов, особенно популярный в засолке. Его яркая оранжевая окраска и характерные зеленеющие при надломе пластинки делают его легко узнаваемым в лесу.',
@@ -78,7 +78,7 @@ export const mockPublications: IPublications[] = [
         id: 'porcini-recipes',
         title: 'Кулинарные секреты: лучшие рецепты с белыми грибами',
         publishDate: '2024-04-03T13:20:00Z',
-        author: 'Михаил Кулинаров',
+        authorString: 'Михаил Кулинаров',
         headerPhotoLink: '/images/png/mushrom-articles/recept.jpg',
         paragraphs: [
             'Белые грибы по праву считаются королём грибной кухни. Их насыщенный вкус и аромат способны превратить любое блюдо в настоящий кулинарный шедевр. В этой статье мы рассмотрим несколько классических и современных рецептов, которые раскроют весь потенциал этого благородного гриба.',
@@ -91,7 +91,7 @@ export const mockPublications: IPublications[] = [
         id: 'mushroom-hunting',
         title: 'Грибная охота: советы опытного грибника',
         publishDate: '2024-04-01T08:45:00Z',
-        author: 'Дмитрий Лесовик',
+        authorString: 'Дмитрий Лесовик',
         headerPhotoLink: '/images/png/mushrom-articles/ohota.webp',
         paragraphs: [
             'Грибная охота - это не просто сбор грибов, это настоящее искусство, требующее знаний, опыта и интуиции. В этой статье мы поделимся секретами успешной грибной охоты, которые помогут как начинающим, так и опытным грибникам.',
@@ -104,7 +104,7 @@ export const mockPublications: IPublications[] = [
         id: 'mushroom-preservation',
         title: 'Искусство заготовки грибов: от сушки до маринования',
         publishDate: '2024-03-28T15:30:00Z',
-        author: 'Ольга Заготовкина',
+        authorString: 'Ольга Заготовкина',
         headerPhotoLink: 'public/images/png/mushrom-articles/zagotov.jpg',
         paragraphs: [
             'Заготовка грибов - это древнее искусство, позволяющее сохранить дары леса на долгое время. Каждый способ заготовки имеет свои особенности и секреты, которые мы раскроем в этой статье.',
