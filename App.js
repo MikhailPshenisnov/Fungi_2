@@ -3,7 +3,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Image } from 'react-native';
 
 
@@ -29,7 +28,6 @@ function EncyclopediaStack() {
               transform: [
                 {
                   translateX: current.progress.interpolate({
-                  inputRange: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
                   inputRange: [0, 0.7, 1],
                   outputRange: [
                     layouts.screen.width,
