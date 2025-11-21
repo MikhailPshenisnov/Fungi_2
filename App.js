@@ -3,13 +3,20 @@ import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Image } from 'react-native';
+import { Image, View } from 'react-native';
 
-
+import CustomTabBar  from './components/CustomTabBar';
 import EncyclopediaScreen from './components/EncyclopediaScreen';
 import CardsScreen from './components/CardsScreen'; 
+import AICameraScreen from './components/AICameraScreen';
 import ProfileScreen from './components/ProfileScreen';
 import FungiDetails from './components/fungiDetails';
+
+import { useFonts } from "expo-font";
+import { useEffect } from "react";
+
+import RegistrationScreen from './components/RegistrationScreen';
+import LoginScreen from './components/LoginScreen';
 
 
 const Tab = createBottomTabNavigator();
@@ -91,62 +98,105 @@ function CardsStack() {
   );
 }
 
+function ProfileStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen 
+        name="ProfileMain" 
+        component={ProfileScreen} 
+        options={{ headerShown: false }} 
+      />
+      <Stack.Screen 
+        name="Registration" 
+        component={RegistrationScreen} 
+        options={{ title: "Регистрация" }} 
+      />
+      <Stack.Screen 
+        name="Login" 
+        component={LoginScreen} 
+        options={{ title: "Войти" }} 
+      />
+    </Stack.Navigator>
+  );
+}
+
+
+function AICamera() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen 
+        name="AICamera" 
+        component={AICameraScreen}
+        options={{
+          title: 'AICamera',
+          headerStyle: { backgroundColor: '#452929' },
+          headerTitleAlign: 'center',
+          headerTintColor: '#ffffff',
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+
 const App = () => {
+  const [fontsLoaded] = useFonts({
+    "Raleway-Regular": require("./assets/fonts/Raleway-Regular.ttf"),
+    "Raleway-Bold": require("./assets/fonts/Raleway-Bold.ttf"),
+    "Raleway-Medium": require("./assets/fonts/Raleway-Medium.ttf"),
+  });
+
+  if (!fontsLoaded) return null;
+
+
   return (
     <>
     <StatusBar style="light" translucent={true} />  
     <NavigationContainer>
-      <Tab.Navigator 
-        
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconSource;
+      <Tab.Navigator
+    tabBar={(props) => <CustomTabBar {...props} />}
+    screenOptions={({ route }) => ({
+      tabBarIcon: ({ focused, size }) => {
+        let icon;
 
-            if (route.name === 'Энциклопедия') {
-              iconSource = focused 
-                ? require('./assets/image/encyclopedia2.png')
-                : require('./assets/image/encyclopedia.png');
-            } else if (route.name === 'Карточки') {
-              iconSource = focused 
-                ? require('./assets/image/cards2.png')
-                : require('./assets/image/cards.png');
-            } else if (route.name === 'Профиль') {
-              iconSource = focused 
-                ? require('./assets/image/profile2.png')
-                : require('./assets/image/profile.png');
-            }
+        if (route.name === "Главная") {
+          icon = focused
+            ? require("./assets/image/navbar/home_active.png")
+            : require("./assets/image/navbar/home.png");
+        }
+        if (route.name === "Карточки") {
+          icon = focused
+            ? require("./assets/image/navbar/cards_active.png")
+            : require("./assets/image/navbar/cards.png");
+        }
+        if (route.name === "Энциклопедия") {
+          icon = focused
+            ? require("./assets/image/navbar/encyclopedia_active.png")
+            : require("./assets/image/navbar/encyclopedia.png");
+        }
+        if (route.name === "Профиль") {
+          icon = focused
+            ? require("./assets/image/navbar/profile_active.png")
+            : require("./assets/image/navbar/profile.png");
+        }
 
-            return <Image source={iconSource} style={{ width: size, height: size }} />;
-          },
-          tabBarActiveTintColor: '#ffffff',
-          tabBarInactiveTintColor: '#888888',
-          tabBarStyle: {
-            backgroundColor: '#452929',
-            paddingBottom: 5,
-          },
-          
-        })}
-      >
-        <Tab.Screen 
-          name="Энциклопедия" 
-          component={EncyclopediaStack}
-          options={{ headerShown: false }}
-        />
-        <Tab.Screen 
-          name="Карточки" 
-          component={CardsStack} 
-          options={{ headerShown: false }}
-        />
-        <Tab.Screen 
-          name="Профиль" 
-          component={ProfileScreen}
-          options={{ 
-            headerStyle: { backgroundColor: '#452929' },
-            headerTintColor: '#ffffffff',
-            headerTitleAlign: 'center',
-          }}
-        />
-      </Tab.Navigator>
+        return <Image source={icon} style={{ width: undefined, height: undefined }} />;
+      },
+
+      headerShown: false,
+    })}
+  >
+    <Tab.Screen name="Главная" component={EncyclopediaStack} />
+    <Tab.Screen name="Карточки" component={CardsStack} />
+    <Tab.Screen 
+      name="Камера" 
+      component={AICamera}
+      options={{ tabBarButton: () => null }}
+    />
+    <Tab.Screen name="Энциклопедия" component={EncyclopediaScreen} />
+    <Tab.Screen name="Профиль" component={ProfileStack} />
+  </Tab.Navigator>
+
     </NavigationContainer>
     </>
   );
