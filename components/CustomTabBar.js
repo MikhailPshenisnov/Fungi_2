@@ -18,7 +18,7 @@ style={styles.subtractImage}
     onPress={() => navigation.navigate("Камера")}
   >
     <Image
-      source={require("../assets/image/navbar/camera.png")}
+      source={require("../assets/image/navbar/camera.svg")}
       style={{ width: 54, height: 54 }}
     />
   </TouchableOpacity>
