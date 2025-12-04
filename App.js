@@ -113,8 +113,8 @@ function ProfileStack() {
       />
       <Stack.Screen 
         name="Login" 
-        component={LoginScreen} 
-        options={{ title: "Войти" }} 
+        component={LoginScreen}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
@@ -144,6 +144,7 @@ const App = () => {
     "Raleway-Regular": require("./assets/fonts/Raleway-Regular.ttf"),
     "Raleway-Bold": require("./assets/fonts/Raleway-Bold.ttf"),
     "Raleway-Medium": require("./assets/fonts/Raleway-Medium.ttf"),
+    "Raleway-Semibold": require("./assets/fonts/Raleway-SemiBold.ttf"),
   });
 
   if (!fontsLoaded) return null;
