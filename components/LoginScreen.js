@@ -58,23 +58,30 @@ export default function LoginScreen({ navigation }) {
 
         {/* EMAIL */}
         <View style={styles.inputWrapper}>
-          <Text style={styles.inputIcon}>✉️</Text>
+          <Image
+            source={require("../assets/image/mail.png")}
+            style={styles.inputIconImage}
+            resizeMode="contain"
+          />
           <TextInput
             style={styles.input}
             placeholder="EMAIL"
-            placeholderTextColor="#C2C3CB"
+            placeholderTextColor="#C4C4C4"
             keyboardType="email-address"
             autoCapitalize="none"
           />
         </View>
 
-        {/* ПАРОЛЬ */}
         <View style={styles.inputWrapper}>
-          <Text style={styles.inputIcon}>🔒</Text>
+          <Image
+            source={require("../assets/image/lock.png")}
+            style={styles.inputIconImage}
+            resizeMode="contain"
+          />
           <TextInput
             style={styles.input}
             placeholder="ПАРОЛЬ"
-            placeholderTextColor="#C2C3CB"
+            placeholderTextColor="#C4C4C4"
             secureTextEntry={!showPassword}
           />
           <TouchableOpacity
@@ -125,13 +132,17 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     paddingBottom: 120,
   },
-
-  // ЛОГО БЛОК — центр
   logoBlock: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",   // центрируем ряд целиком
+    justifyContent: "center",
     marginBottom: 24,
+  },
+    inputIconImage: {
+    width: 18,
+    height: 18,
+    marginRight: 8,
+    tintColor: "#C4C4C4",
   },
   logoCircle: {
     width: 92,
@@ -151,16 +162,13 @@ const styles = StyleSheet.create({
     color: "#323142",
     marginLeft: 16,
   },
-
   appIcons: {
     width: 20,
     height: 20,
   },
-
-  // ЗАГОЛОВОК
   title: {
-    fontFamily: "Raleway-Medium",
-    fontSize: 20,
+    fontFamily: "Raleway-Bold",
+    fontSize: 24,
     textAlign: "center",
     color: "#323142",
     marginBottom: 24,
@@ -169,32 +177,28 @@ const styles = StyleSheet.create({
     color: "#F9A94A",
     fontFamily: "Raleway-Bold",
   },
-
-  // СОЦКНОПКИ
   socialRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     gap: 16,
-    marginBottom: 8, // небольшой отступ до "ИЛИ"
+    marginBottom: 8,
   },
   socialButton: {
     flex: 1,
     paddingVertical: 14,
     borderRadius: 16,
-    backgroundColor: "#F5F5F5", // светло-серые
+    backgroundColor: "#F5F5F5",
     justifyContent: "center",
     alignItems: "center",
   },
   orText: {
     textAlign: "center",
     marginTop: 12,
-    marginBottom: 24,           // больше воздуха до EMAIL
+    marginBottom: 24,
     fontFamily: "Raleway-Bold",
     fontSize: 12,
-    color: "#005A6459",           // синеватый
+    color: "#005A6459",
   },
-
-  // ИНПУТЫ
   inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
@@ -234,10 +238,8 @@ const styles = StyleSheet.create({
     color: "#E6C49C",
     opacity: 0.7,
   },
-
-  // КНОПКА ВОЙТИ — персиковая с тенью
   primaryButton: {
-    backgroundColor: "#FFE6C4", // близко к макету
+    backgroundColor: "#FFE6C4",
     borderRadius: 24,
     paddingVertical: 16,
     alignItems: "center",
@@ -274,15 +276,14 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "#E6C49C",
   },
-
   footer: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 8,
   },
   footerText: {
-    fontFamily: "Raleway-Regular",
-    fontSize: 10,
-    color: "#B0B0B5",
+    fontFamily: "Raleway-Medium",
+    fontSize: 12,
+    color: "#718096",
   },
 });
