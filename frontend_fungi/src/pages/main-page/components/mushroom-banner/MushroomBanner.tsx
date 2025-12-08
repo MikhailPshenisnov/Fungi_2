@@ -1,8 +1,10 @@
 import React from 'react';
 import './MushroomBanner.css';
-import {EatableSVG, FavouriteSVG, RedbookedSVG} from '@shared/ui';
+import {EatableSVG, FavouriteSVG, RedbookedSVG} from '@pages/Components';
+import { useNavigate } from 'react-router-dom';
 
 const MushroomBanner: React.FC = () => {
+    const navigate = useNavigate();
     const mushrooms = [
         {
             image: '../../../../../public/images/png/mushroom1.png',
@@ -74,7 +76,9 @@ const MushroomBanner: React.FC = () => {
                 ))}
             </div>
 
-            <button className="all-mushrooms-button">
+            <button
+                className="all-mushrooms-button"
+                onClick={() => navigate("/encyclopedia")}>
                 <span>Все грибы</span>
                 <img src={'../../../../../public/images/svg/arrow-right.svg'} alt="" className="arrow-icon" />
             </button>

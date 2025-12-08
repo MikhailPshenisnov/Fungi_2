@@ -1,29 +1,61 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-// import { useMushroomData } from '../../../../shared/hooks/useMushroomData';
 import './index.css';
-import { TMushroomCard } from '@pages/encyclopedia/types';
-// import arrowIcon from '../../../../assets/icons/arrow-right.svg';
+import { getMushrooms, IMushroom } from '../../../../api/AppApi.ts';
+import { mockMushrooms } from '../../../../const/mock/mushrooms.ts';
+import { useImgurUrl } from '../../../../redux/hooks/useImgurUrl.ts';
 
 export const MushroomPage: React.FC = () => {
     const navigate = useNavigate();
-    const { mushroomId } = useParams<{ mushroomId: string }>();
-    // const { data: mushrooms } = useMushroomData();
-    const { data: mushrooms } = { data: [] as TMushroomCard[] };
+    const { mushroomId } = useParams();
+    const [mushrooms, setMushrooms] = useState<IMushroom[]>([]);
+    const mushrooms2 = mockMushrooms;
 
-    if (!mushrooms || !mushroomId) {
-        return <div>Loading...</div>;
-    }
+    useEffect(() => {
+        (async () => {
+            const data = await getMushrooms();
+            setMushrooms(data);
+        })();
+    }, []);
 
-    const mushroom = mushrooms.find((m) => m.id === parseInt(mushroomId));
+    const handleImageError = (
+        e: React.SyntheticEvent<HTMLImageElement, Event>
+    ) => {
+        e.currentTarget.src = '/images/png/alt-card-image.png';
+    };
 
-    if (!mushroom) {
-        return <div>Гриб не найден</div>;
-    }
+
+    // if (!mushrooms || !mushroomId) {
+    //     return <div>Loading...</div>;
+    // }
+
+    let mushroom = mushrooms.find((m) => m.id === mushroomId);
+
+    const mushroom2 = mushrooms2.find((m) => m.id === mushroomId);
+
+    const imgurUrl = useImgurUrl(mushroom ? mushroom.headerPhotoLink : (mushroom2 ? mushroom2.headerPhotoLink : ''));
 
     const handleBack = () => {
         navigate('/encyclopedia');
     };
+
+    if (!mushroom && !mushroom2) {
+        return (
+            <div className="publication-page-not-found">
+                <h2 className="publication-not-found-text">Гриб не найден</h2>
+                <button
+                    onClick={handleBack}
+                    className="publication-page__back-button"
+                >
+                    <img src="/images/svg/arrow.svg" alt="Назад" />
+                    <span>Назад</span>
+                </button>
+            </div>
+        );
+    }
+    else if (!mushroom && mushroom2) {
+        mushroom = mushroom2;
+    }
 
     return (
         <div className="mushroom-page">
@@ -45,8 +77,9 @@ export const MushroomPage: React.FC = () => {
                 </div>
 
                 <img
-                    src={mushroom.headerPhotoLink}
+                    src={imgurUrl}
                     alt={mushroom.name}
+                    onError={handleImageError}
                     className="mushroom-page__image"
                 />
 
@@ -131,7 +164,7 @@ export const MushroomPage: React.FC = () => {
                                     {mushroom.doppelgangers.map(
                                         (doppelganger, index) => (
                                             <li key={index}>
-                                                {doppelganger.name}
+                                                {doppelganger.doppelgangerName}
                                             </li>
                                         )
                                     )}

@@ -1,6 +1,8 @@
-import { IPublications } from '@pages/publications/model/types.ts';
 import { useNavigate } from 'react-router-dom';
-import { PublicationsWideCard } from '../publications-wide-card';
+import { PublicationsWideCard } from '@pages/Publications/components/publications-wide-card/PublicationsWideCard.tsx';
+import './FullSizePublicationView.css';
+import { IPublications } from '../../../../api/AppApi.ts';
+
 
 interface Props {
     publications: IPublications[] | undefined;

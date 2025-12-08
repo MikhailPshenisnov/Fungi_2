@@ -90,7 +90,7 @@ footer .nav-footer li {
     margin-left: 200px;
     transition: opacity 300ms ease;
     font-size: 37px;
-    font-family: 'Raleway';
+    font-family: 'Raleway', serif;
     font-weight: 300;
 }
 

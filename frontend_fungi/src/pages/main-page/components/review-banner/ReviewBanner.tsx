@@ -1,6 +1,6 @@
 import React from 'react';
 import './ReviewBanner.css';
-import { QuotesSVG, ReviewStarsSVG } from '@shared/ui';
+import { QuotesSVG, ReviewStarsSVG } from '@pages/Components';
 
 const ReviewBanner: React.FC = () => {
     const reviews = [

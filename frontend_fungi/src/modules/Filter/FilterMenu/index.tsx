@@ -37,7 +37,7 @@ export const FilterMenu: React.FC<FilterMenuProps> = ({
                     <button className="reset-button" onClick={onReset}>
                         Сбросить
                     </button>
-                    <button className="apply-button" onClick={onApply}>
+                    <button className="reset-button" onClick={onApply}>
                         Применить
                     </button>
                 </div>

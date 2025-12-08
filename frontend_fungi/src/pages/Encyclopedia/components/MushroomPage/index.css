@@ -14,6 +14,25 @@
     position: relative;
 }
 
+.publication-page-not-found {
+    display: flex;
+    flex-direction: column;   /* кнопка сверху, текст ниже */
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 117px); /* учитываем фиксированный header */
+    padding-top: 117px;        /* чтобы не перекрывало header */
+    gap: 40px;                 /* расстояние между кнопкой и текстом */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.publication-not-found-text {
+    font-size: 24px;
+    color: #333;
+    text-align: center;
+}
+
+
 .mushroom-page__back-button {
     position: absolute;
     top: 20px;
@@ -46,7 +65,7 @@
     max-width: 1281px;
     min-height: 120px;
     padding: 10px 20px;
-    margin-bottom: 150px;
+    margin-bottom: 250px;
     text-align: center;
 }
 
@@ -76,6 +95,7 @@
 .mushroom-page__info {
     display: flex;
     justify-content: center;
+    margin-top: 100px;
     gap: 40px;
     margin-bottom: 40px;
 }

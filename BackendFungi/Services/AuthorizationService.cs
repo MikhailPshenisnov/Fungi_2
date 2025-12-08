@@ -24,7 +24,7 @@ public class AuthorizationService : IAuthorizationService
     public async Task<string> LoginUser(string username, string password, CancellationToken cancellationToken)
     {
         var user = (await _usersService.GetFilteredUsersAsync(null, cancellationToken))
-            .FirstOrDefault(u => u.Username == username);
+            .FirstOrDefault(u => u.Email == username);
 
         if (user is null)
             throw new AuthorizationException("Invalid login or password");
@@ -45,7 +45,8 @@ public class AuthorizationService : IAuthorizationService
         {
             var tokenData = new TokenDto(
                 Guid.Parse(principal.FindFirst("UserId")?.Value!),
-                principal.FindFirst("Username")?.Value!,
+                principal.FindFirst("Name")?.Value!,
+                principal.FindFirst("Email")?.Value!,
                 Guid.Parse(principal.FindFirst("RoleId")?.Value!),
                 principal.FindFirst("RoleGroup")?.Value!);
 
@@ -88,7 +89,8 @@ public class AuthorizationService : IAuthorizationService
             Subject = new ClaimsIdentity(new List<Claim>
             {
                 new("UserId", user.Id.ToString()),
-                new("Username", user.Username),
+                new("Name", user.Username),
+                new("Email", user.Email),
                 new("RoleId", user.Role.Id.ToString()),
                 new("RoleGroup", roleGroup)
             }),

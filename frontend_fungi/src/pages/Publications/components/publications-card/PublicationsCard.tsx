@@ -1,7 +1,8 @@
 import React, { FC } from 'react';
-import { Card } from '@shared/ui/Card';
-import { IPublicationsCardProps } from '../../model/types.ts';
+import { Card } from '@pages/Components/Card';
+
 import './PublicationsCard.css';
+import { IPublicationsCardProps } from '../../../../api/AppApi.ts';
 
 export const PublicationsCard: FC<IPublicationsCardProps> = ({
     card,
