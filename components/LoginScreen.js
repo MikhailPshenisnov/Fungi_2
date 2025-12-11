@@ -53,7 +53,7 @@ export default function LoginScreen({ navigation }) {
             />
           </TouchableOpacity>
         </View>
-
+        
         <Text style={styles.orText}>ИЛИ</Text>
 
         {/* EMAIL */}
@@ -88,8 +88,12 @@ export default function LoginScreen({ navigation }) {
         </View>
 
         {/* ЗАБЫЛИ ПАРОЛЬ */}
-        <TouchableOpacity style={styles.forgotWrapper}>
-          <Text style={styles.forgotText}>Забыли пароль?</Text>
+        <TouchableOpacity 
+          style={styles.forgotWrapper}
+          onPress={() => navigation.navigate("ForgotPassword")}
+        >
+           <Text style={styles.forgotText}>Забыли пароль?</Text>
+        
         </TouchableOpacity>
 
         {/* КНОПКА "ВОЙТИ" */}

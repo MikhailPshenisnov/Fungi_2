@@ -17,6 +17,7 @@ import { useEffect } from "react";
 
 import RegistrationScreen from './components/RegistrationScreen';
 import LoginScreen from './components/LoginScreen';
+import ForgotPasswordScreen from './components/ForgotPasswordScreen';
 
 
 const Tab = createBottomTabNavigator();
@@ -114,6 +115,11 @@ function ProfileStack() {
       <Stack.Screen 
         name="Login" 
         component={LoginScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen 
+        name="ForgotPassword" 
+        component={ForgotPasswordScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
