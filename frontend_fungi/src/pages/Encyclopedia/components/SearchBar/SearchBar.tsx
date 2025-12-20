@@ -6,10 +6,15 @@ interface SearchBarProps {
     setSearchQuery: (query: string) => void;
 }
 
+
 export const SearchBar: React.FC<SearchBarProps> = ({
     searchQuery,
     setSearchQuery,
 }) => {
+    const handleClear = () => {
+        setSearchQuery(''); // очищаем состояние
+    };
+
     return (
         <div className="encyclopedia__search">
             <button className="encyclopedia__search-button">
@@ -22,9 +27,14 @@ export const SearchBar: React.FC<SearchBarProps> = ({
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="encyclopedia__search-input"
             />
-            <button className="encyclopedia__filter-button">
-                <img src="/images/svg/close.svg" alt="Filter" />
-            </button>
+            {searchQuery && (
+                <button
+                    className="encyclopedia__filter-button"
+                    onClick={handleClear}
+                >
+                    <img src="/images/svg/close.svg" alt="Очистить" />
+                </button>
+            )}
         </div>
     );
 };

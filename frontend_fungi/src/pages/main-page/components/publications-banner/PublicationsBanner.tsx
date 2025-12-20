@@ -1,9 +1,11 @@
 import React from 'react';
 import './PublicationsBanner.css';
-import { FavouriteSVG } from '@shared/ui';
-import { StarSVG } from '@shared/ui';
+import { FavouriteSVG } from '@pages/Components';
+import { StarSVG } from '@pages/Components';
+import { useNavigate } from 'react-router-dom';
 
 const PublicationsBanner: React.FC = () => {
+    const navigate = useNavigate();
     const publications = [
         {
             image: '../../../../../public/images/png/publication1.png',
@@ -51,7 +53,9 @@ const PublicationsBanner: React.FC = () => {
                 ))}
             </div>
 
-            <button className="all-articles-button">
+            <button
+                className="all-articles-button"
+                onClick={() => navigate("/publications")}>
                 <span>Все статьи</span>
                 <img src={'../../../../../public/images/svg/arrow-right.svg'} alt="" className="arrow-icon" />
             </button>

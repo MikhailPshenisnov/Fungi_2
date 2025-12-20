@@ -2,7 +2,8 @@
 
 public record TokenDto(
     Guid UserId,
-    string Username,
+    string Name,
+    string Email,
     Guid RoleId,
     string RoleGroup
 );

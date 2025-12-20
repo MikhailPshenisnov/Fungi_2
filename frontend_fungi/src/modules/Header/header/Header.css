@@ -1,0 +1,90 @@
+.header {
+    background-color: #FFFFFF;
+    width: 100%;
+    height: 117px;
+    position: fixed;
+    z-index: 1000;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+}
+
+.header__container .nav2 {
+    display: inline-flex;
+    border: 3px solid #ffe8c8;
+    border-radius: 18px;
+    padding: 16px;
+    gap: 30px;
+    align-items: center;
+    width: auto;
+    list-style-type: none;
+    font-family: Raleway, serif;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.header__container {
+    display: flex;
+    width: 100%;
+    margin: 22px 100px 0px 100px;
+    padding-bottom: 24px;
+    /*border-bottom: solid #CBCBCB 3px;*/
+    justify-content: space-between;
+}
+
+.site-brand {
+    display: flex;
+    font-family: Raleway, serif;
+    color: #201F1F;
+    text-decoration: none;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    gap: 4px;
+    font-weight: 600;
+}
+
+.btn {
+    font-family: Raleway, serif;
+    font-size: 20px;
+    font-weight: 800;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    color: #333;
+    background-color: transparent;
+    transition: background-color 0.3s;
+}
+
+.toggle-buttons {
+    display: inline-flex;
+    border: 3px solid #ffe8c8;
+    border-radius: 18px;
+    overflow: hidden;
+    gap: 6px;
+    padding: 4px;
+}
+
+.btn.inactive {
+    background-color: white;
+    border-radius: 14px;
+    color: #606060;
+}
+
+
+.btn.active {
+    background-color: #ffe8c8;
+    border-radius: 14px;
+    color: #323142;
+}
+
+
+input[type="search"]::-webkit-search-cancel-button {
+    margin-left: 15px;
+    color: #606060;
+    /* отодвинет крестик от текста */
+    /*margin-right: 20px;  !* отодвинет крестик от правой рамки *!*/
+}

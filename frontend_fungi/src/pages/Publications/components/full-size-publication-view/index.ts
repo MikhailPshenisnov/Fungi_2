@@ -1,1 +1,0 @@
-export { FullSizePublicationView } from './FullSizePublicationView';

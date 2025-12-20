@@ -1,6 +1,7 @@
-.mushroom-card {
+.mushroom-card2 {
     max-width: 280px;
     min-height: 400px;
+    background: rgba(216, 216, 216, 0.25);
 }
 
 .mushroom-card__image {

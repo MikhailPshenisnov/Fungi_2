@@ -7,6 +7,7 @@ using BackendFungi.Exceptions.SpecificExceptions;
 using BackendFungi.Models;
 using BackendFungi.Models.Filters;
 using BackendFungi.Models.Other;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,6 +24,36 @@ public class RolesController : ControllerBase
     {
         _accessCheckService = accessCheckService;
         _rolesService = rolesService;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> TestGetRoles(CancellationToken cancellationToken)
+    {
+        RoleFilter? roleFilter = null;
+
+        var filteredRoles = await _rolesService
+            .GetFilteredRolesAsync(roleFilter, cancellationToken);
+
+        var response = new List<TestRoles>(
+            filteredRoles
+                .Select(role =>
+                    {
+                        var level = role.AccessLevel switch
+                        {
+                            20 => 0,
+                            0 => 2,
+                            _ => 1
+                        };
+                        return new TestRoles(
+                            role.Id.ToString(),
+                            role.Name,
+                            level
+                        );
+                    }
+                )
+                .ToList());
+
+        return Ok(response);
     }
 
     [Authorize]

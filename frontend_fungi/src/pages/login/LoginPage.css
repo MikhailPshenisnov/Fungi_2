@@ -1,0 +1,97 @@
+/*login page*/
+/*_____________________________________________________________*/
+.login-page{
+    max-width: 22.5rem;
+    margin: 5rem auto;
+    text-align: center;
+    font-family: Raleway, sans-serif;
+}
+
+.login-page h1 {
+    font-weight: 700;
+    font-size: 1.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.login-page .form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Равномерные отступы между элементами формы */
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 600px; /* Увеличиваем ширину формы */
+    width: 100%; /* Форма растягивается на доступную ширину */
+    margin: 0 auto; /* Центрируем форму */
+}
+
+.login-page .form-group {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    gap: 5px; /* Отступ между меткой и полем */
+}
+
+.login-page .form-group label {
+    font-weight: bold;
+    color: #444;
+    margin-bottom: 0; /* Убираем лишний отступ */
+}
+
+.login-page .form-group input[type="text"],
+.login-page .form-group input[type="password"],
+.login-page .form-group input[type="file"] {
+    padding: 10px;
+    border: 1px solid #b9b9b9;
+    border-radius: 12px;
+    font-size: 1em;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.3s; /* Плавное изменение границы при фокусе */
+}
+
+.login-page .form-group input[type="text"]:focus,
+.login-page .form-group input[type="password"]:focus,
+.login-page .form-group input[type="file"]:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.login-page .update-button {
+    padding: 12px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%; /* Кнопка занимает всю ширину формы */
+}
+
+.login-page .update-button:hover {
+    background-color: #0056b3;
+}
+
+.login-page .text{
+    font-weight: 400;
+    font-size: 1rem;;
+    margin-bottom: 1rem;
+}
+
+.login-page .err-message{
+    color: #bc001e;
+    text-align: center;
+    font-weight: 300;
+    font-size: 20px;
+    margin-top: auto;
+    margin-bottom: auto;
+    height: auto;
+}
+
+.login-page .btn-registration{
+    color: #a890ff;
+    text-decoration: underline !important;
+}
+/*_____________________________________________________________*/

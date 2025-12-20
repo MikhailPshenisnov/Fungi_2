@@ -1,28 +1,37 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './MushroomCard.css';
-import { TMushroomCard } from '../../types';
 
-import { Card } from '@shared/ui/Card';
-import { useImgurUrl } from '@shared/hooks';
+
+import { Card } from '@pages/Components/Card';
+import { IMushroom } from '../../../../api/AppApi.ts';
+import { useImgurUrl } from '../../../../redux/hooks/useImgurUrl.ts';
+
 
 interface MushroomCardProps {
-    mushroom: TMushroomCard;
+    mushroom: IMushroom;
 }
 
 export const MushroomCard: React.FC<MushroomCardProps> = ({ mushroom }) => {
     const navigate = useNavigate();
-    const { headerPhotoLink, name, latinName, family, eatable, redBook } =
+    const { name, latinName, family, eatable, redBook } =
         mushroom;
-    const imageUrl = useImgurUrl(headerPhotoLink);
+
+    const imgurUrl = useImgurUrl(mushroom ? mushroom.headerPhotoLink : '');
+
+    const handleImageError = (
+        e: React.SyntheticEvent<HTMLImageElement, Event>
+    ) => {
+        e.currentTarget.src = '/images/png/alt-card-image.png';
+    };
 
     const getEdibilityIcon = (eatable: string) => {
         switch (eatable) {
-            case 'Да':
+            case 'Съедобный':
                 return '/images/svg/mushroom-tags-icons/eatable.svg';
-            case 'Нет':
+            case 'Несъедобный':
                 return '/images/svg/mushroom-tags-icons/not_eatable.svg';
-            case 'Полусъедобен':
+            case 'Полусъедобный':
                 return '/images/svg/mushroom-tags-icons/eatable.svg';
             default:
                 return '/images/svg/mushroom-tags-icons/eatable.svg';
@@ -31,11 +40,11 @@ export const MushroomCard: React.FC<MushroomCardProps> = ({ mushroom }) => {
 
     const getEdibilityTitle = (eatable: string) => {
         switch (eatable) {
-            case 'Да':
+            case 'Съедобный':
                 return 'Съедобный гриб';
-            case 'Нет':
+            case 'Несъедобный':
                 return 'Ядовитый гриб';
-            case 'Полусъедобен':
+            case 'Полусъедобный':
                 return 'Условно-съедобный гриб';
             default:
                 return 'Неизвестно';
@@ -47,8 +56,9 @@ export const MushroomCard: React.FC<MushroomCardProps> = ({ mushroom }) => {
     };
 
     return (
-        <Card className="mushroom-card" onClick={handleClick}>
-            <img className="mushroom-card__image" src={imageUrl} alt={name} />
+        <Card className="mushroom-card2" onClick={handleClick}>
+
+            <img className="mushroom-card__image" src={imgurUrl} alt={name} onError={handleImageError} />
             <div className="mushroom-card__content">
                 <div className="mushroom-card__header">
                     <p className="mushroom-card__family">{family}</p>

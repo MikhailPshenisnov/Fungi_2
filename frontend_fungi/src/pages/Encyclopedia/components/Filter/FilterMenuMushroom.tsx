@@ -23,6 +23,8 @@ const capTypeOptions = [
     { value: 'convex', label: 'Выпуклая' },
     { value: 'flat', label: 'Плоская' },
     { value: 'funnel', label: 'Вдавленная' },
+    { value: 'hemispherical', label: 'Полушаровидная' },
+    { value: 'bell_shaped', label: 'Колокольчатая' },
 ];
 
 export const FilterMenuMushroom: React.FC<FilterMenuMushroomProps> = ({

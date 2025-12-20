@@ -1,1 +1,0 @@
-export { CardPublicationsView } from './CardPublicationsView';

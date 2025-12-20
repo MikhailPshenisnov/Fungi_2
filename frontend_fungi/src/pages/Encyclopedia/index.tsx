@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+// Encyclopedia.tsx
+import React, { useEffect, useState, useCallback } from 'react';
 import './index.css';
 import { MushroomCard } from './components/MushroomCard/MushroomCard';
 import { SearchBar } from './components/SearchBar/SearchBar';
 import { useMushroomFilter } from './components/MushroomFilter/MushroomFilter';
 import OpenMushroomFilterMenuButton from './components/Filter';
-import { FilterButtons } from '@shared/ui';
-import { Pagination } from '@modules/Pagination';
-import { useGetMushroomsQuery } from '@shared/api/endpoints';
-import { mockMushrooms } from '@shared/const/mock/mushrooms';
+import { mockMushrooms } from '../../const/mock/mushrooms';
+import { getMushrooms, IMushroom } from '../../api/AppApi.ts';
 
 interface FilterState {
     edibility: string[];
@@ -22,107 +21,100 @@ export const Encyclopedia: React.FC = () => {
         capType: [],
     });
 
-    const {
-        data: mushrooms = mockMushrooms,
-        isLoading,
-        isError,
-        error,
-    } = useGetMushroomsQuery();
+    const [mushrooms, setMushrooms] = useState<IMushroom[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
 
-    const { filteredMushrooms, isFiltersActive, isSearchActive } =
-        useMushroomFilter({
-            mushrooms: Array.isArray(mushrooms) ? mushrooms : [],
-            filters,
-            searchQuery,
-        });
+    const mushrooms2 = mockMushrooms; // mock для fallback
 
-    if (isLoading) return <div>Loading...</div>;
-    if (isError)
-        return (
-            <div>
-                Error: {(error as any)?.status || 'Не удалось загрузить данные'}
+    const fetchData = useCallback(async (signal?: AbortSignal) => {
+        setLoading(true);
+        setError(null);
+
+        try {
+            const data = await getMushrooms();
+
+            if (signal?.aborted) return; // если запрос отменен
+            if (!Array.isArray(data)) throw new Error('Неверный формат данных');
+            setMushrooms(data);
+        } catch (e: any) {
+            if (signal?.aborted) return;
+            console.error('Ошибка загрузки грибов:', e);
+            setError(e?.message || 'Не удалось загрузить грибы');
+            setMushrooms([]);
+        } finally {
+            if (!signal?.aborted) setLoading(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        const controller = new AbortController();
+        fetchData(controller.signal);
+
+        return () => controller.abort();
+    }, [fetchData]);
+
+
+    const { filteredMushrooms, isFiltersActive, isSearchActive } = useMushroomFilter({
+        mushrooms: Array.isArray(mushrooms) ? mushrooms : [],
+        filters,
+        searchQuery,
+    });
+
+    const Loader = () => <div className="loader">Загрузка грибов...</div>;
+
+    const ErrorBlock = ({ message }: { message: string | null }) => (
+        <div className="error">
+            <p>{message || 'Произошла ошибка при загрузке грибов.'}</p>
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
+                <button
+                    className="btn"
+                    onClick={() => {
+                        const controller = new AbortController();
+                        fetchData(controller.signal);
+                    }}
+                >
+                    Повторить
+                </button>
+                <button className="btn" onClick={() => { setMushrooms(mushrooms2); setError(null); }}>Загрузить mock</button>
             </div>
-        );
-    if (!Array.isArray(mushrooms) || mushrooms.length === 0)
-        return <div>No mushrooms data available</div>;
+        </div>
+    );
 
-    // Если нет ни фильтров, ни поиска, разделяем по категориям
-    const PopularMushrooms =
-        !isFiltersActive && !isSearchActive
-            ? mushrooms
-                  .slice()
-                  .sort(() => Math.random() - 0.5)
-                  .slice(0, 5)
-            : [];
+    const EmptyBlock = () => <div className="empty">Грибов не найдено.</div>;
 
-    const AllMushrooms =
-        !isFiltersActive && !isSearchActive ? mushrooms : filteredMushrooms;
+    const displayMushrooms = isFiltersActive || isSearchActive ? filteredMushrooms : mushrooms;
 
     return (
         <div className="encyclopedia">
             <div className="encyclopedia__header">
-                <FilterButtons
-                    // targetPath="/encyclopedia"
-                    onClick={() => {}}
-                    buttonComponent={
-                        <OpenMushroomFilterMenuButton
-                            filters={filters}
-                            setFilters={setFilters}
-                        />
-                    }
-                />
+                <OpenMushroomFilterMenuButton filters={filters} setFilters={setFilters} />
             </div>
 
-            <SearchBar
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-            />
+            <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
-            {isFiltersActive || isSearchActive ? (
-                <section className="encyclopedia__section">
-                    <h2 className="encyclopedia__section-title">
-                        {filteredMushrooms.length > 0
-                            ? `Найдено грибов: ${filteredMushrooms.length}`
-                            : 'Грибы не найдены'}
-                    </h2>
-                    <div className="encyclopedia__cards-row">
-                        {filteredMushrooms.map((mushroom) => (
-                            <MushroomCard
-                                key={mushroom.id}
-                                mushroom={mushroom}
-                            />
-                        ))}
-                    </div>
-                </section>
-            ) : (
-                <>
-                    <section className="encyclopedia__section">
+            <section className="encyclopedia__section">
+                {loading ? (
+                    <Loader />
+                ) : error ? (
+                    <ErrorBlock message={error} />
+                ) : displayMushrooms.length === 0 ? (
+                    <EmptyBlock />
+                ) : (
+                    <>
                         <h2 className="encyclopedia__section-title">
-                            Популярные Грибы
+                            {isFiltersActive || isSearchActive
+                                ? `Найдено грибов: ${displayMushrooms.length}`
+                                : 'Все грибы'}
                         </h2>
                         <div className="encyclopedia__cards-row">
-                            {PopularMushrooms.map((mushroom) => (
-                                <MushroomCard
-                                    key={mushroom.id}
-                                    mushroom={mushroom}
-                                />
+                            {displayMushrooms.map((mushroom) => (
+                                <MushroomCard key={mushroom.id} mushroom={mushroom} />
                             ))}
                         </div>
-                    </section>
-
-                    <Pagination
-                        data={AllMushrooms}
-                        tittle={'Все грибы'}
-                        itemsPerPage={10}
-                        card={(mushroom) => (
-                            <MushroomCard
-                                key={mushroom.id}
-                                mushroom={mushroom}
-                            />
-                        )}
-                    />
-                </>
-            )}
+                    </>
+                )}
+            </section>
         </div>
     );
 };

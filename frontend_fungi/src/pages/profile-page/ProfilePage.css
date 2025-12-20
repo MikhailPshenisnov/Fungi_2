@@ -1,0 +1,145 @@
+/*profile page*/
+/*_____________________________________________________________*/
+.profile-page {
+    max-width: 50%;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Raleway, sans-serif;
+    text-align: center;
+}
+
+.profile-page .profile-info {
+    margin-bottom: 20px;
+}
+
+.profile-page .profile-header {
+    display: block;
+    gap: 8px;
+}
+
+.profile-page .profile-header h1 {
+    color: #333;
+    font-size: 2em;
+    margin: 0;
+}
+
+.profile-page .profile-header h3 {
+    color: #666;
+    font-size: 1.2em;
+    margin: 0;
+}
+
+
+.profile-page .profile-image img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.profile-page .form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Равномерные отступы между элементами формы */
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 600px; /* Увеличиваем ширину формы */
+    width: 100%; /* Форма растягивается на доступную ширину */
+    margin: 0 auto; /* Центрируем форму */
+}
+
+
+.profile-page .form-group {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    gap: 5px; /* Отступ между меткой и полем */
+}
+
+.profile-page .form-group label {
+    font-weight: bold;
+    color: #444;
+    margin-bottom: 0; /* Убираем лишний отступ */
+}
+
+.profile-page .form-group input[type="text"],
+.profile-page .form-group input[type="file"] {
+    padding: 10px;
+    border: 1px solid #b9b9b9;
+    border-radius: 12px;
+    font-size: 1em;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.3s; /* Плавное изменение границы при фокусе */
+}
+
+.profile-page .form-group input[type="text"]:focus,
+.profile-page .form-group input[type="file"]:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.profile-page .form-group img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-top: 10px;
+}
+
+.profile-page .update-button {
+    padding: 12px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%; /* Кнопка занимает всю ширину формы */
+}
+
+.profile-page .update-button:hover {
+    background-color: #0056b3;
+}
+
+@media (max-width: 480px) {
+    .profile-page .profile-page {
+        padding: 10px;
+        margin: 10px;
+    }
+
+    .profile-page .profile-header h1 {
+        font-size: 1.5em;
+    }
+
+    .profile-page .profile-header h3 {
+        font-size: 1em;
+    }
+
+    .profile-page .profile-image img {
+        width: 150px;
+        height: 150px;
+    }
+
+    .profile-page .form {
+        padding: 15px;
+        max-width: 100%;
+    }
+
+    .profile-page .form-group input[type="text"],
+    .profile-page .form-group input[type="file"] {
+        font-size: 0.9em;
+    }
+
+    .profile-page .update-button {
+        font-size: 1em;
+        padding: 10px 15px;
+    }
+}
+/*_____________________________________________________________*/

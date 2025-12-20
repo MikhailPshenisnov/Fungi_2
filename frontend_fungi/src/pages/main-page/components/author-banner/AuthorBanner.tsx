@@ -1,7 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './AuthorBanner.css';
+import { Notification } from '@pages/Components/Notification.tsx';
 
 const AuthorBanner: React.FC = () => {
+    const [showNotification, setShowNotification] = useState(false);
+
+    const handleButtonClick = () => {
+        setShowNotification(true);
+    };
+
+    const handleClose = () => {
+        setShowNotification(false);
+    };
+
     return (
         <div className="author-banner-container">
             <div className="author-banner">
@@ -13,10 +24,18 @@ const AuthorBanner: React.FC = () => {
                             placeholder="Email"
                             className="email-input"
                         />
-                        <button type="submit" className="submit-button">
+                        <button type="submit" className="submit-button" onClick={handleButtonClick}>
                             ОТПРАВИТЬ
                         </button>
                     </div>
+                </div>
+                <div>
+                    {showNotification && (
+                        <Notification
+                            message="Вы отправили запрос!"
+                            onClose={handleClose}
+                        />
+                    )}
                 </div>
             </div>
             <div className="plate-container">

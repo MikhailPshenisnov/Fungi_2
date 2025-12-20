@@ -27,6 +27,26 @@ public class UsersController : ControllerBase
         _usersService = usersService;
     }
 
+    [HttpGet]
+    public async Task<IActionResult> TestGetUsers(CancellationToken cancellationToken)
+    {
+        UserFilter? userFilter = null;
+
+        var users = await _usersService
+            .GetFilteredUsersAsync(userFilter, cancellationToken);
+
+        var response = new List<TestUsers>(
+            users
+                .Select(u => new TestUsers(
+                    u.Id.ToString(),
+                    u.Email,
+                    u.Username,
+                    u.Role.Id.ToString()))
+                .ToList());
+
+        return Ok(response);
+    }
+
     [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetUser([FromQuery] GetUserRequest request,
@@ -196,5 +216,50 @@ public class UsersController : ControllerBase
             null);
 
         return Ok(response);
+    }
+
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> UpdateUserSmallParam([FromForm] UpdateUserRequestSmallParam request,
+        CancellationToken cancellationToken)
+    {
+        var u = await _accessCheckService.CheckAccessLevel(
+            HttpContext,
+            (int)AccessLevelEnumerator.CommonUser,
+            cancellationToken);
+
+        var (userFilter, userFilterError) = UserFilter
+            .Create(null,
+                request.UserEmail,
+                null);
+
+        if (!string.IsNullOrEmpty(userFilterError))
+            throw new ConversionException($"Incorrect data format: {userFilterError}");
+
+        var filteredUsers = await _usersService
+            .GetFilteredUsersAsync(userFilter, cancellationToken);
+
+        string newName = filteredUsers[0].Username;
+        if (request.NewName != null)
+        {
+            newName = request.NewName;
+        }
+
+
+        var (newUser, newUserError) = Models.User
+            .Create(filteredUsers[0].Id,
+                newName,
+                filteredUsers[0].Email,
+                filteredUsers[0].PasswordHash,
+                true,
+                filteredUsers[0].Role);
+
+        if (!string.IsNullOrEmpty(newUserError))
+            throw new ConversionException($"Incorrect data format: {newUserError}");
+
+        await _usersService
+            .UpdateUserAsync(filteredUsers[0].Id, newUser, cancellationToken);
+
+        return Ok();
     }
 }

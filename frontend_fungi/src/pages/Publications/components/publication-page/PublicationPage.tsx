@@ -1,29 +1,57 @@
 import './PublicationPage.css';
-import { useGetPublicationByIdQuery } from '@shared/api/endpoints/publicationsApi';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { PublicationsCard } from '../publications-card';
-import { mockPublications } from '@shared/const/mock/publications';
+
+
+import { getPublications, IPublications } from '../../../../api/AppApi.ts';
+import { mockPublications } from '../../../../const/mock/publications.ts';
 
 export const PublicationPage: React.FC = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { data: publication } = useGetPublicationByIdQuery(id || '');
-    const [imageError, setImageError] = useState(false);
+    const [publications, setPublications] = useState<IPublications[]>([]);
+    const publications2 = mockPublications;
 
-    if (!publication) {
-        return <div>Публикация не найдена</div>;
-    }
-
-    const recommendedPublications = mockPublications.slice(0, 2);
+    useEffect(() => {
+        (async () => {
+            const data = await getPublications();
+            setPublications(data);
+        })();
+    }, []);
 
     const handleBack = () => {
-        navigate(-1);
+        navigate("/publications");
     };
 
-    const handleImageError = () => {
-        setImageError(true);
+    const handleImageError = (
+        e: React.SyntheticEvent<HTMLImageElement, Event>
+    ) => {
+        e.currentTarget.src = '/images/png/alt-card-image.png';
     };
+
+    let publication = publications.find(p => p.id === id);
+    //const imgurUrl = useImgurUrl(publication ? publication.headerPhotoLink : '');
+
+    const publication2 = publications2.find(p => p.id === id);
+
+    if (!publication && !publication2) {
+        return (
+            <div className="publication-page-not-found">
+                <h2 className="publication-not-found-text">Публикация не найдена</h2>
+                <button
+                    onClick={handleBack}
+                    className="publication-page__back-button"
+                >
+                    <img src="/images/svg/arrow.svg" alt="Назад" />
+                    <span>Назад</span>
+                </button>
+            </div>
+        );
+    }
+    else if (!publication && publication2) {
+        publication = publication2;
+    }
+
 
     return (
         <div className="publication-page">
@@ -57,11 +85,7 @@ export const PublicationPage: React.FC = () => {
                 </div>
                 <img
                     className="publication-page__image"
-                    src={
-                        imageError
-                            ? '/images/png/alt-card-image.png'
-                            : publication.headerPhotoLink
-                    }
+                    src={publication.headerPhotoLink}
                     alt={publication.title}
                     onError={handleImageError}
                 />
@@ -69,32 +93,10 @@ export const PublicationPage: React.FC = () => {
                 <div className="publication-page__main-info">
                     <div className="publication-page__main-text">
                         <div className="publication-page__text">
-                            {publication.paragraphs.map(
-                                (paragraph, index) =>
-                                    paragraph && (
-                                        <p
-                                            key={index}
-                                            className="publication-page__paragraph"
-                                        >
-                                            {paragraph.paragraphText}
-                                        </p>
-                                    )
-                            )}
-                        </div>
-                    </div>
-                    <div className="publication-text__recommendation">
-                        <h3>Рекомендуемые статьи</h3>
-                        <div className="publication-text__recommendations-container">
-                            {recommendedPublications.map((publication) => (
-                                <PublicationsCard
-                                    key={publication.id}
-                                    card={publication}
-                                    onClick={() =>
-                                        navigate(
-                                            `/publications/${publication.id}`
-                                        )
-                                    }
-                                />
+                            {publication.paragraphs.map((paragraph, index) => (
+                                <p key={index} className="publication-page__paragraph">
+                                    {paragraph.paragraphText}
+                                </p>
                             ))}
                         </div>
                     </div>

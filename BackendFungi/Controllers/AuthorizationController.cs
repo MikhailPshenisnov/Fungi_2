@@ -4,6 +4,7 @@ using BackendFungi.Contracts.Requests.AuthorizationRequests;
 using BackendFungi.Contracts.Responses;
 using BackendFungi.Contracts.Responses.AuthorizationResponses;
 using BackendFungi.Exceptions.SpecificExceptions;
+using BackendFungi.Models.Filters;
 using BackendFungi.Models.Other;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -35,7 +36,7 @@ public class AuthorizationController : ControllerBase
         CancellationToken cancellationToken)
     {
         var token = await _authorizationService
-            .LoginUser(loginUserRequest.Username, loginUserRequest.Password, cancellationToken);
+            .LoginUser(loginUserRequest.Email, loginUserRequest.Password, cancellationToken);
 
         Response.Cookies.Append("jwt_token", token, new CookieOptions
         {
@@ -94,7 +95,7 @@ public class AuthorizationController : ControllerBase
 
         var (user, userError) = Models.User
             .Create(Guid.NewGuid(),
-                registerUserRequest.Username,
+                registerUserRequest.Name,
                 registerUserRequest.Email,
                 registerUserRequest.Password,
                 false,
@@ -108,7 +109,7 @@ public class AuthorizationController : ControllerBase
 
         // вход в аккаунт нового пользователя
         var token = await _authorizationService
-            .LoginUser(registerUserRequest.Username, registerUserRequest.Password, cancellationToken);
+            .LoginUser(registerUserRequest.Email, registerUserRequest.Password, cancellationToken);
 
         Response.Cookies.Append("jwt_token", token, new CookieOptions
         {
@@ -169,7 +170,7 @@ public class AuthorizationController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet]
+    [HttpPost]
     public Task<IActionResult> LogoutUser(CancellationToken cancellationToken)
     {
         Response.Cookies.Append("jwt_token", string.Empty, new CookieOptions
@@ -180,5 +181,78 @@ public class AuthorizationController : ControllerBase
         });
 
         return Task.FromResult<IActionResult>(Ok());
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetCurrentDataUser(CancellationToken cancellationToken)
+    {
+        Request.Cookies.TryGetValue("jwt_token", out var token);
+
+        token = token ?? string.Empty;
+
+        if (token != String.Empty)
+        {
+            var tokenData = await _authorizationService.ValidateToken(token, cancellationToken);
+
+            int asseccLvl = 0;
+            switch (tokenData.RoleGroup)
+            {
+                case "SuperUser":
+                {
+                    asseccLvl = 2;
+                    break;
+                }
+                case "Administrator":
+                {
+                    asseccLvl = 1;
+                    break;
+                }
+                case "Editor":
+                {
+                    asseccLvl = 1;
+                    break;
+                }
+                case "CommonUser":
+                {
+                    asseccLvl = 0;
+                    break;
+                }
+                default:
+                {
+                    asseccLvl = 0;
+                    break;
+                }
+            }
+
+            var (userFilter, userFilterError) = UserFilter
+                .Create(null,
+                    tokenData.Email,
+                    null);
+
+            var filteredUsers = await _usersService
+                .GetFilteredUsersAsync(userFilter, cancellationToken);
+
+            var response = new GetCurrentUserDataResponse(
+                token,
+                filteredUsers[0].Username,
+                tokenData.Email,
+                asseccLvl,
+                filteredUsers[0].Id.ToString()
+            );
+
+            return Ok(response);
+        }
+        else
+        {
+            var response = new GetCurrentUserDataResponse(
+                "",
+                "",
+                "",
+                -1,
+                ""
+            );
+
+            return Ok(response);
+        }
     }
 }

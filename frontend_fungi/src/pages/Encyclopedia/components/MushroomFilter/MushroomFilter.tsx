@@ -1,5 +1,5 @@
-import { useFilter } from '@shared/hooks/useFilter';
-import { MushroomFilterProps, IMushroom } from './types';
+import { useFilter } from '../../../../redux/hooks/useFilter';
+import { IMushroom, MushroomFilterProps } from '../../../../api/AppApi.ts';
 
 export const useMushroomFilter = ({
     mushrooms,
@@ -13,17 +13,19 @@ export const useMushroomFilter = ({
         edibility: {
             field: 'eatable',
             valueMap: {
-                edible: 'Да',
-                'semi-edible': 'Полусъедобен',
-                inedible: 'Нет',
+                edible: 'Съедобный',
+                'semi-edible': 'Полусъедобный',
+                inedible: 'Несъедобный',
             },
         },
         capType: {
             field: 'capType',
             valueMap: {
-                convex: 'Выпуклая',
-                flat: 'Плоская',
-                funnel: 'Вдавленная',
+                convex: 'выпуклый',
+                flat: 'плоская',
+                funnel: 'вдавленная',
+                hemispherical: 'полушаровидный',
+                bell_shaped: 'колокольчатый',
             },
         },
     };

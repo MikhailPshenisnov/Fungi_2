@@ -1,7 +1,7 @@
 ﻿namespace BackendFungi.Contracts.Requests.AuthorizationRequests;
 
 public record RegisterUserRequest(
-    string Username,
-    string? Email,
+    string Name,
+    string Email,
     string Password
 );

@@ -1,0 +1,7 @@
+.publications__container2 {
+    display: grid; /* вместо flex */
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); /* адаптивные колонки */
+    gap: 20px;
+    max-width: 1700px;
+    padding: 10px 0;
+}

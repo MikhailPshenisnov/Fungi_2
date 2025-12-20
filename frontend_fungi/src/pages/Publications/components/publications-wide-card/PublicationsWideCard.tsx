@@ -1,7 +1,7 @@
 import React from 'react';
 import { FC } from 'react';
 import './PublicationsWideCard.css';
-import { IPublicationsCardProps } from '@pages/publications/model/types.ts';
+import { IPublicationsCardProps } from '../../../../api/AppApi.ts';
 
 export const PublicationsWideCard: FC<IPublicationsCardProps> = ({
     card,
