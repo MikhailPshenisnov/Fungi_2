@@ -8,15 +8,72 @@ using BackendFungi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using BackendFungi.Options;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+// Swagger settings
+var swaggerOptions = configuration.GetSection("SwaggerDocOptions").Get<SwaggerDocOptions>()
+                     ?? throw new InvalidOperationException(
+                         "SwaggerDocOptions section is missing in appsettings.json");
+builder.Services.AddSwaggerGen(opt =>
+{
+    opt.SwaggerDoc(swaggerOptions.Name, new OpenApiInfo
+    {
+        Version = swaggerOptions.Version,
+        Title = swaggerOptions.Title,
+        Description = swaggerOptions.Description
+    });
+
+    foreach (var server in swaggerOptions.Servers)
+    {
+        opt.AddServer(new OpenApiServer
+        {
+            Url = server.Url,
+            Description = server.Description
+        });
+    }
+
+    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Enter JWT token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "bearer"
+    });
+
+    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new List<string>()
+        }
+    });
+
+    opt.EnableAnnotations();
+
+    Action<SwaggerGenOptions>? configure = null;
+
+    configure?.Invoke(opt);
+});
 
 // Authentication and authorization configuration
 builder.Services.AddAuthentication(options =>
@@ -83,11 +140,25 @@ builder.Services.AddDbContext<FungiDbContext>(options =>
 // CORS policy
 builder.Services.AddCors(options => options.AddPolicy(
     "FungiApiPolicy", b => b
-        .WithOrigins(builder.Configuration["Frontend:FrontendAddress"]
-                     ?? throw new ConfigurationException("Frontend address is missing"))
+        .WithOrigins(
+            builder.Configuration["Frontend:FrontendAddress"] ??
+            throw new ConfigurationException("Frontend address is missing"),
+            "MOBILE APP ADDRESS" // Вот сюда вставьте адрес вашего эмулятора/устройства (пример: http://localhost:1234/)
+        )
         .AllowAnyHeader()
         .AllowAnyMethod()
         .AllowCredentials()));
+
+// TODO: FIX CORS
+// Пока что мне лень нормально нстроить CORS, пусть пока что тут будет такой костыль
+
+// builder.Services.AddCors(options => options.AddPolicy(
+//     "FungiApiPolicy", b => b
+//         .WithOrigins(builder.Configuration["Frontend:FrontendAddress"]
+//                      ?? throw new ConfigurationException("Frontend address is missing"))
+//         .AllowAnyHeader()
+//         .AllowAnyMethod()
+//         .AllowCredentials()));
 
 var app = builder.Build();
 
@@ -113,7 +184,11 @@ app.UseCors("FungiApiPolicy");
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Docker"))
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(opt =>
+    {
+        opt.SwaggerEndpoint($"/swagger/{swaggerOptions.Name}/swagger.json",
+            $"{swaggerOptions.Title} {swaggerOptions.Version}");
+    });
 }
 
 if (!app.Environment.IsEnvironment("Docker"))
