@@ -1,0 +1,2921 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Fungi API",
+    "description": "API for Fungi project",
+    "version": "v1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000",
+      "description": "Local Development"
+    }
+  ],
+  "paths": {
+    "/ArticleLikes/ToggleLike": {
+      "post": {
+        "tags": [
+          "ArticleLikes"
+        ],
+        "summary": "Toggle like",
+        "description": "Toggles the like state for an article",
+        "operationId": "ToggleLike",
+        "parameters": [
+          {
+            "name": "articleId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/ArticleLikes/GetLikesCount/count": {
+      "get": {
+        "tags": [
+          "ArticleLikes"
+        ],
+        "summary": "Get likes count",
+        "description": "Gets the number of likes for an article",
+        "operationId": "GetLikesCount",
+        "parameters": [
+          {
+            "name": "articleId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/ArticleLikes/HasUserLiked/user": {
+      "get": {
+        "tags": [
+          "ArticleLikes"
+        ],
+        "summary": "Has user liked",
+        "description": "Shows whether the user liked the article",
+        "operationId": "HasUserLiked",
+        "parameters": [
+          {
+            "name": "articleId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/ArticleMushrooms/GetAllMushrooms": {
+      "get": {
+        "tags": [
+          "ArticleMushrooms"
+        ],
+        "summary": "Get all mushrooms",
+        "description": "Gets a list of all mushrooms",
+        "operationId": "GetAllMushrooms",
+        "parameters": [
+          {
+            "name": "articleId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/ArticleMushrooms/AddMushroomToArticle": {
+      "post": {
+        "tags": [
+          "ArticleMushrooms"
+        ],
+        "summary": "Add mushroom to article",
+        "description": "Adds a link to the mushroom to the article",
+        "operationId": "AddMushroomToArticle",
+        "parameters": [
+          {
+            "name": "articleId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "mushroomId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/ArticleMushrooms/DeleteMushroomFromArticle": {
+      "delete": {
+        "tags": [
+          "ArticleMushrooms"
+        ],
+        "summary": "Deletes mushroom from article",
+        "description": "Deletes a link to the mushroom from the article",
+        "operationId": "DeleteMushroomFromArticle",
+        "parameters": [
+          {
+            "name": "articleId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "mushroomId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/Articles/GetArticle": {
+      "get": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "Get article",
+        "description": "Receives information about the article by id",
+        "operationId": "GetArticle",
+        "parameters": [
+          {
+            "name": "ArticleId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetArticleResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetArticleResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetArticleResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Articles/GetFilteredArticles": {
+      "get": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "Get filtered articles",
+        "description": "Gets a list of articles with filters",
+        "operationId": "GetFilteredArticles",
+        "parameters": [
+          {
+            "name": "PartOfTitle",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "PublishDateFrom",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "PublishDateTo",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "PartOfAuthorString",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetFilteredArticlesResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetFilteredArticlesResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetFilteredArticlesResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Articles/CreateArticle": {
+      "post": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "Create article",
+        "description": "Creates article",
+        "operationId": "CreateArticle",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateArticleRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateArticleRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateArticleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateArticleResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateArticleResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateArticleResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Articles/UpdateArticle": {
+      "put": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "Update article",
+        "description": "Updates article info by id",
+        "operationId": "UpdateArticle",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateArticleRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateArticleRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateArticleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateArticleResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateArticleResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateArticleResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Articles/DeleteArticle": {
+      "delete": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "Delete article",
+        "description": "Deletes article by id",
+        "operationId": "DeleteArticle",
+        "parameters": [
+          {
+            "name": "ArticleId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteArticleResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteArticleResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteArticleResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Authorization/LoginUser": {
+      "post": {
+        "tags": [
+          "Authorization"
+        ],
+        "summary": "Login user",
+        "description": "Performs the user login procedure",
+        "operationId": "LoginUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginUserRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginUserRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginUserResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginUserResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginUserResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Authorization/RegisterUser": {
+      "post": {
+        "tags": [
+          "Authorization"
+        ],
+        "summary": "Register user",
+        "description": "Performs user registration procedure",
+        "operationId": "RegisterUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterUserRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterUserRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterUserResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterUserResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterUserResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Authorization/GetCurrentUserToken": {
+      "get": {
+        "tags": [
+          "Authorization"
+        ],
+        "summary": "Get current user token",
+        "description": "Returns current user token",
+        "operationId": "GetCurrentUserToken",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCurrentUserTokenResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCurrentUserTokenResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCurrentUserTokenResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Authorization/ValidateToken": {
+      "post": {
+        "tags": [
+          "Authorization"
+        ],
+        "summary": "Validate token",
+        "description": "Allows you to obtain information about the user by token",
+        "operationId": "ValidateToken",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidateTokenRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidateTokenRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidateTokenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidateTokenResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidateTokenResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidateTokenResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Authorization/LogoutUser": {
+      "post": {
+        "tags": [
+          "Authorization"
+        ],
+        "summary": "Logout user",
+        "description": "Removes user data from cookies",
+        "operationId": "LogoutUser",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/Authorization/GetCurrentDataUser": {
+      "get": {
+        "tags": [
+          "Authorization"
+        ],
+        "summary": "Get current data user [NOT RECOMMENDED TO USE]",
+        "description": "An analogue of the ValidateToken method, but this is a piece of some king of strange code that Sanya made to connect front easier (P. S. Выпилите этот метод пожалуйста, ну что за треш, господа)",
+        "operationId": "GetCurrentDataUser",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCurrentUserDataResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCurrentUserDataResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCurrentUserDataResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/MushroomLikes/ToggleLike": {
+      "post": {
+        "tags": [
+          "MushroomLikes"
+        ],
+        "summary": "Toggle like",
+        "description": "Toggles the like state for a mushroom",
+        "operationId": "ToggleLike",
+        "parameters": [
+          {
+            "name": "mushroomId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/MushroomLikes/GetLikesCount/count": {
+      "get": {
+        "tags": [
+          "MushroomLikes"
+        ],
+        "summary": "Get likes count",
+        "description": "Gets the number of likes for a mushroom",
+        "operationId": "GetLikesCount",
+        "parameters": [
+          {
+            "name": "mushroomId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/MushroomLikes/HasUserLiked/user": {
+      "get": {
+        "tags": [
+          "MushroomLikes"
+        ],
+        "summary": "Has user liked",
+        "description": "Shows whether the user liked the mushroom",
+        "operationId": "HasUserLiked",
+        "parameters": [
+          {
+            "name": "mushroomId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/Mushrooms/GetMushroom": {
+      "get": {
+        "tags": [
+          "Mushrooms"
+        ],
+        "summary": "Get mushroom",
+        "description": "Receives information about the mushroom by id",
+        "operationId": "GetMushroom",
+        "parameters": [
+          {
+            "name": "MushroomId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMushroomResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMushroomResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMushroomResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Mushrooms/GetFilteredMushrooms": {
+      "get": {
+        "tags": [
+          "Mushrooms"
+        ],
+        "summary": "Get filtered mushrooms",
+        "description": "Gets a list of mushrooms with filters",
+        "operationId": "GetFilteredMushrooms",
+        "parameters": [
+          {
+            "name": "PartOfName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Family",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "RedBook",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "Eatable",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "HasStem",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "StemSizeFrom",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "StemSizeTo",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "StemType",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StemColor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "CapType",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "CapColor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "CapUndersideType",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetFilteredMushroomsResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetFilteredMushroomsResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetFilteredMushroomsResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Mushrooms/CreateMushroom": {
+      "post": {
+        "tags": [
+          "Mushrooms"
+        ],
+        "summary": "Create mushroom",
+        "description": "Creates mushroom",
+        "operationId": "CreateMushroom",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMushroomRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMushroomRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMushroomRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateMushroomResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateMushroomResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateMushroomResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Mushrooms/UpdateMushroom": {
+      "put": {
+        "tags": [
+          "Mushrooms"
+        ],
+        "summary": "Update mushroom",
+        "description": "Updates mushroom info by id",
+        "operationId": "UpdateMushroom",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMushroomRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMushroomRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMushroomRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateMushroomResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateMushroomResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateMushroomResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Mushrooms/DeleteMushroom": {
+      "delete": {
+        "tags": [
+          "Mushrooms"
+        ],
+        "summary": "Delete mushroom",
+        "description": "Deletes mushroom by id",
+        "operationId": "DeleteMushroom",
+        "parameters": [
+          {
+            "name": "MushroomId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteMushroomResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteMushroomResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteMushroomResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Roles/TestGetRoles": {
+      "get": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Test get roles",
+        "description": "I don't know, something like GetFilteredRoles, but something crazy",
+        "operationId": "TestGetRoles",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestRolesListBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestRolesListBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestRolesListBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Roles/GetRole": {
+      "get": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Get role",
+        "description": "Receives information about the role by id",
+        "operationId": "GetRole",
+        "parameters": [
+          {
+            "name": "RoleId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetRoleResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetRoleResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetRoleResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Roles/GetFilteredRoles": {
+      "get": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Get filtered roles",
+        "description": "Gets a list of roles with filters",
+        "operationId": "GetFilteredRoles",
+        "parameters": [
+          {
+            "name": "PartOfName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "AccessLevelFrom",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "AccessLevelTo",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetFilteredRolesResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetFilteredRolesResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetFilteredRolesResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Roles/CreateRole": {
+      "post": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Create role",
+        "description": "Creates role",
+        "operationId": "CreateRole",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRoleRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRoleRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRoleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateRoleResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateRoleResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateRoleResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Roles/UpdateRole": {
+      "put": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Update role",
+        "description": "Updates role info by id",
+        "operationId": "UpdateRole",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRoleRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRoleRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRoleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateRoleResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateRoleResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateRoleResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Roles/DeleteRole": {
+      "delete": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Delete role",
+        "description": "Deletes role by id",
+        "operationId": "DeleteRole",
+        "parameters": [
+          {
+            "name": "RoleId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteRoleResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteRoleResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteRoleResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Users/TestGetUsers": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Test get users",
+        "description": "I don't know, something like GetFilteredUsers, but something crazy",
+        "operationId": "TestGetUsers",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestUsersListBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestUsersListBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestUsersListBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Users/GetUser": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get user",
+        "description": "Receives information about the user by id",
+        "operationId": "GetUser",
+        "parameters": [
+          {
+            "name": "UserId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUserResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUserResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUserResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Users/GetFilteredUsers": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get filtered users",
+        "description": "Gets a list of users with filters",
+        "operationId": "GetFilteredUsers",
+        "parameters": [
+          {
+            "name": "PartOfUsername",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "PartOfEmail",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "RoleId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetFilteredUsersResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetFilteredUsersResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetFilteredUsersResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Users/CreateUser": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Create user",
+        "description": "Creates user",
+        "operationId": "CreateUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateUserResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateUserResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateUserResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Users/UpdateUser": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update user",
+        "description": "Updates user info by id",
+        "operationId": "UpdateUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateUserResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateUserResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateUserResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Users/DeleteUser": {
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete user",
+        "description": "Deletes user by id",
+        "operationId": "DeleteUser",
+        "parameters": [
+          {
+            "name": "UserId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteUserResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteUserResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteUserResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Users/UpdateUserSmallParam": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update user with small parameters",
+        "description": "Short version of UpdateUser",
+        "operationId": "UpdateUserSmallParam",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "UserEmail": {
+                    "type": "string"
+                  },
+                  "NewName": {
+                    "type": "string"
+                  }
+                }
+              },
+              "encoding": {
+                "UserEmail": {
+                  "style": "form"
+                },
+                "NewName": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ArticleDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "publishDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "authorString": {
+            "type": "string",
+            "nullable": true
+          },
+          "headerPhotoLink": {
+            "type": "string",
+            "nullable": true
+          },
+          "extraPhotoLinks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "paragraphs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ParagraphDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateArticleRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "publishDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "authorString": {
+            "type": "string",
+            "nullable": true
+          },
+          "headerPhotoLink": {
+            "type": "string",
+            "nullable": true
+          },
+          "extraPhotoLinks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "articleText": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateArticleResponse": {
+        "type": "object",
+        "properties": {
+          "createdArticleId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateArticleResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CreateArticleResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateMushroomRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "synonymousName": {
+            "type": "string",
+            "nullable": true
+          },
+          "latinName": {
+            "type": "string",
+            "nullable": true
+          },
+          "family": {
+            "type": "string",
+            "nullable": true
+          },
+          "redBook": {
+            "type": "boolean"
+          },
+          "eatable": {
+            "type": "string",
+            "nullable": true
+          },
+          "hasStem": {
+            "type": "boolean"
+          },
+          "stemSizeFrom": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "stemSizeTo": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "stemType": {
+            "type": "string",
+            "nullable": true
+          },
+          "stemColor": {
+            "type": "string",
+            "nullable": true
+          },
+          "capType": {
+            "type": "string",
+            "nullable": true
+          },
+          "capColor": {
+            "type": "string",
+            "nullable": true
+          },
+          "capUndersideType": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "headerPhotoLink": {
+            "type": "string",
+            "nullable": true
+          },
+          "extraPhotoLinks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "doppelgangers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateMushroomResponse": {
+        "type": "object",
+        "properties": {
+          "createdMushroomId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateMushroomResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CreateMushroomResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateRoleRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "accessLevel": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateRoleResponse": {
+        "type": "object",
+        "properties": {
+          "createdRoleId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateRoleResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CreateRoleResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateUserRequest": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          },
+          "roleId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateUserResponse": {
+        "type": "object",
+        "properties": {
+          "createdUserId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateUserResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CreateUserResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeleteArticleResponse": {
+        "type": "object",
+        "properties": {
+          "deletedArticleId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeleteArticleResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/DeleteArticleResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeleteMushroomResponse": {
+        "type": "object",
+        "properties": {
+          "deletedMushroomId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeleteMushroomResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/DeleteMushroomResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeleteRoleResponse": {
+        "type": "object",
+        "properties": {
+          "deletedRoleId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeleteRoleResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/DeleteRoleResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeleteUserResponse": {
+        "type": "object",
+        "properties": {
+          "deletedUserId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeleteUserResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/DeleteUserResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DoppelgangerDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "mushroomId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "doppelgangerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "isContainedInDatabase": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ExceptionDto": {
+        "type": "object",
+        "properties": {
+          "errorGroup": {
+            "type": "string",
+            "nullable": true
+          },
+          "errorMessage": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetArticleResponse": {
+        "type": "object",
+        "properties": {
+          "article": {
+            "$ref": "#/components/schemas/ArticleDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetArticleResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetArticleResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetCurrentUserDataResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "asseccLvl": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetCurrentUserDataResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetCurrentUserDataResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetCurrentUserTokenResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetCurrentUserTokenResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetCurrentUserTokenResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetFilteredArticlesResponse": {
+        "type": "object",
+        "properties": {
+          "articles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArticleDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetFilteredArticlesResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetFilteredArticlesResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetFilteredMushroomsResponse": {
+        "type": "object",
+        "properties": {
+          "mushrooms": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MushroomDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetFilteredMushroomsResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetFilteredMushroomsResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetFilteredRolesResponse": {
+        "type": "object",
+        "properties": {
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RoleDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetFilteredRolesResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetFilteredRolesResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetFilteredUsersResponse": {
+        "type": "object",
+        "properties": {
+          "users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetFilteredUsersResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetFilteredUsersResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetMushroomResponse": {
+        "type": "object",
+        "properties": {
+          "mushroom": {
+            "$ref": "#/components/schemas/MushroomDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetMushroomResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetMushroomResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetRoleResponse": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "$ref": "#/components/schemas/RoleDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetRoleResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetRoleResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetUserResponse": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/UserDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetUserResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetUserResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoginUserRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoginUserResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoginUserResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/LoginUserResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "MushroomDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "synonymousName": {
+            "type": "string",
+            "nullable": true
+          },
+          "latinName": {
+            "type": "string",
+            "nullable": true
+          },
+          "family": {
+            "type": "string",
+            "nullable": true
+          },
+          "redBook": {
+            "type": "boolean"
+          },
+          "eatable": {
+            "type": "string",
+            "nullable": true
+          },
+          "hasStem": {
+            "type": "boolean"
+          },
+          "stemSizeFrom": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "stemSizeTo": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "stemType": {
+            "type": "string",
+            "nullable": true
+          },
+          "stemColor": {
+            "type": "string",
+            "nullable": true
+          },
+          "capType": {
+            "type": "string",
+            "nullable": true
+          },
+          "capColor": {
+            "type": "string",
+            "nullable": true
+          },
+          "capUndersideType": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "headerPhotoLink": {
+            "type": "string",
+            "nullable": true
+          },
+          "extraPhotoLinks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "doppelgangers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DoppelgangerDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ParagraphDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "articleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "paragraphText": {
+            "type": "string",
+            "nullable": true
+          },
+          "serialNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isSubtitle": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RegisterUserRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RegisterUserResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RegisterUserResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/RegisterUserResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RoleDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "accessLevel": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TestRoles": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "accessLevel": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TestRolesListBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TestRoles"
+            },
+            "nullable": true
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TestUsers": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "role": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TestUsersListBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TestUsers"
+            },
+            "nullable": true
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TokenDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "roleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "roleGroup": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateArticleRequest": {
+        "type": "object",
+        "properties": {
+          "articleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "newTitle": {
+            "type": "string",
+            "nullable": true
+          },
+          "newPublishDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "newAuthorString": {
+            "type": "string",
+            "nullable": true
+          },
+          "newHeaderPhotoLink": {
+            "type": "string",
+            "nullable": true
+          },
+          "newExtraPhotoLinks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "newArticleText": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateArticleResponse": {
+        "type": "object",
+        "properties": {
+          "updatedArticleId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateArticleResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/UpdateArticleResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateMushroomRequest": {
+        "type": "object",
+        "properties": {
+          "mushroomId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "newName": {
+            "type": "string",
+            "nullable": true
+          },
+          "newSynonymousName": {
+            "type": "string",
+            "nullable": true
+          },
+          "newLatinName": {
+            "type": "string",
+            "nullable": true
+          },
+          "newFamily": {
+            "type": "string",
+            "nullable": true
+          },
+          "newRedBook": {
+            "type": "boolean"
+          },
+          "newEatable": {
+            "type": "string",
+            "nullable": true
+          },
+          "newHasStem": {
+            "type": "boolean"
+          },
+          "newStemSizeFrom": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "newStemSizeTo": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "newStemType": {
+            "type": "string",
+            "nullable": true
+          },
+          "newStemColor": {
+            "type": "string",
+            "nullable": true
+          },
+          "newCapType": {
+            "type": "string",
+            "nullable": true
+          },
+          "newCapColor": {
+            "type": "string",
+            "nullable": true
+          },
+          "newCapUndersideType": {
+            "type": "string",
+            "nullable": true
+          },
+          "newDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "newHeaderPhotoLink": {
+            "type": "string",
+            "nullable": true
+          },
+          "newExtraPhotoLinks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "newDoppelgangers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateMushroomResponse": {
+        "type": "object",
+        "properties": {
+          "updatedMushroomId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateMushroomResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/UpdateMushroomResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateRoleRequest": {
+        "type": "object",
+        "properties": {
+          "roleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "newName": {
+            "type": "string",
+            "nullable": true
+          },
+          "newAccessLevel": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateRoleResponse": {
+        "type": "object",
+        "properties": {
+          "updatedRoleId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateRoleResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/UpdateRoleResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateUserRequest": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "newUsername": {
+            "type": "string",
+            "nullable": true
+          },
+          "newEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "newPassword": {
+            "type": "string",
+            "nullable": true
+          },
+          "newRoleId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateUserResponse": {
+        "type": "object",
+        "properties": {
+          "updatedUserId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateUserResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/UpdateUserResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "passwordHash": {
+            "type": "string",
+            "nullable": true
+          },
+          "role": {
+            "$ref": "#/components/schemas/RoleDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ValidateTokenRequest": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ValidateTokenResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "nullable": true
+          },
+          "tokenData": {
+            "$ref": "#/components/schemas/TokenDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ValidateTokenResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ValidateTokenResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "description": "Enter JWT token",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "Bearer": []
+    }
+  ]
+}
