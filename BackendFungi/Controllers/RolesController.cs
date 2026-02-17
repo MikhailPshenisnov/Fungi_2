@@ -10,6 +10,7 @@ using BackendFungi.Models.Other;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace BackendFungi.Controllers;
 
@@ -26,8 +27,17 @@ public class RolesController : ControllerBase
         _rolesService = rolesService;
     }
 
+    // TODO: FIX THIS STRANGE METHOD AND CHECK REQUESTS RESPONSES FOR IT
+    
+    /*
+        Я хз что это за метод, Саня тут костылей нагородил, переделайте или 
+        используйте базированный GetFilteredRoles без фильтра
+    */
+    
     [HttpGet]
-    public async Task<IActionResult> TestGetRoles(CancellationToken cancellationToken)
+    [SwaggerOperation(OperationId = "TestGetRoles", Summary = "Test get roles",
+        Description = "I don't know, something like GetFilteredRoles, but something crazy")]
+    public async Task<ActionResult<BaseResponse<List<TestRoles>>>> TestGetRoles(CancellationToken cancellationToken)
     {
         RoleFilter? roleFilter = null;
 
@@ -58,7 +68,10 @@ public class RolesController : ControllerBase
 
     [Authorize]
     [HttpGet]
-    public async Task<IActionResult> GetRole([FromQuery] GetRoleRequest request, CancellationToken cancellationToken)
+    [SwaggerOperation(OperationId = "GetRole", Summary = "Get role",
+        Description = "Receives information about the role by id")]
+    public async Task<ActionResult<BaseResponse<GetRoleResponse>>> GetRole([FromQuery] GetRoleRequest request, 
+        CancellationToken cancellationToken)
     {
         var role = await _rolesService
             .GetRoleAsync(request.RoleId, cancellationToken);
@@ -76,7 +89,9 @@ public class RolesController : ControllerBase
 
     [Authorize]
     [HttpGet]
-    public async Task<IActionResult> GetFilteredRoles([FromQuery] GetFilteredRolesRequest request,
+    [SwaggerOperation(OperationId = "GetFilteredRoles", Summary = "Get filtered roles",
+        Description = "Gets a list of roles with filters")]
+    public async Task<ActionResult<BaseResponse<GetFilteredRolesResponse>>> GetFilteredRoles([FromQuery] GetFilteredRolesRequest request,
         CancellationToken cancellationToken)
     {
         await _accessCheckService.CheckAccessLevel(
@@ -111,7 +126,9 @@ public class RolesController : ControllerBase
 
     [Authorize]
     [HttpPost]
-    public async Task<IActionResult> CreateRole([FromBody] CreateRoleRequest request,
+    [SwaggerOperation(OperationId = "CreateRole", Summary = "Create role",
+        Description = "Creates role")]
+    public async Task<ActionResult<BaseResponse<CreateRoleResponse>>> CreateRole([FromBody] CreateRoleRequest request,
         CancellationToken cancellationToken)
     {
         var user = await _accessCheckService.CheckAccessLevel(
@@ -143,7 +160,9 @@ public class RolesController : ControllerBase
 
     [Authorize]
     [HttpPut]
-    public async Task<IActionResult> UpdateRole([FromBody] UpdateRoleRequest request,
+    [SwaggerOperation(OperationId = "UpdateRole", Summary = "Update role",
+        Description = "Updates role info by id")]
+    public async Task<ActionResult<BaseResponse<UpdateRoleResponse>>> UpdateRole([FromBody] UpdateRoleRequest request,
         CancellationToken cancellationToken)
     {
         var user = await _accessCheckService.CheckAccessLevel(
@@ -181,7 +200,9 @@ public class RolesController : ControllerBase
 
     [Authorize]
     [HttpDelete]
-    public async Task<IActionResult> DeleteRole([FromQuery] DeleteRoleRequest request,
+    [SwaggerOperation(OperationId = "DeleteRole", Summary = "Delete role",
+        Description = "Deletes role by id")]
+    public async Task<ActionResult<BaseResponse<DeleteRoleResponse>>> DeleteRole([FromQuery] DeleteRoleRequest request,
         CancellationToken cancellationToken)
     {
         var user = await _accessCheckService.CheckAccessLevel(

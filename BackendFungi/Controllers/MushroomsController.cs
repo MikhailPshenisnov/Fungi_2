@@ -9,6 +9,7 @@ using BackendFungi.Models.Filters;
 using BackendFungi.Models.Other;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace BackendFungi.Controllers;
 
@@ -33,8 +34,10 @@ public class MushroomsController : ControllerBase
     */
 
     [HttpGet]
-    public async Task<IActionResult> GetMushroom([FromQuery] GetMushroomRequest request,
-        CancellationToken cancellationToken)
+    [SwaggerOperation(OperationId = "GetMushroom", Summary = "Get mushroom",
+        Description = "Receives information about the mushroom by id")]
+    public async Task<ActionResult<BaseResponse<GetMushroomResponse>>> GetMushroom(
+        [FromQuery] GetMushroomRequest request, CancellationToken cancellationToken)
     {
         var (mushroom, doppelgangersMap) = await _mushroomsService
             .GetMushroomAsync(request.MushroomId, cancellationToken);
@@ -77,8 +80,10 @@ public class MushroomsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetFilteredMushrooms([FromQuery] GetFilteredMushroomsRequest request,
-        CancellationToken cancellationToken)
+    [SwaggerOperation(OperationId = "GetFilteredMushrooms", Summary = "Get filtered mushrooms",
+        Description = "Gets a list of mushrooms with filters")]
+    public async Task<ActionResult<BaseResponse<GetFilteredMushroomsResponse>>> GetFilteredMushrooms(
+        [FromQuery] GetFilteredMushroomsRequest request, CancellationToken cancellationToken)
     {
         var (mushroomFilter, mushroomFilterError) = MushroomFilter
             .Create(request.PartOfName,
@@ -139,8 +144,10 @@ public class MushroomsController : ControllerBase
 
     [Authorize]
     [HttpPost]
-    public async Task<IActionResult> CreateMushroom([FromBody] CreateMushroomRequest request,
-        CancellationToken cancellationToken)
+    [SwaggerOperation(OperationId = "CreateMushroom", Summary = "Create mushroom",
+        Description = "Creates mushroom")]
+    public async Task<ActionResult<BaseResponse<CreateMushroomResponse>>> CreateMushroom(
+        [FromBody] CreateMushroomRequest request, CancellationToken cancellationToken)
     {
         await _accessCheckService.CheckAccessLevel(
             HttpContext,
@@ -184,8 +191,10 @@ public class MushroomsController : ControllerBase
 
     [Authorize]
     [HttpPut]
-    public async Task<IActionResult> UpdateMushroom([FromBody] UpdateMushroomRequest request,
-        CancellationToken cancellationToken)
+    [SwaggerOperation(OperationId = "UpdateMushroom", Summary = "Update mushroom",
+        Description = "Updates mushroom info by id")]
+    public async Task<ActionResult<BaseResponse<UpdateMushroomResponse>>> UpdateMushroom(
+        [FromBody] UpdateMushroomRequest request, CancellationToken cancellationToken)
     {
         await _accessCheckService.CheckAccessLevel(
             HttpContext,
@@ -229,8 +238,10 @@ public class MushroomsController : ControllerBase
 
     [Authorize]
     [HttpDelete]
-    public async Task<IActionResult> DeleteMushroom([FromQuery] DeleteMushroomRequest request,
-        CancellationToken cancellationToken)
+    [SwaggerOperation(OperationId = "DeleteMushroom", Summary = "Delete mushroom",
+        Description = "Deletes mushroom by id")]
+    public async Task<ActionResult<BaseResponse<DeleteMushroomResponse>>> DeleteMushroom(
+        [FromQuery] DeleteMushroomRequest request, CancellationToken cancellationToken)
     {
         await _accessCheckService.CheckAccessLevel(
             HttpContext,
