@@ -9,6 +9,7 @@ using BackendFungi.Models.Filters;
 using BackendFungi.Models.Other;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace BackendFungi.Controllers;
 
@@ -26,7 +27,9 @@ public class ArticlesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetArticle([FromQuery] GetArticleRequest request,
+    [SwaggerOperation(OperationId = "GetArticle", Summary = "Get article",
+        Description = "Receives information about the article by id")]
+    public async Task<ActionResult<BaseResponse<GetArticleResponse>>> GetArticle([FromQuery] GetArticleRequest request,
         CancellationToken cancellationToken)
     {
         var article = await _articlesService
@@ -56,8 +59,10 @@ public class ArticlesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetFilteredArticles([FromQuery] GetFilteredArticlesRequest request,
-        CancellationToken cancellationToken)
+    [SwaggerOperation(OperationId = "GetFilteredArticles", Summary = "Get filtered articles",
+        Description = "Gets a list of articles with filters")]
+    public async Task<ActionResult<BaseResponse<GetFilteredArticlesResponse>>> GetFilteredArticles(
+        [FromQuery] GetFilteredArticlesRequest request, CancellationToken cancellationToken)
     {
         var (articleFilter, articleFilterError) = ArticleFilter
             .Create(request.PartOfTitle,
@@ -99,7 +104,10 @@ public class ArticlesController : ControllerBase
 
     [Authorize]
     [HttpPost]
-    public async Task<IActionResult> CreateArticle([FromBody] CreateArticleRequest request,
+    [SwaggerOperation(OperationId = "CreateArticle", Summary = "Create article",
+        Description = "Creates article")]
+    public async Task<ActionResult<BaseResponse<CreateArticleResponse>>> CreateArticle(
+        [FromBody] CreateArticleRequest request,
         CancellationToken cancellationToken)
     {
         await _accessCheckService.CheckAccessLevel(
@@ -132,8 +140,10 @@ public class ArticlesController : ControllerBase
 
     [Authorize]
     [HttpPut]
-    public async Task<IActionResult> UpdateArticle([FromBody] UpdateArticleRequest request,
-        CancellationToken cancellationToken)
+    [SwaggerOperation(OperationId = "UpdateArticle", Summary = "Update article",
+        Description = "Updates article info by id")]
+    public async Task<ActionResult<BaseResponse<UpdateArticleResponse>>> UpdateArticle(
+        [FromBody] UpdateArticleRequest request, CancellationToken cancellationToken)
     {
         await _accessCheckService.CheckAccessLevel(
             HttpContext,
@@ -165,8 +175,10 @@ public class ArticlesController : ControllerBase
 
     [Authorize]
     [HttpDelete]
-    public async Task<IActionResult> DeleteArticle([FromQuery] DeleteArticleRequest request,
-        CancellationToken cancellationToken)
+    [SwaggerOperation(OperationId = "DeleteArticle", Summary = "Delete article",
+        Description = "Deletes article by id")]
+    public async Task<ActionResult<BaseResponse<DeleteArticleResponse>>> DeleteArticle(
+        [FromQuery] DeleteArticleRequest request, CancellationToken cancellationToken)
     {
         await _accessCheckService.CheckAccessLevel(
             HttpContext,

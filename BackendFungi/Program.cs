@@ -142,23 +142,26 @@ builder.Services.AddCors(options => options.AddPolicy(
     "FungiApiPolicy", b => b
         .WithOrigins(
             builder.Configuration["Frontend:FrontendAddress"] ??
-            throw new ConfigurationException("Frontend address is missing"),
-            "MOBILE APP ADDRESS" // Вот сюда вставьте адрес вашего эмулятора/устройства (пример: http://localhost:1234/)
+            throw new ConfigurationException("Frontend address is missing")
         )
         .AllowAnyHeader()
         .AllowAnyMethod()
         .AllowCredentials()));
 
 // TODO: FIX CORS
-// Пока что мне лень нормально нстроить CORS, пусть пока что тут будет такой костыль
+
+/*
+    Необходимо сделать так, чтобы при работе API данные не хранились в куки, 
+    а использовалось локальное хранилище в браузере
+    Таким образом удастся легко прикрутить мобилку без проблем с корсами
+    По итогу надо убрать AllowCredentials() и разрешить AllowAnyOrigin()
+*/
 
 // builder.Services.AddCors(options => options.AddPolicy(
 //     "FungiApiPolicy", b => b
-//         .WithOrigins(builder.Configuration["Frontend:FrontendAddress"]
-//                      ?? throw new ConfigurationException("Frontend address is missing"))
+//         .AllowAnyOrigin()
 //         .AllowAnyHeader()
-//         .AllowAnyMethod()
-//         .AllowCredentials()));
+//         .AllowAnyMethod()));
 
 var app = builder.Build();
 

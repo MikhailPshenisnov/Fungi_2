@@ -8,6 +8,7 @@ using BackendFungi.Models.Filters;
 using BackendFungi.Models.Other;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace BackendFungi.Controllers;
 
@@ -27,8 +28,17 @@ public class UsersController : ControllerBase
         _usersService = usersService;
     }
 
+    // TODO: FIX THIS STRANGE METHOD AND CHECK REQUESTS RESPONSES FOR IT
+    
+    /*
+        Я хз что это за метод, Саня тут костылей нагородил, переделайте или
+        используйте базированный GetFilteredUsers без фильтра
+    */
+    
     [HttpGet]
-    public async Task<IActionResult> TestGetUsers(CancellationToken cancellationToken)
+    [SwaggerOperation(OperationId = "TestGetUsers", Summary = "Test get users",
+        Description = "I don't know, something like GetFilteredUsers, but something crazy")]
+    public async Task<ActionResult<BaseResponse<List<TestUsers>>>> TestGetUsers(CancellationToken cancellationToken)
     {
         UserFilter? userFilter = null;
 
@@ -49,7 +59,9 @@ public class UsersController : ControllerBase
 
     [Authorize]
     [HttpGet]
-    public async Task<IActionResult> GetUser([FromQuery] GetUserRequest request,
+    [SwaggerOperation(OperationId = "GetUser", Summary = "Get user",
+        Description = "Receives information about the user by id")]
+    public async Task<ActionResult<BaseResponse<GetUserResponse>>> GetUser([FromQuery] GetUserRequest request,
         CancellationToken cancellationToken)
     {
         var user = await _usersService
@@ -73,7 +85,9 @@ public class UsersController : ControllerBase
 
     [Authorize]
     [HttpGet]
-    public async Task<IActionResult> GetFilteredUsers([FromQuery] GetFilteredUsersRequest request,
+    [SwaggerOperation(OperationId = "GetFilteredUsers", Summary = "Get filtered users",
+        Description = "Gets a list of users with filters")]
+    public async Task<ActionResult<BaseResponse<GetFilteredUsersResponse>>> GetFilteredUsers([FromQuery] GetFilteredUsersRequest request,
         CancellationToken cancellationToken)
     {
         await _accessCheckService.CheckAccessLevel(
@@ -113,7 +127,9 @@ public class UsersController : ControllerBase
 
     [Authorize]
     [HttpPost]
-    public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request,
+    [SwaggerOperation(OperationId = "CreateUser", Summary = "Create user",
+        Description = "Creates user")]
+    public async Task<ActionResult<BaseResponse<CreateUserResponse>>> CreateUser([FromBody] CreateUserRequest request,
         CancellationToken cancellationToken)
     {
         var u = await _accessCheckService.CheckAccessLevel(
@@ -150,7 +166,9 @@ public class UsersController : ControllerBase
 
     [Authorize]
     [HttpPut]
-    public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequest request,
+    [SwaggerOperation(OperationId = "UpdateUser", Summary = "Update user",
+        Description = "Updates user info by id")]
+    public async Task<ActionResult<BaseResponse<UpdateUserResponse>>> UpdateUser([FromBody] UpdateUserRequest request,
         CancellationToken cancellationToken)
     {
         var u = await _accessCheckService.CheckAccessLevel(
@@ -193,7 +211,9 @@ public class UsersController : ControllerBase
 
     [Authorize]
     [HttpDelete]
-    public async Task<IActionResult> DeleteUser([FromQuery] DeleteUserRequest request,
+    [SwaggerOperation(OperationId = "DeleteUser", Summary = "Delete user",
+        Description = "Deletes user by id")]
+    public async Task<ActionResult<BaseResponse<DeleteUserResponse>>> DeleteUser([FromQuery] DeleteUserRequest request,
         CancellationToken cancellationToken)
     {
         var u = await _accessCheckService.CheckAccessLevel(
@@ -217,9 +237,17 @@ public class UsersController : ControllerBase
 
         return Ok(response);
     }
-
+    
+    // TODO: I HAVE NO IDEA
+    
+    /*
+        Саня, че это за прикол вообще, я не помню такого метода
+    */
+    
     [Authorize]
     [HttpPost]
+    [SwaggerOperation(OperationId = "UpdateUserSmallParam", Summary = "Update user with small parameters",
+        Description = "Short version of UpdateUser")]
     public async Task<IActionResult> UpdateUserSmallParam([FromForm] UpdateUserRequestSmallParam request,
         CancellationToken cancellationToken)
     {

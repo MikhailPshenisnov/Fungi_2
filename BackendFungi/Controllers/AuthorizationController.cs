@@ -8,10 +8,18 @@ using BackendFungi.Models.Filters;
 using BackendFungi.Models.Other;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using IAuthorizationService = BackendFungi.Abstractions.Services.IAuthorizationService;
 
 
 namespace BackendFungi.Controllers;
+
+// TODO: FIX AUTH
+
+/*
+    Требуется переделать авторизацию от хранения в куках на авторизацию здорового человека
+    Ну там через локал сторэдж и все такое
+*/
 
 [ApiController]
 [Route("[controller]/[action]")]
@@ -32,7 +40,9 @@ public class AuthorizationController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> LoginUser([FromBody] LoginUserRequest loginUserRequest,
+    [SwaggerOperation(OperationId = "LoginUser", Summary = "Login user",
+        Description = "Performs the user login procedure")]
+    public async Task<ActionResult<BaseResponse<LoginUserResponse>>> LoginUser([FromBody] LoginUserRequest loginUserRequest,
         CancellationToken cancellationToken)
     {
         var token = await _authorizationService
@@ -54,7 +64,9 @@ public class AuthorizationController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> RegisterUser([FromBody] RegisterUserRequest registerUserRequest,
+    [SwaggerOperation(OperationId = "RegisterUser", Summary = "Register user",
+        Description = "Performs user registration procedure")]
+    public async Task<ActionResult<BaseResponse<RegisterUserResponse>>> RegisterUser([FromBody] RegisterUserRequest registerUserRequest,
         CancellationToken cancellationToken)
     {
         // проверка авторизации, что пользователь не вошел в аккаунт
@@ -127,7 +139,9 @@ public class AuthorizationController : ControllerBase
     }
 
     [HttpGet]
-    public Task<IActionResult> GetCurrentUserToken(CancellationToken cancellationToken)
+    [SwaggerOperation(OperationId = "GetCurrentUserToken", Summary = "Get current user token",
+        Description = "Returns current user token")]
+    public async Task<ActionResult<BaseResponse<GetCurrentUserTokenResponse>>> GetCurrentUserToken(CancellationToken cancellationToken)
     {
         Request.Cookies.TryGetValue("jwt_token", out var token);
 
@@ -135,13 +149,14 @@ public class AuthorizationController : ControllerBase
             new GetCurrentUserTokenResponse(
                 token ?? string.Empty),
             null);
-
-        return Task.FromResult<IActionResult>(Ok(response));
+        return Ok(response);
     }
 
     [Authorize]
     [HttpPost]
-    public async Task<IActionResult> ValidateToken([FromBody] ValidateTokenRequest? validateTokenRequest,
+    [SwaggerOperation(OperationId = "ValidateToken", Summary = "Validate token",
+        Description = "Allows you to obtain information about the user by token")]
+    public async Task<ActionResult<BaseResponse<ValidateTokenResponse>>> ValidateToken([FromBody] ValidateTokenRequest? validateTokenRequest,
         CancellationToken cancellationToken)
     {
         Request.Cookies.TryGetValue("jwt_token", out var token);
@@ -171,7 +186,9 @@ public class AuthorizationController : ControllerBase
     }
 
     [HttpPost]
-    public Task<IActionResult> LogoutUser(CancellationToken cancellationToken)
+    [SwaggerOperation(OperationId = "LogoutUser", Summary = "Logout user",
+        Description = "Removes user data from cookies")]
+    public async Task<ActionResult> LogoutUser(CancellationToken cancellationToken)
     {
         Response.Cookies.Append("jwt_token", string.Empty, new CookieOptions
         {
@@ -180,11 +197,27 @@ public class AuthorizationController : ControllerBase
             SameSite = SameSiteMode.Strict
         });
 
-        return Task.FromResult<IActionResult>(Ok());
+        return Ok();
     }
 
+    // TODO: DELETE THIS BAD METHOD
+    
+    /*
+        Саня, выпили этот костыль, есть же ValidateToken и куки тоже выпили
+    */
+    
+    // TODO: CHECK RETURN DATA TYPE
+    
+    /*
+        Саня, я поставил тип данных с оберткой, вроде оно и должно обернуть само, хз короче проверь свой костыль
+    */
+    
     [HttpGet]
-    public async Task<IActionResult> GetCurrentDataUser(CancellationToken cancellationToken)
+    [SwaggerOperation(OperationId = "GetCurrentDataUser", 
+        Summary = "Get current data user [NOT RECOMMENDED TO USE]",
+        Description = "An analogue of the ValidateToken method, but this is a piece of some king of strange code that " +
+                      "Sanya made to connect front easier (P. S. Выпилите этот метод пожалуйста, ну что за треш, господа)")]
+    public async Task<ActionResult<BaseResponse<GetCurrentUserDataResponse>>> GetCurrentDataUser(CancellationToken cancellationToken)
     {
         Request.Cookies.TryGetValue("jwt_token", out var token);
 
