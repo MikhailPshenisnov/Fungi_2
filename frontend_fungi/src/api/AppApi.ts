@@ -1,9 +1,10 @@
 import axios from "axios";
 
-const baseURL = 'http://localhost:5000';
+const apiBaseUrl = (import.meta.env.VITE_API_URL ?? "").trim().replace(/\/+$/, "");
+const toApiUrl = (path: string) => `${apiBaseUrl}${path.startsWith("/") ? path : `/${path}`}`;
 
 export const appApiIns = axios.create({
-    baseURL: 'http://localhost:5000',
+    baseURL: apiBaseUrl || undefined,
     headers: {
         'Content-Type': 'application/json'
     },
@@ -89,14 +90,25 @@ export interface MushroomFilterProps {
 }
 
 // Responses
-export interface CurrentUserResponse {
-    data: any;
-    Token : string;
-    Name : string;
-    Email : string;
-    AsseccLvl : number;
-    UserId : string;
+export interface ApiResponse<T> {
+    data: T | null;
+    errorMessage?: ApiErrorDto | null;
 }
+
+export interface ApiErrorDto {
+    errorGroup?: string;
+    errorMessage?: string;
+}
+
+export interface CurrentUserData {
+    token: string;
+    name: string;
+    email: string;
+    asseccLvl: number;
+    userId: string;
+}
+
+export type CurrentUserResponse = ApiResponse<CurrentUserData>;
 
 export interface LoginResponse {
     token: string;
@@ -106,16 +118,19 @@ export interface RegistrationResponse {
     token: string;
 }
 
+export type LoginApiResponse = ApiResponse<LoginResponse>;
+export type RegistrationApiResponse = ApiResponse<RegistrationResponse>;
+
 
 // Authorization
 export function LoginUser(email: string, password: string){
     const payload = { email, password };
-    return appApiIns.post<LoginResponse>('/Authorization/LoginUser', payload);
+    return appApiIns.post<LoginApiResponse>('/Authorization/LoginUser', payload);
 }
 
 export function RegistrationUser(name: string, email: string, password: string){
     const payload = { name, email, password };
-    return appApiIns.post<RegistrationResponse>('/Authorization/RegisterUser', payload);
+    return appApiIns.post<RegistrationApiResponse>('/Authorization/RegisterUser', payload);
 }
 
 export function GetCurrentUser(){
@@ -124,6 +139,50 @@ export function GetCurrentUser(){
 
 export function LogoutUser(){
     return  appApiIns.post('/Authorization/LogoutUser');
+}
+
+export function extractApiErrorMessage(payload: unknown): string | null {
+    if (!payload || typeof payload !== 'object') {
+        return null;
+    }
+
+    const candidate = payload as {
+        errorMessage?: { errorMessage?: string } | string | null;
+        message?: string;
+    };
+
+    if (typeof candidate.errorMessage === 'string') {
+        return candidate.errorMessage;
+    }
+
+    if (candidate.errorMessage && typeof candidate.errorMessage === 'object') {
+        const nestedError = candidate.errorMessage.errorMessage;
+        if (typeof nestedError === 'string') {
+            return nestedError;
+        }
+    }
+
+    if (typeof candidate.message === 'string') {
+        return candidate.message;
+    }
+
+    return null;
+}
+
+export function extractAxiosErrorMessage(error: unknown): string | null {
+    if (!error || typeof error !== 'object') {
+        return null;
+    }
+
+    const candidate = error as {
+        response?: { data?: unknown; status?: number };
+        message?: string;
+    };
+
+    return (
+        extractApiErrorMessage(candidate.response?.data) ??
+        (typeof candidate.message === 'string' ? candidate.message : null)
+    );
 }
 
 //Publications
@@ -167,7 +226,7 @@ export function CreateRole(name: string, accessLevel: number, token : string){
             "AccessLevel": accessLevel
         })
     };
-    return fetch(`${baseURL}/Roles/CreateRole`, requestOptions)
+    return fetch(toApiUrl('/Roles/CreateRole'), requestOptions)
 }
 
 export function DeleteRole(roleId: string, token : string){
@@ -176,7 +235,7 @@ export function DeleteRole(roleId: string, token : string){
         headers: {"Content-Type" : "application/json",
             "Authorization" : `Bearer ${token}`}
     }
-    return fetch(`${baseURL}/Roles/DeleteRole?RoleId=${roleId}`, requestOptions)
+    return fetch(toApiUrl(`/Roles/DeleteRole?RoleId=${encodeURIComponent(roleId)}`), requestOptions)
 }
 
 
@@ -202,7 +261,7 @@ export function CreateUser(name: string, email: string, password: string, role: 
             "role": role
         })
     };
-    return fetch(`${baseURL}/Users/CreateUser`, requestOptions)
+    return fetch(toApiUrl('/Users/CreateUser'), requestOptions)
 }
 
 export function UpdateUser(data: FormData, token : string){
@@ -211,7 +270,7 @@ export function UpdateUser(data: FormData, token : string){
         headers: {"Authorization" : `Bearer ${token}`},
         body: data
     }
-    return fetch(`${baseURL}/Users/UpdateUserSmallParam`, requestOptions)
+    return fetch(toApiUrl('/Users/UpdateUserSmallParam'), requestOptions)
 }
 
 export function DeleteUser(userId: string, token : string){
@@ -220,6 +279,5 @@ export function DeleteUser(userId: string, token : string){
         headers: {"Content-Type" : "application/json",
             "Authorization" : `Bearer ${token}`}
     }
-    return fetch(`${baseURL}/Users/DeleteUser?UserId=${userId}`, requestOptions)
+    return fetch(toApiUrl(`/Users/DeleteUser?UserId=${encodeURIComponent(userId)}`), requestOptions)
 }
-

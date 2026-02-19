@@ -56,11 +56,57 @@
     transition: border-color 0.3s; /* Плавное изменение границы при фокусе */
 }
 
+.register-page .password-input-wrapper {
+    position: relative;
+}
+
+.register-page .password-input-wrapper .input {
+    padding-right: 46px;
+}
+
+.register-page .password-visibility-toggle {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: 0;
+    background: transparent;
+    color: #7f8796;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.register-page .password-visibility-toggle:hover {
+    color: #4f5d78;
+    background-color: #f1f4f8;
+}
+
+.register-page .password-visibility-toggle:focus-visible {
+    outline: 2px solid #7fa6d3;
+    outline-offset: 1px;
+}
+
+.register-page .password-visibility-toggle:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
 .register-page .form-group input[type="text"]:focus,
 .register-page .form-group input[type="password"]:focus,
 .register-page .form-group input[type="file"]:focus {
     border-color: #007bff;
     outline: none;
+}
+
+.register-page .form-group input:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
 }
 
 .register-page .update-button {
@@ -77,6 +123,126 @@
 
 .register-page .update-button:hover {
     background-color: #0056b3;
+}
+
+.register-page .update-button:disabled {
+    background-color: #8cb9e9;
+    cursor: not-allowed;
+}
+
+.register-page .password-feedback {
+    text-align: left;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0 2px;
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-8px);
+    overflow: hidden;
+    pointer-events: none;
+    transition:
+        max-height 240ms ease,
+        opacity 180ms ease,
+        transform 240ms ease,
+        margin 240ms ease,
+        padding 240ms ease;
+    will-change: max-height, opacity, transform;
+}
+
+.register-page .password-feedback.is-visible {
+    margin-top: -6px;
+    margin-bottom: 4px;
+    padding: 2px 2px 4px;
+    max-height: 220px;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.register-page .password-feedback__strength {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin: 0 0 6px;
+    font-size: 0.95rem;
+    color: #73809a;
+    font-weight: 500;
+}
+
+.register-page .password-feedback__strength-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #adadad;
+    flex-shrink: 0;
+}
+
+.register-page .password-feedback__strength-value {
+    font-weight: 700;
+}
+
+.register-page .password-feedback__strength-value.weak {
+    color: #d65353;
+}
+
+.register-page .password-feedback__strength-indicator.weak {
+    background-color: #d65353;
+}
+
+.register-page .password-feedback__strength-value.medium {
+    color: #c48c1f;
+}
+
+.register-page .password-feedback__strength-indicator.medium {
+    background-color: #c48c1f;
+}
+
+.register-page .password-feedback__strength-value.strong {
+    color: #22a06b;
+}
+
+.register-page .password-feedback__strength-indicator.strong {
+    background-color: #22a06b;
+}
+
+.register-page .password-feedback__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.register-page .password-feedback__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+}
+
+.register-page .password-feedback__icon {
+    width: 14px;
+    display: inline-flex;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 0.95rem;
+}
+
+.register-page .password-feedback__item.valid {
+    color: #22a06b;
+}
+
+.register-page .password-feedback__item.invalid {
+    color: #8c94a3;
+}
+
+.register-page .password-error {
+    color: #bc001e;
+    margin: 0;
+    text-align: left;
+    font-size: 0.9rem;
 }
 
 

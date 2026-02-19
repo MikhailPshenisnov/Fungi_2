@@ -2,13 +2,9 @@ import './Header.css';
 import { SearchBar } from '@modules/Header/search-bar/SearchBar.tsx';
 import { Navbar } from '@modules/Header/navbar/Navbar.tsx';
 import { useAppDispatch, useAppSelector } from '../../../redux/Hooks';
-import { useNavigate } from 'react-router-dom';
-import { LogoutUser } from '../../../api/AppApi.ts';
-import {
-    setUpdate,
-} from '../../../redux/UserSlice.tsx';
+import { Link, useNavigate } from 'react-router-dom';
+import { logoutCurrentUser } from '../../../redux/UserSlice.tsx';
 import { HeaderNavLink } from '@modules/Header/header-nav-link/HeaderNavLink.tsx';
-import { useEffect } from 'react';
 
 export function Header() {
     const user = useAppSelector((state) => state.user);
@@ -17,26 +13,20 @@ export function Header() {
     const isLogged = user.isLoggedIn;
     const isAdminMode = user.accessLvl === 2;
 
-    useEffect(() => {
-        console.log(user.email);
-    }, []);
-
-    const handleLogout = () => {
-        LogoutUser().then(() => {
-            dispatch(setUpdate());
-            navigate("/");
-        });
+    const handleLogout = async () => {
+        await dispatch(logoutCurrentUser());
+        navigate("/mainpage");
     };
 
     return (
         <header className="header">
             <div className="header__container">
-                <a href="/public" className="site-brand">
+                <Link to="/mainpage" className="site-brand">
                     <img src="/images/svg/logo.svg"
                          alt="logo"
                          className="site-logo" />
                     <h1 className="site-title">Fungi</h1>
-                </a>
+                </Link>
                 <SearchBar />
                 <Navbar />
                 {/*<button className="btn inactive">Вход</button>*/}

@@ -9,17 +9,17 @@ interface PrivateRouteProps {
 const PrivateRoute: React.FC<PrivateRouteProps> = ({IsAdmin}) => {
     const user = useAppSelector((state) => state.user);
 
-    if (user === undefined) {
-        //return <Navigate to="/login"/>;
+    if (!user.isAuthChecked || user.authRequestStatus === 'loading') {
         return <p>Loading…</p>;
+    }
+
+    if (!user.isLoggedIn || user.email === "") {
+        return <Navigate to="/login" replace />;
     }
 
     if (IsAdmin && user.accessLvl != 2)
     {
-        return <Navigate to="/home"/>;
-    }
-    if (user == null || user.email == "") {
-        return <Navigate to="/login"/>;
+        return <Navigate to="/mainpage" replace />;
     }
 
     return <Outlet />;

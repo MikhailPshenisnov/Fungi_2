@@ -151,3 +151,10 @@ obj/
 # Migrations folder (if you don't want to version control migrations)
 Migrations/
 
+# Frontend build artifacts
+frontend_fungi/dist/
+frontend_fungi/dist-ssr/
+frontend_fungi/build/
+frontend_fungi/.vite/
+frontend_fungi/coverage/
+*.tsbuildinfo

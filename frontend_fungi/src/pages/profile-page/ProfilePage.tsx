@@ -1,36 +1,30 @@
-import {FormEvent, useEffect, useState} from "react";
-import {GetCurrentUser, UpdateUser} from "../../api/AppApi.ts";
+import { FormEvent, useState } from "react";
+import { UpdateUser } from "../../api/AppApi.ts";
 import './ProfilePage.css';
-import {useAppSelector} from "../../redux/Hooks.tsx";
+import { useAppDispatch, useAppSelector } from "../../redux/Hooks.tsx";
+import { fetchCurrentUser } from "../../redux/UserSlice.tsx";
 
 export function ProfilePage() {
+    const dispatch = useAppDispatch();
     const user = useAppSelector((state) => state.user);
-    const [userName, setUserName] = useState("");
-    const [email, setEmail] = useState("");
-
     const [name, setName] = useState("");
 
     const [errorMessage, setErrorMessage] = useState<string>("");
-
-    const [proverka, setProverka] = useState(0);
-
-    useEffect(() => {
-        console.error("Update")
-        GetCurrentUser().then((res) => {
-            setUserName(res.data.data.name);
-            setEmail(res.data.data.email);
-        });
-    }, [proverka]);
 
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
         (async () => {
             try {
+                if (user.email === "") {
+                    setErrorMessage("Не удалось определить текущего пользователя. Обновите страницу.");
+                    return;
+                }
+
                 const formData = new FormData();
-                formData.append('UserEmail', email);
-                if (name != ""){
-                    formData.append('NewName', name);
+                formData.append('UserEmail', user.email);
+                if (name.trim() !== ""){
+                    formData.append('NewName', name.trim());
                 }
 
                 const response = await UpdateUser(formData, user.token);
@@ -42,7 +36,8 @@ export function ProfilePage() {
                 }
 
                 setErrorMessage('');
-                setProverka(proverka + 1);
+                setName("");
+                await dispatch(fetchCurrentUser());
                 alert("Данные обновлены");
             } catch (error: any) {
                 if (error.name === "400") {
@@ -50,7 +45,6 @@ export function ProfilePage() {
                 } else {
                     setErrorMessage(`Произошла ошибка: ${error.message}`);
                 }
-                setProverka(proverka + 1);
             }
         })();
     };
@@ -61,9 +55,9 @@ export function ProfilePage() {
             <div className="profile-info">
                 <div className="profile-header">
                     <h1>Профиль</h1>
-                    <h3>{email}</h3>
+                    <h3>{user.email}</h3>
                     <br/>
-                    <h3>{userName}</h3>
+                    <h3>{user.name}</h3>
                 </div>
             </div>
             <br />

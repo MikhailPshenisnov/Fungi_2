@@ -1,9 +1,9 @@
 import {FormEvent, useEffect, useState} from 'react';
 import {Button} from "react-bootstrap";
-import {GetCurrentUser, LoginUser} from "../../api/AppApi.ts";
+import { extractApiErrorMessage, extractAxiosErrorMessage, LoginUser } from "../../api/AppApi.ts";
 import {useAppDispatch, useAppSelector} from "../../redux/Hooks.tsx";
-import { useNavigate } from 'react-router-dom';
-import { setIsLoggedIn, setUpdate } from '../../redux/UserSlice.tsx';
+import { Link, useNavigate } from 'react-router-dom';
+import { fetchCurrentUser } from '../../redux/UserSlice.tsx';
 import "./LoginPage.css"
 
 const LoginPage = () => {
@@ -16,35 +16,48 @@ const LoginPage = () => {
     const navigate = useNavigate();
 
     const [errorMessage, setErrorMessage] = useState<string>("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
        if (user.isLoggedIn) {
-            navigate("/");
+            navigate("/mainpage");
        }
     }, [user.isLoggedIn, navigate])
 
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        (async () => {
-            try {
-                await LoginUser(email, password);
-                const res = await GetCurrentUser();
+        if (isSubmitting) {
+            return;
+        }
 
-                if (res.data.data.email !== "") {
-                    dispatch(setIsLoggedIn(true));
-                    dispatch(setUpdate());
-                }
+        setIsSubmitting(true);
+        setErrorMessage('');
 
-                setErrorMessage('');
-            } catch (error: any) {
-                if (error.response?.status === 401) {
-                    setErrorMessage('Неверный email или пароль');
-                } else {
-                    setErrorMessage(`Произошла ошибка: ${error.message}`);
-                }
+        try {
+            const loginResponse = await LoginUser(email, password);
+            const loginError = extractApiErrorMessage(loginResponse.data);
+
+            if (loginError) {
+                setErrorMessage(loginError);
+                return;
             }
-        })();
+
+            const authAction = await dispatch(fetchCurrentUser());
+            if (fetchCurrentUser.fulfilled.match(authAction) && authAction.payload?.email) {
+                return;
+            }
+
+            setErrorMessage('Не удалось выполнить вход. Попробуйте снова.');
+        } catch (error: any) {
+            if (error.response?.status === 401) {
+                setErrorMessage('Неверный email или пароль');
+            } else {
+                setErrorMessage(extractAxiosErrorMessage(error) ?? 'Произошла ошибка при входе');
+            }
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -60,7 +73,11 @@ const LoginPage = () => {
                         id="email"
                         placeholder="Ваш E-mail"
                         value={email}
-                        onChange={(e) => setEmail_2(e.target.value)}
+                        onChange={(e) => {
+                            setEmail_2(e.target.value);
+                            setErrorMessage('');
+                        }}
+                        disabled={isSubmitting}
                         required
                     />
                 </div>
@@ -73,20 +90,24 @@ const LoginPage = () => {
                         id="password"
                         placeholder="Минимум 8 символов"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={(e) => {
+                            setPassword(e.target.value);
+                            setErrorMessage('');
+                        }}
+                        disabled={isSubmitting}
                         required
                     />
                 </div>
-                <Button type="submit" className="update-button">
-                    Войти
+                <Button type="submit" className="update-button" disabled={isSubmitting}>
+                    {isSubmitting ? 'Входим...' : 'Войти'}
                 </Button>
             </form>
             <br/>
             <p className="text">
                 Нет аккаунта?{' '}
-                <a href="/register" className="btn-registration">
+                <Link to="/register" className="btn-registration">
                     Зарегистрируйся
-                </a>
+                </Link>
             </p>
             <br/>
             <div className="err-message">
