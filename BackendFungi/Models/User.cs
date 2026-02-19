@@ -9,6 +9,9 @@ public class User
 
     public const int MinPasswordLength = 8;
     public const int MaxPasswordLength = 32;
+    public const string UsernamePattern = "^[a-zA-Z0-9_.-]+$";
+    public const string PasswordSpecialCharacterPattern = @"[!@#$%^&*(),.?""{}|<>]";
+    public const string PasswordPolicyPattern = @"^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*(),.?""{}|<>]).+$";
 
     private User(Guid id, string username, string? email, string passwordHash, Role role)
     {
@@ -41,7 +44,7 @@ public class User
         {
             error = "Username can't be line only with whitespaces";
         }
-        else if (!System.Text.RegularExpressions.Regex.IsMatch(Username, "^[a-zA-Z0-9_.-]+$"))
+        else if (!System.Text.RegularExpressions.Regex.IsMatch(Username, UsernamePattern))
         {
             error = "Incorrect symbols in login";
         }
@@ -84,7 +87,7 @@ public class User
 
         if (string.IsNullOrEmpty(password) || password.Length > MaxPasswordLength)
         {
-            passwordCheckError = $"Password can't be longer than {MaxUsernameLength} characters or empty";
+            passwordCheckError = $"Password can't be longer than {MaxPasswordLength} characters or empty";
         }
         else if (password.Length < MinPasswordLength)
         {
@@ -106,7 +109,7 @@ public class User
         {
             passwordCheckError = "The password must contain at least one lowercase letter";
         }
-        else if (!System.Text.RegularExpressions.Regex.IsMatch(password, @"[!@#$%^&*(),.?""{}|<>]"))
+        else if (!System.Text.RegularExpressions.Regex.IsMatch(password, PasswordSpecialCharacterPattern))
         {
             passwordCheckError = "The password must contain at least one special character";
         }

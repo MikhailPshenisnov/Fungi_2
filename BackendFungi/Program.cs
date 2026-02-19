@@ -69,6 +69,7 @@ builder.Services.AddSwaggerGen(opt =>
     });
 
     opt.EnableAnnotations();
+    opt.SupportNonNullableReferenceTypes();
 
     Action<SwaggerGenOptions>? configure = null;
 

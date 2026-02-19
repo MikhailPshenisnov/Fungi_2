@@ -2283,14 +2283,20 @@
       },
       "LoginUserRequest": {
         "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
         "properties": {
           "email": {
+            "maxLength": 128,
             "type": "string",
-            "nullable": true
+            "format": "email"
           },
           "password": {
-            "type": "string",
-            "nullable": true
+            "maxLength": 32,
+            "minLength": 8,
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -2432,18 +2438,28 @@
       },
       "RegisterUserRequest": {
         "type": "object",
+        "required": [
+          "name",
+          "email",
+          "password"
+        ],
         "properties": {
           "name": {
-            "type": "string",
-            "nullable": true
+            "maxLength": 128,
+            "minLength": 8,
+            "pattern": "^[a-zA-Z0-9_.-]+$",
+            "type": "string"
           },
           "email": {
+            "maxLength": 128,
             "type": "string",
-            "nullable": true
+            "format": "email"
           },
           "password": {
-            "type": "string",
-            "nullable": true
+            "maxLength": 32,
+            "minLength": 8,
+            "pattern": "^(?=.*\\\\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*(),.?\\\"{}|<>]).+$",
+            "type": "string"
           }
         },
         "additionalProperties": false
