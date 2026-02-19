@@ -16,7 +16,12 @@ public class StatusCodeMiddleware
     {
         await _next(context);
 
-        if (context.Response.HasStarted || context.Response.StatusCode < 400) return;
+        if (context.Response.HasStarted || context.Response.StatusCode < 400)
+            return;
+
+        // Keep explicitly written error payloads untouched and wrap only empty HTTP errors.
+        if (!string.IsNullOrWhiteSpace(context.Response.ContentType) || context.Response.ContentLength is > 0)
+            return;
 
         var response = new BaseResponse<object>(
             null,

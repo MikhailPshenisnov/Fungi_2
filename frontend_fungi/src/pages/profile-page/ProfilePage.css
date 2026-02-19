@@ -108,6 +108,105 @@
     background-color: #0056b3;
 }
 
+.profile-page .update-button:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    background-color: #5b9de3;
+}
+
+.profile-page .profile-hint {
+    color: #6f6f6f;
+    font-size: 0.9em;
+}
+
+.profile-page .profile-rules {
+    margin-top: 4px;
+    padding: 12px;
+    border: 1px solid #d8d8d8;
+    border-radius: 12px;
+    background-color: #fafafa;
+}
+
+.profile-page .profile-rules-title {
+    color: #444;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.profile-page .profile-rules ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.profile-page .profile-rules li {
+    margin-bottom: 4px;
+    color: #6f6f6f;
+}
+
+.profile-page .profile-rules li.is-valid {
+    color: #1f8a4c;
+}
+
+.profile-page .profile-rules li.is-invalid {
+    color: #7b7b7b;
+}
+
+.profile-page .profile-result-banner {
+    padding: 14px 16px;
+    border-radius: 14px;
+    text-align: left;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    animation: profile-result-banner-appear 0.22s ease-out;
+}
+
+.profile-page .profile-result-banner--outside {
+    width: 100%;
+    max-width: 600px;
+    margin: 10px auto 0;
+}
+
+.profile-page .profile-result-banner.success {
+    color: #0f5132;
+    border: 1px solid #a3cfbb;
+    background-color: #d1e7dd;
+}
+
+.profile-page .profile-result-banner.error {
+    color: #842029;
+    border: 1px solid #f5c2c7;
+    background-color: #f8d7da;
+}
+
+.profile-page .profile-result-banner-title {
+    font-size: 1.02rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.profile-page .profile-result-banner-text {
+    font-size: 0.95rem;
+    line-height: 1.35;
+}
+
+.profile-page .profile-result-banner.is-hiding {
+    opacity: 0;
+    transform: translateY(8px);
+}
+
+@keyframes profile-result-banner-appear {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @media (max-width: 480px) {
     .profile-page .profile-page {
         padding: 10px;

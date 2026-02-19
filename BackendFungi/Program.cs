@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using BackendFungi.Options;
+using BackendFungi.Contracts.Other;
+using BackendFungi.Contracts.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +22,26 @@ var configuration = builder.Configuration;
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var messages = context.ModelState.Values
+            .SelectMany(v => v.Errors)
+            .Select(e => string.IsNullOrWhiteSpace(e.ErrorMessage) ? "Invalid request payload" : e.ErrorMessage)
+            .Distinct()
+            .ToArray();
+
+        var errorText = string.Join("; ", messages);
+        var response = new BaseResponse<object>(
+            null,
+            new ExceptionDto(
+                "Validation error",
+                string.IsNullOrWhiteSpace(errorText) ? "Invalid request payload" : errorText));
+
+        return new BadRequestObjectResult(response);
+    };
+});
 
 // Swagger settings
 var swaggerOptions = configuration.GetSection("SwaggerDocOptions").Get<SwaggerDocOptions>()

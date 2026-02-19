@@ -148,11 +148,17 @@ export function extractApiErrorMessage(payload: unknown): string | null {
 
     const candidate = payload as {
         errorMessage?: { errorMessage?: string } | string | null;
+        ErrorMessage?: { ErrorMessage?: string; errorMessage?: string } | string | null;
         message?: string;
+        Message?: string;
     };
 
     if (typeof candidate.errorMessage === 'string') {
         return candidate.errorMessage;
+    }
+
+    if (typeof candidate.ErrorMessage === 'string') {
+        return candidate.ErrorMessage;
     }
 
     if (candidate.errorMessage && typeof candidate.errorMessage === 'object') {
@@ -162,8 +168,24 @@ export function extractApiErrorMessage(payload: unknown): string | null {
         }
     }
 
+    if (candidate.ErrorMessage && typeof candidate.ErrorMessage === 'object') {
+        const nestedPascalError = candidate.ErrorMessage.ErrorMessage;
+        if (typeof nestedPascalError === 'string') {
+            return nestedPascalError;
+        }
+
+        const nestedCamelError = candidate.ErrorMessage.errorMessage;
+        if (typeof nestedCamelError === 'string') {
+            return nestedCamelError;
+        }
+    }
+
     if (typeof candidate.message === 'string') {
         return candidate.message;
+    }
+
+    if (typeof candidate.Message === 'string') {
+        return candidate.Message;
     }
 
     return null;

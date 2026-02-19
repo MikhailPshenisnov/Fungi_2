@@ -251,42 +251,33 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> UpdateUserSmallParam([FromForm] UpdateUserRequestSmallParam request,
         CancellationToken cancellationToken)
     {
-        var u = await _accessCheckService.CheckAccessLevel(
+        var currentUser = await _accessCheckService.CheckAccessLevel(
             HttpContext,
             (int)AccessLevelEnumerator.CommonUser,
             cancellationToken);
 
-        var (userFilter, userFilterError) = UserFilter
-            .Create(null,
-                request.UserEmail,
-                null);
+        var newName = request.NewName?.Trim();
 
-        if (!string.IsNullOrEmpty(userFilterError))
-            throw new ConversionException($"Incorrect data format: {userFilterError}");
+        if (string.IsNullOrEmpty(newName))
+            throw new ConversionException("Incorrect data format: New username is not specified");
 
-        var filteredUsers = await _usersService
-            .GetFilteredUsersAsync(userFilter, cancellationToken);
-
-        string newName = filteredUsers[0].Username;
-        if (request.NewName != null)
-        {
-            newName = request.NewName;
-        }
+        if (newName == currentUser.Username)
+            throw new ConversionException("Incorrect data format: New username must differ from current username");
 
 
         var (newUser, newUserError) = Models.User
-            .Create(filteredUsers[0].Id,
+            .Create(currentUser.Id,
                 newName,
-                filteredUsers[0].Email,
-                filteredUsers[0].PasswordHash,
+                currentUser.Email,
+                currentUser.PasswordHash,
                 true,
-                filteredUsers[0].Role);
+                currentUser.Role);
 
         if (!string.IsNullOrEmpty(newUserError))
             throw new ConversionException($"Incorrect data format: {newUserError}");
 
         await _usersService
-            .UpdateUserAsync(filteredUsers[0].Id, newUser, cancellationToken);
+            .UpdateUserAsync(currentUser.Id, newUser, cancellationToken);
 
         return Ok();
     }
