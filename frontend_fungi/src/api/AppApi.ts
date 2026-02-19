@@ -249,16 +249,16 @@ export const getUsers = async () => {
     }
 };
 
-export function CreateUser(name: string, email: string, password: string, role: string, token : string){
+export function CreateUser(username: string, email: string, password: string, roleId: string, token : string){
     const requestOptions = {
         method: "POST",
         headers: {"Content-Type" : "application/json",
             "Authorization" : `Bearer ${token}`},
         body: JSON.stringify({
-            "name": name,
+            "username": username,
             "email": email,
             "password": password,
-            "role": role
+            "roleId": roleId
         })
     };
     return fetch(toApiUrl('/Users/CreateUser'), requestOptions)
