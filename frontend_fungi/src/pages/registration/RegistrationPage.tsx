@@ -6,6 +6,60 @@ import { Link, useNavigate } from 'react-router-dom';
 import { fetchCurrentUser } from '../../redux/UserSlice.tsx';
 import "./RegistrationPage.css"
 
+type RegistrationErrorField = 'username' | 'email' | 'password' | 'common';
+
+const USERNAME_MIN_LENGTH = 8;
+const USERNAME_MAX_LENGTH = 128;
+const EMAIL_MAX_LENGTH = 128;
+const PASSWORD_MIN_LENGTH = 8;
+const PASSWORD_MAX_LENGTH = 32;
+
+const mapRegistrationError = (rawMessage: string): { field: RegistrationErrorField; message: string } => {
+    const message = rawMessage.replace(/^Incorrect data format:\s*/i, '').trim();
+    const normalized = message.toLowerCase();
+
+    if (normalized.includes("username can't be shorter than")) {
+        return { field: 'username', message: `Никнейм должен быть не короче ${USERNAME_MIN_LENGTH} символов.` };
+    }
+    if (normalized.includes("username can't be longer than")) {
+        return { field: 'username', message: `Никнейм должен быть от ${USERNAME_MIN_LENGTH} до ${USERNAME_MAX_LENGTH} символов.` };
+    }
+    if (normalized.includes("username can't be line only with whitespaces")) {
+        return { field: 'username', message: 'Никнейм не может состоять только из пробелов.' };
+    }
+    if (normalized.includes('incorrect symbols in login')) {
+        return { field: 'username', message: 'Никнейм может содержать только латиницу, цифры и символы _ . -' };
+    }
+
+    if (normalized.includes("email can't be longer than")) {
+        return { field: 'email', message: `E-mail должен быть не длиннее ${EMAIL_MAX_LENGTH} символов.` };
+    }
+
+    if (normalized.includes("password can't be shorter than")) {
+        return { field: 'password', message: `Пароль должен быть не короче ${PASSWORD_MIN_LENGTH} символов.` };
+    }
+    if (normalized.includes("password can't be longer than")) {
+        return { field: 'password', message: `Пароль должен быть от ${PASSWORD_MIN_LENGTH} до ${PASSWORD_MAX_LENGTH} символов.` };
+    }
+    if (normalized.includes('password cannot be line only with whitespaces')) {
+        return { field: 'password', message: 'Пароль не может состоять только из пробелов.' };
+    }
+    if (normalized.includes('must contain at least one number')) {
+        return { field: 'password', message: 'Пароль должен содержать минимум одну цифру.' };
+    }
+    if (normalized.includes('must contain at least one capital letter')) {
+        return { field: 'password', message: 'Пароль должен содержать минимум одну заглавную букву.' };
+    }
+    if (normalized.includes('must contain at least one lowercase letter')) {
+        return { field: 'password', message: 'Пароль должен содержать минимум одну строчную букву.' };
+    }
+    if (normalized.includes('must contain at least one special character')) {
+        return { field: 'password', message: 'Пароль должен содержать минимум один спецсимвол.' };
+    }
+
+    return { field: 'common', message: message || 'Произошла ошибка при регистрации.' };
+};
+
 const Registration = () => {
 
     const [email, setEmail_2] = useState('');
@@ -14,6 +68,8 @@ const Registration = () => {
     const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+    const [usernameError, setUsernameError] = useState<string>("");
+    const [emailError, setEmailError] = useState<string>("");
     const [passwordError, setPasswordError] = useState<string>("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -24,11 +80,24 @@ const Registration = () => {
 
     const [errorMessage, setErrorMessage] = useState<string>("");
 
+    const usernameRules = [
+        {
+            id: 'username-length',
+            text: `От ${USERNAME_MIN_LENGTH} до ${USERNAME_MAX_LENGTH} символов`,
+            isValid: username.length >= USERNAME_MIN_LENGTH && username.length <= USERNAME_MAX_LENGTH,
+        },
+        {
+            id: 'username-characters',
+            text: 'Только латиница, цифры и символы _ . -',
+            isValid: /^[a-zA-Z0-9_.-]+$/.test(username),
+        },
+    ];
+
     const passwordRules = [
         {
             id: 'length',
-            text: 'От 8 до 32 символов',
-            isValid: password.length >= 8 && password.length <= 32,
+            text: `От ${PASSWORD_MIN_LENGTH} до ${PASSWORD_MAX_LENGTH} символов`,
+            isValid: password.length >= PASSWORD_MIN_LENGTH && password.length <= PASSWORD_MAX_LENGTH,
         },
         {
             id: 'digit',
@@ -51,10 +120,13 @@ const Registration = () => {
             isValid: /[!@#$%^&*(),.?\"{}|<>]/.test(password),
         },
     ];
+    const isUsernameValid = usernameRules.every((rule) => rule.isValid);
+    const isEmailValid = email.length > 0 && email.length <= EMAIL_MAX_LENGTH;
     const isPasswordValid = passwordRules.every((rule) => rule.isValid);
     const isPasswordMatch = password === confirmPassword;
     const isConfirmPasswordInvalid = confirmPassword.length > 0 && !isPasswordMatch;
-    const isSubmitDisabled = isSubmitting || !isPasswordValid || !isPasswordMatch;
+    const isSubmitDisabled = isSubmitting || !isUsernameValid || !isEmailValid || !isPasswordValid || !isPasswordMatch;
+    const showUsernameFeedback = username.length > 0;
     const fulfilledRulesCount = passwordRules.filter((rule) => rule.isValid).length;
     const showPasswordFeedback = password.length > 0;
 
@@ -75,11 +147,45 @@ const Registration = () => {
         }
     }, [user.isLoggedIn, navigate])
 
+    const applyValidationError = (field: RegistrationErrorField, message: string) => {
+        if (field === 'username') {
+            setUsernameError(message);
+            return;
+        }
+
+        if (field === 'email') {
+            setEmailError(message);
+            return;
+        }
+
+        if (field === 'password') {
+            setPasswordError(message);
+            return;
+        }
+
+        setErrorMessage(message);
+    };
+
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
         if (isSubmitting) {
+            return;
+        }
+
+        setUsernameError("");
+        setEmailError("");
+        setPasswordError("");
+        setErrorMessage("");
+
+        if (!isUsernameValid) {
+            setUsernameError(`Никнейм должен быть от ${USERNAME_MIN_LENGTH} до ${USERNAME_MAX_LENGTH} символов и содержать только латиницу, цифры и символы _ . -`);
+            return;
+        }
+
+        if (!isEmailValid) {
+            setEmailError(`E-mail должен быть не длиннее ${EMAIL_MAX_LENGTH} символов.`);
             return;
         }
 
@@ -93,8 +199,6 @@ const Registration = () => {
             return;
         }
 
-        setPasswordError("");
-        setErrorMessage("");
         setIsSubmitting(true);
 
         try {
@@ -102,7 +206,8 @@ const Registration = () => {
             const registrationError = extractApiErrorMessage(registrationResponse.data);
 
             if (registrationError) {
-                setErrorMessage(registrationError);
+                const mappedError = mapRegistrationError(registrationError);
+                applyValidationError(mappedError.field, mappedError.message);
                 return;
             }
 
@@ -113,7 +218,9 @@ const Registration = () => {
 
             setErrorMessage('Не удалось завершить регистрацию. Попробуйте снова.');
         } catch (error: any) {
-            setErrorMessage(extractAxiosErrorMessage(error) ?? 'Произошла ошибка при регистрации');
+            const rawError = extractAxiosErrorMessage(error) ?? '';
+            const mappedError = mapRegistrationError(rawError);
+            applyValidationError(mappedError.field, mappedError.message);
         } finally {
             setIsSubmitting(false);
         }
@@ -135,28 +242,57 @@ const Registration = () => {
                         value={username}
                         onChange={(e) => {
                             setUsername(e.target.value);
+                            setUsernameError('');
                             setErrorMessage('');
                         }}
+                        maxLength={USERNAME_MAX_LENGTH}
                         disabled={isSubmitting}
                         required
                     />
                 </div>
+                <div
+                    className={`username-feedback ${showUsernameFeedback ? 'is-visible' : 'is-hidden'}`}
+                    aria-live="polite"
+                    aria-hidden={!showUsernameFeedback}
+                >
+                    <ul className="username-feedback__list">
+                        {usernameRules.map((rule) => (
+                            <li
+                                key={rule.id}
+                                className={`username-feedback__item ${rule.isValid ? 'valid' : 'invalid'}`}
+                            >
+                                <span className="username-feedback__icon" aria-hidden="true">
+                                    {rule.isValid ? '✓' : '○'}
+                                </span>
+                                <span>{rule.text}</span>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+                {usernameError !== "" && (
+                    <p className="field-error">{usernameError}</p>
+                )}
                 <div className="form-group">
                     <label htmlFor="email">E-mail</label>
                     <input
                         className="input"
-                        type="text"
+                        type="email"
                         id="email"
                         placeholder="Ваш E-mail"
                         value={email}
                         onChange={(e) => {
                             setEmail_2(e.target.value);
+                            setEmailError('');
                             setErrorMessage('');
                         }}
+                        maxLength={EMAIL_MAX_LENGTH}
                         disabled={isSubmitting}
                         required
                     />
                 </div>
+                {emailError !== "" && (
+                    <p className="field-error">{emailError}</p>
+                )}
                 <div className="form-group">
                     <label htmlFor="password">Пароль</label>
                     <div className="password-input-wrapper">
@@ -164,13 +300,14 @@ const Registration = () => {
                             className="input"
                             type={isPasswordVisible ? "text" : "password"}
                             id="password"
-                            placeholder="Минимум 8 символов"
+                            placeholder={`От ${PASSWORD_MIN_LENGTH} до ${PASSWORD_MAX_LENGTH} символов`}
                             value={password}
                             onChange={(e) => {
                                 setPassword(e.target.value);
                                 setPasswordError('');
                                 setErrorMessage('');
                             }}
+                            maxLength={PASSWORD_MAX_LENGTH}
                             disabled={isSubmitting}
                             required
                         />
@@ -246,6 +383,7 @@ const Registration = () => {
                                 setPasswordError('');
                                 setErrorMessage('');
                             }}
+                            maxLength={PASSWORD_MAX_LENGTH}
                             disabled={isSubmitting}
                             required
                         />
@@ -280,7 +418,7 @@ const Registration = () => {
                 </div>
 
                 {(passwordError !== "" || isConfirmPasswordInvalid) && (
-                    <p className="password-error">
+                    <p className="field-error">
                         {passwordError || 'Пароли не совпадают'}
                     </p>
                 )}

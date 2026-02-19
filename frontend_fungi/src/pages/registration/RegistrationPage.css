@@ -45,6 +45,7 @@
 }
 
 .register-page .form-group input[type="text"],
+.register-page .form-group input[type="email"],
 .register-page .form-group input[type="password"],
 .register-page .form-group input[type="file"] {
     padding: 10px;
@@ -98,6 +99,7 @@
 }
 
 .register-page .form-group input[type="text"]:focus,
+.register-page .form-group input[type="email"]:focus,
 .register-page .form-group input[type="password"]:focus,
 .register-page .form-group input[type="file"]:focus {
     border-color: #007bff;
@@ -157,6 +159,67 @@
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
+}
+
+.register-page .username-feedback {
+    text-align: left;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0 2px;
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-6px);
+    overflow: hidden;
+    pointer-events: none;
+    transition:
+        max-height 220ms ease,
+        opacity 170ms ease,
+        transform 220ms ease,
+        margin 220ms ease,
+        padding 220ms ease;
+}
+
+.register-page .username-feedback.is-visible {
+    margin-top: -6px;
+    margin-bottom: 4px;
+    padding: 2px 2px 4px;
+    max-height: 120px;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.register-page .username-feedback__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.register-page .username-feedback__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+}
+
+.register-page .username-feedback__icon {
+    width: 14px;
+    display: inline-flex;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 0.95rem;
+}
+
+.register-page .username-feedback__item.valid {
+    color: #22a06b;
+}
+
+.register-page .username-feedback__item.invalid {
+    color: #8c94a3;
 }
 
 .register-page .password-feedback__strength {
@@ -238,7 +301,7 @@
     color: #8c94a3;
 }
 
-.register-page .password-error {
+.register-page .field-error {
     color: #bc001e;
     margin: 0;
     text-align: left;
