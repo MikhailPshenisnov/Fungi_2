@@ -1,0 +1,80 @@
+:root {
+  --color-bg: #f4f5f1;
+  --color-surface: #ffffff;
+  --color-text: #1f1f1b;
+  --color-muted: #5c5f57;
+  --color-border: #d8dbc8;
+  --color-primary: #4f7a52;
+  --color-primary-contrast: #f9fff8;
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font-main);
+  color: var(--color-text);
+  background: radial-gradient(circle at top left, #eef2e1 0%, var(--color-bg) 48%, #e8ebdc 100%);
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: var(--space-6) var(--space-4);
+}
+
+.surface-card {
+  width: min(680px, 100%);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  padding: var(--space-6);
+  box-shadow: 0 20px 55px rgba(35, 54, 29, 0.09);
+}
+
+.eyebrow {
+  margin: 0 0 var(--space-2);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.headline {
+  margin: 0 0 var(--space-3);
+  font-size: clamp(28px, 5vw, 44px);
+  line-height: 1.1;
+}
+
+.body-text {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.actions-row {
+  margin-top: var(--space-5);
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
