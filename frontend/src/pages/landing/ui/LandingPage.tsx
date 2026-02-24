@@ -11,7 +11,7 @@ import styles from './LandingPage.module.css';
 export function LandingPage() {
   return (
     <PageLayout>
-      <main className={styles.page}>
+      <div className={styles.page}>
         <LandingHero />
         <LandingStats />
         <LandingSurvey />
@@ -19,7 +19,7 @@ export function LandingPage() {
         <LandingMushrooms />
         <LandingReviews />
         <LandingAuthorCta />
-      </main>
+      </div>
     </PageLayout>
   );
 }

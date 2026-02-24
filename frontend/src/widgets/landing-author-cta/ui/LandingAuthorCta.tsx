@@ -8,7 +8,7 @@ export function LandingAuthorCta() {
         <Card className={styles.card}>
           <div className={styles.layout}>
             <Stack gap={12}>
-              <Typography variant="h3" className={styles.title}>
+              <Typography variant="h3" as="h2" className={styles.title}>
                 Стань автором статей
               </Typography>
               <Typography variant="body" className={styles.text}>

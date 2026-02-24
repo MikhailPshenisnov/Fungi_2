@@ -13,7 +13,7 @@ export function LandingMushrooms() {
     <section id="mushrooms" className={styles.section}>
       <Container>
         <Stack gap={20}>
-          <Typography variant="h3" className={styles.title}>
+          <Typography variant="h3" as="h2" className={styles.title}>
             Наши грибы
           </Typography>
           <div className={styles.grid}>
@@ -23,7 +23,7 @@ export function LandingMushrooms() {
                 <Typography variant="caption" className={styles.family}>
                   {mushroom.family}
                 </Typography>
-                <Typography variant="h5" className={styles.name}>
+                <Typography variant="h5" as="p" className={styles.name}>
                   {mushroom.name}
                 </Typography>
                 <Typography variant="caption" className={styles.latin}>

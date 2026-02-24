@@ -13,7 +13,7 @@ export function AppFooter() {
       <Container>
         <div className={styles.row}>
           <Stack gap={4}>
-            <Typography variant="h5" className={styles.brand}>
+            <Typography variant="h5" as="span" className={styles.brand}>
               Fungi
             </Typography>
             <Typography variant="caption" className={styles.copy}>

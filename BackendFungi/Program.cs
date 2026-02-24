@@ -161,12 +161,20 @@ builder.Services.AddDbContext<FungiDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("FungiDbContext")));
 
 // CORS policy
+var allowedOrigins = builder.Configuration.GetSection("Frontend:AllowedOrigins").Get<string[]>();
+
+if (allowedOrigins is null || allowedOrigins.Length == 0)
+{
+    var frontendAddress = builder.Configuration["Frontend:FrontendAddress"];
+    if (string.IsNullOrWhiteSpace(frontendAddress))
+        throw new ConfigurationException("Frontend allowed origins are missing");
+
+    allowedOrigins = new[] { frontendAddress };
+}
+
 builder.Services.AddCors(options => options.AddPolicy(
     "FungiApiPolicy", b => b
-        .WithOrigins(
-            builder.Configuration["Frontend:FrontendAddress"] ??
-            throw new ConfigurationException("Frontend address is missing")
-        )
+        .WithOrigins(allowedOrigins)
         .AllowAnyHeader()
         .AllowAnyMethod()
         .AllowCredentials()));
@@ -199,12 +207,12 @@ app.UseMiddleware<StatusCodeMiddleware>();
 app.UseMiddleware<DataInitializationMiddleware>();
 */
 
+// CORS settings
+app.UseCors("FungiApiPolicy");
+
 // Authentication and authorization
 app.UseAuthentication();
 app.UseAuthorization();
-
-// CORS settings
-app.UseCors("FungiApiPolicy");
 
 // Swagger
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Docker"))

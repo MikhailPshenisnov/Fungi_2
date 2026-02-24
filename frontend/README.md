@@ -39,6 +39,8 @@ npm run dev
 - `npm run test` — unit тесты
 - `npm run storybook` — Storybook dev server
 - `npm run storybook:build` — сборка Storybook
+- `npm run storybook:test` — запуск story-тестов (a11y/smoke) для поднятого Storybook
+- `npm run storybook:check` — автоподнятие Storybook + прогон story-тестов
 
 ## Архитектура (FSD + UI-kit)
 

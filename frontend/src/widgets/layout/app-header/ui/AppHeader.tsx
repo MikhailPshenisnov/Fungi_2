@@ -62,7 +62,7 @@ export function AppHeader({ onLoginClick, onSignupClick, onProfileClick, onSearc
               aria-hidden="true"
               className={styles.logo}
             />
-            <Typography variant="h4" className={styles.brandTitle}>
+            <Typography variant="h4" as="span" className={styles.brandTitle}>
               Fungi
             </Typography>
           </a>

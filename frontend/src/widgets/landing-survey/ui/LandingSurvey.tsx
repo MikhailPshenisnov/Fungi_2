@@ -9,7 +9,7 @@ export function LandingSurvey() {
           <div className={styles.layout}>
             <div className={styles.device} aria-hidden="true" />
             <Stack gap={16}>
-              <Typography variant="h3" className={styles.title}>
+              <Typography variant="h3" as="h2" className={styles.title}>
                 Пройдите опрос, чтобы определить гриб
               </Typography>
               <Typography variant="body" className={styles.text}>

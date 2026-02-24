@@ -11,6 +11,10 @@
   width: 100%;
 }
 
+.fields {
+  width: 70%;
+}
+
 .switch {
   color: var(--color-text-secondary);
 }
@@ -20,9 +24,13 @@
 }
 
 .footerText {
-  color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
 }
 
 .footerText a {
   color: var(--color-text-secondary);
+}
+
+.error {
+  color: var(--color-status-error-text);
 }

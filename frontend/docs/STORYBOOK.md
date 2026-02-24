@@ -31,5 +31,6 @@ Storybook фиксирует визуальный контракт компон�
 ## CI-рекомендация
 На каждый PR желательно запускать:
 - `npm run storybook:build`
+- `npm run storybook:check`
 
-Это гарантирует, что Storybook-конфигурация и stories валидны.
+Это гарантирует, что Storybook-конфигурация валидна и stories проходят smoke/a11y проверки.

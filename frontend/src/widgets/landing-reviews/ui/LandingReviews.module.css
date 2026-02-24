@@ -30,7 +30,7 @@
 .role {
   display: block;
   margin-top: var(--space-1);
-  color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
 }
 
 .allButton {

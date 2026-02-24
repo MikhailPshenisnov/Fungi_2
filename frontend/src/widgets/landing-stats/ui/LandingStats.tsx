@@ -14,7 +14,7 @@ export function LandingStats() {
         <div className={styles.grid}>
           {stats.map((item) => (
             <Card key={item.label} className={styles.card}>
-              <Typography variant="h3" className={styles.value}>
+              <Typography variant="h3" as="p" className={styles.value}>
                 {item.value}
               </Typography>
               <Typography variant="bodyS" className={styles.label}>

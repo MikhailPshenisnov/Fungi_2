@@ -24,7 +24,7 @@ export function LandingReviews() {
     <section id="reviews" className={styles.section}>
       <Container>
         <Stack gap={20}>
-          <Typography variant="h3" className={styles.title}>
+          <Typography variant="h3" as="h2" className={styles.title}>
             Наши отзывы
           </Typography>
           <div className={styles.grid}>
