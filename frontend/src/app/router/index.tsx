@@ -1,14 +1,40 @@
-import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router-dom';
 import { HomePage } from '@pages/home';
+import { LandingPage } from '@pages/landing';
+import { RouteHead } from './RouteHead';
+
+function RouteLayout() {
+  return (
+    <>
+      <RouteHead />
+      <Outlet />
+    </>
+  );
+}
 
 const router = createBrowserRouter([
   {
-    path: '/',
-    element: <HomePage />
-  },
-  {
-    path: '*',
-    element: <Navigate to="/" replace />
+    element: <RouteLayout />,
+    children: [
+      {
+        path: '/',
+        element: <LandingPage />
+      },
+      {
+        path: '/foundation',
+        element: <HomePage />,
+        handle: {
+          title: 'Foundation'
+        }
+      },
+      {
+        path: '*',
+        element: <Navigate to="/" replace />,
+        handle: {
+          title: 'Fungi'
+        }
+      }
+    ]
   }
 ]);
 

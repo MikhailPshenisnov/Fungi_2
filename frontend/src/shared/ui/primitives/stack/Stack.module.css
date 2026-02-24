@@ -1,0 +1,27 @@
+.stack {
+  display: flex;
+}
+
+.vertical {
+  flex-direction: column;
+}
+
+.horizontal {
+  flex-direction: row;
+}
+
+.start {
+  align-items: flex-start;
+}
+
+.center {
+  align-items: center;
+}
+
+.end {
+  align-items: flex-end;
+}
+
+.between {
+  justify-content: space-between;
+}

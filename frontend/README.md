@@ -24,6 +24,18 @@ npm run dev
 - `npm run preview` — предпросмотр сборки
 - `npm run typecheck` — проверка типов
 - `npm run lint` — линтинг
+- `npm run check` — полный quality gate (`lint`, `typecheck`, `design:lint`, `stories:check`, `icons:check`, `test`, `build`)
+- `npm run lint:styles` — stylelint для CSS (запрет raw-цветов вне tokens)
+- `npm run lint:design` — semantic token checks для TS/TSX/CSS
+- `npm run design:lint` — полный gate дизайн-семантики (`lint:styles` + `lint:design`)
+- `npm run icons:sync` — пересборка `src/shared/assets/icons/index.ts` по SVG в `src/shared/assets/icons`
+- `npm run icons:check` — проверка правил по иконкам (дубли, запрет UI-иконок в `public/images/icons`, актуальность `index.ts`)
+- `npm run scaffold:ui -- <ComponentName>` — генерация `shared/ui/primitives` компонента + draft story
+- `npm run scaffold:ui -- <ComponentName> --category=composites` — генерация `shared/ui/composites` компонента + draft story
+- `npm run remove:ui -- <ComponentName> --yes` — удаление `shared/ui` компонента (поиск в `primitives/composites`) + автоочистка экспортов
+- `npm run ui:index:sync` — пересборка `src/shared/ui/index.ts` по текущим компонентам
+- `npm run stories:check` — проверка, что у всех `shared/ui` компонентов есть `.stories.tsx`
+- `npm run stories:sync` — автосоздание отсутствующих draft stories (`Draft/*`, `tags: ['wip']`)
 - `npm run test` — unit тесты
 - `npm run storybook` — Storybook dev server
 - `npm run storybook:build` — сборка Storybook
@@ -71,6 +83,24 @@ src/
 
 Запрещено импортировать вверх.
 
+## Head (title/description/favicon)
+- `title` страницы управляется через `handle` в роутере (`src/app/router/index.tsx`).
+- Формат заголовка: `<Название страницы> | Fungi` (например: `Статьи | Fungi`).
+- Если `title` не задан, используется `Fungi`.
+- Favicon по умолчанию: `/images/branding/fungi-logo.svg`.
+
+Пример маршрута:
+```tsx
+{
+  path: '/articles',
+  element: <ArticlesPage />,
+  handle: {
+    title: 'Статьи',
+    description: 'Публикации и материалы о грибах'
+  }
+}
+```
+
 ## Правила модулей
 Каждый `feature/entity/widget/page` держим в формате:
 
@@ -111,7 +141,39 @@ module-name/
 - изменения в `shared/ui` без обновления stories не принимаются;
 - визуальные изменения в компонентах сопровождаются скриншотами из Storybook.
 
+6. Draft stories policy:
+- автогенерация создаёт stories в `Draft/Shared/UI/*` с `tags: ['wip']`;
+- такие stories считаются временными и должны быть переведены в `Shared/UI/*` после review;
+- перед релизной итерацией запускаем `npm run stories:check`.
+
+7. Управление жизненным циклом компонента:
+- создание через `npm run scaffold:ui -- <ComponentName>` (по умолчанию `primitives`);
+- для composition-компонентов используем `--category=composites`;
+- удаление через `npm run remove:ui -- <ComponentName> --yes` (при конфликте имён указываем `--category=...`);
+- `src/shared/ui/index.ts`, `src/shared/ui/primitives/index.ts`, `src/shared/ui/composites/index.ts` не редактируем вручную, они синхронизируются скриптом.
+
 Детали: `docs/STORYBOOK.md`.
+
+## Assets: Icons & Images
+- Переиспользуемые UI-иконки храним в `src/shared/assets/icons`.
+- Маркетинговые/контентные изображения и файлы по URL храним в `public/images`.
+- Рекомендуемые подпапки:
+  - `public/images/branding` — логотипы и бренд-графика.
+
+Ограничения:
+- Единственный источник UI-иконок: только `src/shared/assets/icons`.
+- В `public` UI-иконки не храним.
+- Импорт UI-иконок делаем только через `src/shared/assets/icons/index.ts`.
+
+Процесс работы с иконками:
+1. Добавь `*.svg` в `src/shared/assets/icons`.
+2. Запусти `npm run icons:sync` (обновит `index.ts`).
+3. Импортируй только из `@shared/assets/icons`.
+
+Пример импорта:
+```ts
+import { mailIcon, profileIcon } from '@shared/assets/icons';
+```
 
 ## Пошаговый rewrite-процесс
 1. Сначала переносим базовые примитивы в `shared/ui`.
@@ -123,5 +185,31 @@ module-name/
 Задача готова, если:
 - соблюдены слои и публичные API модулей;
 - нет `any` без обоснования;
-- `typecheck`, `lint`, `build` зелёные;
+- `typecheck`, `lint`, `design:lint`, `build` зелёные;
 - для UI-изменений обновлены stories.
+
+## ADR (Architecture Decision Records)
+ADR используется для фиксации архитектурных решений, чтобы команда понимала причину и последствия выбора.
+
+- Храним ADR в `docs/adr`.
+- Шаблон: `docs/adr/0000-template.md`.
+- Именование: `NNNN-kebab-case-title.md` (например, `0001-shared-ui-primitives-composites.md`).
+- Статусы: `Proposed` -> `Accepted` -> `Superseded` (если решение заменено новым ADR).
+
+Когда ADR обязателен:
+- изменение слоёв/границ модулей (`shared/entities/features/widgets/pages`);
+- изменение контракта design system (tokens, naming, rules, quality gates);
+- внедрение или изменение ключевых инженерных процессов (scaffold/remove/sync/check scripts, CI quality gates).
+
+## Design Token Quality Gate
+Для всех UI-изменений обязательна проверка:
+```bash
+npm run design:lint
+```
+
+Что проверяется:
+1. В компонентных CSS запрещены прямые цвета (`#...`, `rgb/rgba`, `hsl/hsla`).
+2. Вне `src/shared/assets/styles/tokens.css` запрещено использовать primitive-токены `--ref-*`.
+3. Запрещены legacy-алиасы вида `var(--color-text)`, `var(--color-bg)` и т.д.
+
+Цель: компоненты должны использовать только semantic токены контракта (`--color-*`, `--text-*`, `--radius-*`, ...).

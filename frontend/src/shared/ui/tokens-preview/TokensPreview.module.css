@@ -1,0 +1,164 @@
+.page {
+  display: grid;
+  gap: var(--space-5);
+  color: var(--color-text-primary);
+}
+
+.section {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.sectionTitle {
+  font-family: var(--font-heading);
+  font-size: var(--text-h4-size);
+  line-height: var(--text-h4-lh);
+  margin: 0;
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.swatch {
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-m);
+  overflow: hidden;
+  background: var(--color-surface-elevated);
+  box-shadow: var(--shadow-base);
+}
+
+.swatchPreview {
+  height: 74px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.swatchMeta {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+}
+
+.tokenName {
+  font-family: var(--font-mono);
+  font-size: var(--text-meta-size);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.tokenRole {
+  font-size: var(--text-caption-size);
+  color: var(--color-text-secondary);
+}
+
+.typoList {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.measureGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-3);
+}
+
+.contrastGrid {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.contrastCard {
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-m);
+  background: var(--color-surface-elevated);
+  box-shadow: var(--shadow-base);
+  overflow: hidden;
+}
+
+.contrastPreview {
+  min-height: 70px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-heading);
+  font-size: 26px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.contrastMeta {
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+}
+
+.contrastRatio {
+  font-family: var(--font-mono);
+  font-size: var(--text-caption-size);
+  color: var(--color-text-secondary);
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.badgePass,
+.badgeFail {
+  padding: 4px 6px;
+  border-radius: var(--radius-s);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border: 1px solid transparent;
+}
+
+.badgePass {
+  background: var(--color-status-success-bg);
+  color: var(--color-status-success-on-bg);
+  border-color: var(--color-status-success-border);
+}
+
+.badgeFail {
+  background: var(--color-status-error-bg);
+  color: var(--color-status-error-on-bg);
+  border-color: var(--color-status-error-border);
+}
+
+.measureCard {
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-m);
+  background: var(--color-surface-default);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-base);
+}
+
+.measureValue {
+  font-family: var(--font-mono);
+  font-size: var(--text-body-s-size);
+  color: var(--color-text-secondary);
+}
+
+.radiusDemo {
+  background: var(--color-action-primary-bg);
+  height: 56px;
+  border: 1px solid var(--color-border-default);
+}
+
+.shadowBase {
+  height: 56px;
+  border-radius: var(--radius-m);
+  border: 1px solid var(--color-border-default);
+  background: var(--color-surface-elevated);
+  box-shadow: var(--shadow-base);
+}
+
+.shadowHover {
+  height: 56px;
+  border-radius: var(--radius-m);
+  border: 1px solid var(--color-border-default);
+  background: var(--color-surface-elevated);
+  box-shadow: var(--shadow-hover);
+}

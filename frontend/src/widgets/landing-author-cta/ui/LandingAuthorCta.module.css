@@ -1,0 +1,36 @@
+.section {
+  padding-bottom: var(--space-7);
+}
+
+.card {
+  padding: var(--space-6);
+  border-color: var(--color-border-default);
+}
+
+.layout {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.title {
+  margin: 0;
+}
+
+.text {
+  margin: 0;
+  color: var(--color-text-secondary);
+  max-width: 50ch;
+}
+
+.form {
+  display: grid;
+  gap: var(--space-3);
+  align-content: start;
+}
+
+@media (min-width: 1024px) {
+  .layout {
+    grid-template-columns: 1.2fr 0.8fr;
+    align-items: center;
+  }
+}

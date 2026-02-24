@@ -1,0 +1,32 @@
+.footer {
+  border-top: 1px solid var(--color-border-subtle);
+  background: var(--color-bg-subtle);
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-6);
+}
+
+.row {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.brand {
+  margin: 0;
+}
+
+.copy {
+  color: var(--color-text-secondary);
+}
+
+.nav {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+@media (min-width: 768px) {
+  .row {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+  }
+}

@@ -1,19 +1,21 @@
-import { Button } from '@shared/ui/button';
+import { Button, Card, Container, Stack, Typography } from '@shared/ui';
 
 export function HomePage() {
   return (
-    <main className="app-shell">
-      <section className="surface-card">
-        <p className="eyebrow">Fungi Rewrite</p>
-        <h1 className="headline">Новая архитектура готова</h1>
-        <p className="body-text">
-          Начинаем перенос страниц по компонентам: сначала shared/ui и feature-слои, затем страницы.
-        </p>
-        <div className="actions-row">
-          <Button>Primary Action</Button>
-          <Button variant="ghost">Secondary Action</Button>
-        </div>
-      </section>
-    </main>
+    <Container size="md" style={{ paddingTop: 40, paddingBottom: 40 }}>
+      <Card>
+        <Stack gap={16}>
+          <Typography variant="meta">Переписывание Fungi</Typography>
+          <Typography variant="h2">Foundation-слой в процессе</Typography>
+          <Typography variant="body">
+            Компоненты первой волны уже доступны в Storybook и могут использоваться как база для переноса фич.
+          </Typography>
+          <Stack direction="horizontal" gap={12}>
+            <Button>Основное действие</Button>
+            <Button variant="tertiary">Вторичное действие</Button>
+          </Stack>
+        </Stack>
+      </Card>
+    </Container>
   );
 }

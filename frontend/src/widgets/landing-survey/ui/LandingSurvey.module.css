@@ -1,0 +1,39 @@
+.section {
+  padding-bottom: var(--space-6);
+}
+
+.card {
+  padding: var(--space-6);
+}
+
+.layout {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.device {
+  min-height: 180px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-l);
+  background: linear-gradient(160deg, var(--color-bg-subtle), var(--color-bg-default));
+}
+
+.title {
+  margin: 0;
+}
+
+.text {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.buttonWrap {
+  width: fit-content;
+}
+
+@media (min-width: 1024px) {
+  .layout {
+    grid-template-columns: 0.9fr 1.1fr;
+    align-items: center;
+  }
+}
