@@ -59,6 +59,24 @@ function walk(dir) {
 
 walk(srcDir);
 
+if (fs.existsSync(tokensFile)) {
+  const tokensContent = fs.readFileSync(tokensFile, 'utf8');
+  const semanticTokenRule = /(--color-[a-z0-9-]+)\s*:\s*([^;]+);/g;
+  const rawColorRule = /#[0-9a-fA-F]{3,8}\b|\brgba?\(|\bhsla?\(/;
+
+  for (const match of tokensContent.matchAll(semanticTokenRule)) {
+    const [, tokenName, tokenValue] = match;
+    if (!tokenName || !tokenValue) continue;
+    if (!rawColorRule.test(tokenValue)) continue;
+
+    const offset = match.index ?? 0;
+    const line = tokensContent.slice(0, offset).split('\n').length;
+    violations.push(
+      `${path.relative(root, tokensFile)}:${line} -> semantic token must not contain raw color literal: ${tokenName}`
+    );
+  }
+}
+
 if (violations.length > 0) {
   console.error('Design token checks failed:');
   for (const item of violations) {

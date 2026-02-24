@@ -133,6 +133,7 @@ npm run design:lint
    - допускается только семантическое использование токенов.
 2. `lint:design`:
    - `--ref-*` разрешены только в `src/shared/assets/styles/tokens.css`;
+   - `--color-*` в `tokens.css` не должны содержать raw-цвета (`#...`, `rgb/rgba`, `hsl/hsla`) и должны ссылаться на `--ref-*`/computed-from-ref;
    - legacy-токены (`var(--color-text)`, `var(--color-bg)` и т.д.) запрещены.
 
 ## 2. Адаптив

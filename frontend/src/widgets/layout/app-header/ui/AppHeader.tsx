@@ -31,6 +31,24 @@ export function AppHeader({ onLoginClick, onSignupClick, onProfileClick, onSearc
     onSearchSubmit?.(query);
   }
 
+  function handleLoginClick() {
+    if (onLoginClick) {
+      onLoginClick();
+      return;
+    }
+
+    window.location.assign('/login');
+  }
+
+  function handleSignupClick() {
+    if (onSignupClick) {
+      onSignupClick();
+      return;
+    }
+
+    window.location.assign('/register');
+  }
+
   return (
     <header className={styles.header}>
       <Container>
@@ -83,10 +101,10 @@ export function AppHeader({ onLoginClick, onSignupClick, onProfileClick, onSearc
               </Button>
             ) : (
               <>
-                <Button variant="tertiary" onClick={onLoginClick}>
+                <Button variant="tertiary" onClick={handleLoginClick}>
                   Войти
                 </Button>
-                <Button onClick={onSignupClick}>Регистрация</Button>
+                <Button onClick={handleSignupClick}>Регистрация</Button>
               </>
             )}
           </div>

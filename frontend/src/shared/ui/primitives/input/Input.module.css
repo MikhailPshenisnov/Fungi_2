@@ -10,10 +10,10 @@
 
 .input {
   width: 100%;
-  min-height: 40px;
+  min-height: 50px;
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-m);
-  padding: 10px 12px;
+  padding: 12px 14px;
   background: var(--color-bg-default);
   color: var(--color-text-primary);
   box-shadow: var(--shadow-base);

@@ -3,14 +3,30 @@
 :root {
   /* Primitives (raw palette) */
   --ref-color-amber-100: #ffe8c4;
+  --ref-color-amber-200: #ffe0b2;
+  --ref-color-amber-300: #ffd8a1;
   --ref-color-cream-50: #ffffff;
   --ref-color-cream-100: #f5f5f5;
+  --ref-color-cream-150: #ececec;
+  --ref-color-cream-75: #f7f7f7;
   --ref-color-beige-200: #f0e5d3;
   --ref-color-brown-900: #3b2f2f;
+  --ref-color-black: #000000;
   --ref-color-green-500: #6cbb62;
   --ref-color-orange-500: #db8f45;
   --ref-color-red-500: #d44343;
   --ref-color-teal-500: #7ab3ad;
+  --ref-color-brown-900-a78: rgba(59, 47, 47, 0.78);
+  --ref-color-brown-900-a62: rgba(59, 47, 47, 0.62);
+  --ref-color-brown-900-a55: rgba(59, 47, 47, 0.55);
+  --ref-color-brown-900-a50: rgba(59, 47, 47, 0.5);
+  --ref-color-brown-900-a45: rgba(59, 47, 47, 0.45);
+  --ref-color-brown-900-a34: rgba(59, 47, 47, 0.34);
+  --ref-color-brown-900-a30: rgba(59, 47, 47, 0.3);
+  --ref-color-amber-100-a65: rgba(255, 232, 196, 0.65);
+  --ref-color-amber-100-a58: rgba(255, 232, 196, 0.58);
+  --ref-shadow-base: 0 1px 2px rgba(60, 47, 47, 0.06);
+  --ref-shadow-hover: 0 4px 12px rgba(60, 47, 47, 0.08);
   --ref-color-overlay-scrim: rgba(59, 47, 47, 0.48);
   --ref-color-overlay-backdrop: rgba(255, 255, 255, 0.64);
 
@@ -24,58 +40,58 @@
 
   /* Semantic: text */
   --color-text-primary: var(--ref-color-brown-900);
-  --color-text-secondary: rgba(59, 47, 47, 0.78);
-  --color-text-tertiary: rgba(59, 47, 47, 0.62);
+  --color-text-secondary: var(--ref-color-brown-900-a78);
+  --color-text-tertiary: var(--ref-color-brown-900-a62);
   --color-text-meta: var(--color-text-secondary);
-  --color-text-disabled: rgba(59, 47, 47, 0.45);
+  --color-text-disabled: var(--ref-color-brown-900-a45);
   --color-text-inverse: var(--ref-color-cream-50);
   --color-text-on-brand: var(--ref-color-brown-900);
 
   /* Semantic: border */
   --color-border-default: var(--ref-color-amber-100);
-  --color-border-subtle: rgba(255, 232, 196, 0.65);
-  --color-border-strong: rgba(59, 47, 47, 0.34);
+  --color-border-subtle: var(--ref-color-amber-100-a65);
+  --color-border-strong: var(--ref-color-brown-900-a34);
   --color-border-focus: var(--ref-color-brown-900);
 
   /* Semantic: actions */
   --color-action-primary-bg: var(--ref-color-amber-100);
   --color-action-primary-on-bg: var(--ref-color-brown-900);
   --color-action-primary-border: var(--ref-color-amber-100);
-  --color-action-primary-bg-hover: #ffe0b2;
-  --color-action-primary-bg-active: #ffd8a1;
-  --color-action-primary-bg-disabled: rgba(255, 232, 196, 0.58);
-  --color-action-primary-on-bg-disabled: rgba(59, 47, 47, 0.55);
-  --color-action-primary-focus-ring: rgba(59, 47, 47, 0.34);
+  --color-action-primary-bg-hover: var(--ref-color-amber-200);
+  --color-action-primary-bg-active: var(--ref-color-amber-300);
+  --color-action-primary-bg-disabled: var(--ref-color-amber-100-a58);
+  --color-action-primary-on-bg-disabled: var(--ref-color-brown-900-a55);
+  --color-action-primary-focus-ring: var(--ref-color-brown-900-a34);
 
   --color-action-ghost-bg: var(--ref-color-cream-50);
   --color-action-ghost-on-bg: var(--ref-color-brown-900);
   --color-action-ghost-border: var(--ref-color-amber-100);
   --color-action-ghost-bg-hover: var(--ref-color-cream-100);
-  --color-action-ghost-bg-active: #ececec;
-  --color-action-ghost-bg-disabled: #f7f7f7;
-  --color-action-ghost-on-bg-disabled: rgba(59, 47, 47, 0.5);
-  --color-action-ghost-focus-ring: rgba(59, 47, 47, 0.3);
+  --color-action-ghost-bg-active: var(--ref-color-cream-150);
+  --color-action-ghost-bg-disabled: var(--ref-color-cream-75);
+  --color-action-ghost-on-bg-disabled: var(--ref-color-brown-900-a50);
+  --color-action-ghost-focus-ring: var(--ref-color-brown-900-a30);
 
   /* Semantic: status */
-  --color-status-success-bg: color-mix(in srgb, var(--ref-color-green-500) 18%, white);
+  --color-status-success-bg: color-mix(in srgb, var(--ref-color-green-500) 18%, var(--ref-color-cream-50));
   --color-status-success-on-bg: var(--ref-color-brown-900);
-  --color-status-success-border: color-mix(in srgb, var(--ref-color-green-500) 42%, white);
+  --color-status-success-border: color-mix(in srgb, var(--ref-color-green-500) 42%, var(--ref-color-cream-50));
   --color-status-success-strong: var(--ref-color-green-500);
 
-  --color-status-warning-bg: color-mix(in srgb, var(--ref-color-orange-500) 18%, white);
+  --color-status-warning-bg: color-mix(in srgb, var(--ref-color-orange-500) 18%, var(--ref-color-cream-50));
   --color-status-warning-on-bg: var(--ref-color-brown-900);
-  --color-status-warning-border: color-mix(in srgb, var(--ref-color-orange-500) 42%, white);
+  --color-status-warning-border: color-mix(in srgb, var(--ref-color-orange-500) 42%, var(--ref-color-cream-50));
   --color-status-warning-strong: var(--ref-color-orange-500);
 
-  --color-status-error-bg: color-mix(in srgb, var(--ref-color-red-500) 14%, white);
+  --color-status-error-bg: color-mix(in srgb, var(--ref-color-red-500) 14%, var(--ref-color-cream-50));
   --color-status-error-on-bg: var(--ref-color-brown-900);
-  --color-status-error-border: color-mix(in srgb, var(--ref-color-red-500) 42%, white);
+  --color-status-error-border: color-mix(in srgb, var(--ref-color-red-500) 42%, var(--ref-color-cream-50));
   --color-status-error-strong: var(--ref-color-red-500);
-  --color-status-error-text: color-mix(in srgb, var(--ref-color-red-500) 88%, black);
+  --color-status-error-text: color-mix(in srgb, var(--ref-color-red-500) 88%, var(--ref-color-black));
 
-  --color-status-info-bg: color-mix(in srgb, var(--ref-color-teal-500) 20%, white);
+  --color-status-info-bg: color-mix(in srgb, var(--ref-color-teal-500) 20%, var(--ref-color-cream-50));
   --color-status-info-on-bg: var(--ref-color-brown-900);
-  --color-status-info-border: color-mix(in srgb, var(--ref-color-teal-500) 44%, white);
+  --color-status-info-border: color-mix(in srgb, var(--ref-color-teal-500) 44%, var(--ref-color-cream-50));
   --color-status-info-strong: var(--ref-color-teal-500);
 
   /* Semantic: overlays */
@@ -111,8 +127,8 @@
   --radius-m: 10px;
   --radius-l: 14px;
 
-  --shadow-base: 0 1px 2px rgba(60, 47, 47, 0.06);
-  --shadow-hover: 0 4px 12px rgba(60, 47, 47, 0.08);
+  --shadow-base: var(--ref-shadow-base);
+  --shadow-hover: var(--ref-shadow-hover);
 
   --space-1: 4px;
   --space-2: 8px;

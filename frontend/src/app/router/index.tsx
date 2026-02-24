@@ -1,6 +1,8 @@
 import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router-dom';
 import { HomePage } from '@pages/home';
 import { LandingPage } from '@pages/landing';
+import { LoginPage } from '@pages/auth/login';
+import { RegisterPage } from '@pages/auth/register';
 import { RouteHead } from './RouteHead';
 
 function RouteLayout() {
@@ -25,6 +27,20 @@ const router = createBrowserRouter([
         element: <HomePage />,
         handle: {
           title: 'Foundation'
+        }
+      },
+      {
+        path: '/login',
+        element: <LoginPage />,
+        handle: {
+          title: 'Вход'
+        }
+      },
+      {
+        path: '/register',
+        element: <RegisterPage />,
+        handle: {
+          title: 'Регистрация'
         }
       },
       {
