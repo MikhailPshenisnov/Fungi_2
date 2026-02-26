@@ -1,0 +1,66 @@
+import React, { useState } from 'react';
+import { View, TextInput, StyleSheet } from 'react-native';
+import CardsList from './CardsList';
+
+// Данные для карточек 
+const data = [
+  { 
+    title: 'Как избежать опасных и ядовитых грибов', 
+    imageSource: require('../assets/image/card.png') 
+  },
+  { 
+    title: 'Трюфели в твоем регионе: секреты поиска', 
+    imageSource: require('../assets/image/card.png') 
+  },
+  { 
+    title: 'Советы по хранению засолке грибов', 
+    imageSource: require('../assets/image/card.png') 
+  },
+  { 
+    title: 'Редкие и необычные грибы леса', 
+    imageSource: require('../assets/image/card.png') 
+  },
+];
+
+const CardsScreen = () => {
+  // Состояние для поиска
+  const [searchText, setSearchText] = useState('');
+
+  // Фильтрация данных
+  const filteredData = data.filter(item =>
+    item.title.toLowerCase().includes(searchText.toLowerCase())
+  );
+
+  return (
+    <View style={styles.container}>
+      {}
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Поиск..."
+        placeholderTextColor="#888"
+        value={searchText}
+        onChangeText={setSearchText}
+      />
+      
+      {}
+      <CardsList cardsdata={filteredData} />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#000',
+    padding: 10,
+  },
+  searchInput: {
+    backgroundColor: '#573737',
+    borderRadius: 5,
+    padding: 10,
+    color: '#fff',
+    marginBottom: 10,
+  },
+});
+
+export default CardsScreen;
