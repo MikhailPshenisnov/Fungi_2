@@ -1,3 +1,4 @@
+// LoginScreen.js 
 import React, { useState } from "react";
 import {
   View,
@@ -7,10 +8,70 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
+import { AuthAPI } from "../clientAPI"; //  API
 
 export default function LoginScreen({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+const handleLogin = async () => {
+  console.log('1. handleLogin started'); // ДОЛЖНО ПОЯВИТЬСЯ В КОНСОЛИ
+  console.log('Email:', email); // Проверим что приходит с формы
+  console.log('Password:', password); 
+  
+  // Валидация
+  if (!email.trim()) {
+    console.log('2. Email is empty');
+    Alert.alert("Ошибка", "Введите email");
+    return;
+  }
+  if (!password.trim()) {
+    console.log('2. Password is empty');
+    Alert.alert("Ошибка", "Введите пароль");
+    return;
+  }
+
+  console.log('3. Validation passed, setting loading to true');
+  setLoading(true);
+  
+  try {
+    console.log('4. Calling AuthAPI.login...');
+    const result = await AuthAPI.login(email, password);
+    console.log('5. AuthAPI.login result:', result);
+    
+    if (result.success) {
+      console.log('6. Login successful, user:', result.user);
+      Alert.alert(
+        "Успех", 
+        `Добро пожаловать, ${result.user?.Name || 'пользователь'}!`,
+        [
+          { 
+            text: "OK", 
+            onPress: () => {
+              console.log('7. Navigating to Главная');
+              navigation.navigate("Главная");
+            } 
+          }
+        ]
+      );
+    } else {
+      console.log('6. Login failed:', result.error);
+      Alert.alert("Ошибка входа", result.error);
+    }
+  } catch (error) {
+    console.log('6. Unexpected error:', error);
+    Alert.alert("Ошибка", "Произошла непредвиденная ошибка");
+    console.error(error);
+  } finally {
+    console.log('7. Setting loading to false');
+    setLoading(false);
+  }
+};
 
   return (
     <View style={styles.screen}>
@@ -18,7 +79,7 @@ export default function LoginScreen({ navigation }) {
         contentContainerStyle={styles.container}
         showsVerticalScrollIndicator={false}
       >
-        {/* ЛОГО + НАЗВАНИЕ (центр) */}
+        {/* ЛОГО + НАЗВАНИЕ */}
         <View style={styles.logoBlock}>
           <View style={styles.logoCircle}>
             <Image
@@ -65,6 +126,9 @@ export default function LoginScreen({ navigation }) {
             placeholderTextColor="#C2C3CB"
             keyboardType="email-address"
             autoCapitalize="none"
+            value={email}
+            onChangeText={setEmail}
+            editable={!loading}
           />
         </View>
 
@@ -76,10 +140,14 @@ export default function LoginScreen({ navigation }) {
             placeholder="ПАРОЛЬ"
             placeholderTextColor="#C2C3CB"
             secureTextEntry={!showPassword}
+            value={password}
+            onChangeText={setPassword}
+            editable={!loading}
           />
           <TouchableOpacity
             onPress={() => setShowPassword(!showPassword)}
             style={styles.eyeButton}
+            disabled={loading}
           >
             <Text style={styles.eyeText}>
               {showPassword ? "Скрыть" : "Показать"}
@@ -91,20 +159,31 @@ export default function LoginScreen({ navigation }) {
         <TouchableOpacity 
           style={styles.forgotWrapper}
           onPress={() => navigation.navigate("ForgotPassword")}
+          disabled={loading}
         >
-           <Text style={styles.forgotText}>Забыли пароль?</Text>
-        
+          <Text style={styles.forgotText}>Забыли пароль?</Text>
         </TouchableOpacity>
 
         {/* КНОПКА "ВОЙТИ" */}
-        <TouchableOpacity style={styles.primaryButton}>
-          <Text style={styles.primaryButtonText}>ВОЙТИ</Text>
+        <TouchableOpacity 
+          style={[styles.primaryButton, loading && styles.disabledButton]}
+          onPress={handleLogin}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator color="#323142" />
+          ) : (
+            <Text style={styles.primaryButtonText}>ВОЙТИ</Text>
+          )}
         </TouchableOpacity>
 
         {/* "Ещё нет аккаунта? Создать" */}
         <View style={styles.bottomRow}>
           <Text style={styles.bottomText}>Ещё нет аккаунта? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Registration")}>
+          <TouchableOpacity 
+            onPress={() => navigation.navigate("Registration")}
+            disabled={loading}
+          >
             <Text style={styles.bottomLink}>Создать</Text>
           </TouchableOpacity>
         </View>
