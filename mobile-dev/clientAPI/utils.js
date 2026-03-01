@@ -1,12 +1,17 @@
-// clientAPI/utils.js
+// clientAPI/utils.js - исправленная версия
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_CONFIG, STORAGE_KEYS } from './config';
-import { Alert } from 'react-native';
 
 // Сохранение токена
 export const saveToken = async (token) => {
   try {
+    if (!token || token === '""' || token === '') {
+      console.log('Attempted to save empty token');
+      return;
+    }
     await AsyncStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
+    console.log('Token saved successfully');
   } catch (error) {
     console.error('Error saving token:', error);
   }
@@ -15,24 +20,29 @@ export const saveToken = async (token) => {
 // Получение токена
 export const getToken = async () => {
   try {
-    return await AsyncStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+    const token = await AsyncStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+    if (token && token !== '""' && token !== '') {
+      return token;
+    }
+    return null;
   } catch (error) {
     console.error('Error getting token:', error);
     return null;
   }
 };
 
-// Удаление токена (при выходе)
+// Удаление токена
 export const removeToken = async () => {
   try {
     await AsyncStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
     await AsyncStorage.removeItem(STORAGE_KEYS.USER_DATA);
+    console.log('Token removed');
   } catch (error) {
     console.error('Error removing token:', error);
   }
 };
 
-// Парсинг JWT токена для получения информации о пользователе
+// Парсинг JWT токена
 export const parseJwt = (token) => {
   try {
     const base64Url = token.split('.')[1];
@@ -55,7 +65,6 @@ export const handleResponse = async (response) => {
   const data = await response.json();
   
   if (!response.ok) {
-    // Если сервер вернул ошибку в формате { errorMessage: {...} }
     if (data.errorMessage) {
       throw {
         status: response.status,
@@ -69,14 +78,18 @@ export const handleResponse = async (response) => {
     };
   }
   
-  return data.data; // Возвращаем только поле data
+  return data.data;
 };
 
 // Базовый запрос с обработкой ошибок
-// clientAPI/utils.js - обновите функцию apiRequest
-
 export const apiRequest = async (endpoint, options = {}) => {
-  const token = await getToken();
+  // Если skipAuth === true, не добавляем токен в заголовок
+  const skipAuth = options.skipAuth || false;
+  
+  let token = null;
+  if (!skipAuth) {
+    token = await getToken();
+  }
   
   const headers = {
     'Content-Type': 'application/json',
@@ -84,25 +97,26 @@ export const apiRequest = async (endpoint, options = {}) => {
     ...options.headers,
   };
 
-  if (token) {
+  // Добавляем токен только если не skipAuth и токен есть
+  if (!skipAuth && token) {
     headers['Authorization'] = `Bearer ${token}`;
   }
 
+  const { skipAuth: _, ...cleanOptions } = options;  
+  
   const url = `${API_CONFIG.baseURL}${endpoint}`;
   console.log('Sending request to:', url);
-  console.log('Request options:', { ...options, headers });
+  console.log('Request options:', { ...cleanOptions, headers });
 
   try {
     const response = await fetch(url, {
-      ...options,
+      ...cleanOptions,  
       headers,
-      // Добавим credentials для работы с куками, если нужны
-      credentials: 'omit', // или 'include' если нужны куки
+      credentials: 'omit',
     });
 
     console.log('Response status:', response.status);
     
-    // Проверяем, есть ли ответ
     const text = await response.text();
     console.log('Raw response:', text);
     
@@ -116,7 +130,18 @@ export const apiRequest = async (endpoint, options = {}) => {
     
     console.log('Parsed data:', data);
     
+    // Проверяем на пустой токен в ответе
+    if (data?.data?.token === '') {
+      console.log('Received empty token - clearing local storage');
+      await removeToken();
+    }
+    
     if (!response.ok) {
+      // Если 401 и это не skipAuth - токен недействителен
+      if (response.status === 401 && !skipAuth) {
+        await removeToken();
+      }
+      
       if (data.errorMessage) {
         throw {
           status: response.status,

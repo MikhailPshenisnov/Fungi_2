@@ -1,120 +1,252 @@
 // clientAPI/auth.js
-import { apiRequest, saveToken, parseJwt, removeToken } from './utils';
+import { apiRequest, saveToken, removeToken, getToken } from './utils';
 
 class AuthAPI {
   /**
    * Вход пользователя
    * @param {string} email - Email пользователя
    * @param {string} password - Пароль
-   * @returns {Promise<Object>} - Данные пользователя из токена
    */
   async login(email, password) {
-    console.log('AuthAPI.login called with:', { email, password: '***' });
-
     try {
       const response = await apiRequest('/Authorization/LoginUser', {
         method: 'POST',
         body: JSON.stringify({ email, password }),
       });
 
-      // response должен содержать { token: "..." }
       if (response?.token) {
-        // Сохраняем токен
         await saveToken(response.token);
-        
-        // Парсим токен для получения информации о пользователе
-        const userData = parseJwt(response.token);
-        
-        // Возвращаем объединенные данные
         return {
           success: true,
           token: response.token,
-          user: userData,
         };
-      } else {
-        throw new Error('Token not received from server');
       }
-    } catch (error) {
-      // Преобразуем ошибку в удобный формат
-      console.error('AuthAPI.login error:', error);
-      let errorMessage = 'Ошибка при входе';
       
-      if (error.message) {
-        errorMessage = error.message;
-      } else if (typeof error === 'string') {
-        errorMessage = error;
-      }
-
-      // Специфические ошибки авторизации
-      if (errorMessage.includes('Invalid login or password')) {
-        errorMessage = 'Неверный email или пароль';
-      }
-
+      throw new Error('Token not received');
+    } catch (error) {
       return {
         success: false,
-        error: errorMessage,
+        error: error.message || 'Ошибка при входе',
       };
     }
   }
 
   /**
-   * Выход пользователя
+   * Регистрация пользователя
+   * @param {object} userData - Данные пользователя { name, email, password }
    */
-  async logout() {
+  async register(userData) {
     try {
-     
-      await apiRequest('/Authorization/LogoutUser', {
+      const response = await apiRequest('/Authorization/RegisterUser', {
         method: 'POST',
-      }).catch(() => {
-        
+        body: JSON.stringify(userData),
       });
-    } finally {
-      
-      await removeToken();
-    }
-  }
 
-  /**
-   * Получение текущего пользователя из сохраненного токена
-   */
-  async getCurrentUser() {
-    try {
-      // Можно также вызвать /Authorization/GetCurrentUserToken
-      // или /Authorization/ValidateToken для проверки
+      if (response?.token) {
+        await saveToken(response.token);
+        return {
+          success: true,
+          token: response.token,
+        };
+      }
       
-      // Но проще просто распарсить сохраненный токен
-      const token = await getToken(); // нужно импортировать getToken
-      if (!token) return null;
-      
-      return parseJwt(token);
+      throw new Error('Registration failed');
     } catch (error) {
-      console.error('Error getting current user:', error);
-      return null;
+      return {
+        success: false,
+        error: error.message || 'Ошибка при регистрации',
+      };
     }
   }
 
   /**
-   * Проверка валидности токена (опционально)
+   * Валидация токена и получение данных пользователя
+   * POST /Authorization/ValidateToken
+   * @param {string} token 
    */
-  async validateToken(token) {
+  async validateToken(token = null) {
     try {
+      // Если токен не передан, берем из хранилища
+      const tokenToValidate = token || await getToken();
+      
+      if (!tokenToValidate) {
+        return {
+          success: false,
+          error: 'Токен отсутствует',
+          data: null,
+        };
+      }
+
       const response = await apiRequest('/Authorization/ValidateToken', {
         method: 'POST',
-        body: JSON.stringify({ token }),
+        body: JSON.stringify({ token: tokenToValidate }),
+        // Важно: не добавляем Authorization header, т.к. токен в body
+        skipAuth: true, // Специальный флаг для apiRequest
       });
-      
+
       return {
         success: true,
-        data: response.tokenData,
+        data: response?.tokenData || null,
+        token: response?.token || null,
       };
     } catch (error) {
+      console.error('Validate token error:', error);
+      
+      // Если ошибка 401 - токен недействителен
+      if (error.status === 401) {
+        await removeToken(); // Очищаем недействительный токен
+      }
+      
       return {
         success: false,
-        error: error.message,
+        error: error.message || 'Ошибка валидации токена',
+        data: null,
       };
     }
+  }
+
+  /**
+   * Получение текущего токена пользователя
+   * GET /Authorization/GetCurrentUserToken
+   */
+async getCurrentUserToken() {
+  try {
+    console.log('Calling getCurrentUserToken');
+    const response = await apiRequest('/Authorization/GetCurrentUserToken', {
+      method: 'GET',
+    });
+
+    console.log('getCurrentUserToken response:', response);
+    
+    return {
+      success: true,
+      token: response?.token || null,
+    };
+  } catch (error) {
+    console.error('Get current user token error:', error);
+    
+    if (error.status === 401) {
+      await removeToken();
+    }
+    
+    return {
+      success: false,
+      error: error.message || 'Ошибка получения токена',
+      token: null,
+    };
   }
 }
 
-// Создаем и экспортируем единственный экземпляр
+  /**
+   * Получение данных текущего пользователя (обертка над validateToken)
+   * Удобный метод для использования в приложении
+   */
+  async getCurrentUser() {
+    const result = await this.validateToken();
+    return result.success ? result.data : null;
+  }
+
+  /**
+   * Проверка, авторизован ли пользователь (быстрая, без запроса к серверу)
+   */
+  async isAuthenticated() {
+    const token = await getToken();
+    return !!token;
+  }
+
+async logout() {
+  try {
+    console.log('Logout started');
+    
+    const response = await apiRequest('/Authorization/LogoutUser', {
+      method: 'POST',
+      skipAuth: true,
+    }).catch(error => {
+      console.log('Logout server error (ignored):', error);
+    });
+    
+    console.log('Logout server response:', response);
+    
+  } catch (error) {
+    console.log('Logout outer error:', error);
+   
+  } finally {
+   //ВСЕГДА очищаем локальные данные, независимо от ответа сервера
+    console.log('Clearing local token');
+    await removeToken();
+    console.log('Token cleared');
+  }
+}
+
+/**
+ * Регистрация пользователя
+ * @param {string} name - Имя пользователя (только латиница)
+ * @param {string} email - Email
+ * @param {string} password - Пароль
+ */
+async register(name, email, password) {
+  console.log('AuthAPI.register called with:', { name, email, password: '***' });
+  
+  try {
+    // Отправляем запрос на сервер без клиентских проверок
+    const response = await apiRequest('/Authorization/RegisterUser', {
+      method: 'POST',
+      body: JSON.stringify({ 
+        name,      // name, не username!
+        email, 
+        password 
+      }),
+    });
+
+    console.log('AuthAPI.register response:', response);
+
+    // Если получили токен - сохраняем и возвращаем успех
+    if (response?.token) {
+      await saveToken(response.token);
+      
+      // Опционально: можем получить данные пользователя через validateToken
+      // Но для быстрого ответа просто вернем успех
+      return {
+        success: true,
+        token: response.token,
+        // user: userData  // можно добавить позже если нужно
+      };
+    }
+    
+    throw new Error('Token not received from server');
+    
+  } catch (error) {
+    console.error('AuthAPI.register error:', error);
+    
+    if (error.message) {
+      return {
+        success: false,
+        error: error.message, 
+      };
+    }
+  
+    return {
+      success: false,
+      error: 'Ошибка при регистрации. Попробуйте позже.',
+    };
+  }
+}
+
+  async checkAuth() {
+    const token = await getToken();
+    if (!token) return false;
+    
+    try {
+    
+      const result = await this.validateToken(token);
+      return result.success;
+    } catch {
+      return false;
+    }
+  }
+  }
+
+
+
+
 export default new AuthAPI();

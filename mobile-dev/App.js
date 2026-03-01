@@ -18,6 +18,7 @@ import { useEffect } from "react";
 import RegistrationScreen from './components/RegistrationScreen';
 import LoginScreen from './components/LoginScreen';
 import ForgotPasswordScreen from './components/ForgotPasswordScreen';
+import TestProfileScreen from './components/TestProfileScreen';
 
 
 const Tab = createBottomTabNavigator();
@@ -110,7 +111,7 @@ function ProfileStack() {
       <Stack.Screen 
         name="Registration" 
         component={RegistrationScreen} 
-        options={{ title: "Регистрация" }} 
+        options={{ title: "Регистрация", headerShown: false }} 
       />
       <Stack.Screen 
         name="Login" 
@@ -121,6 +122,17 @@ function ProfileStack() {
         name="ForgotPassword" 
         component={ForgotPasswordScreen}
         options={{ headerShown: false }}
+      />
+      {/* ДОБАВЛЯЕМ ТЕСТОВЫЙ ПРОФИЛЬ */}
+      <Stack.Screen 
+        name="TestProfile" 
+        component={TestProfileScreen}
+        options={{ 
+          title: "Тестовый профиль",
+          headerStyle: { backgroundColor: '#452929' },
+          headerTitleAlign: 'center',
+          headerTintColor: '#ffffff',
+        }}
       />
     </Stack.Navigator>
   );

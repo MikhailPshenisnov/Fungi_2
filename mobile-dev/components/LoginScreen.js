@@ -19,56 +19,42 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+// LoginScreen.js - обновленный handleLogin
+
 const handleLogin = async () => {
-  console.log('1. handleLogin started'); // ДОЛЖНО ПОЯВИТЬСЯ В КОНСОЛИ
-  console.log('Email:', email); // Проверим что приходит с формы
-  console.log('Password:', password); 
+  console.log('1. handleLogin started');
+  console.log('Email:', email);
+  console.log('Password:', password);
   
   // Валидация
   if (!email.trim()) {
-    console.log('2. Email is empty');
     Alert.alert("Ошибка", "Введите email");
     return;
   }
   if (!password.trim()) {
-    console.log('2. Password is empty');
     Alert.alert("Ошибка", "Введите пароль");
     return;
   }
 
-  console.log('3. Validation passed, setting loading to true');
   setLoading(true);
   
   try {
-    console.log('4. Calling AuthAPI.login...');
+    console.log('Calling AuthAPI.login...');
     const result = await AuthAPI.login(email, password);
-    console.log('5. AuthAPI.login result:', result);
+    console.log('AuthAPI.login result:', result);
     
     if (result.success) {
-      console.log('6. Login successful, user:', result.user);
-      Alert.alert(
-        "Успех", 
-        `Добро пожаловать, ${result.user?.Name || 'пользователь'}!`,
-        [
-          { 
-            text: "OK", 
-            onPress: () => {
-              console.log('7. Navigating to Главная');
-              navigation.navigate("Главная");
-            } 
-          }
-        ]
-      );
+      console.log('Login successful, navigating to TestProfile');
+      // Убираем Alert, сразу переходим
+      navigation.replace("TestProfile"); // Используем replace вместо navigate
     } else {
-      console.log('6. Login failed:', result.error);
+      console.log('Login failed:', result.error);
       Alert.alert("Ошибка входа", result.error);
     }
   } catch (error) {
-    console.log('6. Unexpected error:', error);
+    console.log('Unexpected error:', error);
     Alert.alert("Ошибка", "Произошла непредвиденная ошибка");
-    console.error(error);
   } finally {
-    console.log('7. Setting loading to false');
     setLoading(false);
   }
 };
