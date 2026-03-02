@@ -34,43 +34,39 @@ export default function TestProfileScreen({ navigation }) {
   };
 
   const handleLogout = async () => {
-  Alert.alert(
-    "Выход",
-    "Вы уверены, что хотите выйти?",
-    [
-      { text: "Отмена", style: "cancel" },
-      {
-        text: "Выйти",
-        onPress: async () => {
-          console.log('1. Logout button pressed');
-          setLoading(true);
-          
-          try {
-            console.log('2. Calling AuthAPI.logout...');
-            await AuthAPI.logout();
-            console.log('3. AuthAPI.logout completed');
-            
-            // Проверим, действительно ли удалился токен
-            const token = await AuthAPI.getCurrentUserToken();
-            console.log('4. Token after logout:', token);
-            
-            console.log('5. Navigating to Login');
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'Login' }],
-            });
-            
-          } catch (error) {
-            console.error('Logout error:', error);
-            Alert.alert('Ошибка', 'Не удалось выйти');
-            setLoading(false);
-          }
-        }
-      }
-    ]
-  );
+  console.log('🔵 [TestProfile] ========== HANDLE LOGOUT CALLED ==========');
+  
+  // Сначала проверим, есть ли токен
+  const tokenCheck = await AuthAPI.getCurrentUserToken();
+  console.log('🔵 [TestProfile] Token before logout:', tokenCheck.token ? 'exists' : 'none');
+  
+  setLoading(true);
+  
+  try {
+    console.log('🔵 [TestProfile] Calling AuthAPI.logout...');
+    await AuthAPI.logout();
+    console.log('🔵 [TestProfile] AuthAPI.logout completed');
+    
+    // Проверим, что токен действительно удалился
+    const tokenAfter = await AuthAPI.getCurrentUserToken();
+    console.log('🔵 [TestProfile] Token after logout:', tokenAfter.token ? 'STILL EXISTS!' : 'none - ✅');
+    
+    console.log('🔵 [TestProfile] Navigating to Login...');
+    
+    // Небольшая задержка чтобы увидеть логи
+    setTimeout(() => {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      });
+    }, 1000);
+    
+  } catch (error) {
+    console.error('🔵 [TestProfile] Logout error:', error);
+    Alert.alert('Ошибка', 'Не удалось выйти');
+    setLoading(false);
+  }
 };
-
   const handleCheckToken = async () => {
     const user = await AuthAPI.getCurrentUser();
     const token = await AuthAPI.getCurrentUserToken();

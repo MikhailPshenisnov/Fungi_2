@@ -148,12 +148,23 @@ export const apiRequest = async (endpoint, options = {}) => {
     
     const text = await response.text();
     console.log('Raw response:', text);
-    
+
+    // Если ответ пустой, но статус 200 - это нормально для некоторых эндпоинтов
+    if (!text && response.status === 200) {
+      console.log('Empty response received (expected for LogoutUser)');
+      return null; // или пустой объект
+    }
+
     let data;
     try {
       data = JSON.parse(text);
     } catch (e) {
       console.error('Failed to parse JSON:', e);
+      // Для LogoutUser это ок, просто возвращаем null
+      if (endpoint.includes('/LogoutUser')) {
+        console.log('LogoutUser empty response handled');
+        return null;
+      }
       throw new Error('Invalid JSON response from server');
     }
     
