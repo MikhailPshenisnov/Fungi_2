@@ -1,0 +1,36 @@
+.subtitle {
+  margin-top: var(--space-2);
+  color: var(--color-text-secondary);
+}
+
+.sideHint {
+  color: var(--color-text-secondary);
+}
+
+.form {
+  width: 100%;
+}
+
+.fields {
+  width: 70%;
+}
+
+.switch {
+  color: var(--color-text-secondary);
+}
+
+.switch a {
+  color: var(--color-text-primary);
+}
+
+.footerText {
+  color: var(--color-text-secondary);
+}
+
+.footerText a {
+  color: var(--color-text-secondary);
+}
+
+.error {
+  color: var(--color-status-error-text);
+}

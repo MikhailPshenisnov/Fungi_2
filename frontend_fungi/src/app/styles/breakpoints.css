@@ -1,0 +1,49 @@
+/* Global breakpoint system.
+   Ranges:
+   - desktop-xl: >= 1440px
+   - desktop: 1280px .. 1439px
+   - tablet: 769px .. 1279px
+   - mobile: 481px .. 768px
+   - mobile-sm: <= 480px
+*/
+
+:root {
+    --bp-mobile-sm-max: 480px;
+    --bp-mobile-max: 768px;
+    --bp-tablet-max: 1279px;
+    --bp-desktop-max: 1439px;
+    --bp-desktop-xl-min: 1440px;
+
+    /* Shared responsive tokens for later use in page styles */
+    --viewport-tier: desktop-xl;
+    --layout-side-padding: 32px;
+    --layout-content-max-width: 1420px;
+}
+
+@media (max-width: 1439px) {
+    :root {
+        --viewport-tier: desktop;
+        --layout-side-padding: 28px;
+    }
+}
+
+@media (max-width: 1279px) {
+    :root {
+        --viewport-tier: tablet;
+        --layout-side-padding: 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --viewport-tier: mobile;
+        --layout-side-padding: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --viewport-tier: mobile-sm;
+        --layout-side-padding: 12px;
+    }
+}

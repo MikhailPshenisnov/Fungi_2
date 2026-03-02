@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -161,15 +162,47 @@ builder.Services.AddDbContext<FungiDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("FungiDbContext")));
 
 // CORS policy
+var allowedOrigins = builder.Configuration.GetSection("Frontend:AllowedOrigins").Get<string[]>();
+var allowLocalhostOrigins = (builder.Environment.IsDevelopment() || builder.Environment.IsEnvironment("Docker")) &&
+                            builder.Configuration.GetValue<bool>("Frontend:AllowLocalhostOrigins");
+
+if (allowedOrigins is null || allowedOrigins.Length == 0)
+{
+    var frontendAddress = builder.Configuration["Frontend:FrontendAddress"];
+    if (string.IsNullOrWhiteSpace(frontendAddress))
+        throw new ConfigurationException("Frontend allowed origins are missing");
+
+    allowedOrigins = new[] { frontendAddress };
+}
+
 builder.Services.AddCors(options => options.AddPolicy(
-    "FungiApiPolicy", b => b
-        .WithOrigins(
-            builder.Configuration["Frontend:FrontendAddress"] ??
-            throw new ConfigurationException("Frontend address is missing")
-        )
-        .AllowAnyHeader()
-        .AllowAnyMethod()
-        .AllowCredentials()));
+    "FungiApiPolicy", b =>
+    {
+        if (allowLocalhostOrigins)
+        {
+            b.SetIsOriginAllowed(origin =>
+            {
+                if (!Uri.TryCreate(origin, UriKind.Absolute, out var uri))
+                    return false;
+
+                if (uri.Scheme is not ("http" or "https"))
+                    return false;
+
+                if (uri.Host.Equals("localhost", StringComparison.OrdinalIgnoreCase))
+                    return true;
+
+                return IPAddress.TryParse(uri.Host, out var ipAddress) && IPAddress.IsLoopback(ipAddress);
+            });
+        }
+        else
+        {
+            b.WithOrigins(allowedOrigins);
+        }
+
+        b.AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    }));
 
 // TODO: FIX CORS
 
@@ -199,12 +232,12 @@ app.UseMiddleware<StatusCodeMiddleware>();
 app.UseMiddleware<DataInitializationMiddleware>();
 */
 
+// CORS settings
+app.UseCors("FungiApiPolicy");
+
 // Authentication and authorization
 app.UseAuthentication();
 app.UseAuthorization();
-
-// CORS settings
-app.UseCors("FungiApiPolicy");
 
 // Swagger
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Docker"))

@@ -1,0 +1,44 @@
+.section {
+  padding-bottom: var(--space-7);
+  border-top: 1px solid var(--color-border-subtle);
+  padding-top: var(--space-6);
+}
+
+.title {
+  margin: 0;
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.card {
+  padding: var(--space-5);
+}
+
+.text {
+  margin: 0;
+}
+
+.author {
+  display: block;
+  margin-top: var(--space-4);
+  color: var(--color-text-secondary);
+}
+
+.role {
+  display: block;
+  margin-top: var(--space-1);
+  color: var(--color-text-secondary);
+}
+
+.allButton {
+  width: fit-content;
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

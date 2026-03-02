@@ -25,15 +25,13 @@ namespace BackendFungi.Controllers;
 [Route("[controller]/[action]")]
 public class AuthorizationController : ControllerBase
 {
-    private readonly IAccessCheckService _accessCheckService;
     private readonly IAuthorizationService _authorizationService;
     private readonly IRolesService _rolesService;
     private readonly IUsersService _usersService;
 
-    public AuthorizationController(IAccessCheckService accessCheckService, IAuthorizationService authorizationService,
+    public AuthorizationController(IAuthorizationService authorizationService,
         IRolesService rolesService, IUsersService usersService)
     {
-        _accessCheckService = accessCheckService;
         _authorizationService = authorizationService;
         _rolesService = rolesService;
         _usersService = usersService;
@@ -47,13 +45,6 @@ public class AuthorizationController : ControllerBase
     {
         var token = await _authorizationService
             .LoginUser(loginUserRequest.Email, loginUserRequest.Password, cancellationToken);
-
-        Response.Cookies.Append("jwt_token", token, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict
-        });
 
         var response = new BaseResponse<LoginUserResponse>(
             new LoginUserResponse(
@@ -123,13 +114,6 @@ public class AuthorizationController : ControllerBase
         var token = await _authorizationService
             .LoginUser(registerUserRequest.Email, registerUserRequest.Password, cancellationToken);
 
-        Response.Cookies.Append("jwt_token", token, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict
-        });
-
         var response = new BaseResponse<RegisterUserResponse>(
             new RegisterUserResponse(
                 token),
@@ -141,9 +125,9 @@ public class AuthorizationController : ControllerBase
     [HttpGet]
     [SwaggerOperation(OperationId = "GetCurrentUserToken", Summary = "Get current user token",
         Description = "Returns current user token")]
-    public async Task<ActionResult<BaseResponse<GetCurrentUserTokenResponse>>> GetCurrentUserToken(CancellationToken cancellationToken)
+    public ActionResult<BaseResponse<GetCurrentUserTokenResponse>> GetCurrentUserToken(CancellationToken cancellationToken)
     {
-        Request.Cookies.TryGetValue("jwt_token", out var token);
+        var token = TryExtractBearerTokenFromHeader();
 
         var response = new BaseResponse<GetCurrentUserTokenResponse>(
             new GetCurrentUserTokenResponse(
@@ -155,24 +139,14 @@ public class AuthorizationController : ControllerBase
     [Authorize]
     [HttpPost]
     [SwaggerOperation(OperationId = "ValidateToken", Summary = "Validate token",
-        Description = "Allows you to obtain information about the user by token")]
-    public async Task<ActionResult<BaseResponse<ValidateTokenResponse>>> ValidateToken([FromBody] ValidateTokenRequest? validateTokenRequest,
+        Description = "Allows you to obtain information about the user by token. " +
+                      "Requires Authorization header in format: Bearer <token>.")]
+    public async Task<ActionResult<BaseResponse<ValidateTokenResponse>>> ValidateToken(
         CancellationToken cancellationToken)
     {
-        Request.Cookies.TryGetValue("jwt_token", out var token);
-
-        if (token is null)
-            throw new AuthorizationException("Token is somehow null, but it is impossible");
-
-        if (validateTokenRequest is not null)
-        {
-            await _accessCheckService.CheckAccessLevel(
-                HttpContext,
-                (int)AccessLevelEnumerator.JuniorAdministratorMin,
-                cancellationToken);
-
-            token = validateTokenRequest.Token;
-        }
+        var token = TryExtractBearerTokenFromHeader();
+        if (string.IsNullOrWhiteSpace(token))
+            throw new AuthorizationException("Authorization Bearer token is missing");
 
         var tokenData = await _authorizationService.ValidateToken(token, cancellationToken);
 
@@ -187,16 +161,9 @@ public class AuthorizationController : ControllerBase
 
     [HttpPost]
     [SwaggerOperation(OperationId = "LogoutUser", Summary = "Logout user",
-        Description = "Removes user data from cookies")]
-    public async Task<ActionResult> LogoutUser(CancellationToken cancellationToken)
+        Description = "Completes logout on API side for stateless bearer authentication")]
+    public ActionResult LogoutUser(CancellationToken cancellationToken)
     {
-        Response.Cookies.Append("jwt_token", string.Empty, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict
-        });
-
         return Ok();
     }
 
@@ -219,9 +186,7 @@ public class AuthorizationController : ControllerBase
                       "Sanya made to connect front easier (P. S. Выпилите этот метод пожалуйста, ну что за треш, господа)")]
     public async Task<ActionResult<BaseResponse<GetCurrentUserDataResponse>>> GetCurrentDataUser(CancellationToken cancellationToken)
     {
-        Request.Cookies.TryGetValue("jwt_token", out var token);
-
-        token = token ?? string.Empty;
+        var token = TryExtractBearerTokenFromHeader() ?? string.Empty;
 
         if (token != String.Empty)
         {
@@ -287,5 +252,20 @@ public class AuthorizationController : ControllerBase
 
             return Ok(response);
         }
+    }
+
+    private string? TryExtractBearerTokenFromHeader()
+    {
+        const string bearerPrefix = "Bearer ";
+
+        if (!Request.Headers.TryGetValue("Authorization", out var authorizationHeader))
+            return null;
+
+        var authorizationValue = authorizationHeader.ToString();
+        if (!authorizationValue.StartsWith(bearerPrefix, StringComparison.OrdinalIgnoreCase))
+            return null;
+
+        var token = authorizationValue[bearerPrefix.Length..].Trim();
+        return string.IsNullOrWhiteSpace(token) ? null : token;
     }
 }

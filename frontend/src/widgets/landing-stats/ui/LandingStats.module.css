@@ -1,0 +1,28 @@
+.section {
+  padding-bottom: var(--space-6);
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.card {
+  padding: var(--space-5);
+  text-align: center;
+}
+
+.value {
+  margin: 0;
+}
+
+.label {
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-secondary);
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

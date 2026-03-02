@@ -159,3 +159,21 @@ frontend_fungi/build/
 frontend_fungi/.vite/
 frontend_fungi/coverage/
 *.tsbuildinfo
+
+# Local notes / planning
+TODO.md
+notes/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Frontend local caches (root-level safety)
+frontend/.cache/
+frontend/.vite/
+frontend/.temp/
+frontend/.eslintcache
+frontend/.stylelintcache

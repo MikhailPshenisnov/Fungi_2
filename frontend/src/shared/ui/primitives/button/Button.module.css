@@ -1,0 +1,126 @@
+.button {
+  border: 1px solid var(--color-action-primary-border);
+  border-radius: var(--radius-m);
+  --button-padding-inline-start: 16px;
+  --button-padding-inline-end: 16px;
+  padding-block: 10px;
+  padding-inline-start: var(--button-padding-inline-start);
+  padding-inline-end: var(--button-padding-inline-end);
+  min-height: 40px;
+  font-family: var(--font-body);
+  font-size: var(--text-body-s-size);
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+  box-shadow: var(--shadow-base);
+}
+
+.withLeftIcon {
+  --button-padding-inline-start: 12px;
+}
+
+.withRightIcon {
+  --button-padding-inline-end: 12px;
+}
+
+.content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.label {
+  display: inline-block;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  color: currentColor;
+}
+
+.iconOnly {
+  width: 40px;
+  min-width: 40px;
+  padding: 0;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--color-action-primary-focus-ring);
+  outline-offset: 2px;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+}
+
+.primary {
+  background: var(--color-action-primary-bg);
+  color: var(--color-action-primary-on-bg);
+  border-color: var(--color-action-primary-border);
+}
+
+.primary:hover:not(:disabled) {
+  background: var(--color-action-primary-bg-hover);
+  box-shadow: var(--shadow-hover);
+}
+
+.primary:active:not(:disabled) {
+  background: var(--color-action-primary-bg-active);
+}
+
+.primary:disabled {
+  background: var(--color-action-primary-bg-disabled);
+  color: var(--color-action-primary-on-bg-disabled);
+  border-color: var(--color-action-primary-bg-disabled);
+  box-shadow: none;
+}
+
+.secondary {
+  background: var(--color-surface-elevated);
+  color: var(--color-text-primary);
+  border-color: var(--color-border-default);
+}
+
+.secondary:hover:not(:disabled) {
+  background: var(--color-bg-subtle);
+  box-shadow: var(--shadow-hover);
+}
+
+.secondary:active:not(:disabled) {
+  background: var(--color-bg-muted);
+}
+
+.secondary:disabled {
+  background: var(--color-bg-subtle);
+  color: var(--color-text-disabled);
+  border-color: var(--color-border-subtle);
+  box-shadow: none;
+}
+
+.tertiary {
+  background: transparent;
+  color: var(--color-text-primary);
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.tertiary:hover:not(:disabled) {
+  background: var(--color-bg-subtle);
+}
+
+.tertiary:active:not(:disabled) {
+  background: var(--color-bg-muted);
+}
+
+.tertiary:disabled {
+  color: var(--color-text-disabled);
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
