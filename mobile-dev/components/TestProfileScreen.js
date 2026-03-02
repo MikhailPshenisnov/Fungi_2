@@ -1,10 +1,12 @@
+// TestProfileScreen.js - исправленная версия
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { AuthAPI } from '../clientAPI';
 
 export default function TestProfileScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     checkAuthStatus();
@@ -13,51 +15,71 @@ export default function TestProfileScreen({ navigation }) {
   const checkAuthStatus = async () => {
     setLoading(true);
     
-    // Используем новый метод checkAuth
-    const authenticated = await AuthAPI.checkAuth();
+    // Проверяем авторизацию
+    const user = await AuthAPI.getCurrentUser();
+    console.log('Current user:', user);
     
-    console.log('Auth status:', authenticated);
-    setIsAuthenticated(authenticated);
-    setLoading(false);
-    
-    if (!authenticated) {
-      Alert.alert(
-        "Не авторизован",
-        "Пожалуйста, войдите в систему",
-        [
-          {
-            text: "OK",
-            onPress: () => navigation.replace("Login")
-          }
-        ]
-      );
+    if (!user) {
+      // Если не авторизован - сразу на логин
+      console.log('Not authenticated, redirecting to Login');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      });
+      return;
     }
+    
+    setUserData(user);
+    setLoading(false);
   };
 
   const handleLogout = async () => {
-    Alert.alert(
-      "Выход",
-      "Вы уверены, что хотите выйти?",
-      [
-        { text: "Отмена", style: "cancel" },
-        {
-          text: "Выйти",
-          onPress: async () => {
+  Alert.alert(
+    "Выход",
+    "Вы уверены, что хотите выйти?",
+    [
+      { text: "Отмена", style: "cancel" },
+      {
+        text: "Выйти",
+        onPress: async () => {
+          console.log('1. Logout button pressed');
+          setLoading(true);
+          
+          try {
+            console.log('2. Calling AuthAPI.logout...');
             await AuthAPI.logout();
-            navigation.replace("Login");
+            console.log('3. AuthAPI.logout completed');
+            
+            // Проверим, действительно ли удалился токен
+            const token = await AuthAPI.getCurrentUserToken();
+            console.log('4. Token after logout:', token);
+            
+            console.log('5. Navigating to Login');
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'Login' }],
+            });
+            
+          } catch (error) {
+            console.error('Logout error:', error);
+            Alert.alert('Ошибка', 'Не удалось выйти');
+            setLoading(false);
           }
         }
-      ]
-    );
-  };
+      }
+    ]
+  );
+};
 
   const handleCheckToken = async () => {
-    // Используем checkAuth для проверки
-    const isAuth = await AuthAPI.checkAuth();
+    const user = await AuthAPI.getCurrentUser();
+    const token = await AuthAPI.getCurrentUserToken();
     
     Alert.alert(
-      "Проверка авторизации",
-      `Статус: ${isAuth ? 'авторизован' : 'не авторизован'}`
+      "Информация",
+      `Авторизация: ${user ? '✅' : '❌'}\n` +
+      `Токен: ${token.token ? 'есть' : 'нет'}\n` +
+      (user ? `Пользователь: ${user.name || user.Name}` : '')
     );
   };
 
@@ -73,12 +95,14 @@ export default function TestProfileScreen({ navigation }) {
     <View style={styles.container}>
       <Text style={styles.title}>Тестовый профиль</Text>
       <Text style={styles.subtitle}>
-        {isAuthenticated ? '✅ Вы авторизованы' : '❌ Вы не авторизованы'}
+        {userData ? '✅ Вы авторизованы' : '❌ Вы не авторизованы'}
       </Text>
       
       <View style={styles.infoBox}>
         <Text style={styles.infoText}>
-          Используется метод ValidateToken для проверки авторизации
+          {userData 
+            ? `Имя: ${userData.name || userData.Name}\nEmail: ${userData.email || userData.Email}`
+            : 'Данные пользователя не загружены'}
         </Text>
       </View>
 

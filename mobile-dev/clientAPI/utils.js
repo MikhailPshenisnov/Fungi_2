@@ -34,11 +34,38 @@ export const getToken = async () => {
 // Удаление токена
 export const removeToken = async () => {
   try {
+    console.log('🔴 [removeToken] ========== STARTING TOKEN REMOVAL ==========');
+    
+    // Проверяем, что есть в хранилище ДО удаления
+    const beforeToken = await AsyncStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+    const beforeUser = await AsyncStorage.getItem(STORAGE_KEYS.USER_DATA);
+    
+    console.log('🔴 [removeToken] Before removal - Token exists:', !!beforeToken);
+    console.log('🔴 [removeToken] Before removal - Token value:', beforeToken ? beforeToken.substring(0, 20) + '...' : 'null');
+    console.log('🔴 [removeToken] Before removal - User data exists:', !!beforeUser);
+    
+    // Удаляем
+    console.log('🔴 [removeToken] Removing token...');
     await AsyncStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
     await AsyncStorage.removeItem(STORAGE_KEYS.USER_DATA);
-    console.log('Token removed');
+    
+    // Проверяем ПОСЛЕ удаления
+    const afterToken = await AsyncStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+    const afterUser = await AsyncStorage.getItem(STORAGE_KEYS.USER_DATA);
+    
+    console.log('🔴 [removeToken] After removal - Token exists:', !!afterToken);
+    console.log('🔴 [removeToken] After removal - User data exists:', !!afterUser);
+    
+    if (!afterToken && !afterUser) {
+      console.log('🔴 [removeToken] ✅ Token successfully removed from storage');
+    } else {
+      console.log('🔴 [removeToken] ❌ Token still exists in storage!');
+    }
+    
+    console.log('🔴 [removeToken] ========== FINISHED ==========');
+    
   } catch (error) {
-    console.error('Error removing token:', error);
+    console.error('🔴 [removeToken] Error removing token:', error);
   }
 };
 
@@ -82,8 +109,9 @@ export const handleResponse = async (response) => {
 };
 
 // Базовый запрос с обработкой ошибок
+// clientAPI/utils.js - исправленная версия apiRequest
+
 export const apiRequest = async (endpoint, options = {}) => {
-  // Если skipAuth === true, не добавляем токен в заголовок
   const skipAuth = options.skipAuth || false;
   
   let token = null;
@@ -97,24 +125,25 @@ export const apiRequest = async (endpoint, options = {}) => {
     ...options.headers,
   };
 
-  // Добавляем токен только если не skipAuth и токен есть
   if (!skipAuth && token) {
     headers['Authorization'] = `Bearer ${token}`;
+    console.log('Adding token to headers:', token.substring(0, 20) + '...');
   }
 
-  const { skipAuth: _, ...cleanOptions } = options;  
+  const { skipAuth: _, ...cleanOptions } = options;
   
   const url = `${API_CONFIG.baseURL}${endpoint}`;
   console.log('Sending request to:', url);
-  console.log('Request options:', { ...cleanOptions, headers });
+  console.log('Headers:', headers);
+  console.log('Body:', cleanOptions.body);
 
   try {
     const response = await fetch(url, {
-      ...cleanOptions,  
+      ...cleanOptions,
       headers,
       credentials: 'omit',
     });
-
+    
     console.log('Response status:', response.status);
     
     const text = await response.text();
@@ -130,18 +159,7 @@ export const apiRequest = async (endpoint, options = {}) => {
     
     console.log('Parsed data:', data);
     
-    // Проверяем на пустой токен в ответе
-    if (data?.data?.token === '') {
-      console.log('Received empty token - clearing local storage');
-      await removeToken();
-    }
-    
     if (!response.ok) {
-      // Если 401 и это не skipAuth - токен недействителен
-      if (response.status === 401 && !skipAuth) {
-        await removeToken();
-      }
-      
       if (data.errorMessage) {
         throw {
           status: response.status,
@@ -155,7 +173,9 @@ export const apiRequest = async (endpoint, options = {}) => {
       };
     }
     
+    // ВАЖНО: возвращаем data.data (именно такова структура ответа)
     return data.data;
+    
   } catch (error) {
     console.error('Fetch error:', error);
     throw error;

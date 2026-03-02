@@ -43,11 +43,15 @@ const handleLogin = async () => {
     const result = await AuthAPI.login(email, password);
     console.log('AuthAPI.login result:', result);
     
-    if (result.success) {
-      console.log('Login successful, navigating to TestProfile');
-      // Убираем Alert, сразу переходим
-      navigation.replace("TestProfile"); // Используем replace вместо navigate
-    } else {
+  if (result.success) {
+    console.log('Login successful, navigating to TestProfile');
+    
+    // Используем reset вместо navigate
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'TestProfile' }],
+    });
+  } else {
       console.log('Login failed:', result.error);
       Alert.alert("Ошибка входа", result.error);
     }

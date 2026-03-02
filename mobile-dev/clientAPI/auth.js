@@ -12,6 +12,7 @@ class AuthAPI {
       const response = await apiRequest('/Authorization/LoginUser', {
         method: 'POST',
         body: JSON.stringify({ email, password }),
+        skipAuth: true, // Логин всегда публичный
       });
 
       if (response?.token) {
@@ -64,12 +65,11 @@ class AuthAPI {
    * POST /Authorization/ValidateToken
    * @param {string} token 
    */
-  async validateToken(token = null) {
+  async validateToken() {
     try {
-      // Если токен не передан, берем из хранилища
-      const tokenToValidate = token || await getToken();
+      const token = await getToken();
       
-      if (!tokenToValidate) {
+      if (!token) {
         return {
           success: false,
           error: 'Токен отсутствует',
@@ -77,11 +77,11 @@ class AuthAPI {
         };
       }
 
+      // skipAuth: false - чтобы apiRequest добавил токен в заголовок
       const response = await apiRequest('/Authorization/ValidateToken', {
         method: 'POST',
-        body: JSON.stringify({ token: tokenToValidate }),
-        // Важно: не добавляем Authorization header, т.к. токен в body
-        skipAuth: true, // Специальный флаг для apiRequest
+        skipAuth: false, // Важно! НЕ skipAuth, чтобы токен попал в заголовок
+        // body больше не нужен!
       });
 
       return {
@@ -89,12 +89,12 @@ class AuthAPI {
         data: response?.tokenData || null,
         token: response?.token || null,
       };
+      
     } catch (error) {
       console.error('Validate token error:', error);
       
-      // Если ошибка 401 - токен недействителен
       if (error.status === 401) {
-        await removeToken(); // Очищаем недействительный токен
+        await removeToken();
       }
       
       return {
@@ -105,37 +105,33 @@ class AuthAPI {
     }
   }
 
+
   /**
    * Получение текущего токена пользователя
    * GET /Authorization/GetCurrentUserToken
    */
-async getCurrentUserToken() {
-  try {
-    console.log('Calling getCurrentUserToken');
-    const response = await apiRequest('/Authorization/GetCurrentUserToken', {
-      method: 'GET',
-    });
+  async getCurrentUserToken() {
+    try {
+      // Теперь этот метод тоже требует авторизацию
+      const response = await apiRequest('/Authorization/GetCurrentUserToken', {
+        method: 'GET',
+        skipAuth: false, // Токен в заголовке
+      });
 
-    console.log('getCurrentUserToken response:', response);
-    
-    return {
-      success: true,
-      token: response?.token || null,
-    };
-  } catch (error) {
-    console.error('Get current user token error:', error);
-    
-    if (error.status === 401) {
-      await removeToken();
+      return {
+        success: true,
+        token: response?.token || null,
+      };
+      
+    } catch (error) {
+      console.error('Get token error:', error);
+      return {
+        success: false,
+        error: error.message,
+        token: null,
+      };
     }
-    
-    return {
-      success: false,
-      error: error.message || 'Ошибка получения токена',
-      token: null,
-    };
   }
-}
 
   /**
    * Получение данных текущего пользователя (обертка над validateToken)
@@ -155,26 +151,37 @@ async getCurrentUserToken() {
   }
 
 async logout() {
+  console.log('🟡 [AuthAPI.logout] ========== STARTING LOGOUT ==========');
+  
   try {
-    console.log('Logout started');
+    // Проверим токен до выхода
+    const tokenBefore = await getToken();
+    console.log('🟡 [AuthAPI.logout] Token before logout:', tokenBefore ? 'exists' : 'none');
     
-    const response = await apiRequest('/Authorization/LogoutUser', {
-      method: 'POST',
-      skipAuth: true,
-    }).catch(error => {
-      console.log('Logout server error (ignored):', error);
-    });
+    // Попробуем уведомить сервер
+    console.log('🟡 [AuthAPI.logout] Calling LogoutUser endpoint...');
+    try {
+      await apiRequest('/Authorization/LogoutUser', {
+        method: 'POST',
+        skipAuth: true,
+      });
+      console.log('🟡 [AuthAPI.logout] LogoutUser endpoint success');
+    } catch (serverError) {
+      console.log('🟡 [AuthAPI.logout] LogoutUser endpoint error (ignored):', serverError.message);
+    }
     
-    console.log('Logout server response:', response);
+    // Удаляем токен локально
+    console.log('🟡 [AuthAPI.logout] Calling removeToken...');
+    await removeToken();
+    
+    // Проверим, что токен действительно удалился
+    const tokenAfter = await getToken();
+    console.log('🟡 [AuthAPI.logout] Token after logout:', tokenAfter ? 'still exists!' : 'none - ✅ good');
+    
+    console.log('🟡 [AuthAPI.logout] ========== LOGOUT COMPLETED ==========');
     
   } catch (error) {
-    console.log('Logout outer error:', error);
-   
-  } finally {
-   //ВСЕГДА очищаем локальные данные, независимо от ответа сервера
-    console.log('Clearing local token');
-    await removeToken();
-    console.log('Token cleared');
+    console.error('🟡 [AuthAPI.logout] Error during logout:', error);
   }
 }
 
@@ -233,12 +240,8 @@ async register(name, email, password) {
 }
 
   async checkAuth() {
-    const token = await getToken();
-    if (!token) return false;
-    
     try {
-    
-      const result = await this.validateToken(token);
+      const result = await this.validateToken();
       return result.success;
     } catch {
       return false;
