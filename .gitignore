@@ -1,0 +1,62 @@
+# OS / filesystem
+.DS_Store
+Thumbs.db
+
+# IDE / editor
+.idea/
+.vscode/
+.vs/
+*.iml
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local env files (keep examples in git)
+.env.local
+.env.*.local
+frontend/.env.local
+frontend_fungi/.env.local
+mobile-dev/.env.local
+
+# .NET build artifacts
+**/bin/
+**/obj/
+
+# Node / frontend artifacts
+frontend/node_modules/
+frontend_fungi/node_modules/
+mobile-dev/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.vite/
+frontend/.cache/
+frontend/.temp/
+frontend/.eslintcache
+frontend/.stylelintcache
+frontend_fungi/dist/
+frontend_fungi/dist-ssr/
+frontend_fungi/build/
+frontend_fungi/.vite/
+frontend_fungi/coverage/
+*.tsbuildinfo
+
+# Expo / React Native
+.expo/
+
+# Docs (MkDocs)
+site/
+
+# Local notes
+TODO.local.md
+notes/
+
+# Root env (do not commit secrets)
+.env

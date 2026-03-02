@@ -41,6 +41,18 @@ services:
     depends_on:
       - fungi-backend
 
+  fungi-docs:
+    container_name: fungi-docs
+    build:
+      context: .
+      dockerfile: docs/Dockerfile
+    working_dir: /workspace
+    command: mkdocs serve -a 0.0.0.0:8000
+    volumes:
+      - ./:/workspace
+    ports:
+      - "8000:8000"
+
 
 volumes:
   pg_fungi_data:

@@ -1,0 +1,21 @@
+site_name: Документация Fungi
+site_description: Единая документация проекта Fungi
+repo_url: https://github.com/MikhailPshenisnov/Fungi_2
+theme:
+  name: material
+  language: ru
+plugins:
+  - search
+nav:
+  - Главная: index.md
+  - Быстрый старт:
+      - Обзор: getting-started/index.md
+      - Известные проблемы: getting-started/known-issues.md
+  - Архитектура: architecture/index.md
+  - Backend API:
+      - Обзор: backend-api/index.md
+      - OpenAPI и Swagger: backend-api/openapi.md
+  - Frontend: frontend/index.md
+  - Mobile: mobile/index.md
+  - Процессы разработки: workflow/index.md
+  - Журнал изменений: changelog/index.md
