@@ -50,6 +50,32 @@
 - `409` — конфликт данных
 - `500` — внутренняя ошибка сервера
 
+### Контракт авторизации (web + mobile)
+
+- JWT для защищенных endpoint передается только через заголовок `Authorization: Bearer <token>`.
+- `POST /Authorization/ValidateToken` использует bearer-токен из заголовка.
+- Токен в `body` для `ValidateToken` не используется.
+- Cookie `jwt_token` не должен использоваться клиентами как источник авторизации.
+
+Пример:
+
+```http
+POST /Authorization/ValidateToken HTTP/1.1
+Host: localhost:5000
+Authorization: Bearer <jwt_token>
+Content-Type: application/json
+```
+
+### Changelog для mobile-команды (breaking changes)
+
+- `POST /Authorization/ValidateToken`:
+  - раньше: token мог передаваться в `body`;
+  - теперь: token обязателен только в `Authorization: Bearer <token>`.
+- Cookie `jwt_token` больше не используется как источник авторизации API.
+- `Authorization/LoginUser` и `Authorization/RegisterUser` возвращают token в `data.token`, но не записывают auth-cookie.
+- `Authorization/LogoutUser` для bearer-схемы stateless: сервер не очищает cookie, клиент удаляет локальный token сам.
+- Для web-dev запусков с разными портами CORS в локальных окружениях поддерживает `localhost/127.0.0.1` без ручного добавления порта в репозиторий.
+
 ## 2. Запуск API и работа с ним
 
 - Прежде всего вам на устройстве необходимо установить Docker и запустить его.

@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -162,6 +163,8 @@ builder.Services.AddDbContext<FungiDbContext>(options =>
 
 // CORS policy
 var allowedOrigins = builder.Configuration.GetSection("Frontend:AllowedOrigins").Get<string[]>();
+var allowLocalhostOrigins = (builder.Environment.IsDevelopment() || builder.Environment.IsEnvironment("Docker")) &&
+                            builder.Configuration.GetValue<bool>("Frontend:AllowLocalhostOrigins");
 
 if (allowedOrigins is null || allowedOrigins.Length == 0)
 {
@@ -173,11 +176,33 @@ if (allowedOrigins is null || allowedOrigins.Length == 0)
 }
 
 builder.Services.AddCors(options => options.AddPolicy(
-    "FungiApiPolicy", b => b
-        .WithOrigins(allowedOrigins)
-        .AllowAnyHeader()
-        .AllowAnyMethod()
-        .AllowCredentials()));
+    "FungiApiPolicy", b =>
+    {
+        if (allowLocalhostOrigins)
+        {
+            b.SetIsOriginAllowed(origin =>
+            {
+                if (!Uri.TryCreate(origin, UriKind.Absolute, out var uri))
+                    return false;
+
+                if (uri.Scheme is not ("http" or "https"))
+                    return false;
+
+                if (uri.Host.Equals("localhost", StringComparison.OrdinalIgnoreCase))
+                    return true;
+
+                return IPAddress.TryParse(uri.Host, out var ipAddress) && IPAddress.IsLoopback(ipAddress);
+            });
+        }
+        else
+        {
+            b.WithOrigins(allowedOrigins);
+        }
+
+        b.AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    }));
 
 // TODO: FIX CORS
 

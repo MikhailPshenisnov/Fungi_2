@@ -568,27 +568,8 @@
           "Authorization"
         ],
         "summary": "Validate token",
-        "description": "Allows you to obtain information about the user by token",
+        "description": "Allows you to obtain information about the user by token. Requires Authorization header in format: Bearer <token>.",
         "operationId": "ValidateToken",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ValidateTokenRequest"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ValidateTokenRequest"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/ValidateTokenRequest"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "OK",
@@ -619,7 +600,7 @@
           "Authorization"
         ],
         "summary": "Logout user",
-        "description": "Removes user data from cookies",
+        "description": "Completes logout on API side for stateless bearer authentication",
         "operationId": "LogoutUser",
         "responses": {
           "200": {
@@ -1641,20 +1622,17 @@
             "format": "uuid"
           },
           "title": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "publishDate": {
             "type": "string",
             "format": "date-time"
           },
           "authorString": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "headerPhotoLink": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "extraPhotoLinks": {
             "type": "array",
@@ -1667,8 +1645,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ParagraphDto"
-            },
-            "nullable": true
+            }
           }
         },
         "additionalProperties": false
@@ -1677,20 +1654,17 @@
         "type": "object",
         "properties": {
           "title": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "publishDate": {
             "type": "string",
             "format": "date-time"
           },
           "authorString": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "headerPhotoLink": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "extraPhotoLinks": {
             "type": "array",
@@ -1700,8 +1674,7 @@
             "nullable": true
           },
           "articleText": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -1732,8 +1705,7 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "synonymousName": {
             "type": "string",
@@ -1744,15 +1716,13 @@
             "nullable": true
           },
           "family": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "redBook": {
             "type": "boolean"
           },
           "eatable": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "hasStem": {
             "type": "boolean"
@@ -1776,24 +1746,19 @@
             "nullable": true
           },
           "capType": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "capColor": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "capUndersideType": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "headerPhotoLink": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "extraPhotoLinks": {
             "type": "array",
@@ -1806,8 +1771,7 @@
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "nullable": true
+            }
           }
         },
         "additionalProperties": false
@@ -1838,8 +1802,7 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "accessLevel": {
             "type": "integer",
@@ -1874,16 +1837,14 @@
         "type": "object",
         "properties": {
           "username": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "email": {
             "type": "string",
             "nullable": true
           },
           "password": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "roleId": {
             "type": "string",
@@ -2014,8 +1975,7 @@
             "format": "uuid"
           },
           "doppelgangerName": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "isContainedInDatabase": {
             "type": "boolean"
@@ -2027,12 +1987,10 @@
         "type": "object",
         "properties": {
           "errorGroup": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "errorMessage": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -2062,24 +2020,20 @@
         "type": "object",
         "properties": {
           "token": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "name": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "email": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "asseccLvl": {
             "type": "integer",
             "format": "int32"
           },
           "userId": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -2100,8 +2054,7 @@
         "type": "object",
         "properties": {
           "token": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -2125,8 +2078,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ArticleDto"
-            },
-            "nullable": true
+            }
           }
         },
         "additionalProperties": false
@@ -2150,8 +2102,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/MushroomDto"
-            },
-            "nullable": true
+            }
           }
         },
         "additionalProperties": false
@@ -2175,8 +2126,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/RoleDto"
-            },
-            "nullable": true
+            }
           }
         },
         "additionalProperties": false
@@ -2200,8 +2150,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/UserDto"
-            },
-            "nullable": true
+            }
           }
         },
         "additionalProperties": false
@@ -2282,14 +2231,15 @@
         "additionalProperties": false
       },
       "LoginUserRequest": {
-        "type": "object",
         "required": [
           "email",
           "password"
         ],
+        "type": "object",
         "properties": {
           "email": {
             "maxLength": 128,
+            "minLength": 1,
             "type": "string",
             "format": "email"
           },
@@ -2305,8 +2255,7 @@
         "type": "object",
         "properties": {
           "token": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -2331,8 +2280,7 @@
             "format": "uuid"
           },
           "name": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "synonymousName": {
             "type": "string",
@@ -2343,15 +2291,13 @@
             "nullable": true
           },
           "family": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "redBook": {
             "type": "boolean"
           },
           "eatable": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "hasStem": {
             "type": "boolean"
@@ -2375,24 +2321,19 @@
             "nullable": true
           },
           "capType": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "capColor": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "capUndersideType": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "headerPhotoLink": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "extraPhotoLinks": {
             "type": "array",
@@ -2405,8 +2346,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/DoppelgangerDto"
-            },
-            "nullable": true
+            }
           }
         },
         "additionalProperties": false
@@ -2423,8 +2363,7 @@
             "format": "uuid"
           },
           "paragraphText": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "serialNumber": {
             "type": "integer",
@@ -2437,12 +2376,12 @@
         "additionalProperties": false
       },
       "RegisterUserRequest": {
-        "type": "object",
         "required": [
-          "name",
           "email",
+          "name",
           "password"
         ],
+        "type": "object",
         "properties": {
           "name": {
             "maxLength": 128,
@@ -2452,13 +2391,14 @@
           },
           "email": {
             "maxLength": 128,
+            "minLength": 1,
             "type": "string",
             "format": "email"
           },
           "password": {
             "maxLength": 32,
             "minLength": 8,
-            "pattern": "^(?=.*\\\\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*(),.?\\\"{}|<>]).+$",
+            "pattern": "^(?=.*\\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*(),.?\"{}|<>]).+$",
             "type": "string"
           }
         },
@@ -2468,8 +2408,7 @@
         "type": "object",
         "properties": {
           "token": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -2494,8 +2433,7 @@
             "format": "uuid"
           },
           "name": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "accessLevel": {
             "type": "integer",
@@ -2508,12 +2446,10 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "name": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "accessLevel": {
             "type": "integer",
@@ -2542,20 +2478,16 @@
         "type": "object",
         "properties": {
           "userId": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "email": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "name": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "role": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -2584,20 +2516,17 @@
             "format": "uuid"
           },
           "name": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "email": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "roleId": {
             "type": "string",
             "format": "uuid"
           },
           "roleGroup": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -2610,20 +2539,17 @@
             "format": "uuid"
           },
           "newTitle": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "newPublishDate": {
             "type": "string",
             "format": "date-time"
           },
           "newAuthorString": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "newHeaderPhotoLink": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "newExtraPhotoLinks": {
             "type": "array",
@@ -2633,8 +2559,7 @@
             "nullable": true
           },
           "newArticleText": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -2669,8 +2594,7 @@
             "format": "uuid"
           },
           "newName": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "newSynonymousName": {
             "type": "string",
@@ -2681,15 +2605,13 @@
             "nullable": true
           },
           "newFamily": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "newRedBook": {
             "type": "boolean"
           },
           "newEatable": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "newHasStem": {
             "type": "boolean"
@@ -2713,24 +2635,19 @@
             "nullable": true
           },
           "newCapType": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "newCapColor": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "newCapUndersideType": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "newDescription": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "newHeaderPhotoLink": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "newExtraPhotoLinks": {
             "type": "array",
@@ -2743,8 +2660,7 @@
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "nullable": true
+            }
           }
         },
         "additionalProperties": false
@@ -2779,8 +2695,7 @@
             "format": "uuid"
           },
           "newName": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "newAccessLevel": {
             "type": "integer",
@@ -2819,16 +2734,14 @@
             "format": "uuid"
           },
           "newUsername": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "newEmail": {
             "type": "string",
             "nullable": true
           },
           "newPassword": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "newRoleId": {
             "type": "string",
@@ -2867,29 +2780,17 @@
             "format": "uuid"
           },
           "username": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "email": {
             "type": "string",
             "nullable": true
           },
           "passwordHash": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "role": {
             "$ref": "#/components/schemas/RoleDto"
-          }
-        },
-        "additionalProperties": false
-      },
-      "ValidateTokenRequest": {
-        "type": "object",
-        "properties": {
-          "token": {
-            "type": "string",
-            "nullable": true
           }
         },
         "additionalProperties": false
@@ -2898,8 +2799,7 @@
         "type": "object",
         "properties": {
           "token": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "tokenData": {
             "$ref": "#/components/schemas/TokenDto"
@@ -2931,7 +2831,7 @@
   },
   "security": [
     {
-      "Bearer": []
+      "Bearer": [ ]
     }
   ]
 }
