@@ -3,6 +3,7 @@ import { HomePage } from '@pages/home';
 import { LandingPage } from '@pages/landing';
 import { LoginPage } from '@pages/auth/login';
 import { RegisterPage } from '@pages/auth/register';
+import { ProfilePage } from '@pages/profile';
 import { RouteHead } from './RouteHead';
 
 function RouteLayout() {
@@ -41,6 +42,27 @@ const router = createBrowserRouter([
         element: <RegisterPage />,
         handle: {
           title: 'Регистрация'
+        }
+      },
+      {
+        path: '/profile',
+        element: <ProfilePage />,
+        handle: {
+          title: 'Профиль'
+        }
+      },
+      {
+        path: '/profile/favorites',
+        element: <ProfilePage section="favorites" />,
+        handle: {
+          title: 'Избранное'
+        }
+      },
+      {
+        path: '/profile/history',
+        element: <ProfilePage section="history" />,
+        handle: {
+          title: 'История просмотров'
         }
       },
       {

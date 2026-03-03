@@ -1,14 +1,15 @@
-import type { CSSProperties, FormEvent } from 'react';
+import { type CSSProperties, type FormEvent, useEffect, useRef, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { profileIcon, searchIcon } from '@shared/assets/icons';
 import { Button, Container, Typography } from '@shared/ui';
 import { useSession } from '@entities/session';
 import styles from './AppHeader.module.css';
 
 const navItems = [
-  { label: 'О нас', href: '#about' },
-  { label: 'Статьи', href: '#articles' },
-  { label: 'Грибы', href: '#mushrooms' },
-  { label: 'Отзывы', href: '#reviews' }
+  { label: 'О нас', href: '/#about' },
+  { label: 'Статьи', href: '/#articles' },
+  { label: 'Грибы', href: '/#mushrooms' },
+  { label: 'Отзывы', href: '/#reviews' }
 ];
 
 interface AppHeaderProps {
@@ -19,10 +20,51 @@ interface AppHeaderProps {
 }
 
 export function AppHeader({ onLoginClick, onSignupClick, onProfileClick, onSearchSubmit }: AppHeaderProps) {
-  const { isAuthenticated, user } = useSession();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { isAuthenticated, user, signOut } = useSession();
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const profileMenuRef = useRef<HTMLDivElement | null>(null);
   const profileIconMaskStyle = {
     ['--profile-icon-url' as const]: `url("${profileIcon}")`
   } as CSSProperties;
+
+  useEffect(() => {
+    setIsProfileMenuOpen(false);
+  }, [location.pathname, location.search, location.hash]);
+
+  useEffect(() => {
+    if (!isProfileMenuOpen) {
+      return;
+    }
+
+    function handlePointerDown(event: MouseEvent | TouchEvent) {
+      if (!profileMenuRef.current) {
+        return;
+      }
+
+      const target = event.target;
+      if (target instanceof Node && !profileMenuRef.current.contains(target)) {
+        setIsProfileMenuOpen(false);
+      }
+    }
+
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setIsProfileMenuOpen(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('touchstart', handlePointerDown);
+    document.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('touchstart', handlePointerDown);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isProfileMenuOpen]);
 
   function handleSearchSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -37,7 +79,7 @@ export function AppHeader({ onLoginClick, onSignupClick, onProfileClick, onSearc
       return;
     }
 
-    window.location.assign('/login');
+    navigate('/login');
   }
 
   function handleSignupClick() {
@@ -46,14 +88,35 @@ export function AppHeader({ onLoginClick, onSignupClick, onProfileClick, onSearc
       return;
     }
 
-    window.location.assign('/register');
+    navigate('/register');
+  }
+
+  function handleProfileClick() {
+    setIsProfileMenuOpen((current) => !current);
+  }
+
+  function handleProfileMenuItemClick() {
+    if (onProfileClick) {
+      onProfileClick();
+      setIsProfileMenuOpen(false);
+      return;
+    }
+
+    navigate('/profile');
+    setIsProfileMenuOpen(false);
+  }
+
+  function handleLogout() {
+    signOut();
+    setIsProfileMenuOpen(false);
+    navigate('/');
   }
 
   return (
     <header className={styles.header}>
       <Container>
         <div className={styles.row}>
-          <a href="#top" className={styles.brand}>
+          <Link to="/#top" className={styles.brand}>
             <img
               src="/images/branding/fungi-logo.svg"
               width={38}
@@ -65,7 +128,7 @@ export function AppHeader({ onLoginClick, onSignupClick, onProfileClick, onSearc
             <Typography variant="h4" as="span" className={styles.brandTitle}>
               Fungi
             </Typography>
-          </a>
+          </Link>
 
           <form className={styles.search} role="search" onSubmit={handleSearchSubmit}>
             <div className={styles.searchField}>
@@ -85,20 +148,51 @@ export function AppHeader({ onLoginClick, onSignupClick, onProfileClick, onSearc
 
           <nav aria-label="Основная навигация" className={styles.nav}>
             {navItems.map((item) => (
-              <a key={item.href} href={item.href} className={styles.link}>
+              <Link key={item.href} to={item.href} className={styles.link}>
                 <Typography variant="caption">{item.label}</Typography>
-              </a>
+              </Link>
             ))}
           </nav>
 
           <div className={styles.actions}>
             {isAuthenticated ? (
-              <Button
-                onClick={onProfileClick}
-                leftIcon={<span aria-hidden="true" className={styles.profileGlyph} style={profileIconMaskStyle} />}
-              >
-                {user?.name}
-              </Button>
+              <div className={styles.profileMenu} ref={profileMenuRef}>
+                <Button
+                  onClick={handleProfileClick}
+                  leftIcon={<span aria-hidden="true" className={styles.profileGlyph} style={profileIconMaskStyle} />}
+                  rightIcon={
+                    <span
+                      aria-hidden="true"
+                      className={isProfileMenuOpen ? `${styles.menuChevron} ${styles.menuChevronOpen}` : styles.menuChevron}
+                    />
+                  }
+                  aria-haspopup="menu"
+                  aria-expanded={isProfileMenuOpen}
+                  aria-label="Открыть меню профиля"
+                >
+                  {user?.name}
+                </Button>
+
+                <div
+                  className={isProfileMenuOpen ? `${styles.dropdown} ${styles.dropdownOpen}` : styles.dropdown}
+                  role="menu"
+                  aria-label="Меню профиля"
+                >
+                  <button type="button" className={styles.dropdownItem} onClick={handleProfileMenuItemClick} role="menuitem">
+                    Профиль
+                  </button>
+                  <Link to="/profile/favorites" className={styles.dropdownItem} role="menuitem">
+                    Избранное
+                  </Link>
+                  <Link to="/profile/history" className={styles.dropdownItem} role="menuitem">
+                    История просмотров
+                  </Link>
+                  <div className={styles.dropdownDivider} />
+                  <button type="button" className={styles.dropdownDanger} onClick={handleLogout} role="menuitem">
+                    Выйти
+                  </button>
+                </div>
+              </div>
             ) : (
               <>
                 <Button variant="tertiary" onClick={handleLoginClick}>

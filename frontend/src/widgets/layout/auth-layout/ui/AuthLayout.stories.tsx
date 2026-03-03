@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { MemoryRouter } from 'react-router-dom';
 import { Typography } from '@shared/ui';
 import { AuthLayout } from './AuthLayout';
 
@@ -10,11 +9,7 @@ const meta = {
     layout: 'fullscreen'
   },
   decorators: [
-    (Story) => (
-      <MemoryRouter>
-        <Story />
-      </MemoryRouter>
-    )
+    (Story) => <Story />
   ]
 } satisfies Meta<typeof AuthLayout>;
 

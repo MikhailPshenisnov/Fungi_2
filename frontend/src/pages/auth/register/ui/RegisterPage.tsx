@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthLayout } from '@widgets/layout';
 import { registerUser } from '@features/auth';
 import { useSession } from '@entities/session';
+import { appleLogo, googleLogo } from '@shared/assets/icons';
 import { Button, Checkbox, Input, Stack, Typography } from '@shared/ui';
 import styles from './RegisterPage.module.css';
 
@@ -15,6 +16,10 @@ export function RegisterPage() {
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  function handleSocialAuth(provider: 'google' | 'apple') {
+    setErrorMessage(`Авторизация через ${provider === 'google' ? 'Google' : 'Apple'} будет добавлена в следующей итерации.`);
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -28,7 +33,7 @@ export function RegisterPage() {
         name: username.trim() || 'Пользователь',
         email: email.trim()
       });
-      navigate('/foundation');
+      navigate('/profile');
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Не удалось выполнить регистрацию.';
       setErrorMessage(message);
@@ -61,6 +66,29 @@ export function RegisterPage() {
           <Typography variant="bodyS" className={styles.subtitle}>
             Заполните данные, чтобы начать пользоваться сервисом.
           </Typography>
+        </div>
+
+        <Stack direction="horizontal" gap={12} className={styles.socialAuth}>
+          <Button
+            type="button"
+            variant="secondary"
+            leftIcon={<img src={googleLogo} alt="" className={styles.socialIcon} />}
+            onClick={() => handleSocialAuth('google')}
+            aria-label="Продолжить через Google"
+            disabled={isSubmitting}
+          />
+          <Button
+            type="button"
+            variant="secondary"
+            leftIcon={<img src={appleLogo} alt="" className={styles.socialIcon} />}
+            onClick={() => handleSocialAuth('apple')}
+            aria-label="Продолжить через Apple"
+            disabled={isSubmitting}
+          />
+        </Stack>
+
+        <div className={styles.divider} aria-hidden="true">
+          <span>или</span>
         </div>
 
         <form className={styles.form} noValidate onSubmit={handleSubmit}>

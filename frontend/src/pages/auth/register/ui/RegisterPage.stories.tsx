@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { MemoryRouter } from 'react-router-dom';
 import { SessionProvider } from '@entities/session';
 import { RegisterPage } from './RegisterPage';
 
@@ -11,11 +10,9 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <MemoryRouter>
-        <SessionProvider>
-          <Story />
-        </SessionProvider>
-      </MemoryRouter>
+      <SessionProvider>
+        <Story />
+      </SessionProvider>
     )
   ]
 } satisfies Meta<typeof RegisterPage>;
