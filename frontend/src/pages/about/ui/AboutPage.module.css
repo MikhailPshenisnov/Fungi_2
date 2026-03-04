@@ -1,0 +1,336 @@
+.page {
+  background:
+    radial-gradient(circle at 4% 10%, color-mix(in srgb, var(--color-action-primary-bg) 24%, transparent) 0%, transparent 28%),
+    radial-gradient(circle at 94% 6%, color-mix(in srgb, var(--color-status-info-bg) 20%, transparent) 0%, transparent 36%),
+    var(--color-bg-default);
+}
+
+.hero {
+  padding-top: 48px;
+  padding-bottom: 28px;
+}
+
+.heroGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: stretch;
+}
+
+.heroContent {
+  padding: 24px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-l);
+  background:
+    radial-gradient(circle at 72% 16%, color-mix(in srgb, var(--color-action-primary-bg) 16%, transparent) 0%, transparent 38%),
+    var(--color-surface-elevated);
+}
+
+.heroMeta {
+  color: var(--color-text-tertiary);
+}
+
+.heroTitle {
+  margin-top: 8px;
+}
+
+.heroLead {
+  margin-top: 14px;
+  color: var(--color-text-secondary);
+  max-width: 62ch;
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.primaryLink,
+.secondaryLink,
+.secondaryLinkInverted {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: var(--radius-m);
+  border: 1px solid transparent;
+  font: inherit;
+  font-size: var(--text-body-s-size);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.primaryLink {
+  background: var(--color-action-primary-bg);
+  border-color: var(--color-action-primary-border);
+  color: var(--color-action-primary-on-bg);
+}
+
+.primaryLink:hover {
+  background: var(--color-action-primary-bg-hover);
+}
+
+.secondaryLink {
+  background: var(--color-surface-elevated);
+  border-color: var(--color-border-default);
+  color: var(--color-text-primary);
+}
+
+.secondaryLink:hover {
+  background: var(--color-bg-subtle);
+}
+
+.secondaryLinkInverted {
+  background: color-mix(in srgb, var(--color-surface-elevated) 26%, transparent);
+  border-color: color-mix(in srgb, var(--color-surface-elevated) 42%, transparent);
+  color: var(--color-text-inverse);
+}
+
+.secondaryLinkInverted:hover {
+  background: color-mix(in srgb, var(--color-surface-elevated) 38%, transparent);
+}
+
+.heroPanel {
+  padding: 24px;
+}
+
+.heroKpis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 4px;
+}
+
+.section {
+  padding-top: 14px;
+  padding-bottom: 24px;
+}
+
+.sectionHeader {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.twoColumnGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.sectionCard {
+  padding: 18px;
+}
+
+.featureGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.featureCard {
+  padding: 16px;
+}
+
+.flowList {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.flowItem {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-m);
+  background: var(--color-surface-elevated);
+}
+
+.flowIndex {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border-default);
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+  font-size: var(--text-meta-size);
+  font-weight: 700;
+}
+
+.safetyCard {
+  padding: 20px;
+  border-color: var(--color-status-warning-border);
+  background:
+    radial-gradient(circle at 94% 10%, color-mix(in srgb, var(--color-status-warning-bg) 30%, transparent) 0%, transparent 42%),
+    var(--color-surface-elevated);
+}
+
+.safetyText {
+  color: var(--color-text-secondary);
+  max-width: 80ch;
+}
+
+.teamGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.teamCard {
+  padding: 16px;
+}
+
+.valueList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.valueChip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border-default);
+  border-radius: 999px;
+  background: var(--color-surface-elevated);
+}
+
+.roadmapGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.roadmapCard {
+  padding: 16px;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border-default);
+  font-size: var(--text-meta-size);
+  font-weight: 700;
+}
+
+.statusDone {
+  background: var(--color-status-success-bg);
+  border-color: var(--color-status-success-border);
+  color: var(--color-status-success-strong);
+}
+
+.statusInProgress {
+  background: var(--color-status-info-bg);
+  border-color: var(--color-status-info-border);
+  color: var(--color-status-info-text);
+}
+
+.statusNext {
+  background: var(--color-bg-subtle);
+  color: var(--color-text-secondary);
+}
+
+.contactsGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 14px;
+}
+
+.emailLink {
+  color: var(--color-text-primary);
+  font-size: var(--text-body-size);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--color-action-primary-border) 70%, transparent);
+  text-underline-offset: 3px;
+}
+
+.emailLink:hover {
+  color: var(--color-action-primary-bg-hover);
+  text-decoration-color: currentColor;
+}
+
+.finalCtaCard {
+  padding: 18px;
+  border-color: color-mix(in srgb, var(--color-surface-elevated) 22%, transparent);
+  background:
+    radial-gradient(circle at 88% 10%, color-mix(in srgb, var(--color-status-info-bg) 18%, transparent) 0%, transparent 46%),
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--color-surface-inverse) 88%, var(--color-action-primary-bg)) 0%,
+      color-mix(in srgb, var(--color-surface-inverse) 78%, var(--color-status-info-bg)) 100%
+    );
+}
+
+.finalCtaTitle {
+  color: var(--color-text-inverse);
+}
+
+.mutedText {
+  color: var(--color-text-secondary);
+}
+
+.mutedTextOnDark {
+  color: var(--color-text-inverse);
+}
+
+@media (max-width: 1100px) {
+  .heroGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .featureGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .teamGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .hero {
+    padding-top: 32px;
+  }
+
+  .twoColumnGrid,
+  .featureGrid,
+  .teamGrid,
+  .roadmapGrid,
+  .contactsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .heroContent,
+  .heroPanel {
+    padding: 18px;
+  }
+
+  .sectionCard,
+  .featureCard,
+  .teamCard,
+  .roadmapCard {
+    padding: 14px;
+  }
+}

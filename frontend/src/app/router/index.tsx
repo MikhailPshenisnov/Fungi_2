@@ -4,6 +4,7 @@ import { LandingPage } from '@pages/landing';
 import { LoginPage } from '@pages/auth/login';
 import { RegisterPage } from '@pages/auth/register';
 import { ProfilePage } from '@pages/profile';
+import { AboutPage } from '@pages/about';
 import { RouteHead } from './RouteHead';
 
 function RouteLayout() {
@@ -28,6 +29,13 @@ const router = createBrowserRouter([
         element: <HomePage />,
         handle: {
           title: 'Foundation'
+        }
+      },
+      {
+        path: '/about',
+        element: <AboutPage />,
+        handle: {
+          title: 'О нас'
         }
       },
       {

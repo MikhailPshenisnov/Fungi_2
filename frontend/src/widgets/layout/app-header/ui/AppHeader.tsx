@@ -6,7 +6,7 @@ import { getRoleSpecificProfileTabs, useSession } from '@entities/session';
 import styles from './AppHeader.module.css';
 
 const navItems = [
-  { label: 'О нас', href: '/#about' },
+  { label: 'О нас', href: '/about' },
   { label: 'Статьи', href: '/#articles' },
   { label: 'Грибы', href: '/#mushrooms' },
   { label: 'Отзывы', href: '/#reviews' }
