@@ -8,7 +8,7 @@ import styles from './AppHeader.module.css';
 const navItems = [
   { label: 'О нас', href: '/about' },
   { label: 'Статьи', href: '/#articles' },
-  { label: 'Грибы', href: '/#mushrooms' },
+  { label: 'Грибы', href: '/mushrooms' },
   { label: 'Отзывы', href: '/#reviews' }
 ];
 
@@ -27,7 +27,7 @@ export function AppHeader({ onLoginClick, onSignupClick, onProfileClick, onSearc
   const [isProfileAvatarBroken, setIsProfileAvatarBroken] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement | null>(null);
   const profileIconMaskStyle = {
-    ['--profile-icon-url' as const]: `url("${profileIcon}")`
+    ['--color-profile-icon-url' as const]: `url("${profileIcon}")`
   } as CSSProperties;
   const roleMenuTabs = user ? getRoleSpecificProfileTabs(user.permissions) : [];
 

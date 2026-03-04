@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Button, Card, Container, Stack, Tag, Typography } from '@shared/ui';
 import styles from './LandingMushrooms.module.css';
 
@@ -36,7 +37,9 @@ export function LandingMushrooms() {
             ))}
           </div>
           <div className={styles.allButton}>
-            <Button variant="tertiary">Все грибы</Button>
+            <Link to="/mushrooms" className={styles.allButtonLink}>
+              <Button variant="tertiary">Все грибы</Button>
+            </Link>
           </div>
         </Stack>
       </Container>

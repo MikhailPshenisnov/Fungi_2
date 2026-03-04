@@ -1,11 +1,11 @@
 .button {
   border: 1px solid var(--color-action-primary-border);
   border-radius: var(--radius-m);
-  --button-padding-inline-start: 16px;
-  --button-padding-inline-end: 16px;
+  --space-button-padding-inline-start: 16px;
+  --space-button-padding-inline-end: 16px;
   padding-block: 10px;
-  padding-inline-start: var(--button-padding-inline-start);
-  padding-inline-end: var(--button-padding-inline-end);
+  padding-inline-start: var(--space-button-padding-inline-start);
+  padding-inline-end: var(--space-button-padding-inline-end);
   min-height: 40px;
   font-family: var(--font-body);
   font-size: var(--text-body-s-size);
@@ -17,11 +17,11 @@
 }
 
 .withLeftIcon {
-  --button-padding-inline-start: 12px;
+  --space-button-padding-inline-start: 12px;
 }
 
 .withRightIcon {
-  --button-padding-inline-end: 12px;
+  --space-button-padding-inline-end: 12px;
 }
 
 .content {

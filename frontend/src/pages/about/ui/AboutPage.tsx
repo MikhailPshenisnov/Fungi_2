@@ -117,7 +117,7 @@ export function AboutPage() {
                   не перегружая интерфейс и не теряя акцент на безопасности.
                 </Typography>
                 <div className={styles.heroActions}>
-                  <Link to="/#mushrooms" className={styles.primaryLink}>
+                  <Link to="/mushrooms" className={styles.primaryLink}>
                     Перейти к каталогу
                   </Link>
                   <Link to="/#articles" className={styles.secondaryLink}>
@@ -324,7 +324,7 @@ export function AboutPage() {
                     Посмотрите каталог и статьи, а затем соберите свой профиль с избранным и историей просмотров.
                   </Typography>
                   <div className={styles.heroActions}>
-                    <Link to="/#mushrooms" className={styles.primaryLink}>
+                    <Link to="/mushrooms" className={styles.primaryLink}>
                       Открыть каталог
                     </Link>
                     <Link to="/register" className={styles.secondaryLinkInverted}>

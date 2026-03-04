@@ -28,3 +28,7 @@ curl -fsS http://localhost:5000/swagger/v1/swagger.json -o QuickStart/Fungi_api_
 
 - При изменении API (routes, DTO, auth contract, коды ответов) обновлять snapshot OpenAPI в том же Pull Request.
 - Если контракт меняется для клиентов, обязательно добавить короткий changelog для frontend/mobile команд.
+
+## Текущий статус snapshot
+
+- Snapshot `QuickStart/Fungi_api_swagger.json` синхронизирован с live backend (`http://localhost:5000/swagger/v1/swagger.json`) на 4 марта 2026.

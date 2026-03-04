@@ -265,7 +265,7 @@ export function ProfilePage({ section }: ProfilePageProps) {
     setAvatarProgress(0);
 
     try {
-      const result = await uploadAvatar(file, token, (nextProgress) => {
+      const result = await uploadAvatar(file, token!, (nextProgress) => {
         setAvatarProgress(nextProgress);
       });
 
@@ -361,7 +361,7 @@ export function ProfilePage({ section }: ProfilePageProps) {
     setIsRemovingAvatar(true);
 
     try {
-      const result = await removeAvatar(token);
+      const result = await removeAvatar(token!);
       const nextAvatarUrl = result.avatarUrl ?? null;
       confirmedAvatarUrlRef.current = nextAvatarUrl;
       updateUser({ avatarUrl: nextAvatarUrl });

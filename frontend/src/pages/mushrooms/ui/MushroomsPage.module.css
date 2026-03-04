@@ -1,0 +1,285 @@
+.container {
+  padding-top: 34px;
+  padding-bottom: 40px;
+}
+
+.hero {
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-l);
+  background:
+    radial-gradient(circle at 84% 12%, color-mix(in srgb, var(--color-status-info-bg) 20%, transparent) 0%, transparent 42%),
+    var(--color-surface-elevated);
+}
+
+.heroText {
+  margin-top: 8px;
+  color: var(--color-text-secondary);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(240px, 280px) minmax(0, 1fr);
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.filtersPanel {
+  position: sticky;
+  top: 96px;
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  height: fit-content;
+  padding: 14px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-l);
+  background: var(--color-surface-elevated);
+}
+
+.resultsPanel {
+  min-width: 0;
+}
+
+.resultsHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.resultsMeta {
+  color: var(--color-text-secondary);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.mushroomCard {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 14px;
+}
+
+.clickableCard {
+  cursor: pointer;
+}
+
+.clickableCard:focus-visible {
+  outline: 2px solid var(--color-action-primary-focus-ring);
+  outline-offset: 2px;
+}
+
+.imageWrap {
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-m);
+  overflow: hidden;
+  background: var(--color-bg-subtle);
+  min-height: 164px;
+}
+
+.coverImage {
+  display: block;
+  width: 100%;
+  height: 164px;
+  object-fit: cover;
+}
+
+.coverFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 164px;
+  text-align: center;
+  padding: 10px;
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-s-size);
+  background: linear-gradient(140deg, var(--color-bg-subtle), var(--color-bg-default));
+}
+
+.latinName {
+  color: var(--color-text-secondary);
+}
+
+.family {
+  color: var(--color-text-secondary);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cardActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.likeButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  min-width: 72px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-m);
+  background: var(--color-surface-elevated);
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: var(--text-meta-size);
+  font-weight: 700;
+  padding: 0 10px;
+  cursor: pointer;
+  transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease, transform 0.16s ease;
+}
+
+.likeButton:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-status-warning-bg) 40%, var(--color-surface-elevated));
+  border-color: var(--color-status-warning-border);
+  color: var(--color-status-warning-strong);
+}
+
+.likeButton:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.likeButton:disabled {
+  cursor: not-allowed;
+  color: var(--color-text-disabled);
+}
+
+.likeIcon {
+  display: block;
+  transition: transform 0.16s ease;
+}
+
+.likeButtonActive {
+  border-color: var(--color-status-warning-border);
+  background: color-mix(in srgb, var(--color-status-warning-bg) 56%, var(--color-surface-elevated));
+  color: var(--color-status-warning-strong);
+}
+
+.likeButtonActive .likeIcon {
+  transform: scale(1.06);
+}
+
+.likeCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  min-height: 22px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 999px;
+  font-size: var(--text-meta-size);
+  color: var(--color-text-secondary);
+  padding: 0 7px;
+  background: var(--color-surface-elevated);
+}
+
+.likeButtonActive .likeCount {
+  border-color: var(--color-status-warning-border);
+  color: var(--color-status-warning-strong);
+  background: color-mix(in srgb, var(--color-status-warning-bg) 40%, var(--color-surface-elevated));
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.pageInfo {
+  color: var(--color-text-secondary);
+}
+
+.stateCard {
+  padding: 18px;
+}
+
+.stateText {
+  color: var(--color-text-secondary);
+}
+
+.skeletonCard {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+}
+
+.skeletonCover,
+.skeletonLine,
+.skeletonLineShort {
+  border-radius: var(--radius-s);
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-subtle) 0%,
+    color-mix(in srgb, var(--color-bg-subtle) 45%, var(--color-surface-elevated)) 50%,
+    var(--color-bg-subtle) 100%
+  );
+  background-size: 220% 100%;
+  animation: skeletonShimmer 1.2s ease infinite;
+}
+
+.skeletonCover {
+  min-height: 164px;
+}
+
+.skeletonLine {
+  min-height: 16px;
+}
+
+.skeletonLineShort {
+  min-height: 14px;
+  width: 58%;
+}
+
+@keyframes skeletonShimmer {
+  0% {
+    background-position: 100% 0;
+  }
+
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@media (max-width: 1220px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 920px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .filtersPanel {
+    position: static;
+  }
+
+  .pagination {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 680px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

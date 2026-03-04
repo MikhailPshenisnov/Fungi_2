@@ -29,6 +29,25 @@
 - `GET /Users/GetCurrentUserProfile` -> построить user session;
 - upload/delete avatar -> обновить локальный профиль по `avatarUrl`.
 
+## Каталог грибов и лайки (актуальный контракт)
+
+- `GET /Mushrooms/GetFilteredMushrooms`:
+  - получить список грибов с фильтрами (поиск, семейство, съедобность, red book).
+- `GET /Mushrooms/GetMushroom?MushroomId=<guid>`:
+  - получить полную карточку гриба для detail-screen.
+- `GET /MushroomLikes/GetLikesCount/count?mushroomId=<guid>`:
+  - количество лайков гриба (публичный endpoint).
+- `GET /MushroomLikes/HasUserLiked/user?mushroomId=<guid>`:
+  - только для авторизованного пользователя.
+- `POST /MushroomLikes/ToggleLike?mushroomId=<guid>`:
+  - только для авторизованного пользователя.
+
+Рекомендуемый mobile-поток:
+
+- гость может смотреть каталог и карточки грибов без авторизации;
+- при попытке лайка без токена показывать CTA на login/register;
+- при `401` на `HasUserLiked/ToggleLike` считать сессию истекшей и переводить пользователя в auth-flow.
+
 ## Конфигурация окружения
 
 - `baseURL` должен зависеть от среды запуска (эмулятор/устройство/web).

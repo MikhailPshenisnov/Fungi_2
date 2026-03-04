@@ -5,6 +5,8 @@ import { LoginPage } from '@pages/auth/login';
 import { RegisterPage } from '@pages/auth/register';
 import { ProfilePage } from '@pages/profile';
 import { AboutPage } from '@pages/about';
+import { MushroomsPage } from '@pages/mushrooms';
+import { MushroomDetailPage } from '@pages/mushroom-detail';
 import { RouteHead } from './RouteHead';
 
 function RouteLayout() {
@@ -36,6 +38,20 @@ const router = createBrowserRouter([
         element: <AboutPage />,
         handle: {
           title: 'О нас'
+        }
+      },
+      {
+        path: '/mushrooms',
+        element: <MushroomsPage />,
+        handle: {
+          title: 'Грибы'
+        }
+      },
+      {
+        path: '/mushrooms/:id',
+        element: <MushroomDetailPage />,
+        handle: {
+          title: 'Карточка гриба'
         }
       },
       {

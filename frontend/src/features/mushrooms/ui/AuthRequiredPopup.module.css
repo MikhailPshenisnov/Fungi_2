@@ -1,0 +1,31 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: var(--color-overlay-scrim);
+}
+
+.dialog {
+  width: min(440px, 100%);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-l);
+  background: var(--color-surface-elevated);
+  padding: 18px;
+  box-shadow: var(--shadow-hover);
+}
+
+.text {
+  margin-top: 10px;
+  color: var(--color-text-secondary);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}

@@ -137,6 +137,33 @@ Content-Type: application/json
 - единый обязательный шаг перед деплоем backend: последовательно применить `DBInit/2-upgrade-avatar.sql` и `DBInit/3-upgrade-rbac.sql`.
 - `DBInit/3-upgrade-rbac.sql` создает таблицы `Permissions`/`RolePermissions` и baseline-набор прав.
 
+## Контракт каталога грибов и лайков
+
+Каталог и карточки грибов:
+
+- `GET /Mushrooms/GetFilteredMushrooms`:
+  - фильтрация по query-параметрам `PartOfName`, `Family`, `Eatable`, `RedBook`;
+  - используется для каталога `/mushrooms`.
+- `GET /Mushrooms/GetMushroom?MushroomId=<guid>`:
+  - детальная карточка гриба для страницы `/mushrooms/:id`.
+
+Лайки грибов:
+
+- `GET /MushroomLikes/GetLikesCount/count?mushroomId=<guid>`:
+  - возвращает текущее количество лайков гриба.
+- `GET /MushroomLikes/HasUserLiked/user?mushroomId=<guid>`:
+  - требует bearer-токен;
+  - возвращает, поставил ли текущий пользователь лайк.
+- `POST /MushroomLikes/ToggleLike?mushroomId=<guid>`:
+  - требует bearer-токен;
+  - переключает лайк текущего пользователя и возвращает `isLiked`.
+
+Ограничения и ожидания по клиентам:
+
+- каталог доступен публично, без обязательной авторизации;
+- операции `HasUserLiked` и `ToggleLike` для неавторизованного клиента должны приводить к `401`;
+- web/mobile-клиенты должны обрабатывать `401` как завершение сессии и запрашивать повторный вход.
+
 ## Changelog для mobile-команды (breaking changes)
 
 - `POST /Authorization/ValidateToken`:
