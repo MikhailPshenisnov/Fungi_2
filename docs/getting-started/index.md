@@ -25,6 +25,17 @@ Swagger UI после запуска:
 
 - `http://localhost:5000/swagger/index.html`
 
+## Обязательный upgrade для уже существующей БД
+
+Если база данных уже была создана раньше (старый docker volume), после обновления backend нужно один раз применить оба upgrade-скрипта:
+
+```bash
+cat DBInit/2-upgrade-avatar.sql | docker exec -i fungi-db psql -U fungi -d FungiDB -p 5531
+cat DBInit/3-upgrade-rbac.sql | docker exec -i fungi-db psql -U fungi -d FungiDB -p 5531
+```
+
+Это единый обязательный шаг миграции перед проверкой login/profile/avatar/RBAC.
+
 Остановка:
 
 ```bash

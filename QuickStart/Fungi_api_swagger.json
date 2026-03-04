@@ -1297,6 +1297,131 @@
         }
       }
     },
+    "/Roles/GetAllPermissions": {
+      "get": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Get all permissions",
+        "description": "Returns available permission codes from the database",
+        "operationId": "GetAllPermissions",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAllPermissionsResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAllPermissionsResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAllPermissionsResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Roles/GetRolePermissions": {
+      "get": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Get role permissions",
+        "description": "Returns assigned permission codes for role",
+        "operationId": "GetRolePermissions",
+        "parameters": [
+          {
+            "name": "RoleId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetRolePermissionsResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetRolePermissionsResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetRolePermissionsResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Roles/SetRolePermissions": {
+      "put": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Set role permissions",
+        "description": "Replaces role permissions with provided permission codes",
+        "operationId": "SetRolePermissions",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetRolePermissionsRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetRolePermissionsRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetRolePermissionsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetRolePermissionsResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetRolePermissionsResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetRolePermissionsResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/Users/TestGetUsers": {
       "get": {
         "tags": [
@@ -1471,6 +1596,125 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CreateUserResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Users/GetCurrentUserProfile": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get current user profile",
+        "description": "Returns profile data for the currently authenticated user",
+        "operationId": "GetCurrentUserProfile",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCurrentUserProfileResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCurrentUserProfileResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCurrentUserProfileResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Users/UploadMyAvatar": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Upload current user avatar",
+        "description": "Uploads avatar image, crops it to square and stores as WebP",
+        "operationId": "UploadMyAvatar",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "Avatar"
+                ],
+                "type": "object",
+                "properties": {
+                  "Avatar": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "Avatar": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadMyAvatarResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadMyAvatarResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadMyAvatarResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Users/DeleteMyAvatar": {
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete current user avatar",
+        "description": "Deletes avatar for the currently authenticated user",
+        "operationId": "DeleteMyAvatar",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteMyAvatarResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteMyAvatarResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteMyAvatarResponseBaseResponse"
                 }
               }
             }
@@ -1919,6 +2163,31 @@
         },
         "additionalProperties": false
       },
+      "DeleteMyAvatarResponse": {
+        "type": "object",
+        "properties": {
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeleteMyAvatarResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/DeleteMyAvatarResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
       "DeleteRoleResponse": {
         "type": "object",
         "properties": {
@@ -1995,6 +2264,30 @@
         },
         "additionalProperties": false
       },
+      "GetAllPermissionsResponse": {
+        "type": "object",
+        "properties": {
+          "permissions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PermissionDto"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetAllPermissionsResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetAllPermissionsResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
       "GetArticleResponse": {
         "type": "object",
         "properties": {
@@ -2043,6 +2336,27 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/GetCurrentUserDataResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetCurrentUserProfileResponse": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/UserDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetCurrentUserProfileResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetCurrentUserProfileResponse"
           },
           "errorMessage": {
             "$ref": "#/components/schemas/ExceptionDto"
@@ -2181,6 +2495,34 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/GetMushroomResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetRolePermissionsResponse": {
+        "type": "object",
+        "properties": {
+          "roleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "permissionCodes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetRolePermissionsResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetRolePermissionsResponse"
           },
           "errorMessage": {
             "$ref": "#/components/schemas/ExceptionDto"
@@ -2375,6 +2717,29 @@
         },
         "additionalProperties": false
       },
+      "PermissionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "isSystem": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
       "RegisterUserRequest": {
         "required": [
           "email",
@@ -2438,6 +2803,56 @@
           "accessLevel": {
             "type": "integer",
             "format": "int32"
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "SetRolePermissionsRequest": {
+        "type": "object",
+        "properties": {
+          "roleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "permissionCodes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "SetRolePermissionsResponse": {
+        "type": "object",
+        "properties": {
+          "roleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "permissionCodes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "SetRolePermissionsResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/SetRolePermissionsResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
           }
         },
         "additionalProperties": false
@@ -2527,6 +2942,12 @@
           },
           "roleGroup": {
             "type": "string"
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         },
         "additionalProperties": false
@@ -2772,6 +3193,27 @@
         },
         "additionalProperties": false
       },
+      "UploadMyAvatarResponse": {
+        "type": "object",
+        "properties": {
+          "avatarUrl": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UploadMyAvatarResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/UploadMyAvatarResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
       "UserDto": {
         "type": "object",
         "properties": {
@@ -2786,8 +3228,9 @@
             "type": "string",
             "nullable": true
           },
-          "passwordHash": {
-            "type": "string"
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
           },
           "role": {
             "$ref": "#/components/schemas/RoleDto"

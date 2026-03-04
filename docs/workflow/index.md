@@ -39,3 +39,17 @@
 - backend: сборка проходит;
 - frontend: сборка/линт проходят;
 - docs: `mkdocs build --strict` проходит в CI.
+
+## Релизный чеклист backend (существующая БД)
+
+- применить SQL upgrade-скрипты:
+  - `DBInit/2-upgrade-avatar.sql`;
+  - `DBInit/3-upgrade-rbac.sql`.
+- перезапустить backend после применения upgrade-скриптов.
+- обновить OpenAPI snapshot:
+  - `curl -fsS http://localhost:5000/swagger/v1/swagger.json -o QuickStart/Fungi_api_swagger.json`.
+- выполнить smoke-проверку:
+  - login;
+  - `GET /Users/GetCurrentUserProfile`;
+  - upload/delete avatar;
+  - доступ к `GET /Roles/GetAllPermissions`.

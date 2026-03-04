@@ -33,6 +33,8 @@ public class RolesRepository : IRolesRepository
     public async Task<List<Role>> GetAllRoles(CancellationToken cancellationToken)
     {
         var roleEntities = await _context.Roles
+            .Include(r => r.RolePermissions)
+            .ThenInclude(rp => rp.Permission)
             .AsNoTracking()
             .ToListAsync(cancellationToken);
 
@@ -42,7 +44,11 @@ public class RolesRepository : IRolesRepository
                 var (role, roleError) = Role
                     .Create(roleEntity.Id,
                         roleEntity.Name,
-                        roleEntity.AccessLevel);
+                        roleEntity.AccessLevel,
+                        roleEntity.RolePermissions
+                            .Select(rp => rp.Permission.Code)
+                            .OrderBy(code => code)
+                            .ToList());
 
                 if (!string.IsNullOrEmpty(roleError))
                     throw new IntegrityException($"Incorrect data format in the database, unable to create a " +
@@ -53,6 +59,107 @@ public class RolesRepository : IRolesRepository
             .ToList();
 
         return roles;
+    }
+
+    public async Task<List<Permission>> GetAllPermissions(CancellationToken cancellationToken)
+    {
+        var permissionEntities = await _context.Permissions
+            .AsNoTracking()
+            .OrderBy(p => p.Code)
+            .ToListAsync(cancellationToken);
+
+        var permissions = permissionEntities
+            .Select(permissionEntity =>
+            {
+                var (permission, permissionError) = Permission.Create(
+                    permissionEntity.Id,
+                    permissionEntity.Code,
+                    permissionEntity.Name,
+                    permissionEntity.Description,
+                    permissionEntity.IsSystem);
+
+                if (!string.IsNullOrEmpty(permissionError))
+                    throw new IntegrityException($"Incorrect data format in the database, unable to create a " +
+                                                 $"permission model: {permissionError}");
+
+                return permission;
+            })
+            .ToList();
+
+        return permissions;
+    }
+
+    public async Task<List<string>> GetRolePermissionCodes(Guid roleId, CancellationToken cancellationToken)
+    {
+        var roleExists = await _context.Roles
+            .AsNoTracking()
+            .AnyAsync(r => r.Id == roleId, cancellationToken);
+
+        if (!roleExists)
+            throw new UnknownIdentifierException("Unknown role id");
+
+        var permissionCodes = await _context.RolePermissions
+            .AsNoTracking()
+            .Where(rp => rp.RoleId == roleId)
+            .Include(rp => rp.Permission)
+            .Select(rp => rp.Permission.Code)
+            .OrderBy(code => code)
+            .ToListAsync(cancellationToken);
+
+        return permissionCodes;
+    }
+
+    public async Task<Guid> SetRolePermissionCodes(Guid roleId, IReadOnlyCollection<string> permissionCodes,
+        CancellationToken cancellationToken)
+    {
+        var roleExists = await _context.Roles
+            .AsNoTracking()
+            .AnyAsync(r => r.Id == roleId, cancellationToken);
+
+        if (!roleExists)
+            throw new UnknownIdentifierException("Unknown role id");
+
+        var normalizedCodes = permissionCodes
+            .Select(code => (code ?? string.Empty).Trim().ToLowerInvariant())
+            .Where(code => !string.IsNullOrWhiteSpace(code))
+            .Distinct()
+            .ToList();
+
+        var permissions = await _context.Permissions
+            .AsNoTracking()
+            .Where(p => normalizedCodes.Contains(p.Code))
+            .ToListAsync(cancellationToken);
+
+        if (permissions.Count != normalizedCodes.Count)
+        {
+            var knownCodes = permissions.Select(p => p.Code).ToHashSet();
+            var unknownCodes = normalizedCodes.Where(code => !knownCodes.Contains(code)).OrderBy(x => x);
+            throw new UnknownIdentifierException($"Unknown permission codes: {string.Join(", ", unknownCodes)}");
+        }
+
+        await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+
+        await _context.RolePermissions
+            .Where(rp => rp.RoleId == roleId)
+            .ExecuteDeleteAsync(cancellationToken);
+
+        if (permissions.Count > 0)
+        {
+            var rolePermissions = permissions
+                .Select(p => new Database.Entities.RolePermission
+                {
+                    RoleId = roleId,
+                    PermissionId = p.Id
+                })
+                .ToList();
+
+            await _context.RolePermissions.AddRangeAsync(rolePermissions, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        await transaction.CommitAsync(cancellationToken);
+
+        return roleId;
     }
 
     public async Task<Guid> UpdateRole(Guid roleId, Role newRole, CancellationToken cancellationToken)

@@ -5,7 +5,6 @@ using BackendFungi.Abstractions.Services;
 using BackendFungi.Contracts.Other;
 using BackendFungi.Exceptions.SpecificExceptions;
 using BackendFungi.Models;
-using BackendFungi.Models.Other;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BackendFungi.Services;
@@ -48,7 +47,12 @@ public class AuthorizationService : IAuthorizationService
                 principal.FindFirst("Name")?.Value!,
                 principal.FindFirst("Email")?.Value!,
                 Guid.Parse(principal.FindFirst("RoleId")?.Value!),
-                principal.FindFirst("RoleGroup")?.Value!);
+                principal.FindFirst("RoleGroup")?.Value!,
+                principal.FindAll("Permission")
+                    .Select(claim => claim.Value)
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .OrderBy(code => code)
+                    .ToList());
 
             return tokenData;
         }
@@ -65,35 +69,26 @@ public class AuthorizationService : IAuthorizationService
         var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]
                                          ?? throw new ConfigurationException("Jwt-key is missing"));
 
-        var roleGroup = user.Role.AccessLevel switch
+        var roleGroup = user.Role.Name;
+
+        var claims = new List<Claim>
         {
-            (int)AccessLevelEnumerator.SuperUser =>
-                "SuperUser",
-            >= (int)AccessLevelEnumerator.AdministratorMax
-                and <= (int)AccessLevelEnumerator.AdministratorMin =>
-                "Administrator",
-            >= (int)AccessLevelEnumerator.JuniorAdministratorMax
-                and <= (int)AccessLevelEnumerator.JuniorAdministratorMin =>
-                "JuniorAdministrator",
-            (int)AccessLevelEnumerator.Editor =>
-                "Editor",
-            (int)AccessLevelEnumerator.CommonUser =>
-                "CommonUser",
-            _ => string.Empty
+            new("UserId", user.Id.ToString()),
+            new("Name", user.Username),
+            new("Email", user.Email),
+            new("RoleId", user.Role.Id.ToString()),
+            new("RoleGroup", roleGroup)
         };
+
+        claims.AddRange(user.Role.PermissionCodes
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .Select(code => new Claim("Permission", code)));
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Issuer = _configuration["Jwt:Issuer"],
             Audience = _configuration["Jwt:Audience"],
-            Subject = new ClaimsIdentity(new List<Claim>
-            {
-                new("UserId", user.Id.ToString()),
-                new("Name", user.Username),
-                new("Email", user.Email),
-                new("RoleId", user.Role.Id.ToString()),
-                new("RoleGroup", roleGroup)
-            }),
+            Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddMinutes(30),
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key),

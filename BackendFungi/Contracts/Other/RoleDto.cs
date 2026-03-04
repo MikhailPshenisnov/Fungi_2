@@ -3,5 +3,6 @@
 public record RoleDto(
     Guid Id,
     string Name,
-    int AccessLevel
+    int AccessLevel,
+    List<string> Permissions
 );

@@ -1,8 +1,9 @@
 import { createContext } from 'react';
-import { SessionState, SessionUser } from './session.types';
+import { SessionState, SessionUser, SignInPayload } from './session.types';
 
 export interface SessionContextValue extends SessionState {
-  signIn: (user: SessionUser) => void;
+  signIn: (payload: SignInPayload) => void;
+  updateUser: (patch: Partial<SessionUser>) => void;
   signOut: () => void;
 }
 

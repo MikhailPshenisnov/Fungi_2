@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Net;
 
@@ -161,6 +163,10 @@ builder.Services.AddSingleton<IActionResultExecutor<ObjectResult>, CustomObjectR
 builder.Services.AddDbContext<FungiDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("FungiDbContext")));
 
+// Avatar storage
+builder.Services.Configure<AvatarStorageOptions>(configuration.GetSection("AvatarStorage"));
+builder.Services.AddSingleton<IAvatarStorageService, AvatarStorageService>();
+
 // CORS policy
 var allowedOrigins = builder.Configuration.GetSection("Frontend:AllowedOrigins").Get<string[]>();
 var allowLocalhostOrigins = (builder.Environment.IsDevelopment() || builder.Environment.IsEnvironment("Docker")) &&
@@ -221,11 +227,24 @@ builder.Services.AddCors(options => options.AddPolicy(
 
 var app = builder.Build();
 
+var avatarStorageOptions = app.Services.GetRequiredService<IOptions<AvatarStorageOptions>>().Value;
+var avatarRootPath = Path.GetFullPath(Path.Combine(app.Environment.ContentRootPath, avatarStorageOptions.PhysicalRoot));
+Directory.CreateDirectory(avatarRootPath);
+var avatarRequestPath = avatarStorageOptions.PublicBasePath.StartsWith('/')
+    ? avatarStorageOptions.PublicBasePath
+    : $"/{avatarStorageOptions.PublicBasePath}";
+
 // Error handling middleware
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
 // Middleware for wrapping response data in basic http errors
 app.UseMiddleware<StatusCodeMiddleware>();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(avatarRootPath),
+    RequestPath = avatarRequestPath
+});
 
 /*
 // Data initialization middleware

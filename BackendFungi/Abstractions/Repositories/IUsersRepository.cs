@@ -10,5 +10,7 @@ public interface IUsersRepository
 
     Task<Guid> UpdateUser(Guid userId, User newUser, CancellationToken ct);
 
+    Task<Guid> SetUserAvatarPath(Guid userId, string? avatarPath, CancellationToken ct);
+
     Task<Guid> DeleteUser(Guid userId, CancellationToken ct);
 }

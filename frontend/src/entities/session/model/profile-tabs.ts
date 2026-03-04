@@ -1,0 +1,233 @@
+export type BaseProfileTabKey = 'profile' | 'favorites' | 'history';
+export type RoleProfileTabKey =
+  | 'editor-materials'
+  | 'editor-drafts'
+  | 'editor-moderation-queue'
+  | 'ja-moderation'
+  | 'ja-reports'
+  | 'ja-users-read'
+  | 'admin-users-roles'
+  | 'admin-action-logs'
+  | 'su-system'
+  | 'su-audit'
+  | 'su-config';
+export type ProfileTabKey = BaseProfileTabKey | RoleProfileTabKey;
+
+export interface ProfileTabDefinition {
+  key: ProfileTabKey;
+  label: string;
+  title: string;
+  subtitle: string;
+  requiredPermission?: string;
+  placeholderTitle?: string;
+  placeholderDescription?: string;
+  emptyState?: string;
+}
+
+const tabByKey: Record<ProfileTabKey, ProfileTabDefinition> = {
+  profile: {
+    key: 'profile',
+    label: 'Профиль',
+    title: 'Профиль пользователя',
+    subtitle: 'Личный кабинет'
+  },
+  favorites: {
+    key: 'favorites',
+    label: 'Избранное',
+    title: 'Избранное',
+    subtitle: 'Сохраненные грибы и статьи',
+    placeholderTitle: 'Избранное скоро появится в полном формате',
+    placeholderDescription: 'Здесь будут карточки грибов и статьи, которые вы отметили как важные.',
+    emptyState: 'Пока нет сохранений.'
+  },
+  history: {
+    key: 'history',
+    label: 'История просмотров',
+    title: 'История просмотров',
+    subtitle: 'Недавно открытые материалы',
+    placeholderTitle: 'История просмотров пока в разработке',
+    placeholderDescription: 'Здесь будет список материалов, которые вы открывали последними.',
+    emptyState: 'Пока нет просмотренных материалов.'
+  },
+  'editor-materials': {
+    key: 'editor-materials',
+    label: 'Мои материалы',
+    title: 'Мои материалы',
+    subtitle: 'Раздел редактора',
+    requiredPermission: 'profile.editor.materials.read',
+    placeholderTitle: 'Рабочий список публикаций',
+    placeholderDescription: 'Вкладка будет содержать созданные и опубликованные вами материалы.',
+    emptyState: 'Пока нет созданных публикаций.'
+  },
+  'editor-drafts': {
+    key: 'editor-drafts',
+    label: 'Черновики',
+    title: 'Черновики',
+    subtitle: 'Раздел редактора',
+    requiredPermission: 'profile.editor.drafts.read',
+    placeholderTitle: 'Черновики редактора',
+    placeholderDescription: 'Здесь появятся ваши незавершенные материалы и черновые версии.',
+    emptyState: 'Черновиков пока нет.'
+  },
+  'editor-moderation-queue': {
+    key: 'editor-moderation-queue',
+    label: 'Очередь модерации',
+    title: 'Очередь модерации',
+    subtitle: 'Раздел редактора',
+    requiredPermission: 'profile.editor.moderation-queue.read',
+    placeholderTitle: 'Материалы на проверке',
+    placeholderDescription: 'Список публикаций, ожидающих редакторской модерации.',
+    emptyState: 'Очередь сейчас пустая.'
+  },
+  'ja-moderation': {
+    key: 'ja-moderation',
+    label: 'Модерация',
+    title: 'Модерация',
+    subtitle: 'Раздел младшего администратора',
+    requiredPermission: 'profile.ja.moderation.read',
+    placeholderTitle: 'Панель модерации',
+    placeholderDescription: 'Будут доступны действия по проверке контента и пользователей.',
+    emptyState: 'Активных задач нет.'
+  },
+  'ja-reports': {
+    key: 'ja-reports',
+    label: 'Жалобы',
+    title: 'Жалобы',
+    subtitle: 'Раздел младшего администратора',
+    requiredPermission: 'profile.ja.reports.read',
+    placeholderTitle: 'Поток пользовательских жалоб',
+    placeholderDescription: 'В этой вкладке появятся жалобы и их статусы обработки.',
+    emptyState: 'Жалоб пока нет.'
+  },
+  'ja-users-read': {
+    key: 'ja-users-read',
+    label: 'Пользователи',
+    title: 'Пользователи',
+    subtitle: 'Раздел младшего администратора',
+    requiredPermission: 'profile.ja.users.read',
+    placeholderTitle: 'Просмотр пользователей',
+    placeholderDescription: 'Будет доступен read-only список пользователей и базовые фильтры.',
+    emptyState: 'Список скоро появится.'
+  },
+  'admin-users-roles': {
+    key: 'admin-users-roles',
+    label: 'Пользователи и роли',
+    title: 'Пользователи и роли',
+    subtitle: 'Раздел администратора',
+    requiredPermission: 'profile.admin.users-roles.read',
+    placeholderTitle: 'Управление ролями',
+    placeholderDescription: 'Вкладка для назначения ролей и управления доступами.',
+    emptyState: 'Изменений ролей пока нет.'
+  },
+  'admin-action-logs': {
+    key: 'admin-action-logs',
+    label: 'Логи действий',
+    title: 'Логи действий',
+    subtitle: 'Раздел администратора',
+    requiredPermission: 'profile.admin.action-logs.read',
+    placeholderTitle: 'Журнал административных действий',
+    placeholderDescription: 'Здесь будут отображаться ключевые действия администраторов.',
+    emptyState: 'Логи появятся после первых операций.'
+  },
+  'su-system': {
+    key: 'su-system',
+    label: 'Система',
+    title: 'Система',
+    subtitle: 'Раздел суперпользователя',
+    requiredPermission: 'profile.su.system.read',
+    placeholderTitle: 'Состояние системы',
+    placeholderDescription: 'Будет показана сводка по сервисам и внутренним состояниям.',
+    emptyState: 'Данные системы пока не загружены.'
+  },
+  'su-audit': {
+    key: 'su-audit',
+    label: 'Аудит',
+    title: 'Аудит',
+    subtitle: 'Раздел суперпользователя',
+    requiredPermission: 'profile.su.audit.read',
+    placeholderTitle: 'Аудит безопасности',
+    placeholderDescription: 'Здесь появится детальный аудит операций и событий.',
+    emptyState: 'Событий аудита пока нет.'
+  },
+  'su-config': {
+    key: 'su-config',
+    label: 'Конфигурация',
+    title: 'Конфигурация',
+    subtitle: 'Раздел суперпользователя',
+    requiredPermission: 'profile.su.config.read',
+    placeholderTitle: 'Глобальные конфигурации',
+    placeholderDescription: 'Будет доступно централизованное управление параметрами платформы.',
+    emptyState: 'Конфигурации пока не редактировались.'
+  }
+};
+
+export const baseProfileTabs: ProfileTabDefinition[] = [
+  tabByKey.profile,
+  tabByKey.favorites,
+  tabByKey.history
+];
+
+export const roleProfileTabs: ProfileTabDefinition[] = [
+  tabByKey['editor-materials'],
+  tabByKey['editor-drafts'],
+  tabByKey['editor-moderation-queue'],
+  tabByKey['ja-moderation'],
+  tabByKey['ja-reports'],
+  tabByKey['ja-users-read'],
+  tabByKey['admin-users-roles'],
+  tabByKey['admin-action-logs'],
+  tabByKey['su-system'],
+  tabByKey['su-audit'],
+  tabByKey['su-config']
+];
+
+const baseTabKeys = new Set<BaseProfileTabKey>(['profile', 'favorites', 'history']);
+
+function normalizePermissionCode(code: string): string {
+  return code.trim().toLowerCase();
+}
+
+function buildPermissionSet(permissionCodes: readonly string[]): Set<string> {
+  return new Set(permissionCodes.map(normalizePermissionCode));
+}
+
+function isTabAllowed(tab: ProfileTabDefinition, permissionSet: Set<string>): boolean {
+  if (!tab.requiredPermission) {
+    return true;
+  }
+
+  return permissionSet.has(normalizePermissionCode(tab.requiredPermission));
+}
+
+export function getRoleSpecificProfileTabs(permissionCodes: readonly string[]): ProfileTabDefinition[] {
+  const permissionSet = buildPermissionSet(permissionCodes);
+  return roleProfileTabs.filter((tab) => isTabAllowed(tab, permissionSet));
+}
+
+export function getAvailableProfileTabs(permissionCodes: readonly string[]): ProfileTabDefinition[] {
+  return [...baseProfileTabs, ...getRoleSpecificProfileTabs(permissionCodes)];
+}
+
+export function getProfileTabDefinition(tabKey: ProfileTabKey): ProfileTabDefinition {
+  return tabByKey[tabKey];
+}
+
+export function isRoleSpecificProfileTab(tabKey: ProfileTabKey): tabKey is RoleProfileTabKey {
+  return !baseTabKeys.has(tabKey as BaseProfileTabKey);
+}
+
+export function resolveProfileTabKey(value: string | null | undefined, permissionCodes: readonly string[]): ProfileTabKey {
+  if (typeof value !== 'string' || value.length === 0) {
+    return 'profile';
+  }
+
+  if (!Object.prototype.hasOwnProperty.call(tabByKey, value)) {
+    return 'profile';
+  }
+
+  const requestedTab = value as ProfileTabKey;
+  const availableTabs = getAvailableProfileTabs(permissionCodes);
+  const isAllowed = availableTabs.some((tab) => tab.key === requestedTab);
+
+  return isAllowed ? requestedTab : 'profile';
+}

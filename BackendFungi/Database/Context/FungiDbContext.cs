@@ -22,7 +22,9 @@ public partial class FungiDbContext : DbContext
     public virtual DbSet<Doppelganger> Doppelgangers { get; set; }
     public virtual DbSet<Mushroom> Mushrooms { get; set; }
     public virtual DbSet<Paragraph> Paragraphs { get; set; }
+    public virtual DbSet<Permission> Permissions { get; set; }
     public virtual DbSet<Role> Roles { get; set; }
+    public virtual DbSet<RolePermission> RolePermissions { get; set; }
     public virtual DbSet<User> Users { get; set; }
     public virtual DbSet<ArticleLike> ArticleLikes { get; set; }
     public virtual DbSet<MushroomLike> MushroomLikes { get; set; }
@@ -87,12 +89,41 @@ public partial class FungiDbContext : DbContext
                 .HasConstraintName("Paragraphs_ArticleId_fkey");
         });
 
+        modelBuilder.Entity<Permission>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("Permissions_pkey");
+            entity.HasIndex(e => e.Code, "permissions_unique_code").IsUnique();
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Code).HasMaxLength(128);
+            entity.Property(e => e.Name).HasMaxLength(64);
+            entity.Property(e => e.Description).HasMaxLength(512);
+        });
+
         modelBuilder.Entity<Role>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("Roles_pkey");
             entity.HasIndex(e => e.Name, "roles_unique_name").IsUnique();
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Name).HasMaxLength(32);
+        });
+
+        modelBuilder.Entity<RolePermission>(entity =>
+        {
+            entity.HasKey(e => new { e.RoleId, e.PermissionId }).HasName("RolePermissions_pkey");
+            entity.HasIndex(e => e.RoleId, "fki_RolePermissions_RoleId_fkey");
+            entity.HasIndex(e => e.PermissionId, "fki_RolePermissions_PermissionId_fkey");
+
+            entity.HasOne(d => d.Role)
+                .WithMany(p => p.RolePermissions)
+                .HasForeignKey(d => d.RoleId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("RolePermissions_RoleId_fkey");
+
+            entity.HasOne(d => d.Permission)
+                .WithMany(p => p.RolePermissions)
+                .HasForeignKey(d => d.PermissionId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("RolePermissions_PermissionId_fkey");
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -102,6 +133,7 @@ public partial class FungiDbContext : DbContext
             entity.HasIndex(e => e.Email, "users_unique_email").IsUnique();
             entity.HasIndex(e => e.Username, "users_unique_username").IsUnique();
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.AvatarPath).HasMaxLength(512);
             entity.Property(e => e.Email).HasMaxLength(128);
             entity.Property(e => e.PasswordHash).HasMaxLength(128);
             entity.Property(e => e.Username).HasMaxLength(128);

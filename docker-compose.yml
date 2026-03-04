@@ -23,6 +23,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ConnectionStrings__FungiDb=${DB_CONNECTION_STRING}
+    volumes:
+      - fungi_backend_avatars:/app/Storage/avatars
     depends_on:
       - fungi-db
 
@@ -57,3 +59,4 @@ services:
 volumes:
   pg_fungi_data:
   fungi_frontend_node_modules:
+  fungi_backend_avatars:

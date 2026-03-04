@@ -6,6 +6,7 @@ public class User
     public const int MinUsernameLength = 8;
     public const int MaxEmailLength = 128;
     public const int MaxPasswordHashLength = 128;
+    public const int MaxAvatarPathLength = 512;
 
     public const int MinPasswordLength = 8;
     public const int MaxPasswordLength = 32;
@@ -13,12 +14,13 @@ public class User
     public const string PasswordSpecialCharacterPattern = @"[!@#$%^&*(),.?""{}|<>]";
     public const string PasswordPolicyPattern = @"^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*(),.?""{}|<>]).+$";
 
-    private User(Guid id, string username, string? email, string passwordHash, Role role)
+    private User(Guid id, string username, string? email, string passwordHash, string? avatarPath, Role role)
     {
         Id = id;
         Username = username;
         Email = email;
         PasswordHash = passwordHash;
+        AvatarPath = avatarPath;
         Role = role;
     }
 
@@ -26,6 +28,7 @@ public class User
     public string Username { get; }
     public string? Email { get; }
     public string PasswordHash { get; }
+    public string? AvatarPath { get; }
     public Role Role { get; }
 
     private string BasicChecks()
@@ -56,12 +59,16 @@ public class User
         {
             error = $"Password hash can't be longer than {MaxPasswordHashLength} characters or empty.";
         }
+        else if (AvatarPath is not null && (string.IsNullOrWhiteSpace(AvatarPath) || AvatarPath.Length > MaxAvatarPathLength))
+        {
+            error = $"Avatar path can't be longer than {MaxAvatarPathLength} characters or empty.";
+        }
 
         return error;
     }
     
     public static (User User, string Error) Create(Guid id, string username, string? email, string password,
-        bool isPasswordAlreadyHash, Role role)
+        bool isPasswordAlreadyHash, Role role, string? avatarPath = null)
     {
         var error = string.Empty;
 
@@ -73,7 +80,7 @@ public class User
             passwordHash = BCrypt.Net.BCrypt.EnhancedHashPassword(password);
         }
 
-        var user = new User(id, username, email, passwordHash, role);
+        var user = new User(id, username, email, passwordHash, avatarPath, role);
 
         if (string.IsNullOrEmpty(error))
             error = user.BasicChecks();

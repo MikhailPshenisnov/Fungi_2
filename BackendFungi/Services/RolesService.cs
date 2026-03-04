@@ -74,6 +74,29 @@ public class RolesService : IRolesService
         return roles.OrderBy(r => r.AccessLevel).ThenBy(r => r.Name).ToList();
     }
 
+    public async Task<List<Permission>> GetAllPermissionsAsync(CancellationToken cancellationToken)
+    {
+        var permissions = await _rolesRepository.GetAllPermissions(cancellationToken);
+        return permissions.OrderBy(p => p.Code).ToList();
+    }
+
+    public async Task<List<string>> GetRolePermissionCodesAsync(Guid roleId, CancellationToken cancellationToken)
+    {
+        return await _rolesRepository.GetRolePermissionCodes(roleId, cancellationToken);
+    }
+
+    public async Task<Guid> SetRolePermissionCodesAsync(Guid roleId, IReadOnlyCollection<string> permissionCodes,
+        CancellationToken cancellationToken)
+    {
+        return await _rolesRepository.SetRolePermissionCodes(roleId, permissionCodes, cancellationToken);
+    }
+
+    public async Task<bool> RoleHasPermissionAsync(Guid roleId, string permissionCode, CancellationToken cancellationToken)
+    {
+        var permissionCodes = await _rolesRepository.GetRolePermissionCodes(roleId, cancellationToken);
+        return permissionCodes.Contains(permissionCode, StringComparer.OrdinalIgnoreCase);
+    }
+
     // Updates an existing role in the system via the repository
     // Parameters: guid of the role, role model with updated data, and cancellation token
     // Returns: guid of the updated role

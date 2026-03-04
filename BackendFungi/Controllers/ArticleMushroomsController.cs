@@ -53,9 +53,9 @@ public class ArticleMushroomsController : ControllerBase
     public async Task<IActionResult> AddMushroomToArticle(Guid articleId, 
         Guid mushroomId, CancellationToken ct)
     {
-        await _accessCheckService.CheckAccessLevel(
+        await _accessCheckService.CheckPermission(
             HttpContext,
-            (int)AccessLevelEnumerator.Editor,
+            PermissionCodes.ArticleMushroomsWrite,
             ct
         );
 
@@ -70,9 +70,9 @@ public class ArticleMushroomsController : ControllerBase
     public async Task<IActionResult> DeleteMushroomFromArticle(Guid articleId, 
         Guid mushroomId, CancellationToken ct)
     {
-        await _accessCheckService.CheckAccessLevel(
+        await _accessCheckService.CheckPermission(
             HttpContext,
-            (int)AccessLevelEnumerator.Editor,
+            PermissionCodes.ArticleMushroomsWrite,
             ct
         );
 

@@ -6,6 +6,15 @@ CREATE TABLE public."Roles" (
 );
 CREATE UNIQUE INDEX roles_unique_name ON public."Roles" USING btree ("Name");
 
+CREATE TABLE public."Permissions" (
+  "Id" uuid PRIMARY KEY NOT NULL,
+  "Code" character varying(128) NOT NULL,
+  "Name" character varying(64) NOT NULL,
+  "Description" character varying(512),
+  "IsSystem" boolean NOT NULL DEFAULT false
+);
+CREATE UNIQUE INDEX permissions_unique_code ON public."Permissions" USING btree ("Code");
+
 CREATE TABLE public."Articles" (
   "Id" uuid PRIMARY KEY NOT NULL,
   "Title" character varying(256) NOT NULL,
@@ -44,12 +53,23 @@ CREATE TABLE public."Users" (
   "Username" character varying(128) NOT NULL,
   "Email" character varying(128),
   "PasswordHash" character varying(128) NOT NULL,
+  "AvatarPath" character varying(512),
   "RoleId" uuid NOT NULL,
   FOREIGN KEY ("RoleId") REFERENCES public."Roles" ("Id") ON DELETE RESTRICT
 );
 CREATE INDEX "fki_Users_RoleId_fkey" ON public."Users" USING btree ("RoleId");
 CREATE UNIQUE INDEX users_unique_email ON public."Users" USING btree ("Email");
 CREATE UNIQUE INDEX users_unique_username ON public."Users" USING btree ("Username");
+
+CREATE TABLE public."RolePermissions" (
+  "RoleId" uuid NOT NULL,
+  "PermissionId" uuid NOT NULL,
+  PRIMARY KEY ("RoleId", "PermissionId"),
+  FOREIGN KEY ("RoleId") REFERENCES public."Roles" ("Id") ON DELETE CASCADE,
+  FOREIGN KEY ("PermissionId") REFERENCES public."Permissions" ("Id") ON DELETE CASCADE
+);
+CREATE INDEX "fki_RolePermissions_RoleId_fkey" ON public."RolePermissions" USING btree ("RoleId");
+CREATE INDEX "fki_RolePermissions_PermissionId_fkey" ON public."RolePermissions" USING btree ("PermissionId");
 
 CREATE TABLE public."Paragraphs" (
   "Id" uuid PRIMARY KEY NOT NULL,

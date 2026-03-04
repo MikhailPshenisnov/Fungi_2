@@ -4,6 +4,6 @@ public record UserDto(
     Guid Id,
     string Username,
     string? Email,
-    string PasswordHash,
+    string? AvatarUrl,
     RoleDto Role
 );

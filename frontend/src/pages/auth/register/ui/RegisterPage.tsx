@@ -1,9 +1,9 @@
 import { FormEvent, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthLayout } from '@widgets/layout';
 import { registerUser } from '@features/auth';
-import { useSession } from '@entities/session';
+import { getCurrentUserProfile } from '@features/avatar';
+import { normalizePermissionCodes, useSession } from '@entities/session';
 import { appleLogo, googleLogo } from '@shared/assets/icons';
 import { Button, Checkbox, Input, Stack, Typography } from '@shared/ui';
 import styles from './RegisterPage.module.css';
@@ -27,13 +27,30 @@ export function RegisterPage() {
     setIsSubmitting(true);
 
     try {
-      await registerUser({ name: username.trim(), email: email.trim(), password });
+      const authResult = await registerUser({ name: username.trim(), email: email.trim(), password });
+      const profileResult = await getCurrentUserProfile(authResult.token);
+      const roleAccessLevel = profileResult.user.role?.accessLevel ?? 20;
+      const roleName =
+        typeof profileResult.user.role?.name === 'string' && profileResult.user.role.name.trim().length > 0
+          ? profileResult.user.role.name.trim()
+          : 'Unknown role';
+
       signIn({
-        id: `user-${Date.now()}`,
-        name: username.trim() || 'Пользователь',
-        email: email.trim()
+        user: {
+          id: profileResult.user.id,
+          name: profileResult.user.username,
+          email: profileResult.user.email,
+          avatarUrl: profileResult.user.avatarUrl ?? null,
+          roleId: profileResult.user.role?.id ?? '',
+          roleName,
+          roleAccessLevel,
+          permissions: normalizePermissionCodes(profileResult.user.role?.permissions)
+        },
+        token: authResult.token,
+        rememberSession: true
       });
-      navigate('/profile');
+
+      navigate('/profile', { replace: true });
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Не удалось выполнить регистрацию.';
       setErrorMessage(message);

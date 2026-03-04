@@ -53,14 +53,14 @@ const router = createBrowserRouter([
       },
       {
         path: '/profile/favorites',
-        element: <ProfilePage section="favorites" />,
+        element: <Navigate to="/profile?tab=favorites" replace />,
         handle: {
           title: 'Избранное'
         }
       },
       {
         path: '/profile/history',
-        element: <ProfilePage section="history" />,
+        element: <Navigate to="/profile?tab=history" replace />,
         handle: {
           title: 'История просмотров'
         }

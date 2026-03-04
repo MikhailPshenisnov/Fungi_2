@@ -73,6 +73,11 @@ public class RolesController : ControllerBase
     public async Task<ActionResult<BaseResponse<GetRoleResponse>>> GetRole([FromQuery] GetRoleRequest request, 
         CancellationToken cancellationToken)
     {
+        await _accessCheckService.CheckPermission(
+            HttpContext,
+            PermissionCodes.RolesRead,
+            cancellationToken);
+
         var role = await _rolesService
             .GetRoleAsync(request.RoleId, cancellationToken);
 
@@ -81,7 +86,8 @@ public class RolesController : ControllerBase
                 new RoleDto(
                     role.Id,
                     role.Name,
-                    role.AccessLevel)),
+                    role.AccessLevel,
+                    role.PermissionCodes.OrderBy(x => x).ToList())),
             null);
 
         return Ok(response);
@@ -94,9 +100,9 @@ public class RolesController : ControllerBase
     public async Task<ActionResult<BaseResponse<GetFilteredRolesResponse>>> GetFilteredRoles([FromQuery] GetFilteredRolesRequest request,
         CancellationToken cancellationToken)
     {
-        await _accessCheckService.CheckAccessLevel(
+        await _accessCheckService.CheckPermission(
             HttpContext,
-            (int)AccessLevelEnumerator.JuniorAdministratorMin,
+            PermissionCodes.RolesRead,
             cancellationToken);
 
         var (roleFilter, roleFilterError) = RoleFilter
@@ -117,7 +123,8 @@ public class RolesController : ControllerBase
                         new RoleDto(
                             role.Id,
                             role.Name,
-                            role.AccessLevel))
+                            role.AccessLevel,
+                            role.PermissionCodes.OrderBy(x => x).ToList()))
                     .ToList()),
             null);
 
@@ -131,9 +138,9 @@ public class RolesController : ControllerBase
     public async Task<ActionResult<BaseResponse<CreateRoleResponse>>> CreateRole([FromBody] CreateRoleRequest request,
         CancellationToken cancellationToken)
     {
-        var user = await _accessCheckService.CheckAccessLevel(
+        var user = await _accessCheckService.CheckPermission(
             HttpContext,
-            (int)AccessLevelEnumerator.JuniorAdministratorMin,
+            PermissionCodes.RolesManage,
             cancellationToken);
 
         var (role, roleError) = Role
@@ -165,9 +172,9 @@ public class RolesController : ControllerBase
     public async Task<ActionResult<BaseResponse<UpdateRoleResponse>>> UpdateRole([FromBody] UpdateRoleRequest request,
         CancellationToken cancellationToken)
     {
-        var user = await _accessCheckService.CheckAccessLevel(
+        var user = await _accessCheckService.CheckPermission(
             HttpContext,
-            (int)AccessLevelEnumerator.JuniorAdministratorMin,
+            PermissionCodes.RolesManage,
             cancellationToken);
 
         var (newRole, newRoleError) = Role
@@ -205,9 +212,9 @@ public class RolesController : ControllerBase
     public async Task<ActionResult<BaseResponse<DeleteRoleResponse>>> DeleteRole([FromQuery] DeleteRoleRequest request,
         CancellationToken cancellationToken)
     {
-        var user = await _accessCheckService.CheckAccessLevel(
+        var user = await _accessCheckService.CheckPermission(
             HttpContext,
-            (int)AccessLevelEnumerator.AdministratorMin,
+            PermissionCodes.RolesManage,
             cancellationToken);
 
         var existingRole = await _rolesService
@@ -222,6 +229,88 @@ public class RolesController : ControllerBase
         var response = new BaseResponse<DeleteRoleResponse>(
             new DeleteRoleResponse(
                 deletedRoleId),
+            null);
+
+        return Ok(response);
+    }
+
+    [Authorize]
+    [HttpGet]
+    [SwaggerOperation(OperationId = "GetAllPermissions", Summary = "Get all permissions",
+        Description = "Returns available permission codes from the database")]
+    public async Task<ActionResult<BaseResponse<GetAllPermissionsResponse>>> GetAllPermissions(
+        CancellationToken cancellationToken)
+    {
+        await _accessCheckService.CheckPermission(
+            HttpContext,
+            PermissionCodes.PermissionsRead,
+            cancellationToken);
+
+        var permissions = await _rolesService.GetAllPermissionsAsync(cancellationToken);
+
+        var response = new BaseResponse<GetAllPermissionsResponse>(
+            new GetAllPermissionsResponse(
+                permissions
+                    .Select(permission => new PermissionDto(
+                        permission.Id,
+                        permission.Code,
+                        permission.Name,
+                        permission.Description,
+                        permission.IsSystem))
+                    .ToList()),
+            null);
+
+        return Ok(response);
+    }
+
+    [Authorize]
+    [HttpGet]
+    [SwaggerOperation(OperationId = "GetRolePermissions", Summary = "Get role permissions",
+        Description = "Returns assigned permission codes for role")]
+    public async Task<ActionResult<BaseResponse<GetRolePermissionsResponse>>> GetRolePermissions(
+        [FromQuery] GetRolePermissionsRequest request,
+        CancellationToken cancellationToken)
+    {
+        await _accessCheckService.CheckPermission(
+            HttpContext,
+            PermissionCodes.RolesRead,
+            cancellationToken);
+
+        var permissionCodes = await _rolesService.GetRolePermissionCodesAsync(request.RoleId, cancellationToken);
+
+        var response = new BaseResponse<GetRolePermissionsResponse>(
+            new GetRolePermissionsResponse(request.RoleId, permissionCodes),
+            null);
+
+        return Ok(response);
+    }
+
+    [Authorize]
+    [HttpPut]
+    [SwaggerOperation(OperationId = "SetRolePermissions", Summary = "Set role permissions",
+        Description = "Replaces role permissions with provided permission codes")]
+    public async Task<ActionResult<BaseResponse<SetRolePermissionsResponse>>> SetRolePermissions(
+        [FromBody] SetRolePermissionsRequest request,
+        CancellationToken cancellationToken)
+    {
+        var currentUser = await _accessCheckService.CheckPermission(
+            HttpContext,
+            PermissionCodes.RolesManage,
+            cancellationToken);
+
+        var targetRole = await _rolesService.GetRoleAsync(request.RoleId, cancellationToken);
+
+        if (currentUser.Role.AccessLevel >= targetRole.AccessLevel)
+            throw new AccessException("The user does not have sufficient access rights");
+
+        var permissionCodesToSet = request.PermissionCodes ?? new List<string>();
+        await _rolesService.SetRolePermissionCodesAsync(request.RoleId, permissionCodesToSet, cancellationToken);
+        var permissionCodes = await _rolesService.GetRolePermissionCodesAsync(request.RoleId, cancellationToken);
+
+        var response = new BaseResponse<SetRolePermissionsResponse>(
+            new SetRolePermissionsResponse(
+                request.RoleId,
+                permissionCodes),
             null);
 
         return Ok(response);

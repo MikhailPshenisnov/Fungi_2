@@ -1,5 +1,48 @@
 # Журнал изменений
 
+## 2026-03-04
+
+### Backend
+
+- добавлены endpoint-ы для аватара текущего пользователя:
+  - `POST /Users/UploadMyAvatar`;
+  - `DELETE /Users/DeleteMyAvatar`;
+  - `GET /Users/GetCurrentUserProfile`;
+- реализована серверная обработка аватара (валидация, квадратный crop, resize `512x512`, сохранение в `webp`);
+- добавлено хранение `AvatarPath` в таблице `Users` и SQL upgrade-скрипт `DBInit/2-upgrade-avatar.sql`;
+- включена публичная раздача аватаров через `/media/avatars/*`;
+- внедрен RBAC на permission-кодах из БД (`Permissions`/`RolePermissions`);
+- добавлены endpoint-ы управления правами ролей:
+  - `GET /Roles/GetAllPermissions`;
+  - `GET /Roles/GetRolePermissions`;
+  - `PUT /Roles/SetRolePermissions`;
+- `RoleDto` расширен полем `permissions: string[]`;
+- добавлен SQL upgrade-скрипт `DBInit/3-upgrade-rbac.sql`;
+- обновлены OpenAPI snapshot и backend-документация.
+
+### Frontend
+
+- role-aware UI переведен на permission-коды из `user.role.permissions`;
+- role-specific вкладки профиля и пункты dropdown зависят от прав роли, а не от client-side хардкода групп;
+- добавлена поддержка `Запомнить меня`:
+  - с включенным флагом токен сохраняется в `localStorage`;
+  - сессия восстанавливается на старте через `GET /Users/GetCurrentUserProfile`.
+
+### Mobile
+
+- зафиксирован актуальный контракт интеграции для profile/avatar endpoint-ов;
+- подтверждено требование использовать только bearer-токен в `Authorization` заголовке.
+
+### DevOps / Docs
+
+- добавлен обязательный runbook для существующей БД: последовательный запуск `2-upgrade-avatar.sql` и `3-upgrade-rbac.sql`;
+- синхронизирован `QuickStart/Fungi_api_swagger.json` с live Swagger.
+
+### Breaking changes
+
+- `UserDto` больше не содержит `PasswordHash`;
+- в `UserDto` добавлено поле `avatarUrl`.
+
 ## 2026-03-03
 
 ### Frontend

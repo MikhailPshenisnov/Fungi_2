@@ -3,14 +3,277 @@
   padding-bottom: 40px;
 }
 
+.hero {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-l);
+  background:
+    radial-gradient(circle at 14% 22%, color-mix(in srgb, var(--color-action-primary-bg) 84%, white) 0%, transparent 42%),
+    radial-gradient(circle at 88% 14%, color-mix(in srgb, var(--color-status-info-bg) 70%, white) 0%, transparent 35%),
+    var(--color-surface-elevated);
+}
+
+.heroAvatarButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 96px;
+  border: 1px solid var(--color-border-default);
+  border-radius: 999px;
+  background: var(--color-action-primary-bg);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  overflow: hidden;
+  flex-shrink: 0;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.heroAvatarButton:hover:not(:disabled) {
+  border-color: var(--color-border-strong);
+}
+
+.heroAvatarButton:focus-visible {
+  outline: 2px solid var(--color-action-primary-focus-ring);
+  outline-offset: 2px;
+}
+
+.heroAvatarButton:disabled {
+  cursor: not-allowed;
+}
+
+.heroAvatarDragActive {
+  border-color: var(--color-action-primary-border);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-action-primary-focus-ring) 35%, transparent);
+}
+
+.heroAvatarImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 34%;
+  transform: scale(1.16);
+  transform-origin: center;
+  transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.heroAvatarFallback {
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.heroAvatarOverlay {
+  position: absolute;
+  inset: auto 0 0;
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  background: color-mix(in srgb, var(--color-surface-inverse) 82%, transparent);
+  color: var(--color-text-inverse);
+  font-size: var(--text-meta-size);
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(100%);
+  pointer-events: none;
+  transition:
+    opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.heroAvatarButton:hover:not(:disabled) .heroAvatarOverlay,
+.heroAvatarButton:focus-visible .heroAvatarOverlay,
+.heroAvatarDragActive .heroAvatarOverlay {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.heroAvatarButton:hover:not(:disabled) .heroAvatarImage,
+.heroAvatarButton:focus-visible .heroAvatarImage {
+  transform: scale(1.18);
+}
+
+.hiddenFileInput {
+  display: none;
+}
+
+.heroContent {
+  min-width: 0;
+}
+
+.heroMeta {
+  color: var(--color-text-secondary);
+}
+
+.heroMetaSecondary {
+  color: var(--color-text-tertiary);
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.progressTrack {
+  width: min(280px, 100%);
+  height: 8px;
+  margin-top: 12px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 999px;
+  background: var(--color-bg-subtle);
+  overflow: hidden;
+}
+
+.progressBar {
+  display: block;
+  height: 100%;
+  background: var(--color-action-primary-bg);
+  transition: width 0.18s ease;
+}
+
+.avatarMessage {
+  display: inline-block;
+  margin-top: 10px;
+  color: var(--color-text-secondary);
+}
+
+.avatarMessageSuccess {
+  color: var(--color-status-success-strong);
+}
+
+.avatarMessageError {
+  color: var(--color-status-error-text);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 20px;
+}
+
+.aside {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-right: 1px solid var(--color-border-subtle);
+  padding-right: 14px;
+}
+
+.asideItem {
+  border: 1px solid transparent;
+  border-radius: var(--radius-s);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: var(--text-body-s-size);
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+}
+
+.asideItem:hover {
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+}
+
+.asideItemActive {
+  background: var(--color-action-primary-bg);
+  border-color: var(--color-action-primary-border);
+  color: var(--color-text-primary);
+}
+
+.asideItem:focus-visible {
+  outline: 2px solid var(--color-action-primary-focus-ring);
+  outline-offset: 2px;
+}
+
+.content {
+  min-width: 0;
+}
+
+.accountGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
 .label {
   color: var(--color-text-secondary);
 }
 
-.placeholder {
+.placeholderCard {
   padding: 10px 12px;
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-s);
   background: var(--color-bg-subtle);
+}
+
+.placeholderHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.soonBadge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 0 8px;
+  border: 1px solid var(--color-status-warning-border);
+  border-radius: 999px;
+  background: var(--color-status-warning-bg);
+  color: var(--color-status-warning-on-bg);
+  font-size: var(--text-meta-size);
+  font-weight: 700;
+}
+
+.placeholderText {
+  margin-top: 10px;
   color: var(--color-text-secondary);
+}
+
+.placeholderEmpty {
+  display: inline-block;
+  margin-top: 10px;
+  color: var(--color-text-tertiary);
+}
+
+@media (max-width: 840px) {
+  .hero {
+    flex-direction: column;
+  }
+
+  .heroAvatarButton {
+    width: 88px;
+    height: 88px;
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .aside {
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border-subtle);
+    padding-right: 0;
+    padding-bottom: 12px;
+  }
+
+  .accountGrid {
+    grid-template-columns: 1fr;
+  }
 }

@@ -1,20 +1,33 @@
-import { FormEvent, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { FormEvent, useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthLayout } from '@widgets/layout';
 import { loginUser } from '@features/auth';
-import { useSession } from '@entities/session';
+import { getCurrentUserProfile } from '@features/avatar';
+import { normalizePermissionCodes, useSession } from '@entities/session';
 import { appleLogo, googleLogo } from '@shared/assets/icons';
 import { Button, Checkbox, Input, Stack, Typography } from '@shared/ui';
 import styles from './LoginPage.module.css';
 
+interface LocationState {
+  reason?: string;
+}
+
 export function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { signIn } = useSession();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const state = location.state as LocationState | null;
+    if (state?.reason === 'session-expired') {
+      setErrorMessage('Сессия истекла. Войдите снова.');
+    }
+  }, [location.state]);
 
   function handleSocialAuth(provider: 'google' | 'apple') {
     setErrorMessage(`Авторизация через ${provider === 'google' ? 'Google' : 'Apple'} будет добавлена в следующей итерации.`);
@@ -26,14 +39,30 @@ export function LoginPage() {
     setIsSubmitting(true);
 
     try {
-      await loginUser({ email: email.trim(), password });
-      const fallbackName = email.split('@')[0] || 'Пользователь';
+      const authResult = await loginUser({ email: email.trim(), password });
+      const profileResult = await getCurrentUserProfile(authResult.token);
+      const roleAccessLevel = profileResult.user.role?.accessLevel ?? 20;
+      const roleName =
+        typeof profileResult.user.role?.name === 'string' && profileResult.user.role.name.trim().length > 0
+          ? profileResult.user.role.name.trim()
+          : 'Unknown role';
+
       signIn({
-        id: `user-${Date.now()}`,
-        name: fallbackName,
-        email: email.trim()
+        user: {
+          id: profileResult.user.id,
+          name: profileResult.user.username,
+          email: profileResult.user.email,
+          avatarUrl: profileResult.user.avatarUrl ?? null,
+          roleId: profileResult.user.role?.id ?? '',
+          roleName,
+          roleAccessLevel,
+          permissions: normalizePermissionCodes(profileResult.user.role?.permissions)
+        },
+        token: authResult.token,
+        rememberSession: rememberMe
       });
-      navigate('/profile');
+
+      navigate('/profile', { replace: true });
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Не удалось выполнить вход.';
       setErrorMessage(message);
@@ -107,7 +136,13 @@ export function LoginPage() {
               onChange={(event) => setPassword(event.target.value)}
               disabled={isSubmitting}
             />
-            <Checkbox name="remember" label="Запомнить меня" disabled={isSubmitting} />
+            <Checkbox
+              name="remember"
+              label="Запомнить меня"
+              checked={rememberMe}
+              onChange={(event) => setRememberMe(event.currentTarget.checked)}
+              disabled={isSubmitting}
+            />
             {errorMessage ? <Typography variant="caption" className={styles.error}>{errorMessage}</Typography> : null}
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? 'Входим...' : 'Войти'}

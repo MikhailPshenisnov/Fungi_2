@@ -110,9 +110,9 @@ public class ArticlesController : ControllerBase
         [FromBody] CreateArticleRequest request,
         CancellationToken cancellationToken)
     {
-        await _accessCheckService.CheckAccessLevel(
+        await _accessCheckService.CheckPermission(
             HttpContext,
-            (int)AccessLevelEnumerator.Editor,
+            PermissionCodes.ArticlesWrite,
             cancellationToken);
 
         var (article, articleError) = Article
@@ -145,9 +145,9 @@ public class ArticlesController : ControllerBase
     public async Task<ActionResult<BaseResponse<UpdateArticleResponse>>> UpdateArticle(
         [FromBody] UpdateArticleRequest request, CancellationToken cancellationToken)
     {
-        await _accessCheckService.CheckAccessLevel(
+        await _accessCheckService.CheckPermission(
             HttpContext,
-            (int)AccessLevelEnumerator.Editor,
+            PermissionCodes.ArticlesWrite,
             cancellationToken);
 
         var (newArticle, newArticleError) = Article
@@ -180,9 +180,9 @@ public class ArticlesController : ControllerBase
     public async Task<ActionResult<BaseResponse<DeleteArticleResponse>>> DeleteArticle(
         [FromQuery] DeleteArticleRequest request, CancellationToken cancellationToken)
     {
-        await _accessCheckService.CheckAccessLevel(
+        await _accessCheckService.CheckPermission(
             HttpContext,
-            (int)AccessLevelEnumerator.JuniorAdministratorMin,
+            PermissionCodes.ArticlesDelete,
             cancellationToken);
 
         var deletedArticleId = await _articlesService

@@ -23,6 +23,7 @@ public class UsersRepository : IUsersRepository
             Username = user.Username,
             Email = user.Email,
             PasswordHash = user.PasswordHash,
+            AvatarPath = user.AvatarPath,
             RoleId = user.Role.Id
         };
 
@@ -36,6 +37,8 @@ public class UsersRepository : IUsersRepository
     {
         var userEntities = await _context.Users
             .Include(u => u.Role)
+            .ThenInclude(r => r.RolePermissions)
+            .ThenInclude(rp => rp.Permission)
             .AsNoTracking()
             .ToListAsync(cancellationToken);
 
@@ -45,7 +48,11 @@ public class UsersRepository : IUsersRepository
                 var (role, roleError) = Role
                     .Create(userEntity.Role.Id,
                         userEntity.Role.Name,
-                        userEntity.Role.AccessLevel);
+                        userEntity.Role.AccessLevel,
+                        userEntity.Role.RolePermissions
+                            .Select(rp => rp.Permission.Code)
+                            .OrderBy(code => code)
+                            .ToList());
 
                 if (!string.IsNullOrEmpty(roleError))
                     throw new IntegrityException($"Incorrect data format in the database, unable to create a " +
@@ -57,7 +64,8 @@ public class UsersRepository : IUsersRepository
                         userEntity.Email,
                         userEntity.PasswordHash,
                         true,
-                        role);
+                        role,
+                        userEntity.AvatarPath);
 
                 if (!string.IsNullOrEmpty(userError))
                     throw new IntegrityException($"Incorrect data format in the database, unable to create a " +
@@ -86,10 +94,25 @@ public class UsersRepository : IUsersRepository
                     .SetProperty(u => u.Username, u => newUser.Username)
                     .SetProperty(u => u.Email, u => newUser.Email)
                     .SetProperty(u => u.PasswordHash, u => newUser.PasswordHash)
+                    .SetProperty(u => u.AvatarPath, u => newUser.AvatarPath)
                     .SetProperty(u => u.RoleId, u => newUser.Role.Id),
                 cancellationToken);
 
         return oldUserEntity.Id;
+    }
+
+    public async Task<Guid> SetUserAvatarPath(Guid userId, string? avatarPath, CancellationToken cancellationToken)
+    {
+        var numUpdated = await _context.Users
+            .Where(u => u.Id == userId)
+            .ExecuteUpdateAsync(x => x
+                    .SetProperty(u => u.AvatarPath, u => avatarPath),
+                cancellationToken);
+
+        if (numUpdated == 0)
+            throw new UnknownIdentifierException("Unknown user id");
+
+        return userId;
     }
 
     public async Task<Guid> DeleteUser(Guid userId, CancellationToken cancellationToken)

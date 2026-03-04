@@ -60,6 +60,83 @@ Authorization: Bearer <jwt_token>
 Content-Type: application/json
 ```
 
+## Legacy endpoint (не использовать в новых клиентах)
+
+- `GET /Authorization/GetCurrentDataUser` считается legacy-методом.
+- Для новых web/mobile клиентов использовать:
+  - `GET /Users/GetCurrentUserProfile` для профиля текущего пользователя;
+  - `POST /Authorization/ValidateToken` для проверки bearer-токена.
+
+## RBAC: роли и права из БД
+
+Доступ к защищенным endpoint теперь строится по permission-кодам, назначенным роли в БД.
+
+Новые/актуальные ручки для управления правами ролей:
+
+- `GET /Roles/GetAllPermissions` — получить список всех permission-кодов.
+- `GET /Roles/GetRolePermissions?roleId=<guid>` — получить права конкретной роли.
+- `PUT /Roles/SetRolePermissions` — полностью заменить набор прав роли.
+  - body: `{ "roleId": "...", "permissionCodes": ["users.read", "rbac.roles.manage"] }`
+
+`CreateRole/UpdateRole/DeleteRole` и операции управления пользователями также проверяются через permission-коды.
+Базовые коды для админского управления:
+
+- `rbac.roles.read`
+- `rbac.roles.manage`
+- `rbac.permissions.read`
+- `users.read`
+- `users.manage`
+- `users.delete`
+
+`RoleDto` в user/role-ответах содержит `permissions: string[]`.
+
+## Контракт аватаров пользователя
+
+Новые endpoint для работы с аватаром текущего пользователя:
+
+- `POST /Users/UploadMyAvatar`:
+  - авторизация: `Authorization: Bearer <token>`;
+  - `Content-Type: multipart/form-data`;
+  - поле формы: `avatar` (`IFormFile`);
+  - сервер:
+    - валидирует размер/тип/расширение;
+    - декодирует изображение;
+    - делает центрированный квадратный crop;
+    - ресайзит до `512x512`;
+    - сохраняет в `webp` (`q=80`);
+  - возвращает `data.avatarUrl`.
+
+- `DELETE /Users/DeleteMyAvatar`:
+  - авторизация: `Authorization: Bearer <token>`;
+  - идемпотентный endpoint;
+  - возвращает:
+    - `isDeleted = true`, если в профиле был установлен аватар;
+    - `isDeleted = false`, если аватар уже отсутствовал;
+  - после удаления `avatarUrl = null`.
+
+- `GET /Users/GetCurrentUserProfile`:
+  - авторизация: `Authorization: Bearer <token>`;
+  - возвращает профиль текущего пользователя в `data.user`.
+
+Ограничения загрузки (v1):
+
+- max file size: `5MB`;
+- допустимые MIME-типы: `image/jpeg`, `image/png`, `image/webp`;
+- допустимые расширения: `.jpg`, `.jpeg`, `.png`, `.webp`;
+- минимальная сторона исходника: `128px`;
+- максимальная сторона исходника: `4096px`;
+- максимальное общее число пикселей исходника: `16 000 000` (16 MP).
+
+Публичная раздача:
+
+- аватары отдаются backend как static files по URL вида:
+  - `/media/avatars/{userId}/{file}.webp`.
+
+Миграция БД для существующих инсталляций:
+
+- единый обязательный шаг перед деплоем backend: последовательно применить `DBInit/2-upgrade-avatar.sql` и `DBInit/3-upgrade-rbac.sql`.
+- `DBInit/3-upgrade-rbac.sql` создает таблицы `Permissions`/`RolePermissions` и baseline-набор прав.
+
 ## Changelog для mobile-команды (breaking changes)
 
 - `POST /Authorization/ValidateToken`:
@@ -69,3 +146,4 @@ Content-Type: application/json
 - `Authorization/LoginUser` и `Authorization/RegisterUser` возвращают token в `data.token`, но не записывают auth-cookie.
 - `Authorization/LogoutUser` для bearer-схемы stateless: сервер не очищает cookie, клиент удаляет локальный token сам.
 - Для web-dev запусков с разными портами CORS в локальных окружениях поддерживает `localhost/127.0.0.1` без ручного добавления порта в репозиторий.
+- `UserDto` больше не возвращает `PasswordHash` в публичных user-ответах (security fix).

@@ -25,8 +25,14 @@ export const Authorized: Story = {
       initialUser={{
         id: '1',
         name: 'test',
-        email: 'example@example.com'
+        email: 'example@example.com',
+        avatarUrl: null,
+        roleId: 'role-common',
+        roleName: 'CommonUser',
+        roleAccessLevel: 20,
+        permissions: []
       }}
+      initialToken="storybook-token"
     >
       <LandingPage />
     </SessionProvider>

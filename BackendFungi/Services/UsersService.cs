@@ -85,6 +85,16 @@ public class UsersService : IUsersService
         return updatedUserId;
     }
 
+    // Updates avatar path for a user via the repository
+    // Parameters: guid of the user, new avatar path (or null to clear), and cancellation token
+    // Returns: guid of the updated user
+    public async Task<Guid> SetUserAvatarPathAsync(Guid userId, string? avatarPath, CancellationToken cancellationToken)
+    {
+        var updatedUserId = await _usersRepository.SetUserAvatarPath(userId, avatarPath, cancellationToken);
+
+        return updatedUserId;
+    }
+
     // Deletes a user from the system via the repository
     // Parameters: guid of the user and cancellation token
     // Returns: guid of the deleted user

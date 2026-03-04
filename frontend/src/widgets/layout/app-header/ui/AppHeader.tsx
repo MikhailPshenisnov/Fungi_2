@@ -2,7 +2,7 @@ import { type CSSProperties, type FormEvent, useEffect, useRef, useState } from 
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { profileIcon, searchIcon } from '@shared/assets/icons';
 import { Button, Container, Typography } from '@shared/ui';
-import { useSession } from '@entities/session';
+import { getRoleSpecificProfileTabs, useSession } from '@entities/session';
 import styles from './AppHeader.module.css';
 
 const navItems = [
@@ -24,14 +24,20 @@ export function AppHeader({ onLoginClick, onSignupClick, onProfileClick, onSearc
   const navigate = useNavigate();
   const { isAuthenticated, user, signOut } = useSession();
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const [isProfileAvatarBroken, setIsProfileAvatarBroken] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement | null>(null);
   const profileIconMaskStyle = {
     ['--profile-icon-url' as const]: `url("${profileIcon}")`
   } as CSSProperties;
+  const roleMenuTabs = user ? getRoleSpecificProfileTabs(user.permissions) : [];
 
   useEffect(() => {
     setIsProfileMenuOpen(false);
   }, [location.pathname, location.search, location.hash]);
+
+  useEffect(() => {
+    setIsProfileAvatarBroken(false);
+  }, [user?.avatarUrl]);
 
   useEffect(() => {
     if (!isProfileMenuOpen) {
@@ -98,11 +104,14 @@ export function AppHeader({ onLoginClick, onSignupClick, onProfileClick, onSearc
   function handleProfileMenuItemClick() {
     if (onProfileClick) {
       onProfileClick();
-      setIsProfileMenuOpen(false);
-      return;
+    } else {
+      navigate('/profile');
     }
 
-    navigate('/profile');
+    setIsProfileMenuOpen(false);
+  }
+
+  function handleMenuLinkClick() {
     setIsProfileMenuOpen(false);
   }
 
@@ -111,6 +120,8 @@ export function AppHeader({ onLoginClick, onSignupClick, onProfileClick, onSearc
     setIsProfileMenuOpen(false);
     navigate('/');
   }
+
+  const shouldRenderAvatarImage = Boolean(user?.avatarUrl) && !isProfileAvatarBroken;
 
   return (
     <header className={styles.header}>
@@ -159,7 +170,18 @@ export function AppHeader({ onLoginClick, onSignupClick, onProfileClick, onSearc
               <div className={styles.profileMenu} ref={profileMenuRef}>
                 <Button
                   onClick={handleProfileClick}
-                  leftIcon={<span aria-hidden="true" className={styles.profileGlyph} style={profileIconMaskStyle} />}
+                  leftIcon={
+                    shouldRenderAvatarImage ? (
+                      <img
+                        src={user?.avatarUrl ?? ''}
+                        alt=""
+                        className={styles.profileAvatarImage}
+                        onError={() => setIsProfileAvatarBroken(true)}
+                      />
+                    ) : (
+                      <span aria-hidden="true" className={styles.profileGlyph} style={profileIconMaskStyle} />
+                    )
+                  }
                   rightIcon={
                     <span
                       aria-hidden="true"
@@ -181,12 +203,23 @@ export function AppHeader({ onLoginClick, onSignupClick, onProfileClick, onSearc
                   <button type="button" className={styles.dropdownItem} onClick={handleProfileMenuItemClick} role="menuitem">
                     Профиль
                   </button>
-                  <Link to="/profile/favorites" className={styles.dropdownItem} role="menuitem">
+                  <Link to="/profile?tab=favorites" className={styles.dropdownItem} role="menuitem" onClick={handleMenuLinkClick}>
                     Избранное
                   </Link>
-                  <Link to="/profile/history" className={styles.dropdownItem} role="menuitem">
+                  <Link to="/profile?tab=history" className={styles.dropdownItem} role="menuitem" onClick={handleMenuLinkClick}>
                     История просмотров
                   </Link>
+                  {roleMenuTabs.map((tab) => (
+                    <Link
+                      key={tab.key}
+                      to={`/profile?tab=${tab.key}`}
+                      className={styles.dropdownItem}
+                      role="menuitem"
+                      onClick={handleMenuLinkClick}
+                    >
+                      {tab.label}
+                    </Link>
+                  ))}
                   <div className={styles.dropdownDivider} />
                   <button type="button" className={styles.dropdownDanger} onClick={handleLogout} role="menuitem">
                     Выйти

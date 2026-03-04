@@ -11,6 +11,24 @@
 - `POST /Authorization/ValidateToken` не принимает token в body.
 - `LogoutUser` в bearer-схеме stateless: клиент удаляет локальный token самостоятельно.
 
+## Профиль и аватар (актуальный контракт)
+
+- `GET /Users/GetCurrentUserProfile`:
+  - источник данных текущего пользователя для мобильного профиля;
+  - возвращает `user.role.permissions: string[]` для role-aware UI.
+- `POST /Users/UploadMyAvatar`:
+  - `multipart/form-data`, поле `avatar`;
+  - по успеху возвращает `avatarUrl`.
+- `DELETE /Users/DeleteMyAvatar`:
+  - идемпотентное удаление аватара;
+  - возвращает `isDeleted` и `avatarUrl = null` после удаления.
+
+Рекомендуемый поток:
+
+- login/register -> сохранить bearer token;
+- `GET /Users/GetCurrentUserProfile` -> построить user session;
+- upload/delete avatar -> обновить локальный профиль по `avatarUrl`.
+
 ## Конфигурация окружения
 
 - `baseURL` должен зависеть от среды запуска (эмулятор/устройство/web).

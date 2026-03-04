@@ -5,5 +5,6 @@ public record TokenDto(
     string Name,
     string Email,
     Guid RoleId,
-    string RoleGroup
+    string RoleGroup,
+    List<string> Permissions
 );

@@ -15,6 +15,15 @@
 docker compose up -d --build
 ```
 
+## Важно для существующей БД
+
+Если база уже была создана раньше (старый docker volume), после обновления backend нужно один раз применить upgrade-скрипты:
+
+```bash
+cat DBInit/2-upgrade-avatar.sql | docker exec -i fungi-db psql -U fungi -d FungiDB -p 5531
+cat DBInit/3-upgrade-rbac.sql | docker exec -i fungi-db psql -U fungi -d FungiDB -p 5531
+```
+
 ## Документация локально (Docker)
 
 ```bash

@@ -149,9 +149,9 @@ public class MushroomsController : ControllerBase
     public async Task<ActionResult<BaseResponse<CreateMushroomResponse>>> CreateMushroom(
         [FromBody] CreateMushroomRequest request, CancellationToken cancellationToken)
     {
-        await _accessCheckService.CheckAccessLevel(
+        await _accessCheckService.CheckPermission(
             HttpContext,
-            (int)AccessLevelEnumerator.Editor,
+            PermissionCodes.MushroomsWrite,
             cancellationToken);
 
         var (mushroom, mushroomError) = Mushroom
@@ -196,9 +196,9 @@ public class MushroomsController : ControllerBase
     public async Task<ActionResult<BaseResponse<UpdateMushroomResponse>>> UpdateMushroom(
         [FromBody] UpdateMushroomRequest request, CancellationToken cancellationToken)
     {
-        await _accessCheckService.CheckAccessLevel(
+        await _accessCheckService.CheckPermission(
             HttpContext,
-            (int)AccessLevelEnumerator.Editor,
+            PermissionCodes.MushroomsWrite,
             cancellationToken);
 
         var (newMushroom, newMushroomError) = Mushroom
@@ -243,9 +243,9 @@ public class MushroomsController : ControllerBase
     public async Task<ActionResult<BaseResponse<DeleteMushroomResponse>>> DeleteMushroom(
         [FromQuery] DeleteMushroomRequest request, CancellationToken cancellationToken)
     {
-        await _accessCheckService.CheckAccessLevel(
+        await _accessCheckService.CheckPermission(
             HttpContext,
-            (int)AccessLevelEnumerator.JuniorAdministratorMin,
+            PermissionCodes.MushroomsDelete,
             cancellationToken);
 
         var deletedMushroomId = await _mushroomsService

@@ -17,8 +17,7 @@ public class AccessCheckService : IAccessCheckService
         _usersService = usersService;
     }
 
-    public async Task<User> CheckAccessLevel(HttpContext context, int minAccessLevel,
-        CancellationToken cancellationToken)
+    public async Task<User> GetCurrentUser(HttpContext context, CancellationToken cancellationToken)
     {
         var token = await context
             .GetTokenAsync(JwtBearerDefaults.AuthenticationScheme, "access_token");
@@ -26,14 +25,33 @@ public class AccessCheckService : IAccessCheckService
         if (token is null)
             throw new AccessException("The user does not have sufficient access rights");
 
-        // request.Headers.TryGetValue("Authorization", out var authHeader);
-        // var token = authHeader.ToString().Replace("Bearer ", string.Empty);
-
         var tokenData = await _authorizationService.ValidateToken(token, cancellationToken);
 
-        var user = await _usersService.GetUserAsync(tokenData.UserId, cancellationToken);
+        return await _usersService.GetUserAsync(tokenData.UserId, cancellationToken);
+    }
+
+    public async Task<User> CheckAccessLevel(HttpContext context, int minAccessLevel,
+        CancellationToken cancellationToken)
+    {
+        var user = await GetCurrentUser(context, cancellationToken);
 
         if (user.Role.AccessLevel > minAccessLevel)
+            throw new AccessException("The user does not have sufficient access rights");
+
+        return user;
+    }
+
+    public async Task<User> CheckPermission(HttpContext context, string permissionCode, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(permissionCode))
+            throw new AccessException("The user does not have sufficient access rights");
+
+        var user = await GetCurrentUser(context, cancellationToken);
+
+        var hasPermission = user.Role.PermissionCodes
+            .Contains(permissionCode, StringComparer.OrdinalIgnoreCase);
+
+        if (!hasPermission)
             throw new AccessException("The user does not have sufficient access rights");
 
         return user;

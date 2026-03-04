@@ -25,16 +25,18 @@ namespace BackendFungi.Controllers;
 [Route("[controller]/[action]")]
 public class AuthorizationController : ControllerBase
 {
+    private readonly IConfiguration _configuration;
     private readonly IAuthorizationService _authorizationService;
     private readonly IRolesService _rolesService;
     private readonly IUsersService _usersService;
 
     public AuthorizationController(IAuthorizationService authorizationService,
-        IRolesService rolesService, IUsersService usersService)
+        IRolesService rolesService, IUsersService usersService, IConfiguration configuration)
     {
         _authorizationService = authorizationService;
         _rolesService = rolesService;
         _usersService = usersService;
+        _configuration = configuration;
     }
 
     [HttpPost]
@@ -87,9 +89,10 @@ public class AuthorizationController : ControllerBase
 
         // создание пользователя
         var allRoles = await _rolesService.GetFilteredRolesAsync(null, cancellationToken);
+        var defaultCommonRoleName = _configuration["DataInitialization:DefaultCommonUserRoleName"] ?? "CommonUser";
 
         var existingCommonUserRole = allRoles
-            .FirstOrDefault(r => r.AccessLevel == (int)AccessLevelEnumerator.CommonUser);
+            .FirstOrDefault(r => string.Equals(r.Name, defaultCommonRoleName, StringComparison.OrdinalIgnoreCase));
 
         if (existingCommonUserRole is null)
         {
@@ -192,36 +195,6 @@ public class AuthorizationController : ControllerBase
         {
             var tokenData = await _authorizationService.ValidateToken(token, cancellationToken);
 
-            int asseccLvl = 0;
-            switch (tokenData.RoleGroup)
-            {
-                case "SuperUser":
-                {
-                    asseccLvl = 2;
-                    break;
-                }
-                case "Administrator":
-                {
-                    asseccLvl = 1;
-                    break;
-                }
-                case "Editor":
-                {
-                    asseccLvl = 1;
-                    break;
-                }
-                case "CommonUser":
-                {
-                    asseccLvl = 0;
-                    break;
-                }
-                default:
-                {
-                    asseccLvl = 0;
-                    break;
-                }
-            }
-
             var (userFilter, userFilterError) = UserFilter
                 .Create(null,
                     tokenData.Email,
@@ -229,6 +202,14 @@ public class AuthorizationController : ControllerBase
 
             var filteredUsers = await _usersService
                 .GetFilteredUsersAsync(userFilter, cancellationToken);
+
+            var userRoleAccessLevel = filteredUsers[0].Role.AccessLevel;
+            var asseccLvl = userRoleAccessLevel switch
+            {
+                <= 5 => 2,
+                <= 19 => 1,
+                _ => 0
+            };
 
             var response = new GetCurrentUserDataResponse(
                 token,

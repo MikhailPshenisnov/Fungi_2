@@ -13,5 +13,7 @@ public interface IUsersService
 
     Task<Guid> UpdateUserAsync(Guid userId, User newUser, CancellationToken ct);
 
+    Task<Guid> SetUserAvatarPathAsync(Guid userId, string? avatarPath, CancellationToken ct);
+
     Task<Guid> DeleteUserAsync(Guid userId, CancellationToken ct);
 }

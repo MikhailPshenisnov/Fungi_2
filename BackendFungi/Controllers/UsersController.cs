@@ -17,15 +17,18 @@ namespace BackendFungi.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly IAccessCheckService _accessCheckService;
+    private readonly IAvatarStorageService _avatarStorageService;
     private readonly IRolesService _rolesService;
     private readonly IUsersService _usersService;
 
     public UsersController(IAccessCheckService accessCheckService, IUsersService usersService,
+        IAvatarStorageService avatarStorageService,
         IRolesService rolesService)
     {
         _accessCheckService = accessCheckService;
         _rolesService = rolesService;
         _usersService = usersService;
+        _avatarStorageService = avatarStorageService;
     }
 
     // TODO: FIX THIS STRANGE METHOD AND CHECK REQUESTS RESPONSES FOR IT
@@ -69,15 +72,7 @@ public class UsersController : ControllerBase
 
         var response = new BaseResponse<GetUserResponse>(
             new GetUserResponse(
-                new UserDto(
-                    user.Id,
-                    user.Username,
-                    user.Email,
-                    user.PasswordHash,
-                    new RoleDto(
-                        user.Role.Id,
-                        user.Role.Name,
-                        user.Role.AccessLevel))),
+                MapUserToDto(user)),
             null);
 
         return Ok(response);
@@ -90,9 +85,9 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<BaseResponse<GetFilteredUsersResponse>>> GetFilteredUsers([FromQuery] GetFilteredUsersRequest request,
         CancellationToken cancellationToken)
     {
-        await _accessCheckService.CheckAccessLevel(
+        await _accessCheckService.CheckPermission(
             HttpContext,
-            (int)AccessLevelEnumerator.JuniorAdministratorMin,
+            PermissionCodes.UsersRead,
             cancellationToken);
 
         var (userFilter, userFilterError) = UserFilter
@@ -109,16 +104,7 @@ public class UsersController : ControllerBase
         var response = new BaseResponse<GetFilteredUsersResponse>(
             new GetFilteredUsersResponse(
                 filteredUsers
-                    .Select(user =>
-                        new UserDto(
-                            user.Id,
-                            user.Username,
-                            user.Email,
-                            user.PasswordHash,
-                            new RoleDto(
-                                user.Role.Id,
-                                user.Role.Name,
-                                user.Role.AccessLevel)))
+                    .Select(MapUserToDto)
                     .ToList()),
             null);
 
@@ -132,9 +118,9 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<BaseResponse<CreateUserResponse>>> CreateUser([FromBody] CreateUserRequest request,
         CancellationToken cancellationToken)
     {
-        var u = await _accessCheckService.CheckAccessLevel(
+        var u = await _accessCheckService.CheckPermission(
             HttpContext,
-            (int)AccessLevelEnumerator.JuniorAdministratorMin,
+            PermissionCodes.UsersManage,
             cancellationToken);
 
         var role = await _rolesService.GetRoleAsync(request.RoleId, cancellationToken);
@@ -165,16 +151,87 @@ public class UsersController : ControllerBase
     }
 
     [Authorize]
+    [HttpGet]
+    [SwaggerOperation(OperationId = "GetCurrentUserProfile", Summary = "Get current user profile",
+        Description = "Returns profile data for the currently authenticated user")]
+    public async Task<ActionResult<BaseResponse<GetCurrentUserProfileResponse>>> GetCurrentUserProfile(
+        CancellationToken cancellationToken)
+    {
+        var currentUser = await _accessCheckService.GetCurrentUser(HttpContext, cancellationToken);
+
+        var response = new BaseResponse<GetCurrentUserProfileResponse>(
+            new GetCurrentUserProfileResponse(
+                MapUserToDto(currentUser)),
+            null);
+
+        return Ok(response);
+    }
+
+    [Authorize]
+    [HttpPost]
+    [Consumes("multipart/form-data")]
+    [SwaggerOperation(OperationId = "UploadMyAvatar", Summary = "Upload current user avatar",
+        Description = "Uploads avatar image, crops it to square and stores as WebP")]
+    public async Task<ActionResult<BaseResponse<UploadMyAvatarResponse>>> UploadMyAvatar(
+        [FromForm] UploadMyAvatarRequest request,
+        CancellationToken cancellationToken)
+    {
+        var currentUser = await _accessCheckService.GetCurrentUser(HttpContext, cancellationToken);
+
+        var avatarPath = await _avatarStorageService
+            .SaveUserAvatarAsync(currentUser.Id, request.Avatar, currentUser.AvatarPath, cancellationToken);
+
+        await _usersService
+            .SetUserAvatarPathAsync(currentUser.Id, avatarPath, cancellationToken);
+
+        var response = new BaseResponse<UploadMyAvatarResponse>(
+            new UploadMyAvatarResponse(
+                _avatarStorageService.BuildPublicUrl(avatarPath) ?? string.Empty),
+            null);
+
+        return Ok(response);
+    }
+
+    [Authorize]
+    [HttpDelete]
+    [SwaggerOperation(OperationId = "DeleteMyAvatar", Summary = "Delete current user avatar",
+        Description = "Deletes avatar for the currently authenticated user")]
+    public async Task<ActionResult<BaseResponse<DeleteMyAvatarResponse>>> DeleteMyAvatar(
+        CancellationToken cancellationToken)
+    {
+        var currentUser = await _accessCheckService.GetCurrentUser(HttpContext, cancellationToken);
+
+        var hadAvatar = !string.IsNullOrWhiteSpace(currentUser.AvatarPath);
+
+        if (hadAvatar)
+        {
+            await _avatarStorageService.DeleteUserAvatarAsync(currentUser.AvatarPath, cancellationToken);
+            await _usersService.SetUserAvatarPathAsync(currentUser.Id, null, cancellationToken);
+        }
+
+        var response = new BaseResponse<DeleteMyAvatarResponse>(
+            new DeleteMyAvatarResponse(
+                hadAvatar,
+                null),
+            null);
+
+        return Ok(response);
+    }
+
+    [Authorize]
     [HttpPut]
     [SwaggerOperation(OperationId = "UpdateUser", Summary = "Update user",
         Description = "Updates user info by id")]
     public async Task<ActionResult<BaseResponse<UpdateUserResponse>>> UpdateUser([FromBody] UpdateUserRequest request,
         CancellationToken cancellationToken)
     {
-        var u = await _accessCheckService.CheckAccessLevel(
+        var u = await _accessCheckService.CheckPermission(
             HttpContext,
-            (int)AccessLevelEnumerator.JuniorAdministratorMin,
+            PermissionCodes.UsersManage,
             cancellationToken);
+
+        var existingUser = await _usersService
+            .GetUserAsync(request.UserId, cancellationToken);
 
         var newRole = await _rolesService.GetRoleAsync(request.NewRoleId, cancellationToken);
 
@@ -184,16 +241,14 @@ public class UsersController : ControllerBase
                 request.NewEmail,
                 request.NewPassword,
                 false,
-                newRole);
+                newRole,
+                existingUser.AvatarPath);
 
         if (!string.IsNullOrEmpty(newUserError))
             throw new ConversionException($"Incorrect data format: {newUserError}");
 
         if (u.Role.AccessLevel >= newUser.Role.AccessLevel)
             throw new AccessException("The user does not have sufficient access rights");
-
-        var existingUser = await _usersService
-            .GetUserAsync(request.UserId, cancellationToken);
 
         if (u.Role.AccessLevel >= existingUser.Role.AccessLevel)
             throw new AccessException("The user does not have sufficient access rights");
@@ -216,9 +271,9 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<BaseResponse<DeleteUserResponse>>> DeleteUser([FromQuery] DeleteUserRequest request,
         CancellationToken cancellationToken)
     {
-        var u = await _accessCheckService.CheckAccessLevel(
+        var u = await _accessCheckService.CheckPermission(
             HttpContext,
-            (int)AccessLevelEnumerator.AdministratorMin,
+            PermissionCodes.UsersDelete,
             cancellationToken);
 
         var existingUser = await _usersService
@@ -251,10 +306,7 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> UpdateUserSmallParam([FromForm] UpdateUserRequestSmallParam request,
         CancellationToken cancellationToken)
     {
-        var currentUser = await _accessCheckService.CheckAccessLevel(
-            HttpContext,
-            (int)AccessLevelEnumerator.CommonUser,
-            cancellationToken);
+        var currentUser = await _accessCheckService.GetCurrentUser(HttpContext, cancellationToken);
 
         var newName = request.NewName?.Trim();
 
@@ -271,7 +323,8 @@ public class UsersController : ControllerBase
                 currentUser.Email,
                 currentUser.PasswordHash,
                 true,
-                currentUser.Role);
+                currentUser.Role,
+                currentUser.AvatarPath);
 
         if (!string.IsNullOrEmpty(newUserError))
             throw new ConversionException($"Incorrect data format: {newUserError}");
@@ -280,5 +333,19 @@ public class UsersController : ControllerBase
             .UpdateUserAsync(currentUser.Id, newUser, cancellationToken);
 
         return Ok();
+    }
+
+    private UserDto MapUserToDto(Models.User user)
+    {
+        return new UserDto(
+            user.Id,
+            user.Username,
+            user.Email,
+            _avatarStorageService.BuildPublicUrl(user.AvatarPath),
+            new RoleDto(
+                user.Role.Id,
+                user.Role.Name,
+                user.Role.AccessLevel,
+                user.Role.PermissionCodes.OrderBy(x => x).ToList()));
     }
 }
