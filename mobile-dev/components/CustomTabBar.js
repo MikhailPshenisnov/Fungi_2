@@ -4,6 +4,11 @@ import { View, TouchableOpacity, Image, StyleSheet, Dimensions } from "react-nat
 const { width: screenWidth } = Dimensions.get("window");
 
 export default function CustomTabBar({ state, descriptors, navigation }) {
+    // Скрываем таб-бар на экране камеры
+  const currentRoute = state.routes[state.index];
+  if (currentRoute.name === "Камера") {
+    return null;
+  }
 return ( <View style={styles.tabbar}>
 {/* Фоновое изображение таб-бара */}
 <Image

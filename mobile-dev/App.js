@@ -9,6 +9,7 @@ import CustomTabBar  from './components/CustomTabBar';
 import EncyclopediaScreen from './components/EncyclopediaScreen';
 import CardsScreen from './components/CardsScreen'; 
 import AICameraScreen from './components/AICameraScreen';
+import MushroomClassifierScreen from './components/MushroomClassifierScreen';
 import ProfileScreen from './components/ProfileScreen';
 import FungiDetails from './components/fungiDetails';
 
@@ -146,7 +147,14 @@ function AICamera() {
         name="AICamera" 
         component={AICameraScreen}
         options={{
-          title: 'AICamera',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen 
+        name="MushroomClassifier" 
+        component={MushroomClassifierScreen}
+        options={{
+          title: 'Классификатор',
           headerStyle: { backgroundColor: '#452929' },
           headerTitleAlign: 'center',
           headerTintColor: '#ffffff',
