@@ -56,26 +56,20 @@ function EncyclopediaStack() {
       }}
     >
       <Stack.Screen 
-        name="Encyclopedia" 
-        component={EncyclopediaScreen} 
-        options={{ 
-          title: 'Энциклопедия',
-          headerStyle: { backgroundColor: '#452929' },
-          headerTitleAlign: 'center',
-          headerTintColor: '#ffffff',
-        }}
-      />
-      {/*ЭКРАН ДЕТАЛЕЙ */}
-      <Stack.Screen 
-        name="FungiDetails" 
-        component={FungiDetails}
-        options={{ 
-          title: 'Детали гриба',
-          headerStyle: { backgroundColor: '#452929' },
-          headerTitleAlign: 'center',
-          headerTintColor: '#ffffff',
-        }}
-      />
+    name="Encyclopedia" 
+    component={EncyclopediaScreen} 
+    options={{ 
+      headerShown: false, 
+    }}
+  />
+  
+  <Stack.Screen 
+    name="FungiDetails" 
+    component={FungiDetails}
+    options={{ 
+      headerShown: false, 
+    }}
+  />
     </Stack.Navigator>
   );
 }
@@ -212,7 +206,7 @@ const App = () => {
       component={AICamera}
       options={{ tabBarButton: () => null }}
     />
-    <Tab.Screen name="Энциклопедия" component={EncyclopediaScreen} />
+    <Tab.Screen name="Энциклопедия" component={EncyclopediaStack} />
     <Tab.Screen name="Профиль" component={ProfileStack} />
   </Tab.Navigator>
 
