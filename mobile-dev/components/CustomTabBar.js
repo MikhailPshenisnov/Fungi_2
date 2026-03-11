@@ -1,107 +1,135 @@
 import React from "react";
-import { View, TouchableOpacity, Image, StyleSheet, Dimensions } from "react-native";
+import { View, TouchableOpacity, Image, StyleSheet } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const { width: screenWidth } = Dimensions.get("window");
+export const TAB_BAR_BOTTOM_GAP = 12;
+export const TAB_BAR_BASE_HEIGHT = 76;
+export const TAB_BAR_SCREEN_PADDING = 96;
 
 export default function CustomTabBar({ state, descriptors, navigation }) {
-    // Скрываем таб-бар на экране камеры
+  const insets = useSafeAreaInsets();
   const currentRoute = state.routes[state.index];
+
   if (currentRoute.name === "Камера") {
     return null;
   }
-return ( <View style={styles.tabbar}>
-{/* Фоновое изображение таб-бара */}
-<Image
-source={require("../assets/image/navbar/Subtract.png")}
-style={styles.subtractImage}
-/>
 
+  const visibleRoutes = state.routes.filter((route) => route.name !== "Камера");
+  const leftRoutes = visibleRoutes.slice(0, 2);
+  const rightRoutes = visibleRoutes.slice(2);
+  const bottomInset = Math.max(insets.bottom, TAB_BAR_BOTTOM_GAP);
 
-  {/* Кнопка камеры по центру */}
-  <TouchableOpacity
-    style={styles.cameraButton}
-    onPress={() => navigation.navigate("Камера")}
-  >
-    <Image
-      source={require("../assets/image/navbar/camera.svg")}
-      style={{ width: 54, height: 54 }}
-    />
-  </TouchableOpacity>
-
-  {/* Обычные табы */}
-  {state.routes.map((route, index) => {
-    if (route.name === "Камера") return null; // Камера отдельная
-
+  const renderTabButton = (route) => {
+    const routeIndex = state.routes.findIndex((item) => item.key === route.key);
     const { options } = descriptors[route.key];
-    const isFocused = state.index === index;
-
-    let left = 0;
-    let top = 0;
-
-    // Расположение кнопок по твоему макету
-    switch (route.name) {
-      case "Главная":
-        left = 30;
-        top = 35;
-        break;
-      case "Карточки":
-        left = 84;
-        top = 36;
-        break;
-      case "Энциклопедия":
-        left = 240;
-        top = 34;
-        break;
-      case "Профиль":
-        left = 297;
-        top = 34;
-        break;
-    }
+    const isFocused = state.index === routeIndex;
 
     return (
       <TouchableOpacity
         key={route.key}
         onPress={() => navigation.navigate(route.name)}
-        style={[styles.tabButton, { left, top }]}
+        style={styles.tabButton}
+        activeOpacity={0.85}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
       >
         {options.tabBarIcon({ focused: isFocused, size: 26 })}
       </TouchableOpacity>
     );
-  })}
-</View>
+  };
 
+  return (
+    <View pointerEvents="box-none" style={styles.wrapper}>
+      <View style={[styles.tabbar, { paddingBottom: bottomInset }]}> 
+        <Image
+          source={require("../assets/image/navbar/Subtract.png")}
+          style={[styles.subtractImage, { bottom: bottomInset }]}
+          pointerEvents="none"
+        />
 
-);
+        <View style={styles.row}>
+          <View style={styles.sideGroup}>{leftRoutes.map(renderTabButton)}</View>
+          <View style={styles.centerSpacer} />
+          <View style={styles.sideGroup}>{rightRoutes.map(renderTabButton)}</View>
+        </View>
+
+        <TouchableOpacity
+          style={styles.cameraButton}
+          onPress={() => navigation.navigate("Камера")}
+          activeOpacity={0.9}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <Image
+            source={require("../assets/image/navbar/camera.svg")}
+            style={styles.cameraIcon}
+          />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-tabbar: {
-width: 353,
-height: 77,
-position: "absolute",
-bottom: 20,
-left: 20,
-},
-
-subtractImage: {
-width: 353,
-height: 57,
-position: "absolute",
-top: 20,
-left: 0,
-resizeMode: "stretch",
-},
-
-cameraButton: {
-position: "absolute",
-width: 54,
-height: 54,
-top: 0,
-left: 149,
-zIndex: 10,
-},
-
-tabButton: {
-position: "absolute",
-},
+  wrapper: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 100,
+    elevation: 24,
+    paddingHorizontal: 16,
+  },
+  tabbar: {
+    alignSelf: "center",
+    width: "100%",
+    maxWidth: 420,
+    minHeight: TAB_BAR_BASE_HEIGHT,
+    justifyContent: "flex-end",
+    position: "relative",
+  },
+  subtractImage: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    width: "100%",
+    height: 58,
+    resizeMode: "stretch",
+  },
+  row: {
+    minHeight: 76,
+    flexDirection: "row",
+    alignItems: "flex-end",
+    paddingHorizontal: 12,
+    paddingBottom: 10,
+  },
+  sideGroup: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "flex-end",
+  },
+  centerSpacer: {
+    width: 82,
+  },
+  tabButton: {
+    minWidth: 48,
+    minHeight: 48,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  cameraButton: {
+    position: "absolute",
+    alignSelf: "center",
+    top: 0,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 3,
+    elevation: 26,
+  },
+  cameraIcon: {
+    width: 54,
+    height: 54,
+  },
 });

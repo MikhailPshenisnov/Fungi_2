@@ -1,35 +1,38 @@
 import React from 'react';
-import { View, Text, Image, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet, Dimensions } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { TAB_BAR_SCREEN_PADDING } from './CustomTabBar';
 
+const { width: screenWidth } = Dimensions.get('window');
+const heroImageHeight = Math.max(250, Math.min(360, screenWidth * 0.86));
 
 const FungiDetails = ({ route }) => {
   const { mushroom } = route.params;
+  const insets = useSafeAreaInsets();
 
   return (
-    <ScrollView style={styles.container}>
-      {/* Заголовок */}
-      <View style={styles.header}>
-        <Text style={styles.title}>{mushroom.title}</Text>
-        <Text style={styles.subtitle}>
-          {mushroom.type} - {mushroom.latyn.toLowerCase()}
-        </Text>
-      </View>
-
-      {/* Изображение */}
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={{ paddingBottom: TAB_BAR_SCREEN_PADDING + insets.bottom }}
+      showsVerticalScrollIndicator={false}
+    >
       <Image source={mushroom.imageSource} style={styles.image} />
 
-      {/* Описание */}
-      <View style={styles.descriptionContainer}>
-        <Text style={styles.descriptionTitle}>Описание</Text>
-        <Text style={styles.descriptionText}>{mushroom.description}</Text>
-      </View>
+      <View style={styles.content}>
+        <Text style={styles.title}>{mushroom.title}</Text>
+        <Text style={styles.subtitle}>{mushroom.latyn}</Text>
 
-      {/* Дополнительная информация (можно добавить позже) */}
-      <View style={styles.infoContainer}>
-        <Text style={styles.infoTitle}>Характеристики</Text>
-        <Text style={styles.infoText}>• Съедобный гриб</Text>
-        <Text style={styles.infoText}>• Сезон: лето-осень</Text>
-        <Text style={styles.infoText}>• Место обитания: хвойные и смешанные леса</Text>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Описание</Text>
+          <Text style={styles.descriptionText}>{mushroom.description}</Text>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Характеристики</Text>
+          <Text style={styles.infoText}>Семейство: {mushroom.type}</Text>
+          <Text style={styles.infoText}>Съедобность: съедобный гриб</Text>
+          <Text style={styles.infoText}>Сезон: лето - осень</Text>
+        </View>
       </View>
     </ScrollView>
   );
@@ -38,65 +41,60 @@ const FungiDetails = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
-  },
-  header: {
-    padding: 20,
-    backgroundColor: '#452929',
-  },
-  title: {
-    color: '#ffffff',
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 5,
-  },
-  subtitle: {
-    color: '#c79078',
-    fontSize: 16,
-    textAlign: 'center',
-    fontStyle: 'italic',
+    backgroundColor: '#EFEFEF',
   },
   image: {
     width: '100%',
-    height: 300,
+    height: heroImageHeight,
     resizeMode: 'cover',
   },
-  descriptionContainer: {
-    padding: 20,
-    backgroundColor: '#1a1a1a',
-    marginTop: 1,
+  content: {
+    padding: 18,
   },
-  descriptionTitle: {
-    color: '#ffffff',
-    fontSize: 20,
-    fontWeight: 'bold',
+  title: {
+    fontFamily: 'Raleway-Bold',
+    fontSize: 26,
+    lineHeight: 30,
+    color: '#2D2D2D',
+    marginBottom: 6,
+  },
+  subtitle: {
+    fontFamily: 'Raleway-Regular',
+    fontSize: 15,
+    lineHeight: 20,
+    color: '#8B8B8B',
+    fontStyle: 'italic',
+    marginBottom: 18,
+  },
+  section: {
+    backgroundColor: '#F7F7F7',
+    borderRadius: 18,
+    padding: 16,
+    marginBottom: 14,
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  sectionTitle: {
+    fontFamily: 'Raleway-Bold',
+    fontSize: 18,
+    color: '#2D2D2D',
     marginBottom: 10,
   },
   descriptionText: {
-    
-    textAlign: 'left',
-    flexWrap: 'wrap',
-    color: '#cccccc',
-    fontSize: 16,
-    lineHeight: 24,
-
-  },
-  infoContainer: {
-    padding: 20,
-    backgroundColor: '#2a2a2a',
-    marginTop: 1,
-  },
-  infoTitle: {
-    color: '#ffffff',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontFamily: 'Raleway-Regular',
+    color: '#4B4B4B',
+    fontSize: 15,
+    lineHeight: 22,
   },
   infoText: {
-    color: '#cccccc',
-    fontSize: 14,
-    marginBottom: 5,
+    fontFamily: 'Raleway-Regular',
+    color: '#4B4B4B',
+    fontSize: 15,
+    lineHeight: 22,
+    marginBottom: 4,
   },
 });
 
