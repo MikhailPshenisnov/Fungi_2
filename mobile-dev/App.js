@@ -84,17 +84,10 @@ function EncyclopediaStack() {
 function CardsStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen 
-        name="Cards" 
-        component={CardsScreen} 
-        options={{ 
-          title: 'Публикации',
-          headerStyle: {
-             backgroundColor: '#452929',
-          },
-          headerTitleAlign: 'center',
-          headerTintColor: '#ffffff',
-        }}
+      <Stack.Screen
+        name="Cards"
+        component={CardsScreen}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
@@ -163,6 +156,7 @@ const App = () => {
     "Raleway-Bold": require("./assets/fonts/Raleway-Bold.ttf"),
     "Raleway-Medium": require("./assets/fonts/Raleway-Medium.ttf"),
     "Raleway-Semibold": require("./assets/fonts/Raleway-SemiBold.ttf"),
+    "Inter-Regular":    require("./assets/fonts/Inter-Variable.ttf"),
   });
 
   if (!fontsLoaded) return null;
