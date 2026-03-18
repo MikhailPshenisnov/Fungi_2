@@ -1,43 +1,36 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, FlatList } from 'react-native';
 import Encyclopedia from './Encyclopedia';
 
 const EncyclopediaList = ({ encycdata, navigation }) => {
 
-    return (
-        <View style={styles.cardContainer}>
-            <ScrollView>
-                <View style={styles.container}>
-                    {encycdata.map((item, index) => (
-                      <Encyclopedia 
-                        key={index} 
-                        type={item.type} 
-                        title={item.title} 
-                        latyn={item.latyn} 
-                        description={item.description} 
-                        imageSource={item.imageSource} 
-                        navigation={navigation} 
-                      />
-                    ))}
-                </View>
-            </ScrollView>
-        </View>
-    );
+  const renderItem = ({ item }) => (
+    <Encyclopedia
+      {...item}
+      navigation={navigation}
+    />
+  );
+
+  return (
+
+    <FlatList
+      data={encycdata}
+      renderItem={renderItem}
+      keyExtractor={(item, index) => index.toString()}
+      numColumns={2}
+      columnWrapperStyle={styles.row}
+      showsVerticalScrollIndicator={false}
+    />
+
+  );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#000',
-    },
-    cardContainer: {
-        justifyContent: 'center',
-    },
-    errorText: {
-        color: '#fff',
-        textAlign: 'center',
-        marginTop: 20,
-    },
+
+  row: {
+    justifyContent: 'space-between',
+  },
+
 });
 
 export default EncyclopediaList;
