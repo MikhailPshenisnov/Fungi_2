@@ -10,11 +10,15 @@ const Encyclopedia = ({
   imageSource,
   DontEat,
   RedBook,
+  PartiallyEatableBadge,
   navigation
 }) => {
 
   const dontEatIcon = require('../assets/image/Encyclopedia/donteat.svg');
+  const EatIcon = require('../assets/image/Encyclopedia/eat.svg');
+  const notredBookIcon = require('../assets/image/Encyclopedia/notredbook.svg');
   const redBookIcon = require('../assets/image/Encyclopedia/redbook.svg');
+  const partiallyeatablebadgeIcon = require('../assets/image/Encyclopedia/partiallyeatablebadge.svg');
 
   const handlePress = () => {
     navigation.navigate('FungiDetails', {
@@ -33,17 +37,23 @@ const Encyclopedia = ({
     <TouchableOpacity onPress={handlePress} style={styles.card}>
 
       <View style={styles.imageWrapper}>
-
         <Image source={imageSource} style={styles.image} />
 
-        {DontEat && (
+        {/* Съедобность */}
+        {DontEat ? (
           <Image source={dontEatIcon} style={styles.badgeLeft} />
+        ) : PartiallyEatableBadge ? (
+          <Image source={partiallyeatablebadgeIcon} style={styles.badgeLeft} />
+        ) : (
+          <Image source={EatIcon} style={styles.badgeLeft} />
         )}
 
-        {!RedBook && (
+        {/* Красная книга */}
+        {RedBook ? (
           <Image source={redBookIcon} style={styles.badgeRight} />
+        ) : (
+          <Image source={notredBookIcon} style={styles.badgeRight} />
         )}
-
       </View>
 
       <View style={styles.textContainer}>
