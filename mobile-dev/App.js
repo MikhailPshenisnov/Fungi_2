@@ -12,6 +12,7 @@ import AICameraScreen from './components/AICameraScreen';
 import MushroomClassifierScreen from './components/MushroomClassifierScreen';
 import ProfileScreen from './components/ProfileScreen';
 import FungiDetails from './components/fungiDetails';
+import HomeScreen from './components/HomeScreen';
 
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
@@ -213,7 +214,7 @@ const App = () => {
       headerShown: false,
     })}
   >
-    <Tab.Screen name="Главная" component={EncyclopediaStack} />
+    <Tab.Screen name="Главная" component={HomeScreen} />
     <Tab.Screen name="Карточки" component={CardsStack} />
     <Tab.Screen 
       name="Камера" 
