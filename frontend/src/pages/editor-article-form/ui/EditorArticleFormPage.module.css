@@ -1,0 +1,430 @@
+.container {
+  display: grid;
+  gap: 14px;
+  padding-top: 30px;
+  padding-bottom: 42px;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(310px, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.topRow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: var(--radius-m);
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-primary);
+  background: var(--color-surface-elevated);
+  text-decoration: none;
+}
+
+.backLink:hover {
+  background: var(--color-bg-subtle);
+}
+
+.metaText {
+  color: var(--color-text-secondary);
+}
+
+.noticeCard {
+  padding: 12px;
+}
+
+.successText {
+  color: var(--color-status-success-strong);
+}
+
+.errorText {
+  color: var(--color-status-error-text);
+}
+
+.formCard {
+  min-width: 0;
+  padding: 22px;
+}
+
+.formGrid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.mediaSection {
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-m);
+  padding: 14px;
+  background: var(--color-bg-subtle);
+}
+
+.mediaControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.imageChips {
+  display: grid;
+  gap: 8px;
+}
+
+.imageChip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 34px;
+  padding: 6px 10px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-m);
+  background: var(--color-bg-subtle);
+}
+
+.imageChipLink {
+  color: var(--color-text-primary);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.imageChipButton {
+  border: 0;
+  border-radius: var(--radius-s);
+  background: transparent;
+  color: var(--color-status-error-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.paragraphList {
+  display: grid;
+  gap: 12px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.paragraphItem {
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-m);
+  background: var(--color-bg-subtle);
+  padding: 14px;
+}
+
+.paragraphHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.paragraphActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.subtitleToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text-secondary);
+  font-size: var(--text-meta-size);
+}
+
+.paragraphActionButton,
+.paragraphActionButtonDanger {
+  min-height: 30px;
+  padding: 0 8px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-s);
+  background: var(--color-surface-elevated);
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: var(--text-meta-size);
+  cursor: pointer;
+}
+
+.paragraphActionButtonDanger {
+  color: var(--color-status-error-text);
+}
+
+.paragraphTextarea {
+  width: 100%;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-s);
+  background: var(--color-surface-elevated);
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: var(--text-body-size);
+  line-height: 1.5;
+  min-height: 180px;
+  padding: 12px 14px;
+  resize: vertical;
+}
+
+.previewColumn {
+  position: sticky;
+  top: 96px;
+}
+
+.previewCard {
+  padding: 16px;
+}
+
+.previewHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.previewStatus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border-default);
+  font-size: var(--text-meta-size);
+  font-weight: 700;
+}
+
+.previewStatusDraft {
+  color: var(--color-text-secondary);
+  background: var(--color-bg-subtle);
+}
+
+.previewStatusReview {
+  border-color: var(--color-status-warning-border);
+  color: var(--color-status-warning-strong);
+  background: color-mix(in srgb, var(--color-status-warning-bg) 46%, var(--color-surface-elevated));
+}
+
+.previewStatusPublished {
+  border-color: var(--color-status-success-border);
+  color: var(--color-status-success-strong);
+  background: color-mix(in srgb, var(--color-status-success-bg) 46%, var(--color-surface-elevated));
+}
+
+.previewStatusMuted {
+  border-color: var(--color-border-subtle);
+  color: var(--color-text-tertiary);
+  background: var(--color-bg-subtle);
+}
+
+.previewMeta {
+  color: var(--color-text-secondary);
+}
+
+.previewCover {
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-m);
+  overflow: hidden;
+  background: var(--color-bg-subtle);
+}
+
+.previewCoverImage {
+  display: block;
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+.previewCoverFallback {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 220px;
+  padding: 14px;
+  color: var(--color-text-tertiary);
+  text-align: center;
+  background: linear-gradient(
+    140deg,
+    var(--color-bg-subtle),
+    color-mix(in srgb, var(--color-bg-subtle) 42%, var(--color-bg-default))
+  );
+}
+
+.previewParagraphs {
+  display: grid;
+  gap: 10px;
+  max-height: 380px;
+  overflow: auto;
+  border-top: 1px solid var(--color-border-subtle);
+  border-bottom: 1px solid var(--color-border-subtle);
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.previewSubtitle {
+  margin: 0;
+}
+
+.previewBody {
+  margin: 0;
+}
+
+.previewGallery {
+  display: grid;
+  gap: 8px;
+}
+
+.previewGalleryGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.previewGalleryChip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-secondary);
+  background: var(--color-bg-subtle);
+  text-decoration: none;
+  font-size: var(--text-meta-size);
+}
+
+.previewGalleryChip:hover {
+  border-color: var(--color-action-primary-border);
+  color: var(--color-text-primary);
+  background: var(--color-surface-elevated);
+}
+
+.mushroomPicker {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.mushroomSearchResults {
+  display: grid;
+  gap: 8px;
+  max-height: 240px;
+  overflow: auto;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-m);
+  background: var(--color-bg-subtle);
+  padding: 10px;
+}
+
+.mushroomSearchResultRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px;
+  border-radius: var(--radius-s);
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.mushroomSearchResultInfo {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.mushroomChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.mushroomChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 5px 10px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-l);
+  background: var(--color-bg-subtle);
+  color: var(--color-text-secondary);
+  font-size: var(--text-meta-size);
+}
+
+.mushroomChipInfo {
+  display: grid;
+  min-width: 0;
+}
+
+.mushroomChipTitle {
+  color: var(--color-text-primary);
+  line-height: 1.25;
+}
+
+.mushroomChipMeta {
+  color: var(--color-text-secondary);
+  line-height: 1.2;
+}
+
+.mushroomChip button {
+  border: 0;
+  background: transparent;
+  color: var(--color-status-error-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.bottomActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+@media (max-width: 1100px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .previewColumn {
+    position: static;
+  }
+}
+
+@media (max-width: 820px) {
+  .topRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .formGrid,
+  .mushroomPicker {
+    grid-template-columns: 1fr;
+  }
+
+  .paragraphHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

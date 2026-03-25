@@ -11,4 +11,8 @@ public interface IArticlesRepository
     Task<Guid> UpdateArticle(Guid articleId, Article newArticle, CancellationToken ct);
 
     Task<Guid> DeleteArticle(Guid articleId, CancellationToken ct);
+
+    Task<List<Guid>> GetArticleMushroomIds(Guid articleId, CancellationToken ct);
+
+    Task<Guid> ReplaceArticleMushrooms(Guid articleId, IReadOnlyCollection<Guid> mushroomIds, CancellationToken ct);
 }

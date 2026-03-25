@@ -1,0 +1,165 @@
+.container {
+  display: grid;
+  gap: 20px;
+  padding-block: 24px 40px;
+}
+
+.hero {
+  padding: 28px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(120deg, var(--color-surface-default), var(--color-surface-elevated));
+}
+
+.heroTop {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.heroText {
+  max-width: 62ch;
+  color: var(--color-text-secondary);
+}
+
+.filtersCard {
+  padding: 20px;
+}
+
+.filtersGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 220px;
+  gap: 14px;
+  align-items: end;
+}
+
+.filterActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.card {
+  display: grid;
+  gap: 14px;
+  cursor: pointer;
+}
+
+.cardImageWrap {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--color-bg-muted);
+}
+
+.cardImage {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+}
+
+.imageFallback {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 16px;
+  color: var(--color-text-tertiary);
+}
+
+.cardHeader {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.cardTitle {
+  font-size: 1.1rem;
+}
+
+.cardMeta {
+  color: var(--color-text-secondary);
+}
+
+.likeButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border-default);
+  background: var(--color-surface-default);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.likeButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.likeButtonActive {
+  border-color: var(--color-status-warning-on-bg);
+  background: color-mix(in srgb, var(--color-status-warning-bg) 32%, var(--color-surface-default));
+  color: var(--color-text-primary);
+}
+
+.likeIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.stateCard,
+.loadingState {
+  padding: 24px;
+}
+
+.stateText {
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 1100px) {
+  .heroTop {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .filtersGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .filterActions {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 760px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filtersGrid {
+    grid-template-columns: 1fr;
+  }
+}

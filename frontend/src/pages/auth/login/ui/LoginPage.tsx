@@ -5,7 +5,7 @@ import { loginUser } from '@features/auth';
 import { getCurrentUserProfile } from '@features/avatar';
 import { normalizePermissionCodes, useSession } from '@entities/session';
 import { appleLogo, googleLogo } from '@shared/assets/icons';
-import { Button, Checkbox, Input, Stack, Typography } from '@shared/ui';
+import { Button, Checkbox, Input, Stack, Typography, useToast } from '@shared/ui';
 import styles from './LoginPage.module.css';
 
 interface LocationState {
@@ -16,26 +16,27 @@ export function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { signIn } = useSession();
+  const { showError, showInfo } = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const state = location.state as LocationState | null;
     if (state?.reason === 'session-expired') {
-      setErrorMessage('Сессия истекла. Войдите снова.');
+      showError('Сессия истекла. Войдите снова.', { title: 'Авторизация' });
     }
-  }, [location.state]);
+  }, [location.state, showError]);
 
   function handleSocialAuth(provider: 'google' | 'apple') {
-    setErrorMessage(`Авторизация через ${provider === 'google' ? 'Google' : 'Apple'} будет добавлена в следующей итерации.`);
+    showInfo(`Авторизация через ${provider === 'google' ? 'Google' : 'Apple'} будет добавлена в следующей итерации.`, {
+      title: 'Скоро'
+    });
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setErrorMessage(null);
     setIsSubmitting(true);
 
     try {
@@ -65,7 +66,7 @@ export function LoginPage() {
       navigate('/profile', { replace: true });
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Не удалось выполнить вход.';
-      setErrorMessage(message);
+      showError(message, { title: 'Ошибка входа' });
     } finally {
       setIsSubmitting(false);
     }
@@ -143,7 +144,6 @@ export function LoginPage() {
               onChange={(event) => setRememberMe(event.currentTarget.checked)}
               disabled={isSubmitting}
             />
-            {errorMessage ? <Typography variant="caption" className={styles.error}>{errorMessage}</Typography> : null}
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? 'Входим...' : 'Войти'}
             </Button>

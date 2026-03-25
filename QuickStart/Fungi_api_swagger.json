@@ -19,10 +19,10 @@
         ],
         "summary": "Toggle like",
         "description": "Toggles the like state for an article",
-        "operationId": "ToggleLike",
+        "operationId": "ToggleArticleLike",
         "parameters": [
           {
-            "name": "articleId",
+            "name": "ArticleId",
             "in": "query",
             "schema": {
               "type": "string",
@@ -32,7 +32,24 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToggleArticleLikeResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToggleArticleLikeResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToggleArticleLikeResponseBaseResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -44,10 +61,10 @@
         ],
         "summary": "Get likes count",
         "description": "Gets the number of likes for an article",
-        "operationId": "GetLikesCount",
+        "operationId": "GetArticleLikesCount",
         "parameters": [
           {
-            "name": "articleId",
+            "name": "ArticleId",
             "in": "query",
             "schema": {
               "type": "string",
@@ -57,7 +74,24 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetArticleLikesCountResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetArticleLikesCountResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetArticleLikesCountResponseBaseResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -69,10 +103,10 @@
         ],
         "summary": "Has user liked",
         "description": "Shows whether the user liked the article",
-        "operationId": "HasUserLiked",
+        "operationId": "HasUserLikedArticle",
         "parameters": [
           {
-            "name": "articleId",
+            "name": "ArticleId",
             "in": "query",
             "schema": {
               "type": "string",
@@ -82,7 +116,24 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/HasUserLikedArticleResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HasUserLikedArticleResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HasUserLikedArticleResponseBaseResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -92,12 +143,12 @@
         "tags": [
           "ArticleMushrooms"
         ],
-        "summary": "Get all mushrooms",
-        "description": "Gets a list of all mushrooms",
-        "operationId": "GetAllMushrooms",
+        "summary": "Get article mushrooms",
+        "description": "Gets linked mushrooms for article",
+        "operationId": "GetArticleMushrooms",
         "parameters": [
           {
-            "name": "articleId",
+            "name": "ArticleId",
             "in": "query",
             "schema": {
               "type": "string",
@@ -107,7 +158,24 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetArticleMushroomsResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetArticleMushroomsResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetArticleMushroomsResponseBaseResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -122,7 +190,7 @@
         "operationId": "AddMushroomToArticle",
         "parameters": [
           {
-            "name": "articleId",
+            "name": "ArticleId",
             "in": "query",
             "schema": {
               "type": "string",
@@ -130,7 +198,7 @@
             }
           },
           {
-            "name": "mushroomId",
+            "name": "MushroomId",
             "in": "query",
             "schema": {
               "type": "string",
@@ -140,7 +208,24 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddMushroomToArticleResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddMushroomToArticleResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddMushroomToArticleResponseBaseResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -150,12 +235,12 @@
         "tags": [
           "ArticleMushrooms"
         ],
-        "summary": "Deletes mushroom from article",
+        "summary": "Delete mushroom from article",
         "description": "Deletes a link to the mushroom from the article",
         "operationId": "DeleteMushroomFromArticle",
         "parameters": [
           {
-            "name": "articleId",
+            "name": "ArticleId",
             "in": "query",
             "schema": {
               "type": "string",
@@ -163,7 +248,7 @@
             }
           },
           {
-            "name": "mushroomId",
+            "name": "MushroomId",
             "in": "query",
             "schema": {
               "type": "string",
@@ -173,7 +258,75 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteMushroomFromArticleResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteMushroomFromArticleResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteMushroomFromArticleResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ArticleMushrooms/ReplaceArticleMushrooms": {
+      "put": {
+        "tags": [
+          "ArticleMushrooms"
+        ],
+        "summary": "Replace article mushrooms",
+        "description": "Replaces full set of linked mushrooms for the article",
+        "operationId": "ReplaceArticleMushrooms",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplaceArticleMushroomsRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplaceArticleMushroomsRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplaceArticleMushroomsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReplaceArticleMushroomsResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReplaceArticleMushroomsResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReplaceArticleMushroomsResponseBaseResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -184,7 +337,7 @@
           "Articles"
         ],
         "summary": "Get article",
-        "description": "Receives information about the article by id",
+        "description": "Receives published article information by id",
         "operationId": "GetArticle",
         "parameters": [
           {
@@ -226,7 +379,7 @@
           "Articles"
         ],
         "summary": "Get filtered articles",
-        "description": "Gets a list of articles with filters",
+        "description": "Gets a list of published articles with filters",
         "operationId": "GetFilteredArticles",
         "parameters": [
           {
@@ -284,13 +437,499 @@
         }
       }
     },
+    "/Articles/GetEditorArticle": {
+      "get": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "Get editor article",
+        "description": "Returns full article data for editor and moderation flow",
+        "operationId": "GetEditorArticle",
+        "parameters": [
+          {
+            "name": "ArticleId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetEditorArticleResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetEditorArticleResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetEditorArticleResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Articles/GetMyDrafts": {
+      "get": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "Get my drafts",
+        "description": "Returns current user drafts, rejected and in-review articles",
+        "operationId": "GetMyDrafts",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyDraftsResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyDraftsResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyDraftsResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Articles/GetMyMaterials": {
+      "get": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "Get my materials",
+        "description": "Returns current user published, scheduled and archived articles",
+        "operationId": "GetMyMaterials",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyMaterialsResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyMaterialsResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyMaterialsResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Articles/GetModerationQueue": {
+      "get": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "Get moderation queue",
+        "description": "Returns articles waiting for moderation",
+        "operationId": "GetModerationQueue",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetModerationQueueResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetModerationQueueResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetModerationQueueResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Articles/CreateDraft": {
+      "post": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "Create draft",
+        "description": "Creates draft article for current editor",
+        "operationId": "CreateDraft",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDraftRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDraftRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDraftRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateDraftResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateDraftResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateDraftResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Articles/UpdateDraft": {
+      "put": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "Update draft",
+        "description": "Updates draft/rejected article content",
+        "operationId": "UpdateDraft",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDraftRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDraftRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDraftRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateDraftResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateDraftResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateDraftResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Articles/SubmitForReview": {
+      "post": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "Submit for review",
+        "description": "Moves draft/rejected article to moderation queue",
+        "operationId": "SubmitForReview",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitForReviewRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitForReviewRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitForReviewRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitForReviewResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitForReviewResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitForReviewResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Articles/ModerateArticle": {
+      "post": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "Moderate article",
+        "description": "Approves or rejects article from moderation queue",
+        "operationId": "ModerateArticle",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModerateArticleRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModerateArticleRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModerateArticleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModerateArticleResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModerateArticleResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModerateArticleResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Articles/ArchiveArticle": {
+      "post": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "Archive article",
+        "description": "Archives article instead of deleting it",
+        "operationId": "ArchiveArticle",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArchiveArticleRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArchiveArticleRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArchiveArticleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchiveArticleResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchiveArticleResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchiveArticleResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Articles/UploadArticleImage": {
+      "post": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "Upload article image",
+        "description": "Uploads image for article content and returns media url/path",
+        "operationId": "UploadArticleImage",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "image": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadArticleImageResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadArticleImageResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadArticleImageResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Articles/DeleteArticleImage": {
+      "delete": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "Delete article image",
+        "description": "Deletes uploaded article image by relative path",
+        "operationId": "DeleteArticleImage",
+        "parameters": [
+          {
+            "name": "MediaPath",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteArticleImageResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteArticleImageResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteArticleImageResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/Articles/CreateArticle": {
       "post": {
         "tags": [
           "Articles"
         ],
-        "summary": "Create article",
-        "description": "Creates article",
+        "summary": "Create article (legacy)",
+        "description": "Legacy endpoint. Prefer CreateDraft/SubmitForReview workflow",
         "operationId": "CreateArticle",
         "requestBody": {
           "content": {
@@ -340,8 +979,8 @@
         "tags": [
           "Articles"
         ],
-        "summary": "Update article",
-        "description": "Updates article info by id",
+        "summary": "Update article (legacy)",
+        "description": "Legacy endpoint. Prefer UpdateDraft",
         "operationId": "UpdateArticle",
         "requestBody": {
           "content": {
@@ -391,8 +1030,8 @@
         "tags": [
           "Articles"
         ],
-        "summary": "Delete article",
-        "description": "Deletes article by id",
+        "summary": "Delete article (deprecated)",
+        "description": "Hard delete endpoint. Deprecated, use ArchiveArticle",
         "operationId": "DeleteArticle",
         "parameters": [
           {
@@ -425,7 +1064,8 @@
               }
             }
           }
-        }
+        },
+        "deprecated": true
       }
     },
     "/Authorization/LoginUser": {
@@ -1858,6 +2498,71 @@
   },
   "components": {
     "schemas": {
+      "AddMushroomToArticleResponse": {
+        "type": "object",
+        "properties": {
+          "articleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "mushroomId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AddMushroomToArticleResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AddMushroomToArticleResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ArchiveArticleRequest": {
+        "type": "object",
+        "properties": {
+          "articleId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ArchiveArticleResponse": {
+        "type": "object",
+        "properties": {
+          "articleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string"
+          },
+          "archivedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ArchiveArticleResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ArchiveArticleResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
       "ArticleDto": {
         "type": "object",
         "properties": {
@@ -1885,11 +2590,76 @@
             },
             "nullable": true
           },
+          "status": {
+            "type": "string"
+          },
+          "createdByUserId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "updatedByUserId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "submittedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "reviewedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "reviewedByUserId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "reviewNote": {
+            "type": "string",
+            "nullable": true
+          },
+          "archivedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "likesCount": {
+            "type": "integer",
+            "format": "int32"
+          },
           "paragraphs": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ParagraphDto"
             }
+          }
+        },
+        "additionalProperties": false
+      },
+      "ArticleParagraphInput": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "isSubtitle": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -1938,6 +2708,71 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/CreateArticleResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateDraftRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "publishDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "authorString": {
+            "type": "string"
+          },
+          "headerPhotoLink": {
+            "type": "string"
+          },
+          "extraPhotoLinks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "paragraphs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArticleParagraphInput"
+            }
+          },
+          "linkedMushroomIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateDraftResponse": {
+        "type": "object",
+        "properties": {
+          "createdArticleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateDraftResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CreateDraftResponse"
           },
           "errorMessage": {
             "$ref": "#/components/schemas/ExceptionDto"
@@ -2119,6 +2954,27 @@
         },
         "additionalProperties": false
       },
+      "DeleteArticleImageResponse": {
+        "type": "object",
+        "properties": {
+          "isDeleted": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeleteArticleImageResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/DeleteArticleImageResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
       "DeleteArticleResponse": {
         "type": "object",
         "properties": {
@@ -2134,6 +2990,32 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/DeleteArticleResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeleteMushroomFromArticleResponse": {
+        "type": "object",
+        "properties": {
+          "articleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "mushroomId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeleteMushroomFromArticleResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/DeleteMushroomFromArticleResponse"
           },
           "errorMessage": {
             "$ref": "#/components/schemas/ExceptionDto"
@@ -2252,6 +3134,102 @@
         },
         "additionalProperties": false
       },
+      "EditorArticleDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "publishDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "authorString": {
+            "type": "string"
+          },
+          "headerPhotoLink": {
+            "type": "string"
+          },
+          "extraPhotoLinks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "status": {
+            "type": "string"
+          },
+          "createdByUserId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "updatedByUserId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "submittedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "reviewedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "reviewedByUserId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "reviewNote": {
+            "type": "string",
+            "nullable": true
+          },
+          "archivedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "likesCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "linkedMushroomIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "paragraphs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ParagraphDto"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
       "ExceptionDto": {
         "type": "object",
         "properties": {
@@ -2281,6 +3259,57 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/GetAllPermissionsResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetArticleLikesCountResponse": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetArticleLikesCountResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetArticleLikesCountResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetArticleMushroomsResponse": {
+        "type": "object",
+        "properties": {
+          "articleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "mushroomIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetArticleMushroomsResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetArticleMushroomsResponse"
           },
           "errorMessage": {
             "$ref": "#/components/schemas/ExceptionDto"
@@ -2385,6 +3414,27 @@
         },
         "additionalProperties": false
       },
+      "GetEditorArticleResponse": {
+        "type": "object",
+        "properties": {
+          "article": {
+            "$ref": "#/components/schemas/EditorArticleDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetEditorArticleResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetEditorArticleResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
       "GetFilteredArticlesResponse": {
         "type": "object",
         "properties": {
@@ -2481,6 +3531,30 @@
         },
         "additionalProperties": false
       },
+      "GetModerationQueueResponse": {
+        "type": "object",
+        "properties": {
+          "articles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArticleDto"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetModerationQueueResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetModerationQueueResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
       "GetMushroomResponse": {
         "type": "object",
         "properties": {
@@ -2495,6 +3569,54 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/GetMushroomResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetMyDraftsResponse": {
+        "type": "object",
+        "properties": {
+          "articles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArticleDto"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetMyDraftsResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetMyDraftsResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetMyMaterialsResponse": {
+        "type": "object",
+        "properties": {
+          "articles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArticleDto"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetMyMaterialsResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetMyMaterialsResponse"
           },
           "errorMessage": {
             "$ref": "#/components/schemas/ExceptionDto"
@@ -2572,6 +3694,27 @@
         },
         "additionalProperties": false
       },
+      "HasUserLikedArticleResponse": {
+        "type": "object",
+        "properties": {
+          "hasLiked": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "HasUserLikedArticleResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/HasUserLikedArticleResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
       "LoginUserRequest": {
         "required": [
           "email",
@@ -2613,6 +3756,60 @@
           }
         },
         "additionalProperties": false
+      },
+      "ModerateArticleRequest": {
+        "type": "object",
+        "properties": {
+          "articleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "decision": {
+            "$ref": "#/components/schemas/ModerationDecision"
+          },
+          "reviewNote": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ModerateArticleResponse": {
+        "type": "object",
+        "properties": {
+          "articleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string"
+          },
+          "reviewedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ModerateArticleResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ModerateArticleResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ModerationDecision": {
+        "enum": [
+          0,
+          1
+        ],
+        "type": "integer",
+        "format": "int32"
       },
       "MushroomDto": {
         "type": "object",
@@ -2790,6 +3987,53 @@
         },
         "additionalProperties": false
       },
+      "ReplaceArticleMushroomsRequest": {
+        "type": "object",
+        "properties": {
+          "articleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "mushroomIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReplaceArticleMushroomsResponse": {
+        "type": "object",
+        "properties": {
+          "articleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "mushroomIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReplaceArticleMushroomsResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ReplaceArticleMushroomsResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
       "RoleDto": {
         "type": "object",
         "properties": {
@@ -2857,6 +4101,45 @@
         },
         "additionalProperties": false
       },
+      "SubmitForReviewRequest": {
+        "type": "object",
+        "properties": {
+          "articleId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SubmitForReviewResponse": {
+        "type": "object",
+        "properties": {
+          "articleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string"
+          },
+          "submittedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SubmitForReviewResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/SubmitForReviewResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
       "TestRoles": {
         "type": "object",
         "properties": {
@@ -2916,6 +4199,27 @@
               "$ref": "#/components/schemas/TestUsers"
             },
             "nullable": true
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ToggleArticleLikeResponse": {
+        "type": "object",
+        "properties": {
+          "isLiked": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ToggleArticleLikeResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ToggleArticleLikeResponse"
           },
           "errorMessage": {
             "$ref": "#/components/schemas/ExceptionDto"
@@ -3000,6 +4304,75 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/UpdateArticleResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateDraftRequest": {
+        "type": "object",
+        "properties": {
+          "articleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "publishDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "authorString": {
+            "type": "string"
+          },
+          "headerPhotoLink": {
+            "type": "string"
+          },
+          "extraPhotoLinks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "paragraphs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArticleParagraphInput"
+            }
+          },
+          "linkedMushroomIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateDraftResponse": {
+        "type": "object",
+        "properties": {
+          "updatedArticleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateDraftResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/UpdateDraftResponse"
           },
           "errorMessage": {
             "$ref": "#/components/schemas/ExceptionDto"
@@ -3186,6 +4559,30 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/UpdateUserResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UploadArticleImageResponse": {
+        "type": "object",
+        "properties": {
+          "mediaUrl": {
+            "type": "string"
+          },
+          "mediaPath": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UploadArticleImageResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/UploadArticleImageResponse"
           },
           "errorMessage": {
             "$ref": "#/components/schemas/ExceptionDto"

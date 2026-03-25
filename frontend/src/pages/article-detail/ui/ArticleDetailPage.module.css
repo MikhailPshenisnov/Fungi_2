@@ -1,0 +1,295 @@
+.container {
+  padding-top: 30px;
+  padding-bottom: 40px;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  border-radius: var(--radius-s);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  margin-bottom: 14px;
+}
+
+.backLink:hover {
+  color: var(--color-text-primary);
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-l);
+  background: var(--color-surface-elevated);
+}
+
+.heroImageWrap {
+  border-radius: var(--radius-l);
+  border: 1px solid var(--color-border-subtle);
+  overflow: hidden;
+  background: var(--color-bg-subtle);
+  min-height: 220px;
+}
+
+.heroImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 220px;
+  object-fit: cover;
+}
+
+.heroImageFallback {
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+  text-align: center;
+  padding: 14px;
+  color: var(--color-text-tertiary);
+}
+
+.heroContent {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+
+.title {
+  margin: 0;
+}
+
+.meta {
+  color: var(--color-text-secondary);
+}
+
+.tags {
+  display: flex;
+  gap: 8px;
+}
+
+.likeButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  width: fit-content;
+  border: 1px solid var(--color-border-default);
+  border-radius: 999px;
+  background: var(--color-surface-elevated);
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: var(--text-meta-size);
+  font-weight: 700;
+  padding: 0 12px;
+  cursor: pointer;
+}
+
+.likeButton:hover:not(:disabled) {
+  border-color: var(--color-status-warning-border);
+  background: color-mix(in srgb, var(--color-status-warning-bg) 32%, var(--color-surface-elevated));
+  color: var(--color-status-warning-strong);
+}
+
+.likeButton:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+.likeButtonActive {
+  border-color: var(--color-status-warning-border);
+  background: color-mix(in srgb, var(--color-status-warning-bg) 48%, var(--color-surface-elevated));
+  color: var(--color-status-warning-strong);
+}
+
+.likeIcon {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.likeCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.sectionCard {
+  padding: 16px;
+}
+
+.paragraphs {
+  display: grid;
+  gap: 10px;
+}
+
+.linksGrid {
+  display: grid;
+  gap: 8px;
+}
+
+.relatedLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  width: fit-content;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border-default);
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+  text-decoration: none;
+}
+
+.relatedLink:hover {
+  border-color: var(--color-action-primary-border);
+  background: var(--color-surface-elevated);
+}
+
+.gallerySection {
+  margin-top: 16px;
+  display: grid;
+  gap: 10px;
+}
+
+.galleryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.galleryItem {
+  border-radius: var(--radius-m);
+  border: 1px solid var(--color-border-subtle);
+  overflow: hidden;
+  background: var(--color-bg-subtle);
+}
+
+.galleryImage {
+  display: block;
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+}
+
+.galleryFallback {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 190px;
+  text-align: center;
+  padding: 12px;
+  color: var(--color-text-tertiary);
+}
+
+.stateCard {
+  padding: 18px;
+}
+
+.stateText {
+  color: var(--color-text-secondary);
+}
+
+.stateActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.backLinkButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-m);
+  color: var(--color-text-primary);
+  text-decoration: none;
+  background: var(--color-surface-elevated);
+}
+
+.backLinkButton:hover {
+  background: var(--color-bg-subtle);
+}
+
+.loadingLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
+  gap: 12px;
+}
+
+.skeletonCard {
+  padding: 14px;
+}
+
+.skeletonImage,
+.skeletonLine,
+.skeletonLineShort {
+  border-radius: var(--radius-s);
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-subtle) 0%,
+    color-mix(in srgb, var(--color-bg-subtle) 45%, var(--color-surface-elevated)) 50%,
+    var(--color-bg-subtle) 100%
+  );
+  background-size: 220% 100%;
+  animation: skeletonShimmer 1.2s ease infinite;
+}
+
+.skeletonImage {
+  min-height: 220px;
+}
+
+.skeletonLine {
+  min-height: 16px;
+  margin-bottom: 8px;
+}
+
+.skeletonLineShort {
+  min-height: 14px;
+  width: 56%;
+}
+
+.mutedText {
+  color: var(--color-text-secondary);
+}
+
+@keyframes skeletonShimmer {
+  0% {
+    background-position: 100% 0;
+  }
+
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@media (max-width: 980px) {
+  .hero,
+  .contentGrid,
+  .loadingLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .galleryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .galleryGrid {
+    grid-template-columns: 1fr;
+  }
+}

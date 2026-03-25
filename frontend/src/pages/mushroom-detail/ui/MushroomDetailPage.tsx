@@ -10,7 +10,7 @@ import {
   toggleMushroomLike
 } from '@features/mushrooms';
 import { ApiError } from '@shared/api';
-import { Button, Card, Container, Stack, Tag, Typography } from '@shared/ui';
+import { Button, Card, Container, Stack, Tag, Typography, useToast } from '@shared/ui';
 import { PageLayout } from '@widgets/layout';
 import styles from './MushroomDetailPage.module.css';
 
@@ -75,6 +75,7 @@ export function MushroomDetailPage({ mushroomId: mushroomIdProp }: MushroomDetai
   const location = useLocation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { showError } = useToast();
   const { isAuthenticated, token, signOut } = useSession();
 
   const mushroomId = mushroomIdProp ?? routeMushroomId ?? '';
@@ -129,12 +130,47 @@ export function MushroomDetailPage({ mushroomId: mushroomIdProp }: MushroomDetai
   }, [navigate, signOut]);
 
   useEffect(() => {
-    if (!(hasLikedQuery.error instanceof ApiError) || hasLikedQuery.error.status !== 401) {
+    if (!hasLikedQuery.error) {
       return;
     }
 
-    handleSessionExpired();
-  }, [handleSessionExpired, hasLikedQuery.error]);
+    if (hasLikedQuery.error instanceof ApiError && hasLikedQuery.error.status === 401) {
+      handleSessionExpired();
+      return;
+    }
+
+    showError(hasLikedQuery.error instanceof Error ? hasLikedQuery.error.message : 'Не удалось получить статус лайка.', {
+      title: 'Лайки',
+      dedupeKey: 'mushroom-detail-has-liked-error'
+    });
+  }, [handleSessionExpired, hasLikedQuery.error, showError]);
+
+  useEffect(() => {
+    if (!mushroomQuery.error) {
+      return;
+    }
+
+    if (mushroomQuery.error instanceof ApiError && mushroomQuery.error.status === 401) {
+      handleSessionExpired();
+      return;
+    }
+
+    showError(mushroomQuery.error instanceof Error ? mushroomQuery.error.message : 'Не удалось загрузить карточку гриба.', {
+      title: 'Карточка гриба',
+      dedupeKey: `mushroom-detail-load-error-${mushroomId}`
+    });
+  }, [handleSessionExpired, mushroomId, mushroomQuery.error, showError]);
+
+  useEffect(() => {
+    if (!likesCountQuery.error) {
+      return;
+    }
+
+    showError(likesCountQuery.error instanceof Error ? likesCountQuery.error.message : 'Не удалось загрузить счётчик лайков.', {
+      title: 'Лайки',
+      dedupeKey: `mushroom-detail-like-count-error-${mushroomId}`
+    });
+  }, [likesCountQuery.error, mushroomId, showError]);
 
   useEffect(() => {
     setLikeOverride(null);
@@ -182,6 +218,11 @@ export function MushroomDetailPage({ mushroomId: mushroomIdProp }: MushroomDetai
         handleSessionExpired();
         return;
       }
+
+      showError(error instanceof Error ? error.message : 'Не удалось обновить лайк.', {
+        title: 'Лайки',
+        dedupeKey: `mushroom-detail-like-toggle-error-${mushroomId}`
+      });
     } finally {
       setIsLiking(false);
       void queryClient.invalidateQueries({ queryKey: ['mushrooms', 'likes-counts'] });
@@ -239,9 +280,9 @@ export function MushroomDetailPage({ mushroomId: mushroomIdProp }: MushroomDetai
         {mushroomQuery.isError ? (
           <Card className={styles.stateCard}>
             <Stack gap={10}>
-              <Typography variant="h4">Не удалось загрузить карточку гриба</Typography>
+              <Typography variant="h4">Карточка временно недоступна</Typography>
               <Typography variant="bodyS" className={styles.stateText}>
-                Проверьте подключение к сети и попробуйте ещё раз.
+                Попробуйте повторить запрос чуть позже.
               </Typography>
               <div className={styles.stateActions}>
                 <Button onClick={() => mushroomQuery.refetch()}>Повторить</Button>

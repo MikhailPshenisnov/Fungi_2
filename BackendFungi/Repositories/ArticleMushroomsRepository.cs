@@ -1,6 +1,7 @@
 ﻿using BackendFungi.Abstractions.Repositories;
 using BackendFungi.Database.Context;
 using BackendFungi.Database.Entities;
+using BackendFungi.Exceptions.SpecificExceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace BackendFungi.Repositories;
@@ -19,9 +20,7 @@ public class ArticleMushroomsRepository : IArticleMushroomsRepository
             FirstOrDefaultAsync(x => x.ArticleId == articleId && x.MushroomId == mushroomId, ct);
 
         if (existingArticleMushroom != null)
-        {
-            throw new InvalidOperationException("The record already exists!");
-        }
+            throw new ConversionException("Incorrect data format: The link already exists");
 
         var NewArticleMushroom = new ArticleMushroom
         {
@@ -30,8 +29,8 @@ public class ArticleMushroomsRepository : IArticleMushroomsRepository
             MushroomId = mushroomId
         };
 
-        await _context.ArticleMushrooms.AddAsync(NewArticleMushroom);
-        await _context.SaveChangesAsync();
+        await _context.ArticleMushrooms.AddAsync(NewArticleMushroom, ct);
+        await _context.SaveChangesAsync(ct);
 
         return articleId;
     }
@@ -43,9 +42,7 @@ public class ArticleMushroomsRepository : IArticleMushroomsRepository
             .ExecuteDeleteAsync(ct);
 
         if (countDeleted == 0)
-        {
-            throw new InvalidOperationException("The record does not exist!");
-        }
+            throw new UnknownIdentifierException("Unknown article-mushroom link");
         return articleId;
     }
 

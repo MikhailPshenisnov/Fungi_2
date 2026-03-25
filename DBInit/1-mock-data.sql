@@ -28,7 +28,13 @@ VALUES ('10000000-0000-0000-0000-000000000001', 'rbac.roles.read', 'Read roles',
        ('10000000-0000-0000-0000-000000000020', 'profile.admin.action-logs.read', 'Profile admin action logs tab', 'Access admin action logs tab', true),
        ('10000000-0000-0000-0000-000000000021', 'profile.su.system.read', 'Profile superuser system tab', 'Access superuser system tab', true),
        ('10000000-0000-0000-0000-000000000022', 'profile.su.audit.read', 'Profile superuser audit tab', 'Access superuser audit tab', true),
-       ('10000000-0000-0000-0000-000000000023', 'profile.su.config.read', 'Profile superuser config tab', 'Access superuser config tab', true);
+       ('10000000-0000-0000-0000-000000000023', 'profile.su.config.read', 'Profile superuser config tab', 'Access superuser config tab', true),
+       ('10000000-0000-0000-0000-000000000024', 'content.articles.review', 'Review articles', 'Review and reject articles', true),
+       ('10000000-0000-0000-0000-000000000025', 'content.articles.publish', 'Publish articles', 'Approve and publish articles', true),
+       ('10000000-0000-0000-0000-000000000026', 'content.articles.archive', 'Archive articles', 'Archive articles from active publication', true),
+       ('10000000-0000-0000-0000-000000000027', 'content.articles.manage-any', 'Manage any articles', 'Manage all articles regardless of ownership', true),
+       ('10000000-0000-0000-0000-000000000028', 'content.articles.purge', 'Purge articles', 'Hard delete articles', true),
+       ('10000000-0000-0000-0000-000000000029', 'content.article-media.write', 'Write article media', 'Upload and delete article media files', true);
 
 -- Insert users
 INSERT INTO public."Users" ("Id", "Username", "Email", "PasswordHash", "RoleId")
@@ -50,6 +56,7 @@ INSERT INTO public."RolePermissions" ("RoleId", "PermissionId")
 VALUES ('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', '10000000-0000-0000-0000-000000000008'),
        ('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', '10000000-0000-0000-0000-000000000010'),
        ('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', '10000000-0000-0000-0000-000000000012'),
+       ('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', '10000000-0000-0000-0000-000000000029'),
        ('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', '10000000-0000-0000-0000-000000000013'),
        ('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', '10000000-0000-0000-0000-000000000014'),
        ('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', '10000000-0000-0000-0000-000000000015');
@@ -77,12 +84,25 @@ VALUES ('6f7a8b9c-0d1e-2f3a-4b5c-6d7e8f9a0b1c', '1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4
        ('8b9c0d1e-2f3a-4b5c-6d7e-8f9a0b1c2d3e', '3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f', 'Шампиньон');
 
 -- Insert articles
-INSERT INTO public."Articles" ("Id", "Title", "PublishDate", "AuthorString", "HeaderPhotoLink", "ExtraPhotoLinks")
+INSERT INTO public."Articles" ("Id", "Title", "PublishDate", "AuthorString", "HeaderPhotoLink", "ExtraPhotoLinks", "Status",
+                               "CreatedByUserId", "UpdatedByUserId", "CreatedAt", "UpdatedAt", "PublishedAt")
 VALUES ('0d1e2f3a-4b5c-6d7e-8f9a-0b1c2d3e4f5a', 'Как отличить съедобные грибы от ядовитых', '2023-08-15 10:00:00+03',
         'Иван Петров', 'https://i.imgur.com/safety.jpg',
-        'https://i.imgur.com/safety1.jpg;https://i.imgur.com/safety2.jpg'),
+        'https://i.imgur.com/safety1.jpg;https://i.imgur.com/safety2.jpg',
+        'Published',
+        'e4eebc99-9c0b-4ef8-bb6d-6bb9bd380a15',
+        'e4eebc99-9c0b-4ef8-bb6d-6bb9bd380a15',
+        '2023-08-15 10:00:00+03',
+        '2023-08-15 10:00:00+03',
+        '2023-08-15 10:00:00+03'),
        ('1e2f3a4b-5c6d-7e8f-9a0b-1c2d3e4f5a6b', 'Топ-5 самых опасных грибов России', '2023-09-01 14:30:00+03',
-        'Мария Сидорова', 'https://i.imgur.com/dangerous.jpg', NULL);
+        'Мария Сидорова', 'https://i.imgur.com/dangerous.jpg', NULL,
+        'Published',
+        'e4eebc99-9c0b-4ef8-bb6d-6bb9bd380a15',
+        'e4eebc99-9c0b-4ef8-bb6d-6bb9bd380a15',
+        '2023-09-01 14:30:00+03',
+        '2023-09-01 14:30:00+03',
+        '2023-09-01 14:30:00+03');
 
 -- Insert paragraphs
 INSERT INTO public."Paragraphs" ("Id", "ArticleId", "ParagraphText", "SerialNumber", "IsSubtitle")

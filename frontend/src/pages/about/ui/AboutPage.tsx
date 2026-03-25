@@ -120,7 +120,7 @@ export function AboutPage() {
                   <Link to="/mushrooms" className={styles.primaryLink}>
                     Перейти к каталогу
                   </Link>
-                  <Link to="/#articles" className={styles.secondaryLink}>
+                  <Link to="/articles" className={styles.secondaryLink}>
                     Читать статьи
                   </Link>
                 </div>

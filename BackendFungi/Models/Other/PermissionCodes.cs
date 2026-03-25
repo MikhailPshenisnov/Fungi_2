@@ -12,7 +12,13 @@ public static class PermissionCodes
     public const string UsersDelete = "users.delete";
 
     public const string ArticlesWrite = "content.articles.write";
+    public const string ArticlesReview = "content.articles.review";
+    public const string ArticlesPublish = "content.articles.publish";
+    public const string ArticlesArchive = "content.articles.archive";
+    public const string ArticlesManageAny = "content.articles.manage-any";
+    public const string ArticlesPurge = "content.articles.purge";
     public const string ArticlesDelete = "content.articles.delete";
+    public const string ArticleMediaWrite = "content.article-media.write";
     public const string MushroomsWrite = "content.mushrooms.write";
     public const string MushroomsDelete = "content.mushrooms.delete";
     public const string ArticleMushroomsWrite = "content.article-mushrooms.write";

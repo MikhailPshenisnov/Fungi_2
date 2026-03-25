@@ -2,12 +2,16 @@ import { type CSSProperties, type FormEvent, useEffect, useRef, useState } from 
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { profileIcon, searchIcon } from '@shared/assets/icons';
 import { Button, Container, Typography } from '@shared/ui';
-import { getRoleSpecificProfileTabs, useSession } from '@entities/session';
+import {
+  getProfileTabHref,
+  getRoleSpecificProfileTabs,
+  useSession
+} from '@entities/session';
 import styles from './AppHeader.module.css';
 
 const navItems = [
   { label: 'О нас', href: '/about' },
-  { label: 'Статьи', href: '/#articles' },
+  { label: 'Статьи', href: '/articles' },
   { label: 'Грибы', href: '/mushrooms' },
   { label: 'Отзывы', href: '/#reviews' }
 ];
@@ -212,7 +216,7 @@ export function AppHeader({ onLoginClick, onSignupClick, onProfileClick, onSearc
                   {roleMenuTabs.map((tab) => (
                     <Link
                       key={tab.key}
-                      to={`/profile?tab=${tab.key}`}
+                      to={getProfileTabHref(tab.key)}
                       className={styles.dropdownItem}
                       role="menuitem"
                       onClick={handleMenuLinkClick}

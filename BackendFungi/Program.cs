@@ -166,6 +166,9 @@ builder.Services.AddDbContext<FungiDbContext>(options =>
 // Avatar storage
 builder.Services.Configure<AvatarStorageOptions>(configuration.GetSection("AvatarStorage"));
 builder.Services.AddSingleton<IAvatarStorageService, AvatarStorageService>();
+builder.Services.Configure<ArticleMediaStorageOptions>(configuration.GetSection("ArticleMediaStorage"));
+builder.Services.AddSingleton<IArticleMediaStorageService, ArticleMediaStorageService>();
+builder.Services.AddHostedService<ArticlePublishingHostedService>();
 
 // CORS policy
 var allowedOrigins = builder.Configuration.GetSection("Frontend:AllowedOrigins").Get<string[]>();
@@ -233,6 +236,12 @@ Directory.CreateDirectory(avatarRootPath);
 var avatarRequestPath = avatarStorageOptions.PublicBasePath.StartsWith('/')
     ? avatarStorageOptions.PublicBasePath
     : $"/{avatarStorageOptions.PublicBasePath}";
+var articleMediaStorageOptions = app.Services.GetRequiredService<IOptions<ArticleMediaStorageOptions>>().Value;
+var articleMediaRootPath = Path.GetFullPath(Path.Combine(app.Environment.ContentRootPath, articleMediaStorageOptions.PhysicalRoot));
+Directory.CreateDirectory(articleMediaRootPath);
+var articleMediaRequestPath = articleMediaStorageOptions.PublicBasePath.StartsWith('/')
+    ? articleMediaStorageOptions.PublicBasePath
+    : $"/{articleMediaStorageOptions.PublicBasePath}";
 
 // Error handling middleware
 app.UseMiddleware<ErrorHandlingMiddleware>();
@@ -244,6 +253,11 @@ app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(avatarRootPath),
     RequestPath = avatarRequestPath
+});
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(articleMediaRootPath),
+    RequestPath = articleMediaRequestPath
 });
 
 /*

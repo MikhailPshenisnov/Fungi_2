@@ -39,6 +39,11 @@
   width: fit-content;
 }
 
+.allButtonLink {
+  display: inline-flex;
+  text-decoration: none;
+}
+
 @media (min-width: 768px) {
   .grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));

@@ -107,13 +107,19 @@ src/
 
 - `/` — лендинг;
 - `/about` — отдельная страница «О нас»;
+- `/articles` — каталог статей;
+- `/articles/:id` — детальная карточка статьи;
 - `/mushrooms` — каталог грибов;
 - `/mushrooms/:id` — детальная карточка гриба;
 - `/login` — вход;
 - `/register` — регистрация;
 - `/profile` — профиль пользователя;
 - `/profile?tab=<key>` — секции профиля (базовые и role-specific);
-- `/profile/favorites` и `/profile/history` — legacy-алиасы с редиректом в query-tab формат.
+- `/profile/favorites` и `/profile/history` — legacy-алиасы с редиректом в query-tab формат;
+- `/editor/articles` — редакторский workspace (`scope=drafts|materials`);
+- `/editor/articles/new` — создание статьи;
+- `/editor/articles/:id/edit` — редактирование статьи;
+- `/editor/review` — модерация статей.
 
 ### Страница «О нас» (`/about`)
 
@@ -168,6 +174,10 @@ src/
   - `История просмотров`;
   - role-specific пункты для текущей роли;
   - `Выйти`.
+- shortcut из профиля/меню на editor workspace:
+  - `editor-materials` -> `/editor/articles?scope=materials`;
+  - `editor-drafts` -> `/editor/articles?scope=drafts`;
+  - `ja-moderation` -> `/editor/review` (единый раздел модерации для ролей с правом review).
 - в `Profile Hero` доступно управление аватаром:
   - загрузка через file picker и drag&drop;
   - реальный прогресс загрузки (%);
@@ -181,6 +191,45 @@ src/
   - выключен: токен хранится только в runtime-памяти и очищается при перезагрузке страницы.
 - для восстановления сохранённой сессии на старте приложения выполняется `GET /Users/GetCurrentUserProfile`;
 - при невалидном токене происходит авто-`signOut` и очистка `localStorage`.
+
+## Глобальные toast-уведомления об ошибках
+
+- в rewrite-клиенте ошибки page-level выводятся через единый слой уведомлений:
+  - `ToastProvider` (подключён в `app/providers`);
+  - `useToast` (`showError`, `showInfo`, `showSuccess`, `dismiss`, `clear`).
+- UX-поведение:
+  - desktop: стек снизу справа, mobile: снизу по центру;
+  - максимум `3` toast одновременно;
+  - автоскрытие `4s`;
+  - одинаковые ошибки схлопываются в окне `3s`;
+  - hover/focus паузит автозакрытие.
+- крупные error-card экраны переведены в нейтральные fallback-состояния с `Повторить`; основной канал ошибок — toast.
+
+## Статьи и editor workflow
+
+- `/articles`:
+  - публичный каталог статей с фильтрами `q`, `author`, сортировкой и пагинацией;
+  - карточки ведут на `/articles/:id`;
+  - лайки поддерживают optimistic update + rollback.
+- `/articles/:id`:
+  - полный рендер статьи по paragraph-модели (`subtitle/body`);
+  - галерея изображений;
+  - связанные грибы через `ArticleMushrooms/GetAllMushrooms`;
+  - лайк-блок с guest popup (`Регистрироваться` / `Позже`).
+- `/editor/articles`:
+  - персональный список `Черновики`/`Мои материалы`;
+  - действия `Редактировать`, `На модерацию`, `Архивировать`.
+- `/editor/articles/new` и `/editor/articles/:id/edit`:
+  - форма статьи с upload изображений (progress), конструктором абзацев, связями с грибами;
+  - действия `Сохранить черновик`, `Отправить на модерацию`, `Архивировать`.
+- `/editor/review`:
+  - очередь `InReview`;
+  - решения `Одобрить/Отклонить` с optional `reviewNote`.
+
+Доступ:
+
+- editor workspace требует `content.articles.write`;
+- review-очередь требует `content.articles.review`.
 
 ## Правила модулей
 Каждый `feature/entity/widget/page` держим в формате:

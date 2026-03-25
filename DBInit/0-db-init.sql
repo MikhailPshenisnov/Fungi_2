@@ -21,9 +21,23 @@ CREATE TABLE public."Articles" (
   "PublishDate" timestamp with time zone NOT NULL,
   "AuthorString" character varying(128) NOT NULL,
   "HeaderPhotoLink" character varying(256) NOT NULL,
-  "ExtraPhotoLinks" character varying(1024)
+  "ExtraPhotoLinks" character varying(1024),
+  "Status" character varying(32) NOT NULL DEFAULT 'Published',
+  "CreatedByUserId" uuid NOT NULL,
+  "UpdatedByUserId" uuid,
+  "CreatedAt" timestamp with time zone NOT NULL DEFAULT now(),
+  "UpdatedAt" timestamp with time zone NOT NULL DEFAULT now(),
+  "SubmittedAt" timestamp with time zone,
+  "PublishedAt" timestamp with time zone,
+  "ReviewedAt" timestamp with time zone,
+  "ReviewedByUserId" uuid,
+  "ReviewNote" character varying(1000),
+  "ArchivedAt" timestamp with time zone
 );
 CREATE UNIQUE INDEX articles_unique_title ON public."Articles" USING btree ("Title");
+CREATE INDEX idx_articles_status ON public."Articles" USING btree ("Status");
+CREATE INDEX idx_articles_status_publish_date ON public."Articles" USING btree ("Status", "PublishDate");
+CREATE INDEX idx_articles_created_by ON public."Articles" USING btree ("CreatedByUserId");
 
 CREATE TABLE public."Mushrooms" (
   "Id" uuid PRIMARY KEY NOT NULL,
@@ -60,6 +74,14 @@ CREATE TABLE public."Users" (
 CREATE INDEX "fki_Users_RoleId_fkey" ON public."Users" USING btree ("RoleId");
 CREATE UNIQUE INDEX users_unique_email ON public."Users" USING btree ("Email");
 CREATE UNIQUE INDEX users_unique_username ON public."Users" USING btree ("Username");
+
+ALTER TABLE public."Articles"
+  ADD CONSTRAINT "Articles_CreatedByUserId_fkey"
+    FOREIGN KEY ("CreatedByUserId") REFERENCES public."Users" ("Id") ON DELETE RESTRICT,
+  ADD CONSTRAINT "Articles_UpdatedByUserId_fkey"
+    FOREIGN KEY ("UpdatedByUserId") REFERENCES public."Users" ("Id") ON DELETE SET NULL,
+  ADD CONSTRAINT "Articles_ReviewedByUserId_fkey"
+    FOREIGN KEY ("ReviewedByUserId") REFERENCES public."Users" ("Id") ON DELETE SET NULL;
 
 CREATE TABLE public."RolePermissions" (
   "RoleId" uuid NOT NULL,

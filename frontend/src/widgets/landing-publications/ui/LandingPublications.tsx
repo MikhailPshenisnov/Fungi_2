@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Button, Card, Container, Stack, Typography } from '@shared/ui';
 import styles from './LandingPublications.module.css';
 
@@ -29,7 +30,9 @@ export function LandingPublications() {
             ))}
           </div>
           <div className={styles.allButton}>
-            <Button variant="tertiary">Все статьи</Button>
+            <Link to="/articles" className={styles.allButtonLink}>
+              <Button variant="tertiary">Все статьи</Button>
+            </Link>
           </div>
         </Stack>
       </Container>

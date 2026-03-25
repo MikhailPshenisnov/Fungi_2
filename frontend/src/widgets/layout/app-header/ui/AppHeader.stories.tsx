@@ -61,9 +61,8 @@ export const EditorMenu: Story = {
         roleName: 'Editor',
         roleAccessLevel: 19,
         permissions: [
-          'profile.editor.materials.read',
-          'profile.editor.drafts.read',
-          'profile.editor.moderation-queue.read'
+          'content.articles.write',
+          'content.article-media.write'
         ],
         avatarUrl: demoAvatarUrl
       })

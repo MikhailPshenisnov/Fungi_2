@@ -23,7 +23,7 @@ import {
 } from '@features/mushrooms';
 import { ApiError } from '@shared/api';
 import { favoriteIcon } from '@shared/assets/icons';
-import { Button, Card, Checkbox, Container, Input, Select, Stack, Tag, Typography } from '@shared/ui';
+import { Button, Card, Checkbox, Container, Input, Select, Stack, Tag, Typography, useToast } from '@shared/ui';
 import { PageLayout } from '@widgets/layout';
 import styles from './MushroomsPage.module.css';
 
@@ -85,6 +85,7 @@ export function MushroomsPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const queryClient = useQueryClient();
+  const { showError } = useToast();
   const { isAuthenticated, token, signOut } = useSession();
 
   const [searchDraft, setSearchDraft] = useState('');
@@ -213,12 +214,47 @@ export function MushroomsPage() {
   }, [mushroomIds]);
 
   useEffect(() => {
-    if (!(hasLikedQuery.error instanceof ApiError) || hasLikedQuery.error.status !== 401) {
+    if (!hasLikedQuery.error) {
       return;
     }
 
-    handleSessionExpired();
-  }, [handleSessionExpired, hasLikedQuery.error]);
+    if (hasLikedQuery.error instanceof ApiError && hasLikedQuery.error.status === 401) {
+      handleSessionExpired();
+      return;
+    }
+
+    showError(hasLikedQuery.error instanceof Error ? hasLikedQuery.error.message : 'Не удалось получить лайки пользователя.', {
+      title: 'Лайки',
+      dedupeKey: 'mushrooms-has-liked-error'
+    });
+  }, [handleSessionExpired, hasLikedQuery.error, showError]);
+
+  useEffect(() => {
+    if (!mushroomsQuery.error) {
+      return;
+    }
+
+    if (mushroomsQuery.error instanceof ApiError && mushroomsQuery.error.status === 401) {
+      handleSessionExpired();
+      return;
+    }
+
+    showError(mushroomsQuery.error instanceof Error ? mushroomsQuery.error.message : 'Каталог грибов временно недоступен.', {
+      title: 'Каталог грибов',
+      dedupeKey: 'mushrooms-catalog-error'
+    });
+  }, [handleSessionExpired, mushroomsQuery.error, showError]);
+
+  useEffect(() => {
+    if (!likesCountsQuery.error) {
+      return;
+    }
+
+    showError(likesCountsQuery.error instanceof Error ? likesCountsQuery.error.message : 'Не удалось загрузить счётчики лайков.', {
+      title: 'Лайки',
+      dedupeKey: 'mushrooms-likes-counts-error'
+    });
+  }, [likesCountsQuery.error, showError]);
 
   function handleSearchInputChange(event: ChangeEvent<HTMLInputElement>) {
     setSearchDraft(event.target.value);
@@ -336,6 +372,11 @@ export function MushroomsPage() {
         handleSessionExpired();
         return;
       }
+
+      showError(error instanceof Error ? error.message : 'Не удалось обновить лайк.', {
+        title: 'Лайки',
+        dedupeKey: 'mushrooms-like-toggle-error'
+      });
     } finally {
       setIsLikingById((previousMap) => {
         const nextMap = { ...previousMap };
@@ -435,9 +476,9 @@ export function MushroomsPage() {
             {hasErrorState ? (
               <Card className={styles.stateCard}>
                 <Stack gap={10}>
-                  <Typography variant="h5">Не удалось загрузить каталог грибов</Typography>
+                  <Typography variant="h5">Каталог временно недоступен</Typography>
                   <Typography variant="bodyS" className={styles.stateText}>
-                    Проверьте подключение к сети или попробуйте повторить запрос позже.
+                    Попробуйте повторить запрос чуть позже.
                   </Typography>
                   <Button onClick={() => mushroomsQuery.refetch()}>Повторить</Button>
                 </Stack>

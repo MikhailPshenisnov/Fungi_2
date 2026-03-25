@@ -134,7 +134,10 @@ Content-Type: application/json
 
 Миграция БД для существующих инсталляций:
 
-- единый обязательный шаг перед деплоем backend: последовательно применить `DBInit/2-upgrade-avatar.sql` и `DBInit/3-upgrade-rbac.sql`.
+- обязательный шаг перед деплоем backend: последовательно применить:
+  - `DBInit/2-upgrade-avatar.sql`;
+  - `DBInit/3-upgrade-rbac.sql`;
+  - `DBInit/4-upgrade-articles-workflow.sql`.
 - `DBInit/3-upgrade-rbac.sql` создает таблицы `Permissions`/`RolePermissions` и baseline-набор прав.
 
 ## Контракт каталога грибов и лайков
@@ -163,6 +166,105 @@ Content-Type: application/json
 - каталог доступен публично, без обязательной авторизации;
 - операции `HasUserLiked` и `ToggleLike` для неавторизованного клиента должны приводить к `401`;
 - web/mobile-клиенты должны обрабатывать `401` как завершение сессии и запрашивать повторный вход.
+
+## Контракт статей: editor workflow (v1)
+
+### Статусы статьи
+
+- `Draft`;
+- `InReview`;
+- `Scheduled`;
+- `Published`;
+- `Rejected`;
+- `Archived`.
+
+### Публичные правила видимости
+
+- `GET /Articles/GetFilteredArticles` возвращает только `Published` статьи с наступившей датой публикации (`PublishDate <= now`);
+- `GET /Articles/GetArticle` в публичном сценарии также доступен только для уже опубликованных статей;
+- `Draft/InReview/Rejected/Archived/Scheduled (до даты)` не попадают в публичную выдачу.
+
+### Editor/moderation endpoint-ы
+
+- `POST /Articles/CreateDraft`:
+  - создаёт черновик текущего автора;
+  - bearer auth + `content.articles.write`.
+- `PUT /Articles/UpdateDraft`:
+  - обновляет черновик;
+  - owner или роль с `content.articles.manage-any`.
+- `POST /Articles/SubmitForReview`:
+  - переводит `Draft/Rejected -> InReview`.
+- `POST /Articles/ModerateArticle`:
+  - решение `Approve/Reject`;
+  - при approve:
+    - `Published`, если `PublishDate <= now`;
+    - `Scheduled`, если дата в будущем.
+- `POST /Articles/ArchiveArticle`:
+  - бизнес-удаление через архивирование (`-> Archived`).
+- `GET /Articles/GetMyDrafts`:
+  - возвращает материалы текущего автора в статусах `Draft/Rejected/InReview`.
+- `GET /Articles/GetMyMaterials`:
+  - возвращает материалы текущего автора в статусах `Published/Scheduled/Archived`.
+- `GET /Articles/GetModerationQueue`:
+  - очередь статей в `InReview`.
+- `GET /Articles/GetEditorArticle`:
+  - полная editor-модель статьи для owner/manage-any/review ролей.
+
+### Media endpoint-ы статей
+
+- `POST /Articles/UploadArticleImage`:
+  - `multipart/form-data`, поле `image`;
+  - bearer auth + `content.article-media.write`;
+  - response: `mediaUrl`, `mediaPath`.
+- `DELETE /Articles/DeleteArticleImage?MediaPath=...`:
+  - удаление файла по относительному пути;
+  - bearer auth + `content.article-media.write`.
+
+Валидация media (v1):
+
+- размер файла до `8MB`;
+- MIME: `image/jpeg`, `image/png`, `image/webp`;
+- ext: `.jpg`, `.jpeg`, `.png`, `.webp`;
+- min side: `128px`;
+- max side: `4096px`;
+- max pixels: `20MP`;
+- итоговое сохранение: `webp`, публичный URL через `/media/articles/*`.
+
+### Article likes и привязка грибов
+
+- лайки:
+  - `POST /ArticleLikes/ToggleLike?ArticleId=<guid>`;
+  - `GET /ArticleLikes/GetLikesCount/count?ArticleId=<guid>`;
+  - `GET /ArticleLikes/HasUserLiked/user?ArticleId=<guid>` (auth).
+- связи статьи и грибов:
+  - `GET /ArticleMushrooms/GetAllMushrooms?ArticleId=<guid>`;
+  - `POST /ArticleMushrooms/AddMushroomToArticle?ArticleId=<guid>&MushroomId=<guid>`;
+  - `DELETE /ArticleMushrooms/DeleteMushroomFromArticle?ArticleId=<guid>&MushroomId=<guid>`;
+  - `PUT /ArticleMushrooms/ReplaceArticleMushrooms` (bulk replace).
+
+### DTO и совместимость
+
+- `ArticleDto` расширен полями lifecycle/audit:
+  - `status`, `createdByUserId`, `updatedByUserId`, `createdAt`, `updatedAt`,
+  - `submittedAt`, `publishedAt`, `reviewedAt`, `reviewedByUserId`, `reviewNote`, `archivedAt`,
+  - `likesCount`.
+- `EditorArticleDto` включает `linkedMushroomIds` + полный список параграфов.
+- `DELETE /Articles/DeleteArticle` переведен в deprecated purge-сценарий:
+  - используется только с `content.articles.purge`.
+
+### Миграция и rollout
+
+- для существующей БД обязательная последовательность:
+  1. `DBInit/2-upgrade-avatar.sql`;
+  2. `DBInit/3-upgrade-rbac.sql`;
+  3. `DBInit/4-upgrade-articles-workflow.sql`.
+- `4-upgrade-articles-workflow.sql`:
+  - добавляет поля lifecycle/audit для `Articles`;
+  - backfill старых записей в `Published`;
+  - seed новых permission-кодов workflow;
+  - назначение owner старым статьям на SuperUser.
+- в backend запущен background scheduler:
+  - каждые `60s` переводит `Scheduled -> Published`, когда наступила дата.
 
 ## Changelog для mobile-команды (breaking changes)
 

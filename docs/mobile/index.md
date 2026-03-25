@@ -48,6 +48,39 @@
 - при попытке лайка без токена показывать CTA на login/register;
 - при `401` на `HasUserLiked/ToggleLike` считать сессию истекшей и переводить пользователя в auth-flow.
 
+## Статьи и editor workflow (контракт совместимости)
+
+Публичные endpoint-ы статей:
+
+- `GET /Articles/GetFilteredArticles` — публичный список статей (только опубликованные и уже доступные по дате);
+- `GET /Articles/GetArticle?ArticleId=<guid>` — публичная карточка статьи;
+- `GET /ArticleLikes/GetLikesCount/count?ArticleId=<guid>` — счетчик лайков статьи;
+- `GET /ArticleLikes/HasUserLiked/user?ArticleId=<guid>` — проверка лайка текущего пользователя (auth);
+- `POST /ArticleLikes/ToggleLike?ArticleId=<guid>` — toggle лайка (auth).
+
+Editor/moderation endpoint-ы (для web rewrite в этой итерации, mobile UI пока не внедряет):
+
+- `POST /Articles/CreateDraft`;
+- `PUT /Articles/UpdateDraft`;
+- `POST /Articles/SubmitForReview`;
+- `POST /Articles/ModerateArticle`;
+- `POST /Articles/ArchiveArticle`;
+- `GET /Articles/GetMyDrafts`;
+- `GET /Articles/GetMyMaterials`;
+- `GET /Articles/GetModerationQueue`;
+- `GET /Articles/GetEditorArticle`.
+
+Media endpoint-ы статей:
+
+- `POST /Articles/UploadArticleImage` (`multipart/form-data`, поле `image`);
+- `DELETE /Articles/DeleteArticleImage?MediaPath=...`.
+
+Важно для mobile-интеграции:
+
+- бизнес-удаление статьи выполняется через архивирование (`ArchiveArticle`);
+- `DELETE /Articles/DeleteArticle` считается purge-операцией и не используется в обычном workflow;
+- статусы `Draft/InReview/Rejected/Archived/Scheduled` не должны ожидаться в публичной выдаче `GetFilteredArticles`.
+
 ## Конфигурация окружения
 
 - `baseURL` должен зависеть от среды запуска (эмулятор/устройство/web).

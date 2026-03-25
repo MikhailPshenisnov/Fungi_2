@@ -1,8 +1,9 @@
+import { PERMISSION_CODES } from './permission-codes';
+
 export type BaseProfileTabKey = 'profile' | 'favorites' | 'history';
 export type RoleProfileTabKey =
   | 'editor-materials'
   | 'editor-drafts'
-  | 'editor-moderation-queue'
   | 'ja-moderation'
   | 'ja-reports'
   | 'ja-users-read'
@@ -18,6 +19,7 @@ export interface ProfileTabDefinition {
   label: string;
   title: string;
   subtitle: string;
+  routePath?: string;
   requiredPermission?: string;
   placeholderTitle?: string;
   placeholderDescription?: string;
@@ -54,7 +56,8 @@ const tabByKey: Record<ProfileTabKey, ProfileTabDefinition> = {
     label: 'Мои материалы',
     title: 'Мои материалы',
     subtitle: 'Раздел редактора',
-    requiredPermission: 'profile.editor.materials.read',
+    routePath: '/editor/articles?scope=materials',
+    requiredPermission: PERMISSION_CODES.articlesWrite,
     placeholderTitle: 'Рабочий список публикаций',
     placeholderDescription: 'Вкладка будет содержать созданные и опубликованные вами материалы.',
     emptyState: 'Пока нет созданных публикаций.'
@@ -64,27 +67,19 @@ const tabByKey: Record<ProfileTabKey, ProfileTabDefinition> = {
     label: 'Черновики',
     title: 'Черновики',
     subtitle: 'Раздел редактора',
-    requiredPermission: 'profile.editor.drafts.read',
+    routePath: '/editor/articles?scope=drafts',
+    requiredPermission: PERMISSION_CODES.articlesWrite,
     placeholderTitle: 'Черновики редактора',
     placeholderDescription: 'Здесь появятся ваши незавершенные материалы и черновые версии.',
     emptyState: 'Черновиков пока нет.'
-  },
-  'editor-moderation-queue': {
-    key: 'editor-moderation-queue',
-    label: 'Очередь модерации',
-    title: 'Очередь модерации',
-    subtitle: 'Раздел редактора',
-    requiredPermission: 'profile.editor.moderation-queue.read',
-    placeholderTitle: 'Материалы на проверке',
-    placeholderDescription: 'Список публикаций, ожидающих редакторской модерации.',
-    emptyState: 'Очередь сейчас пустая.'
   },
   'ja-moderation': {
     key: 'ja-moderation',
     label: 'Модерация',
     title: 'Модерация',
-    subtitle: 'Раздел младшего администратора',
-    requiredPermission: 'profile.ja.moderation.read',
+    subtitle: 'Раздел модератора',
+    routePath: '/editor/review',
+    requiredPermission: PERMISSION_CODES.articlesReview,
     placeholderTitle: 'Панель модерации',
     placeholderDescription: 'Будут доступны действия по проверке контента и пользователей.',
     emptyState: 'Активных задач нет.'
@@ -170,7 +165,6 @@ export const baseProfileTabs: ProfileTabDefinition[] = [
 export const roleProfileTabs: ProfileTabDefinition[] = [
   tabByKey['editor-materials'],
   tabByKey['editor-drafts'],
-  tabByKey['editor-moderation-queue'],
   tabByKey['ja-moderation'],
   tabByKey['ja-reports'],
   tabByKey['ja-users-read'],
@@ -182,6 +176,9 @@ export const roleProfileTabs: ProfileTabDefinition[] = [
 ];
 
 const baseTabKeys = new Set<BaseProfileTabKey>(['profile', 'favorites', 'history']);
+const legacyTabAliases: Record<string, ProfileTabKey> = {
+  'editor-moderation-queue': 'ja-moderation'
+};
 
 function normalizePermissionCode(code: string): string {
   return code.trim().toLowerCase();
@@ -221,13 +218,28 @@ export function resolveProfileTabKey(value: string | null | undefined, permissio
     return 'profile';
   }
 
-  if (!Object.prototype.hasOwnProperty.call(tabByKey, value)) {
+  const requestedRawTab = legacyTabAliases[value] ?? value;
+  if (!Object.prototype.hasOwnProperty.call(tabByKey, requestedRawTab)) {
     return 'profile';
   }
 
-  const requestedTab = value as ProfileTabKey;
+  const requestedTab = requestedRawTab as ProfileTabKey;
   const availableTabs = getAvailableProfileTabs(permissionCodes);
   const isAllowed = availableTabs.some((tab) => tab.key === requestedTab);
 
   return isAllowed ? requestedTab : 'profile';
+}
+
+export function getProfileTabHref(tabKey: ProfileTabKey): string {
+  const tab = tabByKey[tabKey];
+
+  if (tab.routePath) {
+    return tab.routePath;
+  }
+
+  if (tabKey === 'profile') {
+    return '/profile';
+  }
+
+  return `/profile?tab=${tabKey}`;
 }

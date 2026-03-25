@@ -22,6 +22,7 @@ docker compose up -d --build
 ```bash
 cat DBInit/2-upgrade-avatar.sql | docker exec -i fungi-db psql -U fungi -d FungiDB -p 5531
 cat DBInit/3-upgrade-rbac.sql | docker exec -i fungi-db psql -U fungi -d FungiDB -p 5531
+cat DBInit/4-upgrade-articles-workflow.sql | docker exec -i fungi-db psql -U fungi -d FungiDB -p 5531
 ```
 
 ## Документация локально (Docker)

@@ -20,6 +20,8 @@
 
 - `/` — лендинг;
 - `/about` — отдельная пользовательская страница «О нас»;
+- `/articles` — публичный каталог статей;
+- `/articles/:id` — детальная карточка статьи;
 - `/mushrooms` — публичный каталог грибов;
 - `/mushrooms/:id` — детальная карточка гриба;
 - `/login` — вход;
@@ -27,6 +29,10 @@
 - `/profile` — профиль пользователя;
 - `/profile?tab=<key>` — вкладки профиля (query-based);
 - `/profile/favorites` и `/profile/history` — backward-compatible редиректы на query tabs.
+- `/editor/articles` — workspace редактора (`scope=drafts|materials`);
+- `/editor/articles/new` — создание статьи;
+- `/editor/articles/:id/edit` — редактирование статьи;
+- `/editor/review` — очередь модерации.
 
 ### Текущий auth UX
 
@@ -34,12 +40,19 @@
 - после получения токена клиент запрашивает `/Users/GetCurrentUserProfile` и сохраняет данные пользователя в сессии;
 - role-aware UI строится по permission-кодам из `user.role.permissions` (permission-based доступ);
 - неавторизованный пользователь при заходе на `/profile*` перенаправляется на `/login`;
+- editor-маршруты защищены permission-guard:
+  - `/editor/articles*` требует `content.articles.write`;
+  - `/editor/review` требует `content.articles.review`.
 - базовые вкладки профиля для всех ролей:
   - `Профиль`;
   - `Избранное`;
   - `История просмотров`.
 - role-specific вкладки и пункты dropdown показываются только при наличии нужных permission-кодов;
-- контент role-specific вкладок в текущей итерации — UI-заглушки (`Скоро`) без backend-интеграции;
+- быстрые переходы из профиля:
+  - `editor-materials` -> `/editor/articles?scope=materials`;
+  - `editor-drafts` -> `/editor/articles?scope=drafts`;
+  - `ja-moderation` -> `/editor/review` (единый раздел модерации);
+  - остальные role-вкладки пока остаются как UI-заглушки.
 - кнопка профиля в header открывает dropdown-меню:
   - `Профиль`;
   - `Избранное`;
@@ -69,6 +82,19 @@
   - понятный блок «Как мы работаем для вас»;
   - контакты и финальный CTA.
 - в секции контактов/CTA на странице «О нас» усилен контраст текста и кнопок для лучшей читаемости.
+
+### Глобальные toast-ошибки
+
+- page-level ошибки в rewrite-клиенте выводятся через единый toast-слой (`ToastProvider` + `useToast`);
+- позиционирование:
+  - desktop: снизу справа;
+  - mobile (`max-width: 840px`): снизу по центру.
+- поведение:
+  - стек максимум `3` уведомления;
+  - автоскрытие по умолчанию `4` секунды;
+  - одинаковые ошибки схлопываются в окне `3` секунд;
+  - на hover/focus таймер конкретного toast ставится на паузу.
+- экраны с загрузкой данных сохраняют нейтральные fallback-блоки с кнопкой `Повторить`, но основной канал ошибок теперь toast.
 
 ### Каталог грибов и детальная карточка (frontend-first MVP)
 
@@ -105,6 +131,29 @@
   - при `401`: `signOut` и редирект на `/login` с причиной `session-expired`.
 - текущее ограничение MVP: лайки в каталоге реализованы через `N+1` запросы к count endpoint-у.
 
+### Каталог статей и editor workspace
+
+- публичный каталог `/articles`:
+  - фильтры `q`, `author`, сортировка `newest|oldest|likes`, клиентская пагинация;
+  - карточка статьи кликабельна и ведет на `/articles/:id`;
+  - лайк в карточке: optimistic toggle + rollback, guest popup при неавторизованном сценарии.
+- детальная статья `/articles/:id`:
+  - hero с метаданными и статусом;
+  - рендер параграфов (`subtitle/body`);
+  - галерея изображений;
+  - список связанных грибов (`ArticleMushrooms/GetAllMushrooms`);
+  - лайк-блок с тем же auth-flow, что в каталоге.
+- editor workspace `/editor/articles`:
+  - scope `Черновики` и `Мои материалы`;
+  - быстрые действия: редактировать, отправить на модерацию, архивировать.
+- editor форма `/editor/articles/new` и `/editor/articles/:id/edit`:
+  - поля статьи, параграфы, связанные грибы;
+  - upload изображений через backend (`/Articles/UploadArticleImage`) с прогрессом;
+  - действия: `Сохранить черновик`, `Отправить на модерацию`, `Архивировать`.
+- модерация `/editor/review`:
+  - очередь `InReview`;
+  - решения `Одобрить` / `Отклонить` с optional `reviewNote`.
+
 ### Storybook покрытие (актуально)
 
 Новые/обновленные истории для сценария каталога грибов:
@@ -112,6 +161,15 @@
 - `Pages/Mushrooms/MushroomsPage`;
 - `Pages/Mushrooms/MushroomDetailPage`;
 - `Features/Mushrooms/AuthRequiredPopup`.
+
+Покрытие для article/editor flow:
+
+- `Pages/Articles/ArticlesPage`;
+- `Pages/Articles/ArticleDetailPage`;
+- `Pages/Editor/EditorArticlesPage`;
+- `Pages/Editor/EditorArticleFormPage`;
+- `Pages/Editor/EditorReviewPage`;
+- `Features/Articles/AuthRequiredPopup`.
 
 Минимальный набор состояний:
 
@@ -123,7 +181,8 @@
 
 - `О нас` ведет на отдельную страницу `/about`;
 - `Грибы` ведет на отдельную страницу `/mushrooms`;
-- ссылки `Статьи/Отзывы` ведут на якоря главной страницы (`/#articles`, `/#reviews`), чтобы не создавать URL вида `/profile#about`;
+- `Статьи` ведет на `/articles`;
+- `Отзывы` ведет на якорь главной страницы `/#reviews`, чтобы не создавать URL вида `/profile#about`;
 - переходы `Войти/Регистрация/Профиль` выполняются через client-side routing (без full page reload).
 
 ## Legacy (`frontend_fungi`)

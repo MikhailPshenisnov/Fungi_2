@@ -150,10 +150,6 @@
   color: var(--color-status-success-strong);
 }
 
-.avatarMessageError {
-  color: var(--color-status-error-text);
-}
-
 .layout {
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr);
@@ -239,15 +235,148 @@
   font-weight: 700;
 }
 
+.readyBadge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 0 8px;
+  border: 1px solid var(--color-status-success-border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-status-success-bg) 70%, white);
+  color: var(--color-status-success-strong);
+  font-size: var(--text-meta-size);
+  font-weight: 700;
+}
+
 .placeholderText {
   margin-top: 10px;
   color: var(--color-text-secondary);
+}
+
+.previewList {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 6px;
+  color: var(--color-text-secondary);
+}
+
+.previewListItem {
+  line-height: 1.4;
+}
+
+.editorTilesSection {
+  display: grid;
+  gap: 12px;
+}
+
+.editorTilesGrid {
+  display: grid;
+  gap: 10px;
+}
+
+.editorTile {
+  display: grid;
+  gap: 10px;
+}
+
+.editorTileTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.editorTileTitle {
+  color: var(--color-text-primary);
+}
+
+.editorTileMeta {
+  color: var(--color-text-secondary);
+}
+
+.editorTileActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.editorTileActionLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: var(--radius-s);
+  border: 1px solid var(--color-border-default);
+  background: var(--color-surface-elevated);
+  color: var(--color-text-primary);
+  text-decoration: none;
+  font-size: var(--text-body-s-size);
+  font-weight: 600;
+  transition: border-color 0.16s ease, background-color 0.16s ease;
+}
+
+.editorTileActionLink:hover {
+  border-color: var(--color-action-primary-border);
+  background: var(--color-bg-subtle);
+}
+
+.editorTileActionLink:focus-visible {
+  outline: 2px solid var(--color-action-primary-focus-ring);
+  outline-offset: 2px;
+}
+
+.editorStateCard {
+  padding: 10px 12px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-s);
+  background: var(--color-bg-subtle);
+}
+
+.editorSectionActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .placeholderEmpty {
   display: inline-block;
   margin-top: 10px;
   color: var(--color-text-tertiary);
+}
+
+.placeholderActionRow {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.placeholderActionLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  width: fit-content;
+  padding: 0 14px;
+  border-radius: var(--radius-m);
+  border: 1px solid var(--color-border-default);
+  background: var(--color-surface-elevated);
+  color: var(--color-text-primary);
+  text-decoration: none;
+  font-size: var(--text-body-s-size);
+  font-weight: 600;
+  transition: background-color 0.16s ease, border-color 0.16s ease;
+}
+
+.placeholderActionLink:hover {
+  border-color: var(--color-action-primary-border);
+  background: var(--color-bg-subtle);
+}
+
+.placeholderActionLink:focus-visible {
+  outline: 2px solid var(--color-action-primary-focus-ring);
+  outline-offset: 2px;
 }
 
 @media (max-width: 840px) {

@@ -5,25 +5,26 @@ import { registerUser } from '@features/auth';
 import { getCurrentUserProfile } from '@features/avatar';
 import { normalizePermissionCodes, useSession } from '@entities/session';
 import { appleLogo, googleLogo } from '@shared/assets/icons';
-import { Button, Checkbox, Input, Stack, Typography } from '@shared/ui';
+import { Button, Checkbox, Input, Stack, Typography, useToast } from '@shared/ui';
 import styles from './RegisterPage.module.css';
 
 export function RegisterPage() {
   const navigate = useNavigate();
   const { signIn } = useSession();
+  const { showError, showInfo } = useToast();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   function handleSocialAuth(provider: 'google' | 'apple') {
-    setErrorMessage(`Авторизация через ${provider === 'google' ? 'Google' : 'Apple'} будет добавлена в следующей итерации.`);
+    showInfo(`Авторизация через ${provider === 'google' ? 'Google' : 'Apple'} будет добавлена в следующей итерации.`, {
+      title: 'Скоро'
+    });
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setErrorMessage(null);
     setIsSubmitting(true);
 
     try {
@@ -53,7 +54,7 @@ export function RegisterPage() {
       navigate('/profile', { replace: true });
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Не удалось выполнить регистрацию.';
-      setErrorMessage(message);
+      showError(message, { title: 'Ошибка регистрации' });
     } finally {
       setIsSubmitting(false);
     }
@@ -144,7 +145,6 @@ export function RegisterPage() {
               label="Согласен с политикой конфиденциальности и условиями использования"
               disabled={isSubmitting}
             />
-            {errorMessage ? <Typography variant="caption" className={styles.error}>{errorMessage}</Typography> : null}
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? 'Создаём аккаунт...' : 'Создать аккаунт'}
             </Button>

@@ -42,11 +42,37 @@ public partial class FungiDbContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("Articles_pkey");
             entity.HasIndex(e => e.Title, "articles_unique_title").IsUnique();
+            entity.HasIndex(e => e.Status, "idx_articles_status");
+            entity.HasIndex(e => new { e.Status, e.PublishDate }, "idx_articles_status_publish_date");
+            entity.HasIndex(e => e.CreatedByUserId, "idx_articles_created_by");
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.AuthorString).HasMaxLength(128);
             entity.Property(e => e.ExtraPhotoLinks).HasMaxLength(1024);
             entity.Property(e => e.HeaderPhotoLink).HasMaxLength(256);
+            entity.Property(e => e.ReviewNote).HasMaxLength(1000);
+            entity.Property(e => e.Status).HasMaxLength(32);
             entity.Property(e => e.Title).HasMaxLength(256);
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("now()");
+            entity.Property(e => e.Status).HasDefaultValue("Published");
+
+            entity.HasOne(d => d.CreatedByUser)
+                .WithMany(p => p.CreatedArticles)
+                .HasForeignKey(d => d.CreatedByUserId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("Articles_CreatedByUserId_fkey");
+
+            entity.HasOne(d => d.UpdatedByUser)
+                .WithMany(p => p.UpdatedArticles)
+                .HasForeignKey(d => d.UpdatedByUserId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("Articles_UpdatedByUserId_fkey");
+
+            entity.HasOne(d => d.ReviewedByUser)
+                .WithMany(p => p.ReviewedArticles)
+                .HasForeignKey(d => d.ReviewedByUserId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("Articles_ReviewedByUserId_fkey");
         });
 
         modelBuilder.Entity<Doppelganger>(entity =>
