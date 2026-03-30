@@ -10,8 +10,11 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
+  Dimensions,
 } from "react-native";
-import { AuthAPI } from "../clientAPI"; //  API
+import { AuthAPI } from "../clientAPI";
+
+const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
 export default function LoginScreen({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -19,75 +22,84 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-// LoginScreen.js - обновленный handleLogin
-
-const handleLogin = async () => {
-  console.log('1. handleLogin started');
-  console.log('Email:', email);
-  console.log('Password:', password);
-  
-  // Валидация
-  if (!email.trim()) {
-    Alert.alert("Ошибка", "Введите email");
-    return;
-  }
-  if (!password.trim()) {
-    Alert.alert("Ошибка", "Введите пароль");
-    return;
-  }
-
-  setLoading(true);
-  
-  try {
-    console.log('Calling AuthAPI.login...');
-    const result = await AuthAPI.login(email, password);
-    console.log('AuthAPI.login result:', result);
+  const handleLogin = async () => {
+    console.log('1. handleLogin started');
+    console.log('Email:', email);
+    console.log('Password:', password);
     
-  if (result.success) {
-    console.log('Login successful, navigating to TestProfile');
-    
-    // Используем reset вместо navigate
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'TestProfile' }],
-    });
-  } else {
-      console.log('Login failed:', result.error);
-      Alert.alert("Ошибка входа", result.error);
+    // Валидация
+    if (!email.trim()) {
+      Alert.alert("Ошибка", "Введите email");
+      return;
     }
-  } catch (error) {
-    console.log('Unexpected error:', error);
-    Alert.alert("Ошибка", "Произошла непредвиденная ошибка");
-  } finally {
-    setLoading(false);
-  }
-};
+    if (!password.trim()) {
+      Alert.alert("Ошибка", "Введите пароль");
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      console.log('Calling AuthAPI.login...');
+      const result = await AuthAPI.login(email, password);
+      console.log('AuthAPI.login result:', result);
+      
+      if (result.success) {
+        console.log('Login successful, navigating to TestProfile');
+        
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'TestProfile' }],
+        });
+      } else {
+        console.log('Login failed:', result.error);
+        Alert.alert("Ошибка входа", result.error);
+      }
+    } catch (error) {
+      console.log('Unexpected error:', error);
+      Alert.alert("Ошибка", "Произошла непредвиденная ошибка");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Динамические размеры
+  const logoSize = screenWidth * 0.08; // 24% от ширины экрана
+  const logoImageSize = logoSize * 0.70;
+  const titleFontSize = screenWidth * 0.020;
+  const appNameFontSize = screenWidth * 0.025;
 
   return (
     <View style={styles.screen}>
       <ScrollView
-        contentContainerStyle={styles.container}
-        showsVerticalScrollIndicator={false}
+        contentContainerStyle={[
+          styles.container,
+          { paddingTop: screenHeight * 0.05 }
+        ]}
+        showsVerticalScrollIndicator={true}
+        bounces={false}
       >
         {/* ЛОГО + НАЗВАНИЕ */}
-        <View style={styles.logoBlock}>
-          <View style={styles.logoCircle}>
+        <View style={[styles.logoBlock, { marginBottom: screenHeight * 0.03 }]}>
+          <View style={[styles.logoCircle, { width: logoSize, height: logoSize, borderRadius: logoSize / 2 }]}>
             <Image
               source={require("../assets/image/character.png")}
-              style={styles.logoImage}
+              style={[styles.logoImage, { width: logoImageSize, height: logoImageSize }]}
               resizeMode="contain"
             />
           </View>
-          <Text style={styles.appName}>Fungi</Text>
+          <Text style={[styles.appName, { fontSize: appNameFontSize, marginLeft: screenWidth * 0.01 }]}>
+            Fungi
+          </Text>
         </View>
 
         {/* ТЕКСТ "Войти в Fungi" */}
-        <Text style={styles.title}>
+        <Text style={[styles.title, { fontSize: titleFontSize, marginBottom: screenHeight * 0.03 }]}>
           Войти в <Text style={styles.titleAccent}>Fungi</Text>
         </Text>
 
         {/* КНОПКИ GOOGLE / APPLE */}
-        <View style={styles.socialRow}>
+        <View style={[styles.socialRow, { gap: screenWidth * 0.04, marginBottom: screenHeight * 0.01 }]}>
           <TouchableOpacity style={styles.socialButton}>
             <Image
               source={require("../assets/image/google.png")}
@@ -105,10 +117,12 @@ const handleLogin = async () => {
           </TouchableOpacity>
         </View>
         
-        <Text style={styles.orText}>ИЛИ</Text>
+        <Text style={[styles.orText, { marginTop: screenHeight * 0.015, marginBottom: screenHeight * 0.03 }]}>
+          ИЛИ
+        </Text>
 
         {/* EMAIL */}
-        <View style={styles.inputWrapper}>
+        <View style={[styles.inputWrapper, { marginBottom: screenHeight * 0.015 }]}>
           <Text style={styles.inputIcon}>✉️</Text>
           <TextInput
             style={styles.input}
@@ -123,7 +137,7 @@ const handleLogin = async () => {
         </View>
 
         {/* ПАРОЛЬ */}
-        <View style={styles.inputWrapper}>
+        <View style={[styles.inputWrapper, { marginBottom: screenHeight * 0.015 }]}>
           <Text style={styles.inputIcon}>🔒</Text>
           <TextInput
             style={styles.input}
@@ -147,7 +161,7 @@ const handleLogin = async () => {
 
         {/* ЗАБЫЛИ ПАРОЛЬ */}
         <TouchableOpacity 
-          style={styles.forgotWrapper}
+          style={[styles.forgotWrapper, { marginBottom: screenHeight * 0.022 }]}
           onPress={() => navigation.navigate("ForgotPassword")}
           disabled={loading}
         >
@@ -168,7 +182,7 @@ const handleLogin = async () => {
         </TouchableOpacity>
 
         {/* "Ещё нет аккаунта? Создать" */}
-        <View style={styles.bottomRow}>
+        <View style={[styles.bottomRow, { marginBottom: screenHeight * 0.04 }]}>
           <Text style={styles.bottomText}>Ещё нет аккаунта? </Text>
           <TouchableOpacity 
             onPress={() => navigation.navigate("Registration")}
@@ -195,34 +209,27 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingHorizontal: 24,
-    paddingTop: 40,
-    paddingBottom: 120,
+    paddingBottom: 40,
+    justifyContent: 'center',
   },
 
-  // ЛОГО БЛОК — центр
+  // ЛОГО БЛОК
   logoBlock: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",   // центрируем ряд целиком
-    marginBottom: 24,
+    justifyContent: "center",
   },
   logoCircle: {
-    width: 92,
-    height: 92,
-    borderRadius: 46,
     backgroundColor: "#FFE8C4",
     justifyContent: "center",
     alignItems: "center",
   },
   logoImage: {
-    width: 80,
-    height: 80,
+    // размеры задаются динамически
   },
   appName: {
     fontFamily: "Raleway-Bold",
-    fontSize: 32,
     color: "#323142",
-    marginLeft: 16,
   },
 
   appIcons: {
@@ -233,10 +240,8 @@ const styles = StyleSheet.create({
   // ЗАГОЛОВОК
   title: {
     fontFamily: "Raleway-Medium",
-    fontSize: 20,
     textAlign: "center",
     color: "#323142",
-    marginBottom: 24,
   },
   titleAccent: {
     color: "#F9A94A",
@@ -247,24 +252,20 @@ const styles = StyleSheet.create({
   socialRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    gap: 16,
-    marginBottom: 8, // небольшой отступ до "ИЛИ"
   },
   socialButton: {
     flex: 1,
     paddingVertical: 14,
     borderRadius: 16,
-    backgroundColor: "#F5F5F5", // светло-серые
+    backgroundColor: "#F5F5F5",
     justifyContent: "center",
     alignItems: "center",
   },
   orText: {
     textAlign: "center",
-    marginTop: 12,
-    marginBottom: 24,           // больше воздуха до EMAIL
     fontFamily: "Raleway-Bold",
     fontSize: 12,
-    color: "#005A6459",           // синеватый
+    color: "#005A6459",
   },
 
   // ИНПУТЫ
@@ -275,7 +276,6 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     paddingHorizontal: 16,
     paddingVertical: 12,
-    marginBottom: 12,
   },
   inputIcon: {
     fontSize: 16,
@@ -299,7 +299,6 @@ const styles = StyleSheet.create({
 
   forgotWrapper: {
     alignItems: "flex-end",
-    marginBottom: 18,
   },
   forgotText: {
     fontFamily: "Raleway-Medium",
@@ -308,15 +307,14 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
 
-  // КНОПКА ВОЙТИ — персиковая с тенью
+  // КНОПКА ВОЙТИ
   primaryButton: {
-    backgroundColor: "#FFE6C4", // близко к макету
+    backgroundColor: "#FFE6C4",
     borderRadius: 24,
     paddingVertical: 16,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 16,
-
     shadowColor: "#000",
     shadowOpacity: 0.18,
     shadowOffset: { width: 0, height: 4 },
@@ -335,7 +333,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 32,
   },
   bottomText: {
     fontFamily: "Raleway-Regular",
@@ -357,5 +354,9 @@ const styles = StyleSheet.create({
     fontFamily: "Raleway-Regular",
     fontSize: 10,
     color: "#B0B0B5",
+  },
+
+  disabledButton: {
+    opacity: 0.6,
   },
 });

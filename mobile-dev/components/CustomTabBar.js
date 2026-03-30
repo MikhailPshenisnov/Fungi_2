@@ -4,104 +4,101 @@ import { View, TouchableOpacity, Image, StyleSheet, Dimensions } from "react-nat
 const { width: screenWidth } = Dimensions.get("window");
 
 export default function CustomTabBar({ state, descriptors, navigation }) {
-    // Скрываем таб-бар на экране камеры
+  // Скрываем таб-бар на экране камеры
   const currentRoute = state.routes[state.index];
   if (currentRoute.name === "Камера") {
     return null;
   }
-return ( <View style={styles.tabbar}>
-{/* Фоновое изображение таб-бара */}
-<Image
-source={require("../assets/image/navbar/Subtract.png")}
-style={styles.subtractImage}
-/>
 
+  // Немного увеличил ширину (было 353, стало 380)
+  const tabbarWidth = Math.min(380, screenWidth - 40); // Не больше 380, но с отступами
+  const cameraButtonLeft = (tabbarWidth / 2) - 27;
+  const subtractImageTop = 20;
+  
+  // Позиционирование кнопок (скорректировал проценты под новую ширину)
+  const buttonPositions = {
+    "Главная": { leftPercent: 0.08, top: 35 },      // ~30px
+    "Карточки": { leftPercent: 0.22, top: 36 },     // ~84px
+    "Энциклопедия": { leftPercent: 0.71, top: 34 },  // ~270px
+    "Профиль": { leftPercent: 0.85, top: 34 },       // ~323px
+  };
 
-  {/* Кнопка камеры по центру */}
-  <TouchableOpacity
-    style={styles.cameraButton}
-    onPress={() => navigation.navigate("Камера")}
-  >
-    <Image
-      source={require("../assets/image/navbar/camera.svg")}
-      style={{ width: 54, height: 54 }}
-    />
-  </TouchableOpacity>
+  return (
+    <View style={[styles.tabbar, { width: tabbarWidth }]}>
+      {/* Фоновое изображение таб-бара */}
+      <Image
+        source={require("../assets/image/navbar/Subtract.png")}
+        style={[
+          styles.subtractImage, 
+          { 
+            width: tabbarWidth, 
+            top: subtractImageTop 
+          }
+        ]}
+        resizeMode="stretch"
+      />
 
-  {/* Обычные табы */}
-  {state.routes.map((route, index) => {
-    if (route.name === "Камера") return null; // Камера отдельная
-
-    const { options } = descriptors[route.key];
-    const isFocused = state.index === index;
-
-    let left = 0;
-    let top = 0;
-
-    // Расположение кнопок по твоему макету
-    switch (route.name) {
-      case "Главная":
-        left = 30;
-        top = 35;
-        break;
-      case "Карточки":
-        left = 84;
-        top = 36;
-        break;
-      case "Энциклопедия":
-        left = 240;
-        top = 34;
-        break;
-      case "Профиль":
-        left = 297;
-        top = 34;
-        break;
-    }
-
-    return (
+      {/* Кнопка камеры по центру */}
       <TouchableOpacity
-        key={route.key}
-        onPress={() => navigation.navigate(route.name)}
-        style={[styles.tabButton, { left, top }]}
+        style={[styles.cameraButton, { left: cameraButtonLeft }]}
+        onPress={() => navigation.navigate("Камера")}
       >
-        {options.tabBarIcon({ focused: isFocused, size: 26 })}
+        <Image
+          source={require("../assets/image/navbar/camera.svg")}
+          style={{ width: 54, height: 54 }}
+        />
       </TouchableOpacity>
-    );
-  })}
-</View>
 
+      {/* Обычные табы */}
+      {state.routes.map((route, index) => {
+        if (route.name === "Камера") return null;
 
-);
+        const { options } = descriptors[route.key];
+        const isFocused = state.index === index;
+        
+        const position = buttonPositions[route.name];
+        if (!position) return null;
+        
+        const leftPosition = tabbarWidth * position.leftPercent;
+
+        return (
+          <TouchableOpacity
+            key={route.key}
+            onPress={() => navigation.navigate(route.name)}
+            style={[styles.tabButton, { left: leftPosition, top: position.top }]}
+          >
+            {options.tabBarIcon({ focused: isFocused, size: 26 })}
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-tabbar: {
-width: 353,
-height: 77,
-position: "absolute",
-bottom: 20,
-left: 20,
-},
+  tabbar: {
+    height: 77,
+    position: "absolute",
+    bottom: 20,
+    left: (screenWidth - 380) / 2, // Центрируем на экране
+    // Если ширина меньше 380, то просто ставим отступ 20
+  },
 
-subtractImage: {
-width: 353,
-height: 57,
-position: "absolute",
-top: 20,
-left: 0,
-resizeMode: "stretch",
-},
+  subtractImage: {
+    position: "absolute",
+    height: 57,
+    resizeMode: "stretch",
+  },
 
-cameraButton: {
-position: "absolute",
-width: 54,
-height: 54,
-top: 0,
-left: 149,
-zIndex: 10,
-},
+  cameraButton: {
+    position: "absolute",
+    width: 54,
+    height: 54,
+    top: 0,
+    zIndex: 10,
+  },
 
-tabButton: {
-position: "absolute",
-},
+  tabButton: {
+    position: "absolute",
+  },
 });
