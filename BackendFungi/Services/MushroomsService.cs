@@ -3,6 +3,7 @@ using BackendFungi.Abstractions.Services;
 using BackendFungi.Exceptions.SpecificExceptions;
 using BackendFungi.Models;
 using BackendFungi.Models.Filters;
+using BackendFungi.Models.Other;
 
 namespace BackendFungi.Services;
 
@@ -15,183 +16,295 @@ public class MushroomsService : IMushroomsService
         _mushroomsRepository = mushroomsRepository;
     }
 
-    // Creates a new mushroom and its doppelgangers in the system via the repository
-    // Parameters: mushroom model with mushroom data and cancellation token
-    // Returns: guid of the created mushroom
-    public async Task<Guid>
-        CreateMushroomAsync(Mushroom mushroom, CancellationToken cancellationToken)
+    public async Task<Guid> CreateMushroomAsync(Mushroom mushroom, CancellationToken ct)
     {
-        var createdMushroomId = await _mushroomsRepository.CreateMushroom(mushroom, cancellationToken);
-
-        return createdMushroomId;
+        return await _mushroomsRepository.CreateMushroom(mushroom, ct);
     }
 
-    // Retrieves a mushroom by its guid along with a doppelgangers map
-    // Parameters: guid of the mushroom and cancellation token
-    // Returns: tuple containing the Mushroom model and the doppelgangers map or throws UnknownIdentifierException
-    public async Task<(Mushroom Mushroom, List<bool> DoppelgangersMap)>
-        GetMushroomAsync(Guid mushroomId, CancellationToken cancellationToken)
+    public async Task<(Mushroom Mushroom, List<bool> DoppelgangersMap, int LikesCount)> GetMushroomAsync(
+        Guid mushroomId,
+        CancellationToken ct)
     {
-        var allMushrooms = await _mushroomsRepository.GetAllMushrooms(cancellationToken);
-
-        var mushroom = allMushrooms.FirstOrDefault(m => m.Id == mushroomId);
-
-        if (mushroom == null)
-            throw new UnknownIdentifierException("Unknown mushroom id");
+        var (mushroom, likesCount) = await _mushroomsRepository.GetPublishedMushroom(mushroomId, ct);
+        var allPublishedNames = await _mushroomsRepository.GetPublishedMushroomNames(ct);
 
         var doppelgangersMap = mushroom.Doppelgangers
-            .Select(doppelganger => allMushrooms
-                .FirstOrDefault(m => m.Name == doppelganger.DoppelgangerName))
-            .Select(doppelgangerModel => doppelgangerModel is not null)
+            .Select(doppelganger => allPublishedNames.Contains(doppelganger.DoppelgangerName))
             .ToList();
 
-        return (mushroom, doppelgangersMap);
+        return (mushroom, doppelgangersMap, likesCount);
     }
 
-    // Retrieves a filtered list of mushrooms with their doppelgangers maps based on the provided filter
-    // Parameters: optional MushroomFilter model to filter mushrooms and cancellation token
-    // Returns: list of tuples of the Mushroom model and the doppelgangers map, sorted by mushroom name
-    public async Task<List<(Mushroom Mushroom, List<bool> DoppelgangersMap)>>
-        GetFilteredMushroomsAsync(MushroomFilter? mushroomFilter, CancellationToken cancellationToken)
+    public async Task<(List<(Mushroom Mushroom, List<bool> DoppelgangersMap, int LikesCount)> Mushrooms, int TotalCount, int Page, int PageSize)>
+        GetFilteredMushroomsAsync(
+            MushroomFilter? mushroomFilter,
+            int page,
+            int pageSize,
+            MushroomSortMode sortMode,
+            CancellationToken ct)
     {
-        var allMushrooms = await _mushroomsRepository.GetAllMushrooms(cancellationToken);
+        var normalizedPage = Math.Max(1, page);
+        var normalizedPageSize = Math.Clamp(pageSize, 1, 200);
 
-        var mushrooms = allMushrooms;
+        var (mushrooms, totalCount) = await _mushroomsRepository.GetFilteredPublishedMushrooms(
+            mushroomFilter,
+            normalizedPage,
+            normalizedPageSize,
+            sortMode,
+            ct);
 
-        if (mushroomFilter is not null)
-        {
-            if (mushroomFilter.PartOfName is not null)
+        var allPublishedNames = await _mushroomsRepository.GetPublishedMushroomNames(ct);
+
+        var result = mushrooms
+            .Select(x =>
             {
-                mushrooms = mushrooms
-                    .Where(m => m.Name.ToLower().Contains(mushroomFilter.PartOfName.ToLower()) ||
-                                m.SynonymousName is not null &&
-                                m.SynonymousName.ToLower().Contains(mushroomFilter.PartOfName.ToLower()) ||
-                                m.LatinName is not null &&
-                                m.LatinName.ToLower().Contains(mushroomFilter.PartOfName.ToLower()))
-                    .ToList();
-            }
-
-            if (mushroomFilter.Family is not null)
-            {
-                mushrooms = mushrooms
-                    .Where(m => m.Family.ToLower().Contains(mushroomFilter.Family.ToLower()))
-                    .ToList();
-            }
-
-            if (mushroomFilter.RedBook is not null)
-            {
-                mushrooms = mushrooms
-                    .Where(m => m.RedBook == mushroomFilter.RedBook)
-                    .ToList();
-            }
-
-            if (mushroomFilter.Eatable is not null)
-            {
-                mushrooms = mushrooms
-                    .Where(m => m.Eatable == mushroomFilter.Eatable)
-                    .ToList();
-            }
-
-            if (mushroomFilter.HasStem is not null)
-            {
-                mushrooms = mushrooms
-                    .Where(m => m.HasStem == mushroomFilter.HasStem)
+                var doppelgangersMap = x.Mushroom.Doppelgangers
+                    .Select(doppelganger => allPublishedNames.Contains(doppelganger.DoppelgangerName))
                     .ToList();
 
-                if (mushroomFilter.HasStem is true)
-                {
-                    if (mushroomFilter.StemSizeFrom is not null)
-                    {
-                        mushrooms = mushrooms
-                            .Where(m => m.StemSizeFrom >= mushroomFilter.StemSizeFrom)
-                            .ToList();
-                    }
-
-                    if (mushroomFilter.StemSizeTo is not null)
-                    {
-                        mushrooms = mushrooms
-                            .Where(m => m.StemSizeTo <= mushroomFilter.StemSizeTo)
-                            .ToList();
-                    }
-
-                    if (mushroomFilter.StemType is not null)
-                    {
-                        mushrooms = mushrooms
-                            .Where(m => m.StemType == mushroomFilter.StemType)
-                            .ToList();
-                    }
-
-                    if (mushroomFilter.StemColor is not null)
-                    {
-                        mushrooms = mushrooms
-                            .Where(m => m.StemColor != null &&
-                                        m.StemColor.ToLower().Contains(mushroomFilter.StemColor.ToLower()))
-                            .ToList();
-                    }
-                }
-            }
-
-            if (mushroomFilter.CapType is not null)
-            {
-                mushrooms = mushrooms
-                    .Where(m => m.CapType == mushroomFilter.CapType)
-                    .ToList();
-            }
-
-            if (mushroomFilter.CapColor is not null)
-            {
-                mushrooms = mushrooms
-                    .Where(m => m.CapColor.ToLower().Contains(mushroomFilter.CapColor.ToLower()))
-                    .ToList();
-            }
-
-            if (mushroomFilter.CapUndersideType is not null)
-            {
-                mushrooms = mushrooms
-                    .Where(m => m.CapUndersideType == mushroomFilter.CapUndersideType)
-                    .ToList();
-            }
-        }
-
-        mushrooms = mushrooms.OrderBy(m => m.Name).ToList();
-
-        List<(Mushroom Mushroom, List<bool> DoppelgangersMap)> result = mushrooms
-            .Select(mushroom =>
-            {
-                var doppelgangersMap = mushroom.Doppelgangers
-                    .Select(doppelganger => allMushrooms
-                        .FirstOrDefault(m => m.Name == doppelganger.DoppelgangerName))
-                    .Select(doppelgangerModel => doppelgangerModel is not null)
-                    .ToList();
-
-                return (mushroom, doppelgangersMap);
+                return (x.Mushroom, doppelgangersMap, x.LikesCount);
             })
             .ToList();
 
-        return result;
+        return (result, totalCount, normalizedPage, normalizedPageSize);
     }
 
-
-    // Updates an existing mushroom in the system via the repository
-    // Parameters: guid of the mushroom, Mushroom model with updated data and cancellation token
-    // Returns: guid of the updated mushroom
-    public async Task<Guid>
-        UpdateMushroomAsync(Guid mushroomId, Mushroom newMushroom, CancellationToken cancellationToken)
+    public async Task<Guid> UpdateMushroomAsync(Guid mushroomId, Mushroom newMushroom, CancellationToken ct)
     {
-        var updatedMushroomId = await _mushroomsRepository.UpdateMushroom(mushroomId, newMushroom,
-            cancellationToken);
-
-        return updatedMushroomId;
+        return await _mushroomsRepository.UpdateMushroom(mushroomId, newMushroom, ct);
     }
 
-    // Deletes a mushroom from the system via the repository
-    // Parameters: guid of the mushroom and cancellation token
-    // Returns: guid of the deleted mushroom
-    public async Task<Guid>
-        DeleteMushroomAsync(Guid mushroomId, CancellationToken cancellationToken)
+    public async Task<Guid> DeleteMushroomAsync(Guid mushroomId, CancellationToken ct)
     {
-        var deletedMushroomId = await _mushroomsRepository.DeleteMushroom(mushroomId, cancellationToken);
+        return await _mushroomsRepository.DeleteMushroom(mushroomId, ct);
+    }
 
-        return deletedMushroomId;
+    public async Task<Guid> CreateDraftAsync(MushroomRevision revision, CancellationToken ct)
+    {
+        if (revision.Status != MushroomRevisionStatus.Draft)
+            throw new ConversionException("Incorrect data format: Draft mushroom revision must have Draft status");
+
+        if (revision.SourceMushroomId is not null)
+        {
+            var sourceExists = await _mushroomsRepository.ExistsPublishedMushroom(revision.SourceMushroomId.Value, ct);
+            if (!sourceExists)
+                throw new UnknownIdentifierException("Unknown mushroom id");
+        }
+
+        return await _mushroomsRepository.CreateMushroomRevision(revision, ct);
+    }
+
+    public async Task<Guid> UpdateDraftAsync(Guid revisionId, MushroomRevision revision, CancellationToken ct)
+    {
+        var existingRevision = await GetEditorMushroomAsync(revisionId, ct);
+
+        if (existingRevision.Status is not (MushroomRevisionStatus.Draft or MushroomRevisionStatus.Rejected))
+            throw new ConversionException("Incorrect data format: Mushroom revision status does not allow draft update");
+
+        return await _mushroomsRepository.UpdateMushroomRevision(revisionId, revision, ct);
+    }
+
+    public async Task<MushroomRevision> SubmitForReviewAsync(Guid revisionId, Guid actorUserId, CancellationToken ct)
+    {
+        var existingRevision = await GetEditorMushroomAsync(revisionId, ct);
+
+        if (existingRevision.Status is not (MushroomRevisionStatus.Draft or MushroomRevisionStatus.Rejected))
+            throw new ConversionException("Incorrect data format: Only Draft or Rejected mushroom revision can be submitted for review");
+
+        if (string.IsNullOrWhiteSpace(existingRevision.HeaderPhotoLink))
+            throw new ConversionException("Incorrect data format: Header photo is required before submitting mushroom revision for review");
+
+        var submittedAt = DateTime.UtcNow;
+        var updatedRevision = RebuildRevision(
+            existingRevision,
+            status: MushroomRevisionStatus.InReview,
+            updatedByUserId: actorUserId,
+            updatedAt: submittedAt,
+            submittedAt: submittedAt,
+            reviewedAt: null,
+            reviewedByUserId: null,
+            reviewNote: null,
+            archivedAt: null,
+            publishedAt: null);
+
+        await _mushroomsRepository.UpdateMushroomRevision(revisionId, updatedRevision, ct);
+        return updatedRevision;
+    }
+
+    public async Task<MushroomRevision> ModerateMushroomAsync(
+        Guid revisionId,
+        ModerationDecision decision,
+        string? reviewNote,
+        Guid actorUserId,
+        CancellationToken ct)
+    {
+        var existingRevision = await GetEditorMushroomAsync(revisionId, ct);
+
+        if (existingRevision.Status != MushroomRevisionStatus.InReview)
+            throw new ConversionException("Incorrect data format: Only InReview mushroom revision can be moderated");
+
+        var now = DateTime.UtcNow;
+        var normalizedReviewNote = string.IsNullOrWhiteSpace(reviewNote) ? null : reviewNote.Trim();
+
+        if (decision == ModerationDecision.Reject)
+        {
+            var rejectedRevision = RebuildRevision(
+                existingRevision,
+                status: MushroomRevisionStatus.Rejected,
+                updatedByUserId: actorUserId,
+                updatedAt: now,
+                reviewedAt: now,
+                reviewedByUserId: actorUserId,
+                reviewNote: normalizedReviewNote,
+                publishedAt: null);
+
+            await _mushroomsRepository.UpdateMushroomRevision(revisionId, rejectedRevision, ct);
+            return rejectedRevision;
+        }
+
+        if (string.IsNullOrWhiteSpace(existingRevision.HeaderPhotoLink))
+            throw new ConversionException("Incorrect data format: Header photo is required before approval");
+
+        var publishedMushroomId = await _mushroomsRepository.UpsertPublishedMushroomFromRevision(existingRevision, ct);
+
+        var approvedRevision = RebuildRevision(
+            existingRevision,
+            sourceMushroomId: publishedMushroomId,
+            status: MushroomRevisionStatus.Published,
+            updatedByUserId: actorUserId,
+            updatedAt: now,
+            reviewedAt: now,
+            reviewedByUserId: actorUserId,
+            reviewNote: normalizedReviewNote,
+            publishedAt: now,
+            archivedAt: null);
+
+        await _mushroomsRepository.UpdateMushroomRevision(revisionId, approvedRevision, ct);
+        return approvedRevision;
+    }
+
+    public async Task<MushroomRevision> ArchiveMushroomAsync(Guid revisionId, Guid actorUserId, CancellationToken ct)
+    {
+        var existingRevision = await GetEditorMushroomAsync(revisionId, ct);
+
+        if (existingRevision.Status == MushroomRevisionStatus.Archived)
+            return existingRevision;
+
+        if (!MushroomRevision.CanTransitionStatus(existingRevision.Status, MushroomRevisionStatus.Archived))
+            throw new ConversionException("Incorrect data format: Unable to archive mushroom revision from current status");
+
+        var now = DateTime.UtcNow;
+        var archivedRevision = RebuildRevision(
+            existingRevision,
+            status: MushroomRevisionStatus.Archived,
+            updatedByUserId: actorUserId,
+            updatedAt: now,
+            archivedAt: now);
+
+        await _mushroomsRepository.UpdateMushroomRevision(revisionId, archivedRevision, ct);
+
+        if (archivedRevision.SourceMushroomId is not null)
+            await _mushroomsRepository.ArchivePublishedMushroom(archivedRevision.SourceMushroomId.Value, ct);
+
+        return archivedRevision;
+    }
+
+    public async Task<List<MushroomRevision>> GetMyDraftsAsync(Guid userId, CancellationToken ct)
+    {
+        return await _mushroomsRepository.GetMushroomRevisionsByAuthor(
+            userId,
+            new[]
+            {
+                MushroomRevisionStatus.Draft,
+                MushroomRevisionStatus.Rejected,
+                MushroomRevisionStatus.InReview
+            },
+            ct);
+    }
+
+    public async Task<List<MushroomRevision>> GetMyMaterialsAsync(Guid userId, CancellationToken ct)
+    {
+        return await _mushroomsRepository.GetMushroomRevisionsByAuthor(
+            userId,
+            new[]
+            {
+                MushroomRevisionStatus.Published,
+                MushroomRevisionStatus.Archived
+            },
+            ct);
+    }
+
+    public async Task<List<MushroomRevision>> GetModerationQueueAsync(CancellationToken ct)
+    {
+        return await _mushroomsRepository.GetMushroomRevisionsByStatuses(
+            new[]
+            {
+                MushroomRevisionStatus.InReview
+            },
+            ct);
+    }
+
+    public async Task<MushroomRevision> GetEditorMushroomAsync(Guid revisionId, CancellationToken ct)
+    {
+        var revision = await _mushroomsRepository.GetMushroomRevisionById(revisionId, ct);
+        if (revision is null)
+            throw new UnknownIdentifierException("Unknown mushroom revision id");
+
+        return revision;
+    }
+
+    private static MushroomRevision RebuildRevision(
+        MushroomRevision source,
+        Guid? sourceMushroomId = null,
+        MushroomRevisionStatus? status = null,
+        Guid? updatedByUserId = null,
+        DateTime? updatedAt = null,
+        DateTime? submittedAt = null,
+        DateTime? publishedAt = null,
+        DateTime? reviewedAt = null,
+        Guid? reviewedByUserId = null,
+        string? reviewNote = null,
+        DateTime? archivedAt = null,
+        string? headerPhotoLink = null,
+        List<string>? extraPhotoLinks = null,
+        List<string>? doppelgangerNames = null)
+    {
+        var (revision, revisionError) = MushroomRevision.Create(
+            source.Id,
+            sourceMushroomId ?? source.SourceMushroomId,
+            source.Name,
+            source.SynonymousName,
+            source.LatinName,
+            source.Family,
+            source.RedBook,
+            source.Eatable,
+            source.HasStem,
+            source.StemSizeFrom,
+            source.StemSizeTo,
+            source.StemType,
+            source.StemColor,
+            source.CapType,
+            source.CapColor,
+            source.CapUndersideType,
+            source.Description,
+            headerPhotoLink ?? source.HeaderPhotoLink,
+            extraPhotoLinks ?? source.ExtraPhotoLinks,
+            doppelgangerNames ?? source.DoppelgangerNames,
+            status ?? source.Status,
+            source.CreatedByUserId,
+            updatedByUserId ?? source.UpdatedByUserId,
+            source.CreatedAt,
+            updatedAt ?? source.UpdatedAt,
+            submittedAt ?? source.SubmittedAt,
+            publishedAt ?? source.PublishedAt,
+            reviewedAt ?? source.ReviewedAt,
+            reviewedByUserId ?? source.ReviewedByUserId,
+            reviewNote ?? source.ReviewNote,
+            archivedAt ?? source.ArchivedAt);
+
+        if (!string.IsNullOrEmpty(revisionError))
+            throw new ConversionException($"Incorrect data format: {revisionError}");
+
+        return revision;
     }
 }

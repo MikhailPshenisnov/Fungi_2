@@ -5,6 +5,9 @@ export type RoleProfileTabKey =
   | 'editor-materials'
   | 'editor-drafts'
   | 'ja-moderation'
+  | 'mushroom-materials'
+  | 'mushroom-drafts'
+  | 'mushroom-moderation'
   | 'ja-reports'
   | 'ja-users-read'
   | 'admin-users-roles'
@@ -21,6 +24,7 @@ export interface ProfileTabDefinition {
   subtitle: string;
   routePath?: string;
   requiredPermission?: string;
+  requiredAnyPermissions?: string[];
   placeholderTitle?: string;
   placeholderDescription?: string;
   emptyState?: string;
@@ -83,6 +87,51 @@ const tabByKey: Record<ProfileTabKey, ProfileTabDefinition> = {
     placeholderTitle: 'Панель модерации',
     placeholderDescription: 'Будут доступны действия по проверке контента и пользователей.',
     emptyState: 'Активных задач нет.'
+  },
+  'mushroom-materials': {
+    key: 'mushroom-materials',
+    label: 'Материалы грибов',
+    title: 'Материалы грибов',
+    subtitle: 'Раздел редактора грибов',
+    routePath: '/editor/mushrooms?scope=materials',
+    requiredAnyPermissions: [
+      PERMISSION_CODES.mushroomsWrite,
+      PERMISSION_CODES.mushroomsManageAny,
+      PERMISSION_CODES.mushroomsReview,
+      PERMISSION_CODES.mushroomsPublish,
+      PERMISSION_CODES.mushroomsArchive
+    ],
+    placeholderTitle: 'Материалы редактора грибов',
+    placeholderDescription: 'Здесь будут опубликованные, запланированные и архивные версии грибов.',
+    emptyState: 'Пока нет материалов грибов.'
+  },
+  'mushroom-drafts': {
+    key: 'mushroom-drafts',
+    label: 'Черновики грибов',
+    title: 'Черновики грибов',
+    subtitle: 'Раздел редактора грибов',
+    routePath: '/editor/mushrooms?scope=drafts',
+    requiredAnyPermissions: [
+      PERMISSION_CODES.mushroomsWrite,
+      PERMISSION_CODES.mushroomsManageAny,
+      PERMISSION_CODES.mushroomsReview,
+      PERMISSION_CODES.mushroomsPublish,
+      PERMISSION_CODES.mushroomsArchive
+    ],
+    placeholderTitle: 'Черновики грибов',
+    placeholderDescription: 'В этом разделе появятся ваши незавершенные revision-версии грибов.',
+    emptyState: 'Черновиков грибов пока нет.'
+  },
+  'mushroom-moderation': {
+    key: 'mushroom-moderation',
+    label: 'Модерация грибов',
+    title: 'Модерация грибов',
+    subtitle: 'Раздел модерации грибов',
+    routePath: '/editor/mushrooms/review',
+    requiredAnyPermissions: [PERMISSION_CODES.mushroomsReview, PERMISSION_CODES.mushroomsPublish],
+    placeholderTitle: 'Очередь модерации грибов',
+    placeholderDescription: 'Здесь будут заявки на проверку и решения по публикации грибов.',
+    emptyState: 'Очередь модерации грибов пока пуста.'
   },
   'ja-reports': {
     key: 'ja-reports',
@@ -166,6 +215,9 @@ export const roleProfileTabs: ProfileTabDefinition[] = [
   tabByKey['editor-materials'],
   tabByKey['editor-drafts'],
   tabByKey['ja-moderation'],
+  tabByKey['mushroom-materials'],
+  tabByKey['mushroom-drafts'],
+  tabByKey['mushroom-moderation'],
   tabByKey['ja-reports'],
   tabByKey['ja-users-read'],
   tabByKey['admin-users-roles'],
@@ -189,11 +241,13 @@ function buildPermissionSet(permissionCodes: readonly string[]): Set<string> {
 }
 
 function isTabAllowed(tab: ProfileTabDefinition, permissionSet: Set<string>): boolean {
-  if (!tab.requiredPermission) {
-    return true;
-  }
+  const hasRequiredPermission =
+    !tab.requiredPermission || permissionSet.has(normalizePermissionCode(tab.requiredPermission));
+  const hasAnyRequiredPermission =
+    !tab.requiredAnyPermissions?.length ||
+    tab.requiredAnyPermissions.some((permissionCode) => permissionSet.has(normalizePermissionCode(permissionCode)));
 
-  return permissionSet.has(normalizePermissionCode(tab.requiredPermission));
+  return hasRequiredPermission && hasAnyRequiredPermission;
 }
 
 export function getRoleSpecificProfileTabs(permissionCodes: readonly string[]): ProfileTabDefinition[] {

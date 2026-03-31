@@ -5,7 +5,13 @@ export const PERMISSION_CODES = {
   articlesArchive: 'content.articles.archive',
   articlesManageAny: 'content.articles.manage-any',
   articleMediaWrite: 'content.article-media.write',
-  articleMushroomsWrite: 'content.article-mushrooms.write'
+  articleMushroomsWrite: 'content.article-mushrooms.write',
+  mushroomsWrite: 'content.mushrooms.write',
+  mushroomsReview: 'content.mushrooms.review',
+  mushroomsPublish: 'content.mushrooms.publish',
+  mushroomsArchive: 'content.mushrooms.archive',
+  mushroomsManageAny: 'content.mushrooms.manage-any',
+  mushroomMediaWrite: 'content.mushroom-media.write'
 } as const;
 
 export function hasPermission(permissionCodes: readonly string[], permissionCode: string): boolean {

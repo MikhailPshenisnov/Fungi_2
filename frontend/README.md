@@ -120,6 +120,10 @@ src/
 - `/editor/articles/new` — создание статьи;
 - `/editor/articles/:id/edit` — редактирование статьи;
 - `/editor/review` — модерация статей.
+- `/editor/mushrooms` — редакторский workspace грибов (`scope=drafts|materials`);
+- `/editor/mushrooms/new` — создание новой ревизии гриба;
+- `/editor/mushrooms/:revisionId/edit` — редактирование ревизии гриба;
+- `/editor/mushrooms/review` — модерация ревизий грибов.
 
 ### Страница «О нас» (`/about`)
 
@@ -178,6 +182,10 @@ src/
   - `editor-materials` -> `/editor/articles?scope=materials`;
   - `editor-drafts` -> `/editor/articles?scope=drafts`;
   - `ja-moderation` -> `/editor/review` (единый раздел модерации для ролей с правом review).
+- shortcut из профиля/меню на mushroom editor:
+  - `mushroom-materials` -> `/editor/mushrooms?scope=materials`;
+  - `mushroom-drafts` -> `/editor/mushrooms?scope=drafts`;
+  - `mushroom-moderation` -> `/editor/mushrooms/review`.
 - в `Profile Hero` доступно управление аватаром:
   - загрузка через file picker и drag&drop;
   - реальный прогресс загрузки (%);
@@ -230,6 +238,33 @@ src/
 
 - editor workspace требует `content.articles.write`;
 - review-очередь требует `content.articles.review`.
+
+## Редактор грибов и workflow ревизий
+
+- `/editor/mushrooms`:
+  - scope `Черновики`/`Материалы`;
+  - действия по карточке ревизии: `Редактировать`, `На модерацию`, `Создать ревизию`, `Архивировать` (по правам).
+- `/editor/mushrooms/new` и `/editor/mushrooms/:revisionId/edit`:
+  - форма ревизии гриба (поля морфологии, описание, изображения, двойники);
+  - загрузка изображений через backend (`/Mushrooms/UploadMushroomImage`) с прогрессом;
+  - действия: `Сохранить черновик`, `Отправить на модерацию`, `Архивировать`;
+  - для draft обложка не обязательна, для отправки на модерацию — обязательна.
+- `/editor/mushrooms/review`:
+  - отдельная очередь модерации грибов;
+  - `Reject` доступен с `content.mushrooms.review`;
+  - `Approve` доступен с `content.mushrooms.publish`.
+
+Guard-политика:
+
+- `/editor/mushrooms*` (list/new/edit) требует любой из:
+  - `content.mushrooms.write`,
+  - `content.mushrooms.manage-any`,
+  - `content.mushrooms.review`,
+  - `content.mushrooms.publish`,
+  - `content.mushrooms.archive`.
+- `/editor/mushrooms/review` требует любой из:
+  - `content.mushrooms.review`,
+  - `content.mushrooms.publish`.
 
 ## Правила модулей
 Каждый `feature/entity/widget/page` держим в формате:

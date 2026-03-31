@@ -20,6 +20,12 @@ public static class PermissionCodes
     public const string ArticlesDelete = "content.articles.delete";
     public const string ArticleMediaWrite = "content.article-media.write";
     public const string MushroomsWrite = "content.mushrooms.write";
+    public const string MushroomsReview = "content.mushrooms.review";
+    public const string MushroomsPublish = "content.mushrooms.publish";
+    public const string MushroomsArchive = "content.mushrooms.archive";
+    public const string MushroomsManageAny = "content.mushrooms.manage-any";
+    public const string MushroomsPurge = "content.mushrooms.purge";
+    public const string MushroomMediaWrite = "content.mushroom-media.write";
     public const string MushroomsDelete = "content.mushrooms.delete";
     public const string ArticleMushroomsWrite = "content.article-mushrooms.write";
 

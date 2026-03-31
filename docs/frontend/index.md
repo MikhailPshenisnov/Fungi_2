@@ -33,6 +33,10 @@
 - `/editor/articles/new` — создание статьи;
 - `/editor/articles/:id/edit` — редактирование статьи;
 - `/editor/review` — очередь модерации.
+- `/editor/mushrooms` — workspace редактора грибов (`scope=drafts|materials`);
+- `/editor/mushrooms/new` — создание новой ревизии гриба;
+- `/editor/mushrooms/:revisionId/edit` — редактирование ревизии гриба;
+- `/editor/mushrooms/review` — очередь модерации ревизий грибов.
 
 ### Текущий auth UX
 
@@ -43,6 +47,15 @@
 - editor-маршруты защищены permission-guard:
   - `/editor/articles*` требует `content.articles.write`;
   - `/editor/review` требует `content.articles.review`.
+  - `/editor/mushrooms*` (list/new/edit) требует любой из:
+    - `content.mushrooms.write`;
+    - `content.mushrooms.manage-any`;
+    - `content.mushrooms.review`;
+    - `content.mushrooms.publish`;
+    - `content.mushrooms.archive`.
+  - `/editor/mushrooms/review` требует любой из:
+    - `content.mushrooms.review`;
+    - `content.mushrooms.publish`.
 - базовые вкладки профиля для всех ролей:
   - `Профиль`;
   - `Избранное`;
@@ -52,6 +65,9 @@
   - `editor-materials` -> `/editor/articles?scope=materials`;
   - `editor-drafts` -> `/editor/articles?scope=drafts`;
   - `ja-moderation` -> `/editor/review` (единый раздел модерации);
+  - `mushroom-materials` -> `/editor/mushrooms?scope=materials`;
+  - `mushroom-drafts` -> `/editor/mushrooms?scope=drafts`;
+  - `mushroom-moderation` -> `/editor/mushrooms/review`;
   - остальные role-вкладки пока остаются как UI-заглушки.
 - кнопка профиля в header открывает dropdown-меню:
   - `Профиль`;
@@ -154,6 +170,23 @@
   - очередь `InReview`;
   - решения `Одобрить` / `Отклонить` с optional `reviewNote`.
 
+### Редактор грибов и модерация ревизий
+
+- editor workspace `/editor/mushrooms`:
+  - scope `Черновики` и `Материалы`;
+  - карточки ревизий со статусами и быстрыми действиями.
+- editor форма `/editor/mushrooms/new` и `/editor/mushrooms/:revisionId/edit`:
+  - поля морфологии, описание, фото, двойники;
+  - upload/delete изображений через backend (`/Mushrooms/UploadMushroomImage`) с прогрессом;
+  - действия: `Сохранить черновик`, `Отправить на модерацию`, `Архивировать`.
+- правило валидации:
+  - для сохранения draft `headerPhotoLink` не обязателен;
+  - для `SubmitForReview` обложка обязательна.
+- модерация `/editor/mushrooms/review`:
+  - `Reject` доступен с `content.mushrooms.review`;
+  - `Approve` доступен с `content.mushrooms.publish`;
+  - после approve доступен переход на опубликованную карточку `/mushrooms/:id` при наличии `publishedMushroomId`.
+
 ### Storybook покрытие (актуально)
 
 Новые/обновленные истории для сценария каталога грибов:
@@ -169,6 +202,9 @@
 - `Pages/Editor/EditorArticlesPage`;
 - `Pages/Editor/EditorArticleFormPage`;
 - `Pages/Editor/EditorReviewPage`;
+- `Pages/Editor/EditorMushroomsPage`;
+- `Pages/Editor/EditorMushroomFormPage`;
+- `Pages/Editor/EditorMushroomReviewPage`;
 - `Features/Articles/AuthRequiredPopup`.
 
 Минимальный набор состояний:

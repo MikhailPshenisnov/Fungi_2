@@ -136,24 +136,34 @@ public class Mushroom
         {
             error = $"Header photo link can't be longer than {MaxHeaderPhotoLinkLength} characters or empty";
         }
-        else if (!HeaderPhotoLink.Contains("imgur.com"))
+        else if (!IsValidImageLink(HeaderPhotoLink))
         {
-            error = "Header photo link must be a link to an image on imgur.com";
-        }
-        else if (ExtraPhotoLinks is not null && ExtraPhotoLinks.Count == 0)
-        {
-            error = "Extra photo links must contain at least one link or be null";
+            error = "Header photo link must be a valid image link (absolute URL or /media/mushrooms/* path)";
         }
         else if (ExtraPhotoLinks is not null && string.Join(';', ExtraPhotoLinks).Length > MaxExtraPhotoLinksLength)
         {
             error = $"Extra photo links string can't be longer than {MaxExtraPhotoLinksLength} characters";
         }
-        else if (ExtraPhotoLinks is not null && !ExtraPhotoLinks.All(x => x.Contains("imgur.com")))
+        else if (ExtraPhotoLinks is not null && !ExtraPhotoLinks.All(IsValidImageLink))
         {
-            error = "Photo link must be a link to an image on imgur.com";
+            error = "Photo link must be a valid image link (absolute URL or /media/mushrooms/* path)";
         }
 
         return error;
+    }
+
+    private static bool IsValidImageLink(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        var trimmed = value.Trim();
+
+        if (trimmed.StartsWith("/media/mushrooms/", StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return Uri.TryCreate(trimmed, UriKind.Absolute, out var uri)
+               && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
     }
 
     public static (Mushroom Mushroom, string Error) Create(Guid id, string name, string? synonymousName,

@@ -3,8 +3,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { profileIcon, searchIcon } from '@shared/assets/icons';
 import { Button, Container, Typography } from '@shared/ui';
 import {
+  getAvailableProfileTabs,
   getProfileTabHref,
-  getRoleSpecificProfileTabs,
   useSession
 } from '@entities/session';
 import styles from './AppHeader.module.css';
@@ -33,7 +33,7 @@ export function AppHeader({ onLoginClick, onSignupClick, onProfileClick, onSearc
   const profileIconMaskStyle = {
     ['--color-profile-icon-url' as const]: `url("${profileIcon}")`
   } as CSSProperties;
-  const roleMenuTabs = user ? getRoleSpecificProfileTabs(user.permissions) : [];
+  const profileMenuTabs = user ? getAvailableProfileTabs(user.permissions) : [];
 
   useEffect(() => {
     setIsProfileMenuOpen(false);
@@ -204,26 +204,29 @@ export function AppHeader({ onLoginClick, onSignupClick, onProfileClick, onSearc
                   role="menu"
                   aria-label="Меню профиля"
                 >
-                  <button type="button" className={styles.dropdownItem} onClick={handleProfileMenuItemClick} role="menuitem">
-                    Профиль
-                  </button>
-                  <Link to="/profile?tab=favorites" className={styles.dropdownItem} role="menuitem" onClick={handleMenuLinkClick}>
-                    Избранное
-                  </Link>
-                  <Link to="/profile?tab=history" className={styles.dropdownItem} role="menuitem" onClick={handleMenuLinkClick}>
-                    История просмотров
-                  </Link>
-                  {roleMenuTabs.map((tab) => (
-                    <Link
-                      key={tab.key}
-                      to={getProfileTabHref(tab.key)}
-                      className={styles.dropdownItem}
-                      role="menuitem"
-                      onClick={handleMenuLinkClick}
-                    >
-                      {tab.label}
-                    </Link>
-                  ))}
+                  {profileMenuTabs.map((tab) =>
+                    tab.key === 'profile' ? (
+                      <button
+                        key={tab.key}
+                        type="button"
+                        className={styles.dropdownItem}
+                        onClick={handleProfileMenuItemClick}
+                        role="menuitem"
+                      >
+                        {tab.label}
+                      </button>
+                    ) : (
+                      <Link
+                        key={tab.key}
+                        to={getProfileTabHref(tab.key)}
+                        className={styles.dropdownItem}
+                        role="menuitem"
+                        onClick={handleMenuLinkClick}
+                      >
+                        {tab.label}
+                      </Link>
+                    )
+                  )}
                   <div className={styles.dropdownDivider} />
                   <button type="button" className={styles.dropdownDanger} onClick={handleLogout} role="menuitem">
                     Выйти

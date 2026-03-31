@@ -59,9 +59,30 @@ export const EditorRoleTabs: Story = {
         roleAccessLevel: 19,
         permissions: [
           'content.articles.write',
-          'content.article-media.write'
+          'content.article-media.write',
+          'content.mushrooms.write',
+          'content.mushroom-media.write'
         ],
         avatarUrl: demoAvatarUrl
+      })
+    })
+};
+
+export const MushroomEditorRoleTabs: Story = {
+  render: () =>
+    renderProfile({
+      section: 'mushroom-drafts',
+      user: createSessionUser({
+        roleId: 'role-mushroom-editor',
+        roleName: 'Mushroom Editor',
+        roleAccessLevel: 18,
+        permissions: [
+          'content.mushrooms.write',
+          'content.mushroom-media.write',
+          'content.mushrooms.review',
+          'content.mushrooms.publish',
+          'content.mushrooms.archive'
+        ]
       })
     })
 };

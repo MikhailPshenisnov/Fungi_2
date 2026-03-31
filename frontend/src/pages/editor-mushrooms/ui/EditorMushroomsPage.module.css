@@ -1,0 +1,132 @@
+.container {
+  display: grid;
+  gap: 14px;
+  padding-top: 30px;
+  padding-bottom: 42px;
+}
+
+.hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-l);
+  background:
+    radial-gradient(circle at 10% 16%, color-mix(in srgb, var(--color-status-success-bg) 40%, transparent) 0%, transparent 38%),
+    radial-gradient(circle at 86% 22%, color-mix(in srgb, var(--color-status-warning-bg) 28%, transparent) 0%, transparent 34%),
+    var(--color-surface-elevated);
+}
+
+.heroText {
+  color: var(--color-text-secondary);
+}
+
+.createLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: var(--radius-m);
+  border: 1px solid var(--color-action-primary-border);
+  color: var(--color-text-primary);
+  background: var(--color-action-primary-bg);
+  text-decoration: none;
+}
+
+.createLink:hover {
+  background: var(--color-bg-subtle);
+}
+
+.scopeTabs {
+  display: inline-flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.scopeTab {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border-default);
+  border-radius: 999px;
+  background: var(--color-surface-elevated);
+  color: var(--color-text-secondary);
+  font: inherit;
+  cursor: pointer;
+}
+
+.scopeTabActive {
+  border-color: var(--color-action-primary-border);
+  background: var(--color-action-primary-bg);
+  color: var(--color-text-primary);
+}
+
+.stateCard {
+  padding: 16px;
+}
+
+.revisionsGrid {
+  display: grid;
+  gap: 12px;
+}
+
+.revisionCard {
+  padding: 16px;
+}
+
+.cardTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cardHeadline {
+  min-width: 0;
+}
+
+.metaText {
+  color: var(--color-text-secondary);
+}
+
+.metaChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.description {
+  color: var(--color-text-primary);
+}
+
+.cardActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.actionLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: var(--radius-m);
+  border: 1px solid var(--color-border-default);
+  background: var(--color-surface-elevated);
+  color: var(--color-text-primary);
+  text-decoration: none;
+}
+
+.actionLink:hover {
+  background: var(--color-bg-subtle);
+}
+
+@media (max-width: 760px) {
+  .hero,
+  .cardTop {
+    flex-direction: column;
+  }
+}

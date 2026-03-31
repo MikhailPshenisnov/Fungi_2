@@ -13,7 +13,10 @@ import { ArticleDetailPage } from '@pages/article-detail';
 import { EditorArticlesPage } from '@pages/editor-articles';
 import { EditorArticleFormPage } from '@pages/editor-article-form';
 import { EditorReviewPage } from '@pages/editor-review';
-import { hasPermission, PERMISSION_CODES, useSession } from '@entities/session';
+import { EditorMushroomFormPage } from '@pages/editor-mushroom-form';
+import { EditorMushroomReviewPage } from '@pages/editor-mushroom-review';
+import { EditorMushroomsPage } from '@pages/editor-mushrooms';
+import { hasAnyPermission, hasPermission, PERMISSION_CODES, useSession } from '@entities/session';
 import { RouteHead } from './RouteHead';
 
 function RouteLayout() {
@@ -28,9 +31,10 @@ function RouteLayout() {
 interface ProtectedRouteProps {
   children: ReactElement;
   requiredPermission?: string;
+  requiredAnyPermissions?: string[];
 }
 
-function ProtectedRoute({ children, requiredPermission }: ProtectedRouteProps) {
+function ProtectedRoute({ children, requiredPermission, requiredAnyPermissions }: ProtectedRouteProps) {
   const { isSessionLoading, isAuthenticated, user } = useSession();
 
   if (isSessionLoading) {
@@ -41,7 +45,11 @@ function ProtectedRoute({ children, requiredPermission }: ProtectedRouteProps) {
     return <Navigate to="/login" replace />;
   }
 
-  if (requiredPermission && !hasPermission(user.permissions, requiredPermission)) {
+  const hasRequiredPermission = !requiredPermission || hasPermission(user.permissions, requiredPermission);
+  const hasRequiredAnyPermissions =
+    !requiredAnyPermissions?.length || hasAnyPermission(user.permissions, requiredAnyPermissions);
+
+  if (!hasRequiredPermission || !hasRequiredAnyPermissions) {
     return <Navigate to="/profile" replace />;
   }
 
@@ -175,6 +183,74 @@ const router = createBrowserRouter([
         ),
         handle: {
           title: 'Редактор: модерация'
+        }
+      },
+      {
+        path: '/editor/mushrooms',
+        element: (
+          <ProtectedRoute
+            requiredAnyPermissions={[
+              PERMISSION_CODES.mushroomsWrite,
+              PERMISSION_CODES.mushroomsManageAny,
+              PERMISSION_CODES.mushroomsReview,
+              PERMISSION_CODES.mushroomsPublish,
+              PERMISSION_CODES.mushroomsArchive
+            ]}
+          >
+            <EditorMushroomsPage />
+          </ProtectedRoute>
+        ),
+        handle: {
+          title: 'Редактор: грибы'
+        }
+      },
+      {
+        path: '/editor/mushrooms/new',
+        element: (
+          <ProtectedRoute
+            requiredAnyPermissions={[
+              PERMISSION_CODES.mushroomsWrite,
+              PERMISSION_CODES.mushroomsManageAny,
+              PERMISSION_CODES.mushroomsReview,
+              PERMISSION_CODES.mushroomsPublish,
+              PERMISSION_CODES.mushroomsArchive
+            ]}
+          >
+            <EditorMushroomFormPage />
+          </ProtectedRoute>
+        ),
+        handle: {
+          title: 'Редактор: новый гриб'
+        }
+      },
+      {
+        path: '/editor/mushrooms/:revisionId/edit',
+        element: (
+          <ProtectedRoute
+            requiredAnyPermissions={[
+              PERMISSION_CODES.mushroomsWrite,
+              PERMISSION_CODES.mushroomsManageAny,
+              PERMISSION_CODES.mushroomsReview,
+              PERMISSION_CODES.mushroomsPublish,
+              PERMISSION_CODES.mushroomsArchive
+            ]}
+          >
+            <EditorMushroomFormPage />
+          </ProtectedRoute>
+        ),
+        handle: {
+          title: 'Редактор: редактирование гриба'
+        }
+      },
+      {
+        path: '/editor/mushrooms/review',
+        element: (
+          <ProtectedRoute requiredAnyPermissions={[PERMISSION_CODES.mushroomsReview, PERMISSION_CODES.mushroomsPublish]}>
+            <EditorMushroomReviewPage />
+          </ProtectedRoute>
+        ),
+        handle: {
+          title: 'Редактор: модерация грибов'
         }
       },
       {

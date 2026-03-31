@@ -60,3 +60,6 @@ notes/
 
 # Root env (do not commit secrets)
 .env
+
+# Local task file
+TODO.md

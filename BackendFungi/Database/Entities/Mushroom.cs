@@ -20,6 +20,6 @@ public partial class Mushroom
     public string Description { get; set; } = null!;
     public string HeaderPhotoLink { get; set; } = null!;
     public string? ExtraPhotoLinks { get; set; }
-
+    public bool IsArchived { get; set; }
     public virtual ICollection<Doppelganger> Doppelgangers { get; set; } = new List<Doppelganger>();
 }

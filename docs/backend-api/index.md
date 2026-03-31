@@ -137,7 +137,8 @@ Content-Type: application/json
 - обязательный шаг перед деплоем backend: последовательно применить:
   - `DBInit/2-upgrade-avatar.sql`;
   - `DBInit/3-upgrade-rbac.sql`;
-  - `DBInit/4-upgrade-articles-workflow.sql`.
+  - `DBInit/4-upgrade-articles-workflow.sql`;
+  - `DBInit/5-upgrade-mushrooms-workflow.sql`.
 - `DBInit/3-upgrade-rbac.sql` создает таблицы `Permissions`/`RolePermissions` и baseline-набор прав.
 
 ## Контракт каталога грибов и лайков
@@ -145,10 +146,63 @@ Content-Type: application/json
 Каталог и карточки грибов:
 
 - `GET /Mushrooms/GetFilteredMushrooms`:
-  - фильтрация по query-параметрам `PartOfName`, `Family`, `Eatable`, `RedBook`;
-  - используется для каталога `/mushrooms`.
+  - фильтрация по query-параметрам `PartOfName`, `Family`, `Eatable`, `RedBook`, `HasStem`, `Stem*`, `Cap*`;
+  - DB-level фильтрация (без загрузки всех грибов в память);
+  - поддержка сортировки: `Sort=name|likes`;
+  - поддержка пагинации: `Page`, `PageSize`;
+  - в ответе:
+    - `mushrooms[].likesCount`;
+    - `totalCount`, `page`, `pageSize`.
 - `GET /Mushrooms/GetMushroom?MushroomId=<guid>`:
   - детальная карточка гриба для страницы `/mushrooms/:id`.
+  - возвращает только опубликованный snapshot из `Mushrooms`.
+
+Публичная видимость:
+
+- в публичные ручки каталога попадают только записи из `Mushrooms`, где `IsArchived = false`;
+- черновики и модерационные версии (`MushroomRevisions`) в публичную выдачу не попадают.
+
+## Контракт editor workflow грибов (v1)
+
+Статусы revision:
+
+- `Draft`;
+- `InReview`;
+- `Published`;
+- `Rejected`;
+- `Archived`.
+
+Editor/moderation endpoint-ы:
+
+- `POST /Mushrooms/CreateDraft`
+- `PUT /Mushrooms/UpdateDraft`
+- `POST /Mushrooms/SubmitForReview`
+- `POST /Mushrooms/ModerateMushroom` (`Approve/Reject`)
+- `POST /Mushrooms/ArchiveMushroom`
+- `GET /Mushrooms/GetMyDrafts`
+- `GET /Mushrooms/GetMyMaterials`
+- `GET /Mushrooms/GetModerationQueue`
+- `GET /Mushrooms/GetEditorMushroom`
+
+Основные правила:
+
+- published-snapshot хранится в `Mushrooms`;
+- редактирование и модерация происходят в `MushroomRevisions`;
+- approve:
+  - создаёт или обновляет published snapshot;
+  - проставляет `SourceMushroomId` у revision;
+- archive:
+  - ставит revision в `Archived`;
+  - скрывает published snapshot из каталога (`IsArchived = true`).
+- для `ArchiveMushroom` доступ допускается при `content.mushrooms.archive` **или** `content.mushrooms.manage-any`;
+- архивирование разрешено только для `Published/Rejected` revision (черновик и `InReview` архивировать нельзя).
+
+Legacy endpoint-ы (оставлены для совместимости, но закрыты purge-правом):
+
+- `POST /Mushrooms/CreateMushroom` — deprecated;
+- `PUT /Mushrooms/UpdateMushroom` — deprecated;
+- `DELETE /Mushrooms/DeleteMushroom` — deprecated;
+- все три требуют `content.mushrooms.purge`.
 
 Лайки грибов:
 
@@ -160,6 +214,47 @@ Content-Type: application/json
 - `POST /MushroomLikes/ToggleLike?mushroomId=<guid>`:
   - требует bearer-токен;
   - переключает лайк текущего пользователя и возвращает `isLiked`.
+
+Контракт лайков приведён к typed `BaseResponse<T>`:
+
+- `ToggleLike` -> `data.isLiked`
+- `GetLikesCount` -> `data.count`
+- `HasUserLiked` -> `data.hasLiked`
+
+Единообразие ошибок:
+
+- для несуществующего `mushroomId` все likes endpoint-ы возвращают `404`.
+
+Media для грибов:
+
+- `POST /Mushrooms/UploadMushroomImage`:
+  - bearer auth + `content.mushroom-media.write`;
+  - `multipart/form-data`, поле `image`;
+  - ответ: `mediaUrl`, `mediaPath`.
+- `DELETE /Mushrooms/DeleteMushroomImage?MediaPath=...`:
+  - bearer auth + `content.mushroom-media.write`;
+  - ответ: `isDeleted`.
+
+Публичная раздача media:
+
+- static files по пути `/media/mushrooms/*`;
+- backend storage: `Storage/mushrooms`.
+
+Правило ссылок на изображения гриба:
+
+- допускаются только:
+  - абсолютные `http/https` URL;
+  - внутренние пути вида `/media/mushrooms/...`.
+
+Валидация upload (v1):
+
+- размер до `8MB`;
+- MIME: `image/jpeg`, `image/png`, `image/webp`;
+- ext: `.jpg`, `.jpeg`, `.png`, `.webp`;
+- min side: `128px`;
+- max side: `4096px`;
+- max pixels: `20MP`;
+- итоговый формат: `webp`.
 
 Ограничения и ожидания по клиентам:
 
@@ -257,12 +352,18 @@ Content-Type: application/json
 - для существующей БД обязательная последовательность:
   1. `DBInit/2-upgrade-avatar.sql`;
   2. `DBInit/3-upgrade-rbac.sql`;
-  3. `DBInit/4-upgrade-articles-workflow.sql`.
+  3. `DBInit/4-upgrade-articles-workflow.sql`;
+  4. `DBInit/5-upgrade-mushrooms-workflow.sql`.
 - `4-upgrade-articles-workflow.sql`:
   - добавляет поля lifecycle/audit для `Articles`;
   - backfill старых записей в `Published`;
   - seed новых permission-кодов workflow;
   - назначение owner старым статьям на SuperUser.
+- `5-upgrade-mushrooms-workflow.sql`:
+  - добавляет `IsArchived` в `Mushrooms`;
+  - создает таблицы `MushroomRevisions` и `MushroomRevisionDoppelgangers`;
+  - выполняет backfill опубликованных ревизий из текущего каталога;
+  - seed permission-кодов workflow/media для грибов и role-permissions.
 - в backend запущен background scheduler:
   - каждые `60s` переводит `Scheduled -> Published`, когда наступила дата.
 

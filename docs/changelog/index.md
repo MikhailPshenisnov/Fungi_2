@@ -1,5 +1,97 @@
 # Журнал изменений
 
+## 2026-04-01
+
+### Frontend
+
+- реализован отдельный editor workflow для грибов в rewrite-клиенте:
+  - `/editor/mushrooms` (`scope=drafts|materials`);
+  - `/editor/mushrooms/new`;
+  - `/editor/mushrooms/:revisionId/edit`;
+  - `/editor/mushrooms/review`.
+- добавлен отдельный API-слой `features/mushroom-editor`:
+  - `getMyDrafts`, `getMyMaterials`, `getModerationQueue`, `getEditorMushroom`;
+  - `createDraft`, `updateDraft`, `submitForReview`, `moderateMushroom`, `archiveMushroom`;
+  - `uploadMushroomImage`, `deleteMushroomImage`.
+- добавлены permission-коды и guard-матрица для mushroom editor:
+  - list/new/edit: any of `content.mushrooms.write|manage-any|review|publish|archive`;
+  - review: any of `content.mushrooms.review|publish`.
+- в профиль и dropdown header добавлены грибные вкладки:
+  - `mushroom-materials`, `mushroom-drafts`, `mushroom-moderation`;
+  - отображение строго по permission-набору.
+- `ProfilePage` обновлен:
+  - вместо заглушек добавлен реальный предпросмотр плиток ревизий грибов;
+  - быстрые переходы на `/editor/mushrooms*` из соответствующих вкладок.
+- в форме ревизии гриба:
+  - draft можно сохранить без обложки;
+  - `headerPhotoLink` обязателен только при `SubmitForReview`;
+  - добавлена человекочитаемая нормализация legacy-ошибок валидации.
+- добавлено Storybook-покрытие:
+  - `EditorMushroomsPage`;
+  - `EditorMushroomFormPage`;
+  - `EditorMushroomReviewPage`.
+
+### DevOps / Docs
+
+- обновлены `docs/frontend/index.md` и `frontend/README.md`:
+  - новые mushroom editor маршруты;
+  - permission-guard политика;
+  - описание workflow ревизий и модерации грибов.
+
+## 2026-03-29
+
+### Backend
+
+- завершен backend workflow редактирования грибов через `MushroomRevisions`:
+  - `Draft -> InReview -> Published/Rejected/Archived`;
+  - опубликованный каталог читает только snapshot из `Mushrooms`.
+- добавлены editor/moderation endpoint-ы для грибов:
+  - `POST /Mushrooms/CreateDraft`;
+  - `PUT /Mushrooms/UpdateDraft`;
+  - `POST /Mushrooms/SubmitForReview`;
+  - `POST /Mushrooms/ModerateMushroom`;
+  - `POST /Mushrooms/ArchiveMushroom`;
+  - `GET /Mushrooms/GetMyDrafts`;
+  - `GET /Mushrooms/GetMyMaterials`;
+  - `GET /Mushrooms/GetModerationQueue`;
+  - `GET /Mushrooms/GetEditorMushroom`.
+- усилен публичный каталог грибов:
+  - DB-level фильтрация (`PartOfName/Family/Eatable/RedBook/...`);
+  - исправлен `Eatable`-фильтр;
+  - добавлены optional `page/pageSize/sort=name|likes`;
+  - в `GetFilteredMushrooms` добавлены `totalCount/page/pageSize` и `mushrooms[].likesCount`.
+- `MushroomLikesController` переведен на typed-контракты `ActionResult<BaseResponse<T>>`;
+- поведение likes для несуществующего `mushroomId` выровнено на единый `404`.
+- добавлен media-контур грибов:
+  - `POST /Mushrooms/UploadMushroomImage`;
+  - `DELETE /Mushrooms/DeleteMushroomImage`;
+  - публичная раздача через `/media/mushrooms/*`.
+- legacy `DELETE /Mushrooms/DeleteMushroom` помечен deprecated и ограничен правом `content.mushrooms.purge`.
+- legacy `POST /Mushrooms/CreateMushroom` и `PUT /Mushrooms/UpdateMushroom` также закрыты правом `content.mushrooms.purge`
+  (чтобы не обходить revision/moderation workflow).
+- `ArchiveMushroom` выровнен по RBAC:
+  - доступ допускается при `content.mushrooms.archive` **или** `content.mushrooms.manage-any`.
+- workflow-запросы (`GetMyDrafts/GetMyMaterials/GetModerationQueue/GetEditorMushroom`) переведены с full-scan на целевые DB-запросы.
+- добавлен DB hardening для `MushroomRevisions`:
+  - `CHECK`-ограничение на допустимые значения `Status`;
+  - partial unique index для одной `Published` revision на `SourceMushroomId`.
+- валидация ссылок изображений гриба сужена до:
+  - `http/https`;
+  - внутренний путь только `/media/mushrooms/*`.
+- обновлены SQL-скрипты:
+  - восстановлен/актуализирован `DBInit/0-db-init.sql`;
+  - обновлен `DBInit/1-mock-data.sql`;
+  - добавлен `DBInit/5-upgrade-mushrooms-workflow.sql`.
+- в docker-compose для backend добавлен volume:
+  - `fungi_backend_mushrooms` -> `/app/Storage/mushrooms`.
+
+### DevOps / Docs
+
+- обновлена backend-документация `docs/backend-api/index.md`:
+  - новый workflow грибов;
+  - media-контракт грибов;
+  - обновленный контракт каталога/лайков и поведение 404.
+
 ## 2026-03-11
 
 ### Frontend

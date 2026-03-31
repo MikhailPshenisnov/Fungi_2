@@ -12,5 +12,8 @@ public record GetFilteredMushroomsRequest(
     string? StemColor,
     string? CapType,
     string? CapColor,
-    string? CapUndersideType
+    string? CapUndersideType,
+    int? Page,
+    int? PageSize,
+    string? Sort
 );

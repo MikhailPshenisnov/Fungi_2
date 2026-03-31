@@ -29,6 +29,8 @@ public partial class FungiDbContext : DbContext
     public virtual DbSet<ArticleLike> ArticleLikes { get; set; }
     public virtual DbSet<MushroomLike> MushroomLikes { get; set; }
     public virtual DbSet<ArticleMushroom> ArticleMushrooms { get; set; }
+    public virtual DbSet<MushroomRevision> MushroomRevisions { get; set; }
+    public virtual DbSet<MushroomRevisionDoppelganger> MushroomRevisionDoppelgangers { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -90,6 +92,7 @@ public partial class FungiDbContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("Mushrooms_pkey");
             entity.HasIndex(e => e.Name, "mushrooms_unique_name").IsUnique();
+            entity.HasIndex(e => e.IsArchived, "idx_mushrooms_is_archived");
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CapColor).HasMaxLength(64);
             entity.Property(e => e.CapType).HasMaxLength(64);
@@ -100,9 +103,80 @@ public partial class FungiDbContext : DbContext
             entity.Property(e => e.HeaderPhotoLink).HasMaxLength(256);
             entity.Property(e => e.LatinName).HasMaxLength(128);
             entity.Property(e => e.Name).HasMaxLength(128);
+            entity.Property(e => e.IsArchived).HasDefaultValue(false);
             entity.Property(e => e.StemColor).HasMaxLength(64);
             entity.Property(e => e.StemType).HasMaxLength(64);
             entity.Property(e => e.SynonymousName).HasMaxLength(128);
+        });
+
+        modelBuilder.Entity<MushroomRevision>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("MushroomRevisions_pkey");
+            entity.HasIndex(e => e.Status, "idx_mushroom_revisions_status");
+            entity.HasIndex(e => e.CreatedByUserId, "idx_mushroom_revisions_created_by");
+            entity.HasIndex(e => e.SourceMushroomId, "idx_mushroom_revisions_source_mushroom");
+            entity.HasIndex(e => e.SourceMushroomId, "uq_mushroom_revisions_published_source")
+                .IsUnique()
+                .HasFilter("\"Status\" = 'Published' AND \"SourceMushroomId\" IS NOT NULL");
+            entity.HasCheckConstraint(
+                "mushroom_revisions_status_check",
+                "\"Status\" IN ('Draft', 'InReview', 'Published', 'Rejected', 'Archived')");
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Name).HasMaxLength(128);
+            entity.Property(e => e.SynonymousName).HasMaxLength(128);
+            entity.Property(e => e.LatinName).HasMaxLength(128);
+            entity.Property(e => e.Family).HasMaxLength(128);
+            entity.Property(e => e.Eatable).HasMaxLength(16);
+            entity.Property(e => e.StemType).HasMaxLength(64);
+            entity.Property(e => e.StemColor).HasMaxLength(64);
+            entity.Property(e => e.CapType).HasMaxLength(64);
+            entity.Property(e => e.CapColor).HasMaxLength(64);
+            entity.Property(e => e.CapUndersideType).HasMaxLength(64);
+            entity.Property(e => e.HeaderPhotoLink).HasMaxLength(256);
+            entity.Property(e => e.ExtraPhotoLinks).HasMaxLength(1024);
+            entity.Property(e => e.Status).HasMaxLength(32);
+            entity.Property(e => e.ReviewNote).HasMaxLength(1000);
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("now()");
+            entity.Property(e => e.Status).HasDefaultValue("Draft");
+
+            entity.HasOne(e => e.SourceMushroom)
+                .WithMany()
+                .HasForeignKey(e => e.SourceMushroomId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("MushroomRevisions_SourceMushroomId_fkey");
+
+            entity.HasOne(e => e.CreatedByUser)
+                .WithMany()
+                .HasForeignKey(e => e.CreatedByUserId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("MushroomRevisions_CreatedByUserId_fkey");
+
+            entity.HasOne(e => e.UpdatedByUser)
+                .WithMany()
+                .HasForeignKey(e => e.UpdatedByUserId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("MushroomRevisions_UpdatedByUserId_fkey");
+
+            entity.HasOne(e => e.ReviewedByUser)
+                .WithMany()
+                .HasForeignKey(e => e.ReviewedByUserId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("MushroomRevisions_ReviewedByUserId_fkey");
+        });
+
+        modelBuilder.Entity<MushroomRevisionDoppelganger>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("MushroomRevisionDoppelgangers_pkey");
+            entity.HasIndex(e => e.RevisionId, "fki_MushroomRevisionDoppelgangers_RevisionId_fkey");
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.DoppelgangerName).HasMaxLength(128);
+
+            entity.HasOne(e => e.Revision)
+                .WithMany(e => e.Doppelgangers)
+                .HasForeignKey(e => e.RevisionId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("MushroomRevisionDoppelgangers_RevisionId_fkey");
         });
 
         modelBuilder.Entity<Paragraph>(entity =>

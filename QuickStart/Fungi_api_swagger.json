@@ -1288,10 +1288,10 @@
         ],
         "summary": "Toggle like",
         "description": "Toggles the like state for a mushroom",
-        "operationId": "ToggleLike",
+        "operationId": "ToggleMushroomLike",
         "parameters": [
           {
-            "name": "mushroomId",
+            "name": "MushroomId",
             "in": "query",
             "schema": {
               "type": "string",
@@ -1301,7 +1301,24 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToggleMushroomLikeResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToggleMushroomLikeResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToggleMushroomLikeResponseBaseResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -1313,10 +1330,10 @@
         ],
         "summary": "Get likes count",
         "description": "Gets the number of likes for a mushroom",
-        "operationId": "GetLikesCount",
+        "operationId": "GetMushroomLikesCount",
         "parameters": [
           {
-            "name": "mushroomId",
+            "name": "MushroomId",
             "in": "query",
             "schema": {
               "type": "string",
@@ -1326,7 +1343,24 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMushroomLikesCountResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMushroomLikesCountResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMushroomLikesCountResponseBaseResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -1338,10 +1372,10 @@
         ],
         "summary": "Has user liked",
         "description": "Shows whether the user liked the mushroom",
-        "operationId": "HasUserLiked",
+        "operationId": "HasUserLikedMushroom",
         "parameters": [
           {
-            "name": "mushroomId",
+            "name": "MushroomId",
             "in": "query",
             "schema": {
               "type": "string",
@@ -1351,7 +1385,24 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/HasUserLikedMushroomResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HasUserLikedMushroomResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HasUserLikedMushroomResponseBaseResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -1362,7 +1413,7 @@
           "Mushrooms"
         ],
         "summary": "Get mushroom",
-        "description": "Receives information about the mushroom by id",
+        "description": "Receives information about the published mushroom by id",
         "operationId": "GetMushroom",
         "parameters": [
           {
@@ -1404,7 +1455,7 @@
           "Mushrooms"
         ],
         "summary": "Get filtered mushrooms",
-        "description": "Gets a list of mushrooms with filters",
+        "description": "Gets a list of published mushrooms with filters, sorting and pagination",
         "operationId": "GetFilteredMushrooms",
         "parameters": [
           {
@@ -1492,6 +1543,29 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Sort",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1518,13 +1592,499 @@
         }
       }
     },
+    "/Mushrooms/GetEditorMushroom": {
+      "get": {
+        "tags": [
+          "Mushrooms"
+        ],
+        "summary": "Get editor mushroom revision",
+        "description": "Returns full mushroom revision data for editor and moderation flow",
+        "operationId": "GetEditorMushroom",
+        "parameters": [
+          {
+            "name": "RevisionId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetEditorMushroomResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetEditorMushroomResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetEditorMushroomResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Mushrooms/GetMyDrafts": {
+      "get": {
+        "tags": [
+          "Mushrooms"
+        ],
+        "summary": "Get my mushroom drafts",
+        "description": "Returns current user mushroom drafts, rejected and in-review revisions",
+        "operationId": "GetMyDrafts",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyMushroomDraftsResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyMushroomDraftsResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyMushroomDraftsResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Mushrooms/GetMyMaterials": {
+      "get": {
+        "tags": [
+          "Mushrooms"
+        ],
+        "summary": "Get my mushroom materials",
+        "description": "Returns current user published and archived mushroom revisions",
+        "operationId": "GetMyMaterials",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyMushroomMaterialsResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyMushroomMaterialsResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyMushroomMaterialsResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Mushrooms/GetModerationQueue": {
+      "get": {
+        "tags": [
+          "Mushrooms"
+        ],
+        "summary": "Get mushroom moderation queue",
+        "description": "Returns mushroom revisions waiting for moderation",
+        "operationId": "GetModerationQueue",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMushroomModerationQueueResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMushroomModerationQueueResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMushroomModerationQueueResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Mushrooms/CreateDraft": {
+      "post": {
+        "tags": [
+          "Mushrooms"
+        ],
+        "summary": "Create mushroom draft",
+        "description": "Creates draft mushroom revision for current editor",
+        "operationId": "CreateDraft",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMushroomDraftRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMushroomDraftRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMushroomDraftRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateMushroomDraftResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateMushroomDraftResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateMushroomDraftResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Mushrooms/UpdateDraft": {
+      "put": {
+        "tags": [
+          "Mushrooms"
+        ],
+        "summary": "Update mushroom draft",
+        "description": "Updates draft/rejected mushroom revision content",
+        "operationId": "UpdateDraft",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMushroomDraftRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMushroomDraftRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMushroomDraftRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateMushroomDraftResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateMushroomDraftResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateMushroomDraftResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Mushrooms/SubmitForReview": {
+      "post": {
+        "tags": [
+          "Mushrooms"
+        ],
+        "summary": "Submit mushroom for review",
+        "description": "Moves draft/rejected mushroom revision to moderation queue",
+        "operationId": "SubmitForReview",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitMushroomForReviewRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitMushroomForReviewRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitMushroomForReviewRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitMushroomForReviewResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitMushroomForReviewResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitMushroomForReviewResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Mushrooms/ModerateMushroom": {
+      "post": {
+        "tags": [
+          "Mushrooms"
+        ],
+        "summary": "Moderate mushroom revision",
+        "description": "Approves or rejects mushroom revision from moderation queue",
+        "operationId": "ModerateMushroom",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModerateMushroomRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModerateMushroomRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModerateMushroomRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModerateMushroomResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModerateMushroomResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModerateMushroomResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Mushrooms/ArchiveMushroom": {
+      "post": {
+        "tags": [
+          "Mushrooms"
+        ],
+        "summary": "Archive mushroom revision",
+        "description": "Archives mushroom revision and hides published mushroom snapshot",
+        "operationId": "ArchiveMushroom",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArchiveMushroomRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArchiveMushroomRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArchiveMushroomRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchiveMushroomResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchiveMushroomResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchiveMushroomResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Mushrooms/UploadMushroomImage": {
+      "post": {
+        "tags": [
+          "Mushrooms"
+        ],
+        "summary": "Upload mushroom image",
+        "description": "Uploads image for mushroom content and returns media url/path",
+        "operationId": "UploadMushroomImage",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "image": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadMushroomImageResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadMushroomImageResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadMushroomImageResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Mushrooms/DeleteMushroomImage": {
+      "delete": {
+        "tags": [
+          "Mushrooms"
+        ],
+        "summary": "Delete mushroom image",
+        "description": "Deletes uploaded mushroom image by relative path",
+        "operationId": "DeleteMushroomImage",
+        "parameters": [
+          {
+            "name": "MediaPath",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteMushroomImageResponseBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteMushroomImageResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteMushroomImageResponseBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/Mushrooms/CreateMushroom": {
       "post": {
         "tags": [
           "Mushrooms"
         ],
-        "summary": "Create mushroom",
-        "description": "Creates mushroom",
+        "summary": "Create mushroom (legacy)",
+        "description": "Legacy endpoint. Prefer CreateDraft/SubmitForReview workflow",
         "operationId": "CreateMushroom",
         "requestBody": {
           "content": {
@@ -1566,7 +2126,8 @@
               }
             }
           }
-        }
+        },
+        "deprecated": true
       }
     },
     "/Mushrooms/UpdateMushroom": {
@@ -1574,8 +2135,8 @@
         "tags": [
           "Mushrooms"
         ],
-        "summary": "Update mushroom",
-        "description": "Updates mushroom info by id",
+        "summary": "Update mushroom (legacy)",
+        "description": "Legacy endpoint. Prefer UpdateDraft",
         "operationId": "UpdateMushroom",
         "requestBody": {
           "content": {
@@ -1617,7 +2178,8 @@
               }
             }
           }
-        }
+        },
+        "deprecated": true
       }
     },
     "/Mushrooms/DeleteMushroom": {
@@ -1625,8 +2187,8 @@
         "tags": [
           "Mushrooms"
         ],
-        "summary": "Delete mushroom",
-        "description": "Deletes mushroom by id",
+        "summary": "Delete mushroom (deprecated)",
+        "description": "Hard delete endpoint. Deprecated, use ArchiveMushroom",
         "operationId": "DeleteMushroom",
         "parameters": [
           {
@@ -1659,7 +2221,8 @@
               }
             }
           }
-        }
+        },
+        "deprecated": true
       }
     },
     "/Roles/TestGetRoles": {
@@ -2563,6 +3126,45 @@
         },
         "additionalProperties": false
       },
+      "ArchiveMushroomRequest": {
+        "type": "object",
+        "properties": {
+          "revisionId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ArchiveMushroomResponse": {
+        "type": "object",
+        "properties": {
+          "revisionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string"
+          },
+          "archivedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ArchiveMushroomResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ArchiveMushroomResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
       "ArticleDto": {
         "type": "object",
         "properties": {
@@ -2773,6 +3375,112 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/CreateDraftResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateMushroomDraftRequest": {
+        "type": "object",
+        "properties": {
+          "sourceMushroomId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "synonymousName": {
+            "type": "string",
+            "nullable": true
+          },
+          "latinName": {
+            "type": "string",
+            "nullable": true
+          },
+          "family": {
+            "type": "string"
+          },
+          "redBook": {
+            "type": "boolean"
+          },
+          "eatable": {
+            "type": "string"
+          },
+          "hasStem": {
+            "type": "boolean"
+          },
+          "stemSizeFrom": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "stemSizeTo": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "stemType": {
+            "type": "string",
+            "nullable": true
+          },
+          "stemColor": {
+            "type": "string",
+            "nullable": true
+          },
+          "capType": {
+            "type": "string"
+          },
+          "capColor": {
+            "type": "string"
+          },
+          "capUndersideType": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "headerPhotoLink": {
+            "type": "string",
+            "nullable": true
+          },
+          "extraPhotoLinks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "doppelgangers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateMushroomDraftResponse": {
+        "type": "object",
+        "properties": {
+          "createdRevisionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateMushroomDraftResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CreateMushroomDraftResponse"
           },
           "errorMessage": {
             "$ref": "#/components/schemas/ExceptionDto"
@@ -3023,6 +3731,27 @@
         },
         "additionalProperties": false
       },
+      "DeleteMushroomImageResponse": {
+        "type": "object",
+        "properties": {
+          "isDeleted": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeleteMushroomImageResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/DeleteMushroomImageResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
       "DeleteMushroomResponse": {
         "type": "object",
         "properties": {
@@ -3226,6 +3955,144 @@
             "items": {
               "$ref": "#/components/schemas/ParagraphDto"
             }
+          }
+        },
+        "additionalProperties": false
+      },
+      "EditorMushroomDto": {
+        "type": "object",
+        "properties": {
+          "revisionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sourceMushroomId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "synonymousName": {
+            "type": "string",
+            "nullable": true
+          },
+          "latinName": {
+            "type": "string",
+            "nullable": true
+          },
+          "family": {
+            "type": "string"
+          },
+          "redBook": {
+            "type": "boolean"
+          },
+          "eatable": {
+            "type": "string"
+          },
+          "hasStem": {
+            "type": "boolean"
+          },
+          "stemSizeFrom": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "stemSizeTo": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "stemType": {
+            "type": "string",
+            "nullable": true
+          },
+          "stemColor": {
+            "type": "string",
+            "nullable": true
+          },
+          "capType": {
+            "type": "string"
+          },
+          "capColor": {
+            "type": "string"
+          },
+          "capUndersideType": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "headerPhotoLink": {
+            "type": "string",
+            "nullable": true
+          },
+          "extraPhotoLinks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "doppelgangerNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "type": "string"
+          },
+          "createdByUserId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "updatedByUserId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "submittedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "reviewedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "reviewedByUserId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "reviewNote": {
+            "type": "string",
+            "nullable": true
+          },
+          "archivedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "likesCount": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -3435,6 +4302,27 @@
         },
         "additionalProperties": false
       },
+      "GetEditorMushroomResponse": {
+        "type": "object",
+        "properties": {
+          "mushroom": {
+            "$ref": "#/components/schemas/EditorMushroomDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetEditorMushroomResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetEditorMushroomResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
       "GetFilteredArticlesResponse": {
         "type": "object",
         "properties": {
@@ -3467,6 +4355,18 @@
             "items": {
               "$ref": "#/components/schemas/MushroomDto"
             }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -3555,6 +4455,52 @@
         },
         "additionalProperties": false
       },
+      "GetMushroomLikesCountResponse": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetMushroomLikesCountResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetMushroomLikesCountResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetMushroomModerationQueueResponse": {
+        "type": "object",
+        "properties": {
+          "mushrooms": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EditorMushroomDto"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetMushroomModerationQueueResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetMushroomModerationQueueResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
       "GetMushroomResponse": {
         "type": "object",
         "properties": {
@@ -3617,6 +4563,54 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/GetMyMaterialsResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetMyMushroomDraftsResponse": {
+        "type": "object",
+        "properties": {
+          "mushrooms": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EditorMushroomDto"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetMyMushroomDraftsResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetMyMushroomDraftsResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetMyMushroomMaterialsResponse": {
+        "type": "object",
+        "properties": {
+          "mushrooms": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EditorMushroomDto"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetMyMushroomMaterialsResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetMyMushroomMaterialsResponse"
           },
           "errorMessage": {
             "$ref": "#/components/schemas/ExceptionDto"
@@ -3715,6 +4709,27 @@
         },
         "additionalProperties": false
       },
+      "HasUserLikedMushroomResponse": {
+        "type": "object",
+        "properties": {
+          "hasLiked": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "HasUserLikedMushroomResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/HasUserLikedMushroomResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
       "LoginUserRequest": {
         "required": [
           "email",
@@ -3796,6 +4811,57 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/ModerateArticleResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ModerateMushroomRequest": {
+        "type": "object",
+        "properties": {
+          "revisionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "decision": {
+            "$ref": "#/components/schemas/ModerationDecision"
+          },
+          "reviewNote": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ModerateMushroomResponse": {
+        "type": "object",
+        "properties": {
+          "revisionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string"
+          },
+          "reviewedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "publishedMushroomId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ModerateMushroomResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ModerateMushroomResponse"
           },
           "errorMessage": {
             "$ref": "#/components/schemas/ExceptionDto"
@@ -3886,6 +4952,10 @@
             "items": {
               "$ref": "#/components/schemas/DoppelgangerDto"
             }
+          },
+          "likesCount": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -4140,6 +5210,45 @@
         },
         "additionalProperties": false
       },
+      "SubmitMushroomForReviewRequest": {
+        "type": "object",
+        "properties": {
+          "revisionId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SubmitMushroomForReviewResponse": {
+        "type": "object",
+        "properties": {
+          "revisionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string"
+          },
+          "submittedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SubmitMushroomForReviewResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/SubmitMushroomForReviewResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
       "TestRoles": {
         "type": "object",
         "properties": {
@@ -4220,6 +5329,27 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/ToggleArticleLikeResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ToggleMushroomLikeResponse": {
+        "type": "object",
+        "properties": {
+          "isLiked": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ToggleMushroomLikeResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ToggleMushroomLikeResponse"
           },
           "errorMessage": {
             "$ref": "#/components/schemas/ExceptionDto"
@@ -4373,6 +5503,111 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/UpdateDraftResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateMushroomDraftRequest": {
+        "type": "object",
+        "properties": {
+          "revisionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "synonymousName": {
+            "type": "string",
+            "nullable": true
+          },
+          "latinName": {
+            "type": "string",
+            "nullable": true
+          },
+          "family": {
+            "type": "string"
+          },
+          "redBook": {
+            "type": "boolean"
+          },
+          "eatable": {
+            "type": "string"
+          },
+          "hasStem": {
+            "type": "boolean"
+          },
+          "stemSizeFrom": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "stemSizeTo": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "stemType": {
+            "type": "string",
+            "nullable": true
+          },
+          "stemColor": {
+            "type": "string",
+            "nullable": true
+          },
+          "capType": {
+            "type": "string"
+          },
+          "capColor": {
+            "type": "string"
+          },
+          "capUndersideType": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "headerPhotoLink": {
+            "type": "string",
+            "nullable": true
+          },
+          "extraPhotoLinks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "doppelgangers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateMushroomDraftResponse": {
+        "type": "object",
+        "properties": {
+          "updatedRevisionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateMushroomDraftResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/UpdateMushroomDraftResponse"
           },
           "errorMessage": {
             "$ref": "#/components/schemas/ExceptionDto"
@@ -4583,6 +5818,30 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/UploadArticleImageResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UploadMushroomImageResponse": {
+        "type": "object",
+        "properties": {
+          "mediaUrl": {
+            "type": "string"
+          },
+          "mediaPath": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UploadMushroomImageResponseBaseResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/UploadMushroomImageResponse"
           },
           "errorMessage": {
             "$ref": "#/components/schemas/ExceptionDto"

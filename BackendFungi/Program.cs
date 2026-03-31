@@ -168,6 +168,8 @@ builder.Services.Configure<AvatarStorageOptions>(configuration.GetSection("Avata
 builder.Services.AddSingleton<IAvatarStorageService, AvatarStorageService>();
 builder.Services.Configure<ArticleMediaStorageOptions>(configuration.GetSection("ArticleMediaStorage"));
 builder.Services.AddSingleton<IArticleMediaStorageService, ArticleMediaStorageService>();
+builder.Services.Configure<MushroomMediaStorageOptions>(configuration.GetSection("MushroomMediaStorage"));
+builder.Services.AddSingleton<IMushroomMediaStorageService, MushroomMediaStorageService>();
 builder.Services.AddHostedService<ArticlePublishingHostedService>();
 
 // CORS policy
@@ -242,6 +244,12 @@ Directory.CreateDirectory(articleMediaRootPath);
 var articleMediaRequestPath = articleMediaStorageOptions.PublicBasePath.StartsWith('/')
     ? articleMediaStorageOptions.PublicBasePath
     : $"/{articleMediaStorageOptions.PublicBasePath}";
+var mushroomMediaStorageOptions = app.Services.GetRequiredService<IOptions<MushroomMediaStorageOptions>>().Value;
+var mushroomMediaRootPath = Path.GetFullPath(Path.Combine(app.Environment.ContentRootPath, mushroomMediaStorageOptions.PhysicalRoot));
+Directory.CreateDirectory(mushroomMediaRootPath);
+var mushroomMediaRequestPath = mushroomMediaStorageOptions.PublicBasePath.StartsWith('/')
+    ? mushroomMediaStorageOptions.PublicBasePath
+    : $"/{mushroomMediaStorageOptions.PublicBasePath}";
 
 // Error handling middleware
 app.UseMiddleware<ErrorHandlingMiddleware>();
@@ -258,6 +266,11 @@ app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(articleMediaRootPath),
     RequestPath = articleMediaRequestPath
+});
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(mushroomMediaRootPath),
+    RequestPath = mushroomMediaRequestPath
 });
 
 /*

@@ -13,6 +13,11 @@ import {
 } from '@entities/session';
 import { getCurrentUserProfile, removeAvatar, uploadAvatar } from '@features/avatar';
 import { getModerationQueue, getMyDrafts, getMyMaterials } from '@features/articles';
+import {
+  getModerationQueue as getMushroomModerationQueue,
+  getMyDrafts as getMushroomDrafts,
+  getMyMaterials as getMushroomMaterials
+} from '@features/mushroom-editor';
 import { ApiError } from '@shared/api';
 import { PageLayout } from '@widgets/layout';
 import { Button, Card, Container, Stack, Tag, Typography, useToast } from '@shared/ui';
@@ -20,6 +25,7 @@ import styles from './ProfilePage.module.css';
 
 type AvatarStatus = 'idle' | 'uploading' | 'success';
 type ProfileArticlePreviewScope = 'drafts' | 'materials' | 'moderation';
+type ProfileMushroomPreviewScope = 'drafts' | 'materials' | 'moderation';
 
 interface ProfilePageProps {
   section?: ProfileTabKey;
@@ -41,11 +47,73 @@ const TAB_PREVIEW_POINTS: Partial<Record<ProfileTabKey, string[]>> = {
     'Быстрый доступ к доработке текста и медиа.',
     'Подготовка материала к отправке на модерацию.'
   ],
+  'mushroom-materials': [
+    'Публикации и архивные ревизии грибов.',
+    'Быстрый переход к созданию новой версии из опубликованной.',
+    'Контроль карточек грибов в одном месте.'
+  ],
+  'mushroom-drafts': [
+    'Текущие черновики и отклоненные ревизии грибов.',
+    'Быстрый доступ к редактированию и повторной отправке.',
+    'Подготовка версии к модерации.'
+  ],
+  'mushroom-moderation': [
+    'Очередь ревизий грибов в модерации.',
+    'Инструменты для решения о публикации.'
+  ],
   'ja-moderation': [
     'Центральная очередь проверки контента.',
     'Инструменты для оперативной модерации материалов.'
   ]
 };
+
+function formatMushroomDate(value: string): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return '—';
+  }
+
+  return date.toLocaleString('ru-RU', {
+    year: 'numeric',
+    month: 'short',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}
+
+function getMushroomStatusTone(status: string): 'info' | 'success' | 'warning' | 'error' {
+  if (status === 'Published') {
+    return 'success';
+  }
+
+  if (status === 'InReview') {
+    return 'warning';
+  }
+
+  if (status === 'Rejected') {
+    return 'error';
+  }
+
+  return 'info';
+}
+
+function getMushroomStatusLabel(status: string): string {
+  switch (status) {
+    case 'Draft':
+      return 'Черновик';
+    case 'InReview':
+      return 'На модерации';
+    case 'Published':
+      return 'Опубликовано';
+    case 'Rejected':
+      return 'Отклонено';
+    case 'Archived':
+      return 'Архив';
+    default:
+      return status;
+  }
+}
 
 function getUserInitials(name: string): string {
   const initials = name
@@ -160,7 +228,7 @@ export function ProfilePage({ section }: ProfilePageProps) {
   const activeTab = getProfileTabDefinition(activeSection);
   const activeTabPreviewPoints = TAB_PREVIEW_POINTS[activeSection] ?? [];
   const hasActiveTabWorkspaceLink = Boolean(activeTab.routePath);
-  const editorPreviewScope: ProfileArticlePreviewScope | null =
+  const articlePreviewScope: ProfileArticlePreviewScope | null =
     activeSection === 'editor-drafts'
       ? 'drafts'
       : activeSection === 'editor-materials'
@@ -168,28 +236,58 @@ export function ProfilePage({ section }: ProfilePageProps) {
         : activeSection === 'ja-moderation'
           ? 'moderation'
           : null;
-  const isEditorArticlesPreviewTab = editorPreviewScope !== null;
-  const editorPreviewQuery = useQuery({
-    queryKey: ['profile', 'editor-preview', editorPreviewScope ?? 'none', token ?? 'missing-token'],
-    enabled: Boolean(editorPreviewScope && token && token !== STORYBOOK_TOKEN),
+  const mushroomPreviewScope: ProfileMushroomPreviewScope | null =
+    activeSection === 'mushroom-drafts'
+      ? 'drafts'
+      : activeSection === 'mushroom-materials'
+        ? 'materials'
+        : activeSection === 'mushroom-moderation'
+          ? 'moderation'
+          : null;
+  const isArticlePreviewTab = articlePreviewScope !== null;
+  const isMushroomPreviewTab = mushroomPreviewScope !== null;
+  const articlePreviewQuery = useQuery({
+    queryKey: ['profile', 'editor-preview', articlePreviewScope ?? 'none', token ?? 'missing-token'],
+    enabled: Boolean(articlePreviewScope && token && token !== STORYBOOK_TOKEN),
     queryFn: () => {
-      if (editorPreviewScope === 'materials') {
+      if (articlePreviewScope === 'materials') {
         return getMyMaterials(token!);
       }
 
-      if (editorPreviewScope === 'moderation') {
+      if (articlePreviewScope === 'moderation') {
         return getModerationQueue(token!);
       }
 
       return getMyDrafts(token!);
     }
   });
+  const mushroomPreviewQuery = useQuery({
+    queryKey: ['profile', 'mushroom-preview', mushroomPreviewScope ?? 'none', token ?? 'missing-token'],
+    enabled: Boolean(mushroomPreviewScope && token && token !== STORYBOOK_TOKEN),
+    queryFn: () => {
+      if (mushroomPreviewScope === 'materials') {
+        return getMushroomMaterials(token!);
+      }
+
+      if (mushroomPreviewScope === 'moderation') {
+        return getMushroomModerationQueue(token!);
+      }
+
+      return getMushroomDrafts(token!);
+    }
+  });
   const editorPreviewArticles = useMemo(() => {
-    const source = editorPreviewQuery.data ?? [];
+    const source = articlePreviewQuery.data ?? [];
     return [...source]
       .sort((leftArticle, rightArticle) => rightArticle.updatedAt.localeCompare(leftArticle.updatedAt))
       .slice(0, 4);
-  }, [editorPreviewQuery.data]);
+  }, [articlePreviewQuery.data]);
+  const mushroomPreviewRevisions = useMemo(() => {
+    const source = mushroomPreviewQuery.data ?? [];
+    return [...source]
+      .sort((leftRevision, rightRevision) => rightRevision.updatedAt.localeCompare(leftRevision.updatedAt))
+      .slice(0, 4);
+  }, [mushroomPreviewQuery.data]);
 
   const userName = user?.name ?? '';
   const userEmail = user?.email ?? '';
@@ -281,31 +379,58 @@ export function ProfilePage({ section }: ProfilePageProps) {
   }, [handleSessionExpired, isAuthenticated, showError, token, updateUser]);
 
   useEffect(() => {
-    if (!(editorPreviewQuery.error instanceof ApiError)) {
-      if (editorPreviewQuery.error) {
+    if (!(articlePreviewQuery.error instanceof ApiError)) {
+      if (articlePreviewQuery.error) {
         showError(
-          editorPreviewQuery.error instanceof Error
-            ? editorPreviewQuery.error.message
+          articlePreviewQuery.error instanceof Error
+            ? articlePreviewQuery.error.message
             : 'Не удалось загрузить предпросмотр материалов.',
           {
             title: 'Предпросмотр материалов',
-            dedupeKey: `profile-editor-preview-${editorPreviewScope ?? 'none'}-error`
+            dedupeKey: `profile-editor-preview-${articlePreviewScope ?? 'none'}-error`
           }
         );
       }
       return;
     }
 
-    if (editorPreviewQuery.error.status === 401) {
+    if (articlePreviewQuery.error.status === 401) {
       handleSessionExpired();
       return;
     }
 
-    showError(editorPreviewQuery.error.message, {
+    showError(articlePreviewQuery.error.message, {
       title: 'Предпросмотр материалов',
-      dedupeKey: `profile-editor-preview-${editorPreviewScope ?? 'none'}-error`
+      dedupeKey: `profile-editor-preview-${articlePreviewScope ?? 'none'}-error`
     });
-  }, [editorPreviewQuery.error, editorPreviewScope, handleSessionExpired, showError]);
+  }, [articlePreviewQuery.error, articlePreviewScope, handleSessionExpired, showError]);
+
+  useEffect(() => {
+    if (!(mushroomPreviewQuery.error instanceof ApiError)) {
+      if (mushroomPreviewQuery.error) {
+        showError(
+          mushroomPreviewQuery.error instanceof Error
+            ? mushroomPreviewQuery.error.message
+            : 'Не удалось загрузить предпросмотр грибов.',
+          {
+            title: 'Предпросмотр грибов',
+            dedupeKey: `profile-mushroom-preview-${mushroomPreviewScope ?? 'none'}-error`
+          }
+        );
+      }
+      return;
+    }
+
+    if (mushroomPreviewQuery.error.status === 401) {
+      handleSessionExpired();
+      return;
+    }
+
+    showError(mushroomPreviewQuery.error.message, {
+      title: 'Предпросмотр грибов',
+      dedupeKey: `profile-mushroom-preview-${mushroomPreviewScope ?? 'none'}-error`
+    });
+  }, [handleSessionExpired, mushroomPreviewQuery.error, mushroomPreviewScope, showError]);
 
   useEffect(() => {
     if (avatarPreviewUrl) {
@@ -678,21 +803,21 @@ export function ProfilePage({ section }: ProfilePageProps) {
               ) : null}
 
               {activeSection !== 'profile' ? (
-                isEditorArticlesPreviewTab ? (
+                isArticlePreviewTab ? (
                   <div className={styles.editorTilesSection}>
-                    {editorPreviewQuery.isLoading ? (
+                    {articlePreviewQuery.isLoading ? (
                       <Typography variant="caption" className={styles.placeholderEmpty}>
-                        {editorPreviewScope === 'moderation'
+                        {articlePreviewScope === 'moderation'
                           ? 'Загружаем очередь модерации...'
                           : 'Загружаем статьи...'}
                       </Typography>
                     ) : null}
 
-                    {editorPreviewQuery.isError && !(editorPreviewQuery.error instanceof ApiError && editorPreviewQuery.error.status === 401) ? (
+                    {articlePreviewQuery.isError && !(articlePreviewQuery.error instanceof ApiError && articlePreviewQuery.error.status === 401) ? (
                       <Card className={styles.editorStateCard}>
                         <Stack gap={10}>
                           <Typography variant="bodyS" className={styles.placeholderEmpty}>
-                            {editorPreviewScope === 'moderation'
+                            {articlePreviewScope === 'moderation'
                               ? 'Не удалось загрузить очередь модерации.'
                               : 'Не удалось загрузить список статей.'}
                           </Typography>
@@ -700,7 +825,7 @@ export function ProfilePage({ section }: ProfilePageProps) {
                             type="button"
                             variant="secondary"
                             onClick={() => {
-                              void editorPreviewQuery.refetch();
+                              void articlePreviewQuery.refetch();
                             }}
                           >
                             Повторить
@@ -709,7 +834,7 @@ export function ProfilePage({ section }: ProfilePageProps) {
                       </Card>
                     ) : null}
 
-                    {!editorPreviewQuery.isLoading && !editorPreviewQuery.isError ? (
+                    {!articlePreviewQuery.isLoading && !articlePreviewQuery.isError ? (
                       editorPreviewArticles.length > 0 ? (
                         <div className={styles.editorTilesGrid}>
                           {editorPreviewArticles.map((article: Article) => (
@@ -721,13 +846,13 @@ export function ProfilePage({ section }: ProfilePageProps) {
                                 <Tag tone={getArticleStatusTone(article.status)}>{getArticleStatusLabel(article.status)}</Tag>
                               </div>
                               <Typography variant="caption" className={styles.editorTileMeta}>
-                                {editorPreviewScope === 'moderation'
+                                {articlePreviewScope === 'moderation'
                                   ? `Автор: ${article.authorString} • Отправлено: ${formatArticleDate(article.submittedAt ?? article.updatedAt)}`
                                   : `Обновлено: ${formatArticleDate(article.updatedAt)} • Лайков: ${article.likesCount}`}
                               </Typography>
                               <div className={styles.editorTileActions}>
                                 <Link to={`/editor/articles/${article.id}/edit`} className={styles.editorTileActionLink}>
-                                  {editorPreviewScope === 'moderation' ? 'Открыть материал' : 'Редактировать'}
+                                  {articlePreviewScope === 'moderation' ? 'Открыть материал' : 'Редактировать'}
                                 </Link>
                               </div>
                             </Card>
@@ -747,9 +872,119 @@ export function ProfilePage({ section }: ProfilePageProps) {
                         <Link to={activeTab.routePath!} className={styles.placeholderActionLink}>
                           Открыть весь список
                         </Link>
-                        {editorPreviewScope !== 'moderation' ? (
+                        {articlePreviewScope !== 'moderation' ? (
                           <Link to="/editor/articles/new" className={styles.placeholderActionLink}>
                             Создать статью
+                          </Link>
+                        ) : null}
+                      </div>
+                    ) : null}
+                  </div>
+                ) : isMushroomPreviewTab ? (
+                  <div className={styles.editorTilesSection}>
+                    {mushroomPreviewQuery.isLoading ? (
+                      <Typography variant="caption" className={styles.placeholderEmpty}>
+                        {mushroomPreviewScope === 'moderation'
+                          ? 'Загружаем очередь модерации грибов...'
+                          : 'Загружаем грибы...'}
+                      </Typography>
+                    ) : null}
+
+                    {mushroomPreviewQuery.isError &&
+                    !(mushroomPreviewQuery.error instanceof ApiError && mushroomPreviewQuery.error.status === 401) ? (
+                      <Card className={styles.editorStateCard}>
+                        <Stack gap={10}>
+                          <Typography variant="bodyS" className={styles.placeholderEmpty}>
+                            {mushroomPreviewScope === 'moderation'
+                              ? 'Не удалось загрузить очередь модерации грибов.'
+                              : 'Не удалось загрузить список грибов.'}
+                          </Typography>
+                          <Button
+                            type="button"
+                            variant="secondary"
+                            onClick={() => {
+                              void mushroomPreviewQuery.refetch();
+                            }}
+                          >
+                            Повторить
+                          </Button>
+                        </Stack>
+                      </Card>
+                    ) : null}
+
+                    {!mushroomPreviewQuery.isLoading && !mushroomPreviewQuery.isError ? (
+                      mushroomPreviewRevisions.length > 0 ? (
+                        <div className={styles.editorTilesGrid}>
+                          {mushroomPreviewRevisions.map((revision) => {
+                            const previewHref =
+                              revision.status === 'Published' || revision.status === 'Archived'
+                                ? revision.sourceMushroomId
+                                  ? `/editor/mushrooms/new?sourceMushroomId=${revision.sourceMushroomId}`
+                                  : `/editor/mushrooms/${revision.revisionId}/edit`
+                                : `/editor/mushrooms/${revision.revisionId}/edit`;
+
+                            return (
+                              <Card key={revision.revisionId} className={styles.editorTile}>
+                                <div className={styles.mushroomTileTop}>
+                                  <div className={styles.mushroomTileMedia}>
+                                    {revision.headerPhotoLink ? (
+                                      <img
+                                        src={revision.headerPhotoLink}
+                                        alt=""
+                                        className={styles.mushroomTileImage}
+                                      />
+                                    ) : (
+                                      <div className={styles.mushroomTileFallback}>Фото</div>
+                                    )}
+                                  </div>
+                                  <div className={styles.editorTileCopy}>
+                                    <Typography variant="bodyS" className={styles.editorTileTitle}>
+                                      {revision.name}
+                                    </Typography>
+                                    <Typography variant="caption" className={styles.editorTileMeta}>
+                                      {revision.family}
+                                      {revision.latinName ? ` • ${revision.latinName}` : ''}
+                                    </Typography>
+                                  </div>
+                                  <Tag tone={getMushroomStatusTone(revision.status)}>{getMushroomStatusLabel(revision.status)}</Tag>
+                                </div>
+
+                                <Typography variant="caption" className={styles.editorTileMeta}>
+                                  {mushroomPreviewScope === 'moderation'
+                                    ? `Отправлено: ${formatMushroomDate(revision.submittedAt ?? revision.updatedAt)}`
+                                    : `Обновлено: ${formatMushroomDate(revision.updatedAt)} • Лайков: ${revision.likesCount}`}
+                                </Typography>
+
+                                <div className={styles.editorTileActions}>
+                                  <Link to={previewHref} className={styles.editorTileActionLink}>
+                                    {revision.status === 'Published' || revision.status === 'Archived'
+                                      ? 'Создать ревизию'
+                                      : mushroomPreviewScope === 'moderation'
+                                        ? 'Открыть ревизию'
+                                        : 'Редактировать'}
+                                  </Link>
+                                </div>
+                              </Card>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <Card className={styles.editorStateCard}>
+                          <Typography variant="caption" className={styles.placeholderEmpty}>
+                            {activeTab.emptyState ?? 'Пока нет данных для отображения.'}
+                          </Typography>
+                        </Card>
+                      )
+                    ) : null}
+
+                    {hasActiveTabWorkspaceLink ? (
+                      <div className={styles.editorSectionActions}>
+                        <Link to={activeTab.routePath!} className={styles.placeholderActionLink}>
+                          Открыть весь список
+                        </Link>
+                        {mushroomPreviewScope !== 'moderation' ? (
+                          <Link to="/editor/mushrooms/new" className={styles.placeholderActionLink}>
+                            Создать гриб
                           </Link>
                         ) : null}
                       </div>

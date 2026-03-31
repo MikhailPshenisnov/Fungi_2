@@ -19,5 +19,6 @@ public record MushroomDto(
     string Description,
     string HeaderPhotoLink,
     List<string>? ExtraPhotoLinks,
-    List<DoppelgangerDto> Doppelgangers
+    List<DoppelgangerDto> Doppelgangers,
+    int LikesCount = 0
 );

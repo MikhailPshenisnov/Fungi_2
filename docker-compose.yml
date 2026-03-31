@@ -26,6 +26,7 @@ services:
     volumes:
       - fungi_backend_avatars:/app/Storage/avatars
       - fungi_backend_articles:/app/Storage/articles
+      - fungi_backend_mushrooms:/app/Storage/mushrooms
     depends_on:
       - fungi-db
 
@@ -62,3 +63,4 @@ volumes:
   fungi_frontend_node_modules:
   fungi_backend_avatars:
   fungi_backend_articles:
+  fungi_backend_mushrooms:

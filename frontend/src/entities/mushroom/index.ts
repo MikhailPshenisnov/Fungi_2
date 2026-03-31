@@ -1,3 +1,10 @@
-export type { Mushroom, MushroomDoppelganger, MushroomLikeState } from './model/mushroom.types';
-export { mapMushroom, mapMushrooms } from './model/mushroom.mappers';
-
+export type {
+  Mushroom,
+  MushroomDoppelganger,
+  MushroomEditorPayload,
+  MushroomLikeState,
+  MushroomModerationDecision,
+  MushroomRevision,
+  MushroomRevisionStatus
+} from './model/mushroom.types';
+export { mapEditorMushroom, mapEditorMushrooms, mapMushroom, mapMushrooms } from './model/mushroom.mappers';

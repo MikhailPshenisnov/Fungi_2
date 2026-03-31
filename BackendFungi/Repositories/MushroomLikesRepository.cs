@@ -1,6 +1,7 @@
 using BackendFungi.Abstractions.Repositories;
 using BackendFungi.Database.Context;
 using BackendFungi.Database.Entities;
+using BackendFungi.Exceptions.SpecificExceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace BackendFungi.Repositories;
@@ -14,8 +15,20 @@ public class MushroomLikesRepository : IMushroomLikesRepository
         _context = context;
     }
 
+    public async Task EnsureMushroomExistsAsync(Guid mushroomId, CancellationToken ct)
+    {
+        var exists = await _context.Mushrooms
+            .AsNoTracking()
+            .AnyAsync(x => x.Id == mushroomId, ct);
+
+        if (!exists)
+            throw new UnknownIdentifierException("Unknown mushroom id");
+    }
+
     public async Task<bool> ToggleLikeAsync(Guid mushroomId, Guid userId, CancellationToken ct)
     {
+        await EnsureMushroomExistsAsync(mushroomId, ct);
+
         var existingLike = await _context.MushroomLikes
             .FirstOrDefaultAsync(x => x.MushroomId == mushroomId && x.UserId == userId, ct);
 
@@ -41,12 +54,16 @@ public class MushroomLikesRepository : IMushroomLikesRepository
 
     public async Task<int> GetLikesCountAsync(Guid mushroomId, CancellationToken ct)
     {
+        await EnsureMushroomExistsAsync(mushroomId, ct);
+
         return await _context.MushroomLikes
             .CountAsync(x => x.MushroomId == mushroomId, ct);
     }
 
     public async Task<bool> HasUserLikedAsync(Guid mushroomId, Guid userId, CancellationToken ct)
     {
+        await EnsureMushroomExistsAsync(mushroomId, ct);
+
         return await _context.MushroomLikes
             .AnyAsync(x => x.MushroomId == mushroomId && x.UserId == userId, ct);
     }

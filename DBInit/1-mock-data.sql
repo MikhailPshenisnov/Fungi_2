@@ -34,7 +34,13 @@ VALUES ('10000000-0000-0000-0000-000000000001', 'rbac.roles.read', 'Read roles',
        ('10000000-0000-0000-0000-000000000026', 'content.articles.archive', 'Archive articles', 'Archive articles from active publication', true),
        ('10000000-0000-0000-0000-000000000027', 'content.articles.manage-any', 'Manage any articles', 'Manage all articles regardless of ownership', true),
        ('10000000-0000-0000-0000-000000000028', 'content.articles.purge', 'Purge articles', 'Hard delete articles', true),
-       ('10000000-0000-0000-0000-000000000029', 'content.article-media.write', 'Write article media', 'Upload and delete article media files', true);
+       ('10000000-0000-0000-0000-000000000029', 'content.article-media.write', 'Write article media', 'Upload and delete article media files', true),
+       ('10000000-0000-0000-0000-000000000030', 'content.mushrooms.review', 'Review mushrooms', 'Review and reject mushrooms', true),
+       ('10000000-0000-0000-0000-000000000031', 'content.mushrooms.publish', 'Publish mushrooms', 'Approve and publish mushrooms', true),
+       ('10000000-0000-0000-0000-000000000032', 'content.mushrooms.archive', 'Archive mushrooms', 'Archive mushrooms from public catalog', true),
+       ('10000000-0000-0000-0000-000000000033', 'content.mushrooms.manage-any', 'Manage any mushrooms', 'Manage all mushrooms regardless of ownership', true),
+       ('10000000-0000-0000-0000-000000000034', 'content.mushrooms.purge', 'Purge mushrooms', 'Hard delete mushrooms', true),
+       ('10000000-0000-0000-0000-000000000035', 'content.mushroom-media.write', 'Write mushroom media', 'Upload and delete mushroom media files', true);
 
 -- Insert users
 INSERT INTO public."Users" ("Id", "Username", "Email", "PasswordHash", "RoleId")
@@ -57,6 +63,7 @@ VALUES ('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', '10000000-0000-0000-0000-0000000
        ('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', '10000000-0000-0000-0000-000000000010'),
        ('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', '10000000-0000-0000-0000-000000000012'),
        ('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', '10000000-0000-0000-0000-000000000029'),
+       ('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', '10000000-0000-0000-0000-000000000035'),
        ('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', '10000000-0000-0000-0000-000000000013'),
        ('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', '10000000-0000-0000-0000-000000000014'),
        ('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a12', '10000000-0000-0000-0000-000000000015');
@@ -82,6 +89,38 @@ INSERT INTO public."Doppelgangers" ("Id", "MushroomId", "DoppelgangerName")
 VALUES ('6f7a8b9c-0d1e-2f3a-4b5c-6d7e8f9a0b1c', '1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d', 'Желчный гриб'),
        ('7a8b9c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d', '1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d', 'Сатанинский гриб'),
        ('8b9c0d1e-2f3a-4b5c-6d7e-8f9a0b1c2d3e', '3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f', 'Шампиньон');
+
+-- Insert mushroom revisions (published snapshots + sample draft/review queue)
+INSERT INTO public."MushroomRevisions" (
+    "Id", "SourceMushroomId", "Name", "SynonymousName", "LatinName", "Family", "RedBook", "Eatable", "HasStem",
+    "StemSizeFrom", "StemSizeTo", "StemType", "StemColor", "CapType", "CapColor", "CapUndersideType", "Description",
+    "HeaderPhotoLink", "ExtraPhotoLinks", "Status", "CreatedByUserId", "UpdatedByUserId", "CreatedAt", "UpdatedAt", "PublishedAt")
+VALUES
+('aa2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d', '1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d', 'Белый гриб', 'Боровик', 'Boletus edulis', 'Болетовые', false,
+ 'Съедобный', true, 8, 25, 'цилиндрический', 'беловатый', 'выпуклый', 'коричневый', 'трубчатый',
+ 'Белый гриб - один из самых ценных съедобных грибов.', 'https://i.imgur.com/white_mushroom.jpg',
+ 'https://i.imgur.com/white_mushroom1.jpg;https://i.imgur.com/white_mushroom2.jpg',
+ 'Published', 'e4eebc99-9c0b-4ef8-bb6d-6bb9bd380a15', 'e4eebc99-9c0b-4ef8-bb6d-6bb9bd380a15', now(), now(), now()),
+('bb3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e', '2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e', 'Мухомор красный', NULL, 'Amanita muscaria', 'Аманитовые', false,
+ 'Несъедобный', true, 10, 20, 'цилиндрический', 'белый', 'полушаровидный', 'красный', 'пластинчатый',
+ 'Яркий гриб с красной шляпкой и белыми хлопьями.', 'https://i.imgur.com/fly_agaric.jpg',
+ 'https://i.imgur.com/fly_agaric1.jpg',
+ 'Published', 'e4eebc99-9c0b-4ef8-bb6d-6bb9bd380a15', 'e4eebc99-9c0b-4ef8-bb6d-6bb9bd380a15', now(), now(), now()),
+('cc4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f', NULL, 'Опёнок летний', NULL, 'Kuehneromyces mutabilis', 'Строфариевые', false,
+ 'Съедобный', true, 4, 10, 'тонкий', 'светло-коричневый', 'выпуклый', 'медовый', 'пластинчатый',
+ 'Черновик карточки опёнка.', NULL, NULL,
+ 'Draft', 'e4eebc99-9c0b-4ef8-bb6d-6bb9bd380a15', 'e4eebc99-9c0b-4ef8-bb6d-6bb9bd380a15', now(), now(), NULL),
+('dd5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a', NULL, 'Рыжик сосновый', NULL, 'Lactarius deliciosus', 'Сыроежковые', false,
+ 'Съедобный', true, 3, 8, 'плотный', 'оранжевый', 'воронковидный', 'оранжевый', 'пластинчатый',
+ 'Карточка ждёт проверки модератором.', 'https://i.imgur.com/ryzhik.jpg', NULL,
+ 'InReview', 'e4eebc99-9c0b-4ef8-bb6d-6bb9bd380a15', 'e4eebc99-9c0b-4ef8-bb6d-6bb9bd380a15', now(), now(), NULL);
+
+INSERT INTO public."MushroomRevisionDoppelgangers" ("Id", "RevisionId", "DoppelgangerName")
+VALUES ('0a7a8b9c-0d1e-2f3a-4b5c-6d7e8f9a0b1c', 'aa2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d', 'Желчный гриб'),
+       ('1b8b9c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d', 'aa2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d', 'Сатанинский гриб'),
+       ('2c9c0d1e-2f3a-4b5c-6d7e-8f9a0b1c2d3e', 'bb3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e', 'Бледная поганка'),
+       ('3d0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f', 'cc4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f', 'Ложный опёнок'),
+       ('4e1e2f3a-4b5c-6d7e-8f9a-0b1c2d3e4f5a', 'dd5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a', 'Ложный рыжик');
 
 -- Insert articles
 INSERT INTO public."Articles" ("Id", "Title", "PublishDate", "AuthorString", "HeaderPhotoLink", "ExtraPhotoLinks", "Status",
