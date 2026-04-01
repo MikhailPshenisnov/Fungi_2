@@ -38,11 +38,17 @@ public class UsersController : ControllerBase
         используйте базированный GetFilteredUsers без фильтра
     */
     
+    [Authorize]
     [HttpGet]
     [SwaggerOperation(OperationId = "TestGetUsers", Summary = "Test get users",
         Description = "I don't know, something like GetFilteredUsers, but something crazy")]
     public async Task<ActionResult<BaseResponse<List<TestUsers>>>> TestGetUsers(CancellationToken cancellationToken)
     {
+        await _accessCheckService.CheckPermission(
+            HttpContext,
+            PermissionCodes.UsersRead,
+            cancellationToken);
+
         UserFilter? userFilter = null;
 
         var users = await _usersService
@@ -67,8 +73,18 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<BaseResponse<GetUserResponse>>> GetUser([FromQuery] GetUserRequest request,
         CancellationToken cancellationToken)
     {
-        var user = await _usersService
-            .GetUserAsync(request.UserId, cancellationToken);
+        var currentUser = await _accessCheckService.GetCurrentUser(HttpContext, cancellationToken);
+        var isCurrentUser = currentUser.Id == request.UserId;
+
+        var canReadUsers = currentUser.Role.PermissionCodes
+            .Contains(PermissionCodes.UsersRead, StringComparer.OrdinalIgnoreCase);
+
+        if (!isCurrentUser && !canReadUsers)
+            throw new AccessException("The user does not have sufficient access rights");
+
+        var user = isCurrentUser
+            ? currentUser
+            : await _usersService.GetUserAsync(request.UserId, cancellationToken);
 
         var response = new BaseResponse<GetUserResponse>(
             new GetUserResponse(

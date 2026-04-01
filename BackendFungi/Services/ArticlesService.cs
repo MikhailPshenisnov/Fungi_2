@@ -35,44 +35,7 @@ public class ArticlesService : IArticlesService
 
     public async Task<List<Article>> GetFilteredArticlesAsync(ArticleFilter? articleFilter, CancellationToken cancellationToken)
     {
-        var articles = await _articlesRepository.GetAllArticles(cancellationToken);
-
-        articles = articles
-            .Where(a => a.Status == ArticleStatus.Published && a.PublishDate <= DateTime.UtcNow)
-            .ToList();
-
-        if (articleFilter is null)
-            return articles.OrderByDescending(a => a.PublishDate).ThenBy(a => a.Title).ToList();
-
-        if (articleFilter.PartOfTitle is not null)
-        {
-            articles = articles
-                .Where(a => a.Title.Contains(articleFilter.PartOfTitle, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-        }
-
-        if (articleFilter.PublishDateFrom is not null)
-        {
-            articles = articles
-                .Where(a => a.PublishDate >= articleFilter.PublishDateFrom)
-                .ToList();
-        }
-
-        if (articleFilter.PublishDateTo is not null)
-        {
-            articles = articles
-                .Where(a => a.PublishDate <= articleFilter.PublishDateTo)
-                .ToList();
-        }
-
-        if (articleFilter.PartOfAuthorString is not null)
-        {
-            articles = articles
-                .Where(a => a.AuthorString.Contains(articleFilter.PartOfAuthorString, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-        }
-
-        return articles.OrderByDescending(a => a.PublishDate).ThenBy(a => a.Title).ToList();
+        return await _articlesRepository.GetFilteredPublishedArticles(articleFilter, cancellationToken);
     }
 
     public async Task<Guid> UpdateArticleAsync(Guid articleId, Article newArticle, CancellationToken cancellationToken)

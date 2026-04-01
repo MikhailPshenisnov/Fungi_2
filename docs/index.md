@@ -20,12 +20,17 @@
 
 ## Статус ревизии контента
 
-Актуально на 10 марта 2026:
+Актуально на 1 апреля 2026:
 
 - auth/cors контракт синхронизирован с backend;
 - OpenAPI snapshot обновлен из live Swagger;
 - добавлена документация по каталогу грибов, деталке и лайк-сценариям;
 - добавлен полный workflow статей: draft/review/publish/archive + editor endpoints;
+- закрыт P0 backend hardening:
+  - string-only moderation decision;
+  - `errorCode` в API-ошибках;
+  - security-ограничения для `GetUser` и `Test*` endpoint-ов;
+  - integration regression-тесты backend;
 - добавлены frontend-маршруты `/articles`, `/articles/:id`, `/editor/*` и их описание;
 - зафиксировано Storybook-покрытие новых mushroom-компонентов;
 - зафиксировано Storybook-покрытие article/editor сценариев;

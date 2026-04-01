@@ -319,6 +319,8 @@ public class ArticlesController : ControllerBase
         [FromBody] ModerateArticleRequest request,
         CancellationToken cancellationToken)
     {
+        var decision = request.Decision!.Value;
+
         var user = await _accessCheckService.CheckPermission(
             HttpContext,
             PermissionCodes.ArticlesReview,
@@ -326,7 +328,7 @@ public class ArticlesController : ControllerBase
 
         var article = await _articlesService.ModerateArticleAsync(
             request.ArticleId,
-            request.Decision,
+            decision,
             request.ReviewNote,
             user.Id,
             cancellationToken);
@@ -577,14 +579,14 @@ public class ArticlesController : ControllerBase
         if (articles.Count == 0)
             return new List<ArticleDto>();
 
-        var likesTasks = articles
-            .Select(article => _articleLikesService.GetLikesCountAsync(article.Id, cancellationToken))
-            .ToArray();
-
-        var likesCounts = await Task.WhenAll(likesTasks);
+        var likesCountsByArticleId = await _articleLikesService.GetLikesCountsByArticleIdsAsync(
+            articles.Select(x => x.Id).ToList(),
+            cancellationToken);
 
         return articles
-            .Select((article, index) => MapArticleToDto(article, likesCounts[index]))
+            .Select(article => MapArticleToDto(
+                article,
+                likesCountsByArticleId.GetValueOrDefault(article.Id)))
             .ToList();
     }
 

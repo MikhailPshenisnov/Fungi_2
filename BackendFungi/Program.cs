@@ -39,6 +39,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
         var response = new BaseResponse<object>(
             null,
             new ExceptionDto(
+                ErrorCodes.InvalidRequest,
                 "Validation error",
                 string.IsNullOrWhiteSpace(errorText) ? "Invalid request payload" : errorText));
 

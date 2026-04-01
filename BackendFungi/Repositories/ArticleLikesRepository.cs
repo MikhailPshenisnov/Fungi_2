@@ -45,6 +45,26 @@ public class ArticleLikesRepository : IArticleLikesRepository
             .CountAsync(x => x.ArticleId == articleId, ct);
     }
 
+    public async Task<Dictionary<Guid, int>> GetLikesCountsByArticleIdsAsync(
+        IReadOnlyCollection<Guid> articleIds,
+        CancellationToken ct)
+    {
+        var normalizedArticleIds = articleIds
+            .Where(x => x != Guid.Empty)
+            .Distinct()
+            .ToList();
+
+        if (normalizedArticleIds.Count == 0)
+            return new Dictionary<Guid, int>();
+
+        return await _context.ArticleLikes
+            .AsNoTracking()
+            .Where(x => normalizedArticleIds.Contains(x.ArticleId))
+            .GroupBy(x => x.ArticleId)
+            .Select(x => new { ArticleId = x.Key, LikesCount = x.Count() })
+            .ToDictionaryAsync(x => x.ArticleId, x => x.LikesCount, ct);
+    }
+
     public async Task<bool> HasUserLikedAsync(Guid articleId, Guid userId, CancellationToken ct)
     {
         return await _context.ArticleLikes

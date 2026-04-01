@@ -3032,18 +3032,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "UserEmail": {
-                    "type": "string"
-                  },
                   "NewName": {
                     "type": "string"
                   }
                 }
               },
               "encoding": {
-                "UserEmail": {
-                  "style": "form"
-                },
                 "NewName": {
                   "style": "form"
                 }
@@ -4100,6 +4094,9 @@
       "ExceptionDto": {
         "type": "object",
         "properties": {
+          "errorCode": {
+            "type": "string"
+          },
           "errorGroup": {
             "type": "string"
           },
@@ -4871,11 +4868,10 @@
       },
       "ModerationDecision": {
         "enum": [
-          0,
-          1
+          "Approve",
+          "Reject"
         ],
-        "type": "integer",
-        "format": "int32"
+        "type": "string"
       },
       "MushroomDto": {
         "type": "object",

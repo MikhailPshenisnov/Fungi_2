@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using System.Text.Json;
 using BackendFungi.Contracts.Other;
 using BackendFungi.Contracts.Responses;
 using BackendFungi.Exceptions.BaseExceptions;
@@ -30,6 +29,7 @@ public class ErrorHandlingMiddleware
             await HandleExceptionAsync(
                 context,
                 HttpStatusCode.Unauthorized,
+                ErrorCodes.AuthorizationError,
                 "Authorization error",
                 e,
                 isLogNeeded: false,
@@ -40,6 +40,7 @@ public class ErrorHandlingMiddleware
             await HandleExceptionAsync(
                 context,
                 HttpStatusCode.Forbidden,
+                ErrorCodes.AccessDenied,
                 "Access error",
                 e,
                 isLogNeeded: false,
@@ -50,6 +51,7 @@ public class ErrorHandlingMiddleware
             await HandleExceptionAsync(
                 context,
                 HttpStatusCode.BadRequest,
+                ErrorCodes.InvalidRequest,
                 "Wrong format error",
                 e,
                 isLogNeeded: false,
@@ -60,6 +62,7 @@ public class ErrorHandlingMiddleware
             await HandleExceptionAsync(
                 context,
                 HttpStatusCode.NotFound,
+                ErrorCodes.NotFound,
                 "Not found error",
                 e,
                 isLogNeeded: false,
@@ -72,6 +75,7 @@ public class ErrorHandlingMiddleware
             await HandleExceptionAsync(
                 context,
                 HttpStatusCode.Conflict,
+                ErrorCodes.Conflict,
                 "Database error",
                 ex,
                 isLogNeeded: false,
@@ -84,6 +88,7 @@ public class ErrorHandlingMiddleware
             await HandleExceptionAsync(
                 context,
                 HttpStatusCode.BadRequest,
+                ErrorCodes.InvalidRequest,
                 "Database error",
                 ex,
                 isLogNeeded: false,
@@ -96,6 +101,7 @@ public class ErrorHandlingMiddleware
             await HandleExceptionAsync(
                 context,
                 HttpStatusCode.BadRequest,
+                ErrorCodes.InvalidRequest,
                 "Database error",
                 ex,
                 isLogNeeded: false,
@@ -108,6 +114,7 @@ public class ErrorHandlingMiddleware
             await HandleExceptionAsync(
                 context,
                 HttpStatusCode.BadRequest,
+                ErrorCodes.InvalidRequest,
                 "Database error",
                 ex,
                 isLogNeeded: false,
@@ -120,6 +127,7 @@ public class ErrorHandlingMiddleware
             await HandleExceptionAsync(
                 context,
                 HttpStatusCode.Conflict,
+                ErrorCodes.Conflict,
                 "Database error",
                 ex,
                 isLogNeeded: false,
@@ -132,6 +140,7 @@ public class ErrorHandlingMiddleware
             await HandleExceptionAsync(
                 context,
                 HttpStatusCode.Conflict,
+                ErrorCodes.Conflict,
                 "Database error",
                 ex,
                 isLogNeeded: false,
@@ -144,6 +153,7 @@ public class ErrorHandlingMiddleware
             await HandleExceptionAsync(
                 context,
                 HttpStatusCode.InternalServerError,
+                ErrorCodes.InternalServerError,
                 "Database error",
                 ex,
                 isLogNeeded: true,
@@ -154,6 +164,7 @@ public class ErrorHandlingMiddleware
             await HandleExceptionAsync(
                 context,
                 HttpStatusCode.InternalServerError,
+                ErrorCodes.InternalServerError,
                 "Critical system error",
                 e,
                 isLogNeeded: true,
@@ -167,6 +178,7 @@ public class ErrorHandlingMiddleware
             await HandleExceptionAsync(
                 context,
                 HttpStatusCode.InternalServerError,
+                ErrorCodes.InternalServerError,
                 "Unregistered exception",
                 ex,
                 isLogNeeded: true,
@@ -179,6 +191,7 @@ public class ErrorHandlingMiddleware
             await HandleExceptionAsync(
                 context,
                 HttpStatusCode.InternalServerError,
+                ErrorCodes.InternalServerError,
                 "Unexpected exception",
                 ex,
                 isLogNeeded: true,
@@ -189,6 +202,7 @@ public class ErrorHandlingMiddleware
     private async Task HandleExceptionAsync(
         HttpContext context,
         HttpStatusCode statusCode,
+        string errorCode,
         string exceptionGroup,
         Exception exception,
         bool isLogNeeded,
@@ -213,11 +227,11 @@ public class ErrorHandlingMiddleware
         var errorResponse = new BaseResponse<string>(
             null,
             new ExceptionDto(
+                errorCode,
                 exceptionGroup,
                 exception.Message));
 
-        context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)statusCode;
-        await context.Response.WriteAsync(JsonSerializer.Serialize(errorResponse));
+        await context.Response.WriteAsJsonAsync(errorResponse);
     }
 }

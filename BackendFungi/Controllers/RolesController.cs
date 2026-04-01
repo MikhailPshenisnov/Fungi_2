@@ -34,11 +34,17 @@ public class RolesController : ControllerBase
         используйте базированный GetFilteredRoles без фильтра
     */
     
+    [Authorize]
     [HttpGet]
     [SwaggerOperation(OperationId = "TestGetRoles", Summary = "Test get roles",
         Description = "I don't know, something like GetFilteredRoles, but something crazy")]
     public async Task<ActionResult<BaseResponse<List<TestRoles>>>> TestGetRoles(CancellationToken cancellationToken)
     {
+        await _accessCheckService.CheckPermission(
+            HttpContext,
+            PermissionCodes.RolesRead,
+            cancellationToken);
+
         RoleFilter? roleFilter = null;
 
         var filteredRoles = await _rolesService

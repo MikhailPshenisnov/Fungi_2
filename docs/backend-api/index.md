@@ -29,13 +29,24 @@
 {
   "data": null,
   "errorMessage": {
+    "errorCode": "string",
     "errorGroup": "string",
     "errorMessage": "string"
   }
 }
 ```
 
-Коды ошибок:
+Стабильные `errorCode`:
+
+- `invalid_request` — ошибки валидации/конвертации запроса;
+- `authorization_error` — нет/невалидный bearer-токен;
+- `access_denied` — недостаточно прав;
+- `not_found` — сущность не найдена;
+- `conflict` — конфликт данных;
+- `internal_server_error` — серверная ошибка;
+- `http_error` — базовый HTTP fallback код для пустого ответа middleware.
+
+HTTP-коды:
 
 - `400` — ошибки валидации и формата запроса
 - `401` — ошибки аутентификации
@@ -43,6 +54,18 @@
 - `404` — сущность не найдена
 - `409` — конфликт данных
 - `500` — внутренняя ошибка сервера
+
+## Security hardening (P0)
+
+- `GET /Users/GetUser`:
+  - доступ к чужому профилю только при праве `users.read`;
+  - пользователь всегда может читать только свой профиль.
+- `GET /Users/TestGetUsers`:
+  - больше не публичный;
+  - требует авторизацию и право `users.read`.
+- `GET /Roles/TestGetRoles`:
+  - больше не публичный;
+  - требует авторизацию и право `rbac.roles.read`.
 
 ## Контракт авторизации (web + mobile)
 
@@ -196,6 +219,9 @@ Editor/moderation endpoint-ы:
   - скрывает published snapshot из каталога (`IsArchived = true`).
 - для `ArchiveMushroom` доступ допускается при `content.mushrooms.archive` **или** `content.mushrooms.manage-any`;
 - архивирование разрешено только для `Published/Rejected` revision (черновик и `InReview` архивировать нельзя).
+- `decision` в `ModerateMushroomRequest` принимается строго строкой:
+  - `"Approve"` или `"Reject"`;
+  - числовые значения (`0/1/...`) отклоняются как `400 invalid_request`.
 
 Legacy endpoint-ы (оставлены для совместимости, но закрыты purge-правом):
 
@@ -278,6 +304,8 @@ Media для грибов:
 - `GET /Articles/GetFilteredArticles` возвращает только `Published` статьи с наступившей датой публикации (`PublishDate <= now`);
 - `GET /Articles/GetArticle` в публичном сценарии также доступен только для уже опубликованных статей;
 - `Draft/InReview/Rejected/Archived/Scheduled (до даты)` не попадают в публичную выдачу.
+- фильтрация выполняется на уровне БД (без полного in-memory скана);
+- `likesCount` для списка статей заполняется bulk-агрегацией, без N+1 на каждый элемент.
 
 ### Editor/moderation endpoint-ы
 
@@ -291,6 +319,7 @@ Media для грибов:
   - переводит `Draft/Rejected -> InReview`.
 - `POST /Articles/ModerateArticle`:
   - решение `Approve/Reject`;
+  - `decision` принимается строго строкой `"Approve"` или `"Reject"` (числа отклоняются `400 invalid_request`);
   - при approve:
     - `Published`, если `PublishDate <= now`;
     - `Scheduled`, если дата в будущем.

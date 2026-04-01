@@ -2,12 +2,13 @@ import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import type { Mushroom } from '@entities/mushroom';
-import { useSession } from '@entities/session';
+import { hasPermission, PERMISSION_CODES, useSession } from '@entities/session';
 import {
   archiveArticle,
   createDraft,
   deleteArticleImage,
   getEditorArticle,
+  moderateArticle,
   submitForReview,
   updateDraft,
   uploadArticleImage,
@@ -159,9 +160,12 @@ export function EditorArticleFormPage() {
   const [status, setStatus] = useState<string>(isEditMode ? 'Loading' : 'Draft');
   const [reviewNote, setReviewNote] = useState<string | null>(null);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
+  const [publishedArticleLink, setPublishedArticleLink] = useState<string | null>(null);
+  const [moderationNote, setModerationNote] = useState('');
   const [isSavingDraft, setIsSavingDraft] = useState(false);
   const [isSubmittingForReview, setIsSubmittingForReview] = useState(false);
   const [isArchiving, setIsArchiving] = useState(false);
+  const [moderatingDecision, setModeratingDecision] = useState<'Approve' | 'Reject' | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadTarget, setUploadTarget] = useState<'header' | 'extra' | null>(null);
   const [uploadedMediaPathByUrl, setUploadedMediaPathByUrl] = useState<Record<string, string>>({});
@@ -213,6 +217,7 @@ export function EditorArticleFormPage() {
     });
     setStatus(editorArticleQuery.data.status);
     setReviewNote(editorArticleQuery.data.reviewNote);
+    setModerationNote(editorArticleQuery.data.reviewNote ?? '');
   }, [editorArticleQuery.data]);
 
   useEffect(() => {
@@ -304,6 +309,13 @@ export function EditorArticleFormPage() {
 
   const canSubmitForReview = useMemo(() => status === 'Draft' || status === 'Rejected', [status]);
   const canArchive = useMemo(() => status !== 'Archived', [status]);
+  const canReject = hasPermission(user?.permissions ?? [], PERMISSION_CODES.articlesReview);
+  const canPublish = hasPermission(user?.permissions ?? [], PERMISSION_CODES.articlesPublish);
+  const canModerateInReview = useMemo(
+    () => isEditMode && status === 'InReview' && (canReject || canPublish),
+    [canPublish, canReject, isEditMode, status]
+  );
+  const isAnyActionBusy = isSavingDraft || isSubmittingForReview || isArchiving || moderatingDecision !== null;
   const linkedMushroomIdSet = useMemo(
     () => new Set(formState.linkedMushroomIds),
     [formState.linkedMushroomIds]
@@ -485,6 +497,58 @@ export function EditorArticleFormPage() {
       });
     } finally {
       setIsArchiving(false);
+    }
+  }
+
+  async function handleModerationAction(decision: 'Approve' | 'Reject') {
+    if (!token || !routeArticleId) {
+      return;
+    }
+
+    if (decision === 'Approve' && !canPublish) {
+      return;
+    }
+
+    if (decision === 'Reject' && !canReject) {
+      return;
+    }
+
+    setFeedbackMessage(null);
+    setPublishedArticleLink(null);
+    setModeratingDecision(decision);
+
+    try {
+      const result = await moderateArticle(routeArticleId, decision, moderationNote, token);
+      const trimmedNote = moderationNote.trim();
+
+      setStatus(result.status);
+      setReviewNote(trimmedNote || null);
+      setModerationNote(trimmedNote);
+
+      if (decision === 'Approve') {
+        if (result.status === 'Published') {
+          setPublishedArticleLink(`/articles/${routeArticleId}`);
+          setFeedbackMessage('Статья одобрена и опубликована.');
+        } else if (result.status === 'Scheduled') {
+          setFeedbackMessage('Статья одобрена и запланирована к публикации.');
+        } else {
+          setFeedbackMessage('Статья одобрена.');
+        }
+      } else {
+        setFeedbackMessage('Статья отклонена.');
+      }
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 401) {
+        signOut();
+        navigate('/login', { replace: true, state: { reason: 'session-expired' } });
+        return;
+      }
+
+      showError(toReadableEditorErrorMessage(error, 'Не удалось применить решение модерации.'), {
+        title: 'Редактор'
+      });
+    } finally {
+      setModeratingDecision(null);
     }
   }
 
@@ -679,9 +743,16 @@ export function EditorArticleFormPage() {
 
         {feedbackMessage ? (
           <Card className={styles.noticeCard}>
-            <Typography variant="bodyS" className={styles.successText}>
-              {feedbackMessage}
-            </Typography>
+            <Stack gap={8}>
+              <Typography variant="bodyS" className={styles.successText}>
+                {feedbackMessage}
+              </Typography>
+              {publishedArticleLink ? (
+                <Link to={publishedArticleLink} className={styles.backLink}>
+                  Открыть опубликованную статью
+                </Link>
+              ) : null}
+            </Stack>
           </Card>
         ) : null}
 
@@ -917,7 +988,7 @@ export function EditorArticleFormPage() {
                 onClick={() => {
                   void persistDraft();
                 }}
-                disabled={isSavingDraft || isSubmittingForReview || isArchiving}
+                disabled={isAnyActionBusy}
               >
                 {isSavingDraft ? 'Сохраняем...' : 'Сохранить черновик'}
               </Button>
@@ -927,7 +998,7 @@ export function EditorArticleFormPage() {
                 onClick={() => {
                   void handleSubmitForReview();
                 }}
-                disabled={!canSubmitForReview || isSavingDraft || isSubmittingForReview || isArchiving}
+                disabled={!canSubmitForReview || isAnyActionBusy}
               >
                 {isSubmittingForReview ? 'Отправляем...' : 'Отправить на модерацию'}
               </Button>
@@ -937,11 +1008,57 @@ export function EditorArticleFormPage() {
                 onClick={() => {
                   void handleArchive();
                 }}
-                disabled={!isEditMode || !canArchive || isSavingDraft || isSubmittingForReview || isArchiving}
+                disabled={!isEditMode || !canArchive || isAnyActionBusy}
               >
                 {isArchiving ? 'Архивируем...' : 'Архивировать'}
               </Button>
             </div>
+
+            {canModerateInReview ? (
+              <div className={styles.mediaSection}>
+                <Typography variant="h4">Модерация статьи</Typography>
+
+                <label className={styles.fieldBlock}>
+                  <span className={styles.fieldLabel}>Комментарий модерации</span>
+                  <textarea
+                    className={styles.moderationTextarea}
+                    rows={3}
+                    value={moderationNote}
+                    onChange={(event) => setModerationNote(event.target.value)}
+                    placeholder="Причина отклонения или внутреннее замечание"
+                  />
+                </label>
+
+                <div className={styles.bottomActions}>
+                  {canPublish ? (
+                    <Button
+                      onClick={() => {
+                        void handleModerationAction('Approve');
+                      }}
+                      disabled={isAnyActionBusy}
+                    >
+                      {moderatingDecision === 'Approve' ? 'Одобряем...' : 'Одобрить'}
+                    </Button>
+                  ) : null}
+
+                  {canReject ? (
+                    <Button
+                      variant="secondary"
+                      onClick={() => {
+                        void handleModerationAction('Reject');
+                      }}
+                      disabled={isAnyActionBusy}
+                    >
+                      {moderatingDecision === 'Reject' ? 'Отклоняем...' : 'Отклонить'}
+                    </Button>
+                  ) : null}
+
+                  <Link to="/editor/review" className={styles.backLink}>
+                    Открыть очередь модерации
+                  </Link>
+                </div>
+              </div>
+            ) : null}
             </Stack>
           </Card>
 

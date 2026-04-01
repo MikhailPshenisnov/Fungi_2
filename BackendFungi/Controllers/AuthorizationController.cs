@@ -68,6 +68,7 @@ public class AuthorizationController : ControllerBase
             var res = new BaseResponse<RegisterUserResponse>(
                 null,
                 new ExceptionDto(
+                    ErrorCodes.RegistrationError,
                     "Registration error",
                     "You cannot register, first leave the account"));
             return StatusCode(StatusCodes.Status403Forbidden, res);

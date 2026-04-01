@@ -2,8 +2,8 @@
 WORKDIR /src
 
 COPY . .
-RUN dotnet restore ./BackendFungi.sln
-RUN dotnet publish -c Release -o /app/out
+RUN dotnet restore ./BackendFungi.csproj
+RUN dotnet publish ./BackendFungi.csproj -c Release -o /app/out --no-restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
 WORKDIR /app

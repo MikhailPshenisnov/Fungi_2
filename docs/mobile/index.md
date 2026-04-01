@@ -70,6 +70,12 @@ Editor/moderation endpoint-ы (для web rewrite в этой итерации, 
 - `GET /Articles/GetModerationQueue`;
 - `GET /Articles/GetEditorArticle`.
 
+Важно по контракту модерации:
+
+- `decision` в `POST /Articles/ModerateArticle` и `POST /Mushrooms/ModerateMushroom`
+  принимается только строкой: `"Approve"` или `"Reject"`;
+- числовые enum-значения (`0/1/...`) backend отклоняет `400`.
+
 Media endpoint-ы статей:
 
 - `POST /Articles/UploadArticleImage` (`multipart/form-data`, поле `image`);

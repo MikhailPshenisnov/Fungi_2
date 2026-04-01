@@ -233,6 +233,7 @@ src/
 - `/editor/review`:
   - очередь `InReview`;
   - решения `Одобрить/Отклонить` с optional `reviewNote`.
+  - `decision` в moderation API отправляется строкой (`"Approve"` / `"Reject"`).
 
 Доступ:
 
@@ -253,6 +254,7 @@ src/
   - отдельная очередь модерации грибов;
   - `Reject` доступен с `content.mushrooms.review`;
   - `Approve` доступен с `content.mushrooms.publish`.
+  - `decision` в moderation API отправляется строкой (`"Approve"` / `"Reject"`).
 
 Guard-политика:
 

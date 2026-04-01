@@ -26,9 +26,18 @@ public class StatusCodeMiddleware
         var response = new BaseResponse<object>(
             null,
             new ExceptionDto(
+                context.Response.StatusCode switch
+                {
+                    StatusCodes.Status400BadRequest => ErrorCodes.InvalidRequest,
+                    StatusCodes.Status401Unauthorized => ErrorCodes.AuthorizationError,
+                    StatusCodes.Status403Forbidden => ErrorCodes.AccessDenied,
+                    StatusCodes.Status404NotFound => ErrorCodes.NotFound,
+                    _ => ErrorCodes.HttpError
+                },
                 $"Http error {context.Response.StatusCode}",
                 context.Response.StatusCode switch
                 {
+                    StatusCodes.Status400BadRequest => "Invalid request",
                     StatusCodes.Status401Unauthorized => "Unauthorized access",
                     StatusCodes.Status403Forbidden => "Forbidden access",
                     StatusCodes.Status404NotFound => "Resource not found",
@@ -37,7 +46,6 @@ public class StatusCodeMiddleware
             )
         );
 
-        context.Response.ContentType = "application/json";
         await context.Response.WriteAsJsonAsync(response);
     }
 }

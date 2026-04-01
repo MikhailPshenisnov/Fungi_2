@@ -169,6 +169,7 @@
 - модерация `/editor/review`:
   - очередь `InReview`;
   - решения `Одобрить` / `Отклонить` с optional `reviewNote`.
+  - в API отправляется строковый `decision`: `"Approve"` / `"Reject"` (int-формат не используется).
 
 ### Редактор грибов и модерация ревизий
 
@@ -186,6 +187,7 @@
   - `Reject` доступен с `content.mushrooms.review`;
   - `Approve` доступен с `content.mushrooms.publish`;
   - после approve доступен переход на опубликованную карточку `/mushrooms/:id` при наличии `publishedMushroomId`.
+  - в API отправляется строковый `decision`: `"Approve"` / `"Reject"`.
 
 ### Storybook покрытие (актуально)
 

@@ -24,6 +24,12 @@ public class ArticleLikesService : IArticleLikesService
         return await _likesRepository.GetLikesCountAsync(articleId, ct);
     }
 
+    public async Task<Dictionary<Guid, int>> GetLikesCountsByArticleIdsAsync(IReadOnlyCollection<Guid> articleIds,
+        CancellationToken ct)
+    {
+        return await _likesRepository.GetLikesCountsByArticleIdsAsync(articleIds, ct);
+    }
+
     public async Task<bool> HasUserLikedAsync(Guid articleId, ClaimsPrincipal user, CancellationToken ct)
     {
         var userId = GetUserId(user);

@@ -2,8 +2,11 @@ using BackendFungi.Abstractions.Repositories;
 using BackendFungi.Database.Context;
 using BackendFungi.Exceptions.SpecificExceptions;
 using BackendFungi.Models;
+using BackendFungi.Models.Filters;
 using BackendFungi.Models.Other;
 using Microsoft.EntityFrameworkCore;
+using ArticleEntity = BackendFungi.Database.Entities.Article;
+using ParagraphEntity = BackendFungi.Database.Entities.Paragraph;
 
 namespace BackendFungi.Repositories;
 
@@ -69,60 +72,30 @@ public class ArticlesRepository : IArticlesRepository
             .AsNoTracking()
             .ToListAsync(cancellationToken);
 
-        var articles = articleEntities
-            .Select(articleEntity =>
-            {
-                var paragraphs = articleEntity.Paragraphs
-                    .Select(paragraphEntity =>
-                    {
-                        var (paragraph, paragraphError) = Paragraph
-                            .Create(paragraphEntity.Id,
-                                paragraphEntity.ArticleId,
-                                paragraphEntity.ParagraphText,
-                                paragraphEntity.SerialNumber,
-                                paragraphEntity.IsSubtitle);
-
-                        if (!string.IsNullOrEmpty(paragraphError))
-                            throw new IntegrityException($"Incorrect data format in the database, unable to create " +
-                                                         $"a paragraph model: {paragraphError}");
-
-                        return paragraph;
-                    })
-                    .OrderBy(paragraph => paragraph.SerialNumber)
-                    .ToList();
-
-                if (!Enum.TryParse<ArticleStatus>(articleEntity.Status, true, out var status))
-                    throw new IntegrityException($"Incorrect article status in database: {articleEntity.Status}");
-
-                var (article, articleError) = Article
-                    .Create(articleEntity.Id,
-                        articleEntity.Title,
-                        articleEntity.PublishDate,
-                        articleEntity.AuthorString,
-                        articleEntity.HeaderPhotoLink,
-                        articleEntity.ExtraPhotoLinks?.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList(),
-                        paragraphs,
-                        status,
-                        articleEntity.CreatedByUserId,
-                        articleEntity.UpdatedByUserId,
-                        articleEntity.CreatedAt,
-                        articleEntity.UpdatedAt,
-                        articleEntity.SubmittedAt,
-                        articleEntity.PublishedAt,
-                        articleEntity.ReviewedAt,
-                        articleEntity.ReviewedByUserId,
-                        articleEntity.ReviewNote,
-                        articleEntity.ArchivedAt);
-
-                if (!string.IsNullOrEmpty(articleError))
-                    throw new IntegrityException($"Incorrect data format in the database, unable to create an " +
-                                                 $"article model: {articleError}");
-
-                return article;
-            })
+        return articleEntities
+            .Select(MapArticleModel)
             .ToList();
+    }
 
-        return articles;
+    public async Task<List<Article>> GetFilteredPublishedArticles(ArticleFilter? articleFilter, CancellationToken ct)
+    {
+        var utcNow = DateTime.UtcNow;
+
+        var query = _context.Articles
+            .Include(a => a.Paragraphs)
+            .AsNoTracking()
+            .Where(a => a.Status == ArticleStatus.Published.ToString() && a.PublishDate <= utcNow);
+
+        query = ApplyPublishedArticleFilter(query, articleFilter);
+
+        var articleEntities = await query
+            .OrderByDescending(a => a.PublishDate)
+            .ThenBy(a => a.Title)
+            .ToListAsync(ct);
+
+        return articleEntities
+            .Select(MapArticleModel)
+            .ToList();
     }
 
     public async Task<Guid> UpdateArticle(Guid articleId, Article newArticle, CancellationToken cancellationToken)
@@ -266,5 +239,84 @@ public class ArticlesRepository : IArticlesRepository
         await transaction.CommitAsync(ct);
 
         return articleId;
+    }
+
+    private static IQueryable<ArticleEntity> ApplyPublishedArticleFilter(
+        IQueryable<ArticleEntity> query,
+        ArticleFilter? articleFilter)
+    {
+        if (articleFilter is null)
+            return query;
+
+        if (articleFilter.PartOfTitle is not null)
+        {
+            var titlePattern = $"%{articleFilter.PartOfTitle}%";
+            query = query.Where(a => EF.Functions.ILike(a.Title, titlePattern));
+        }
+
+        if (articleFilter.PublishDateFrom is not null)
+            query = query.Where(a => a.PublishDate >= articleFilter.PublishDateFrom);
+
+        if (articleFilter.PublishDateTo is not null)
+            query = query.Where(a => a.PublishDate <= articleFilter.PublishDateTo);
+
+        if (articleFilter.PartOfAuthorString is not null)
+        {
+            var authorPattern = $"%{articleFilter.PartOfAuthorString}%";
+            query = query.Where(a => EF.Functions.ILike(a.AuthorString, authorPattern));
+        }
+
+        return query;
+    }
+
+    private static Article MapArticleModel(ArticleEntity articleEntity)
+    {
+        var paragraphs = articleEntity.Paragraphs
+            .Select(MapParagraphModel)
+            .OrderBy(paragraph => paragraph.SerialNumber)
+            .ToList();
+
+        if (!Enum.TryParse<ArticleStatus>(articleEntity.Status, true, out var status))
+            throw new IntegrityException($"Incorrect article status in database: {articleEntity.Status}");
+
+        var (article, articleError) = Article
+            .Create(articleEntity.Id,
+                articleEntity.Title,
+                articleEntity.PublishDate,
+                articleEntity.AuthorString,
+                articleEntity.HeaderPhotoLink,
+                articleEntity.ExtraPhotoLinks?.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList(),
+                paragraphs,
+                status,
+                articleEntity.CreatedByUserId,
+                articleEntity.UpdatedByUserId,
+                articleEntity.CreatedAt,
+                articleEntity.UpdatedAt,
+                articleEntity.SubmittedAt,
+                articleEntity.PublishedAt,
+                articleEntity.ReviewedAt,
+                articleEntity.ReviewedByUserId,
+                articleEntity.ReviewNote,
+                articleEntity.ArchivedAt);
+
+        if (!string.IsNullOrEmpty(articleError))
+            throw new IntegrityException($"Incorrect data format in the database, unable to create an article model: {articleError}");
+
+        return article;
+    }
+
+    private static Paragraph MapParagraphModel(ParagraphEntity paragraphEntity)
+    {
+        var (paragraph, paragraphError) = Paragraph
+            .Create(paragraphEntity.Id,
+                paragraphEntity.ArticleId,
+                paragraphEntity.ParagraphText,
+                paragraphEntity.SerialNumber,
+                paragraphEntity.IsSubtitle);
+
+        if (!string.IsNullOrEmpty(paragraphError))
+            throw new IntegrityException($"Incorrect data format in the database, unable to create a paragraph model: {paragraphError}");
+
+        return paragraph;
     }
 }

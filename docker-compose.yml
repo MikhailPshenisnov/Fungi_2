@@ -4,15 +4,15 @@ services:
     image: postgres:17
     container_name: fungi-db
     environment:
-      POSTGRES_DB: FungiDB
-      POSTGRES_USER: fungi
-      POSTGRES_PASSWORD: fungi
-      PGPORT: 5531
+      POSTGRES_DB: ${DB_NAME:-FungiDB}
+      POSTGRES_USER: ${DB_USER:-fungi}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-fungi}
+      PGPORT: ${DB_PORT:-5531}
     volumes:
       - pg_fungi_data:/var/lib/postgresql/data
       - ./DBInit:/docker-entrypoint-initdb.d  
     ports:
-      - "5531:5531"
+      - "${DB_PORT:-5531}:${DB_PORT:-5531}"
 
   fungi-backend:
     container_name: fungi-backend
@@ -22,7 +22,10 @@ services:
       - "5000:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
-      - ConnectionStrings__FungiDb=${DB_CONNECTION_STRING}
+      - ConnectionStrings__FungiDbContext=${DB_CONNECTION_STRING:-Host=fungi-db;Port=5531;Database=FungiDB;Username=fungi;Password=fungi}
+      - Jwt__Key=${JWT_KEY:-dev_local_jwt_key_change_me_1234567890}
+      - DataInitialization__DefaultSuperUserUsername=${DEFAULT_SUPERUSER_USERNAME:-superuser}
+      - DataInitialization__DefaultSuperUserPassword=${DEFAULT_SUPERUSER_PASSWORD:-superuser}
     volumes:
       - fungi_backend_avatars:/app/Storage/avatars
       - fungi_backend_articles:/app/Storage/articles

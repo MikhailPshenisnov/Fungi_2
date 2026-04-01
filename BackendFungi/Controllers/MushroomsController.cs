@@ -365,13 +365,15 @@ public class MushroomsController : ControllerBase
         [FromBody] ModerateMushroomRequest request,
         CancellationToken cancellationToken)
     {
-        var user = request.Decision == ModerationDecision.Approve
+        var decision = request.Decision!.Value;
+
+        var user = decision == ModerationDecision.Approve
             ? await _accessCheckService.CheckPermission(HttpContext, PermissionCodes.MushroomsPublish, cancellationToken)
             : await _accessCheckService.CheckPermission(HttpContext, PermissionCodes.MushroomsReview, cancellationToken);
 
         var revision = await _mushroomsService.ModerateMushroomAsync(
             request.RevisionId,
-            request.Decision,
+            decision,
             request.ReviewNote,
             user.Id,
             cancellationToken);

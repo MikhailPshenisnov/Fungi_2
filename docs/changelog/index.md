@@ -2,6 +2,27 @@
 
 ## 2026-04-01
 
+### Backend
+
+- закрыт P0-контракт модерации:
+  - `ModerateArticle` и `ModerateMushroom` принимают `decision` только строкой (`Approve/Reject`);
+  - числовые enum-значения для `decision` отклоняются с `400`.
+- усилен security-контур:
+  - `GetUser` для чужого профиля теперь требует `users.read`;
+  - `Users/TestGetUsers` и `Roles/TestGetRoles` закрыты авторизацией и permission-check.
+- `GetFilteredArticles` переведен на DB-level фильтрацию и публичную выборку без in-memory full-scan.
+- убран N+1 для likesCount статей:
+  - в backend добавлена bulk-агрегация лайков для списка статей.
+- унифицирован контракт ошибок:
+  - `ExceptionDto` расширен полем `errorCode`;
+  - `errorCode` протянут через model validation, exception middleware и HTTP status middleware.
+- добавлен отдельный integration test проект backend:
+  - `xUnit + WebApplicationFactory + PostgreSQL Testcontainers`;
+  - покрыты workflow/RBAC/security/contract/error-regression сценарии.
+- из production-сборки backend исключены файлы `tests/**`, чтобы test project не попадал в `BackendFungi.csproj`.
+- секреты и дефолтные креды удалены из `appsettings*.json`:
+  - заменены на безопасные placeholder-значения с env override.
+
 ### Frontend
 
 - реализован отдельный editor workflow для грибов в rewrite-клиенте:
@@ -37,6 +58,15 @@
   - новые mushroom editor маршруты;
   - permission-guard политика;
   - описание workflow ревизий и модерации грибов.
+- обновлены `README.md`, `.env.example` и `docs/getting-started/index.md`:
+  - запуск через `.env` с backend-secrets/env overrides;
+  - актуализирован список обязательных DB upgrade-скриптов до `5-upgrade-mushrooms-workflow.sql`.
+- `BackendFungi/Dockerfile` переведен на publish только `BackendFungi.csproj` (без публикации test-проектов в runtime-образ).
+- обновлены `docs/backend-api/index.md` и `docs/mobile/index.md`:
+  - string-only `decision` для moderation endpoint-ов;
+  - `errorCode` в контракте ошибок;
+  - security-ограничения для user/test endpoint-ов.
+- синхронизирован `QuickStart/Fungi_api_swagger.json` из live Swagger после P0 backend-фиксов.
 
 ## 2026-03-29
 

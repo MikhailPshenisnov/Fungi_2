@@ -9,11 +9,13 @@ import {
   createDraft,
   deleteMushroomImage,
   getEditorMushroom,
+  moderateMushroom,
   submitForReview,
   updateDraft,
   uploadMushroomImage,
   type EditorMushroomPayload,
   type EditorMushroomRevision,
+  type MushroomModerationDecision,
   type MushroomRevisionStatus
 } from '@features/mushroom-editor';
 import { ApiError } from '@shared/api';
@@ -265,6 +267,9 @@ export function EditorMushroomFormPage({ storybookRevision, storybookSource }: E
   );
   const [reviewNote, setReviewNote] = useState<string | null>(null);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
+  const [publishedLink, setPublishedLink] = useState<string | null>(null);
+  const [moderationNote, setModerationNote] = useState('');
+  const [moderatingAction, setModeratingAction] = useState<MushroomModerationDecision | null>(null);
   const [saveMode, setSaveMode] = useState<SaveMode>('idle');
   const [uploadTarget, setUploadTarget] = useState<UploadTarget>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -289,7 +294,10 @@ export function EditorMushroomFormPage({ storybookRevision, storybookSource }: E
 
   const activePermissions = user?.permissions ?? [];
   const canArchive = hasAnyPermission(activePermissions, [PERMISSION_CODES.mushroomsArchive, PERMISSION_CODES.mushroomsManageAny]);
+  const canReject = hasAnyPermission(activePermissions, [PERMISSION_CODES.mushroomsReview]);
+  const canPublish = hasAnyPermission(activePermissions, [PERMISSION_CODES.mushroomsPublish]);
   const canEditStatus = !routeRevisionId || formState.status === 'Draft' || formState.status === 'Rejected';
+  const canModerateInReview = Boolean(routeRevisionId && formState.status === 'InReview' && (canReject || canPublish));
 
   useEffect(() => {
     if (isHydratedRef.current) {
@@ -599,10 +607,51 @@ export function EditorMushroomFormPage({ storybookRevision, storybookSource }: E
     }
   }
 
+  async function handleModerationAction(decision: MushroomModerationDecision) {
+    if (!token || token === STORYBOOK_TOKEN || !routeRevisionId) {
+      return;
+    }
+
+    if (decision === 'Approve' && !canPublish) {
+      return;
+    }
+
+    if (decision === 'Reject' && !canReject) {
+      return;
+    }
+
+    setFeedbackMessage(null);
+    setPublishedLink(null);
+    setModeratingAction(decision);
+
+    try {
+      const result = await moderateMushroom(routeRevisionId, decision, moderationNote, token);
+      updateField('status', result.status as MushroomRevisionStatus);
+      setReviewNote(moderationNote.trim() || null);
+
+      if (decision === 'Approve' && result.publishedMushroomId) {
+        setPublishedLink(`/mushrooms/${result.publishedMushroomId}`);
+      }
+
+      setFeedbackMessage(decision === 'Approve' ? 'Ревизия одобрена.' : 'Ревизия отклонена.');
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 401) {
+        handleSessionExpired();
+        return;
+      }
+
+      showError(toReadableEditorErrorMessage(error, 'Не удалось применить решение модерации.'), {
+        title: 'Редактор грибов'
+      });
+    } finally {
+      setModeratingAction(null);
+    }
+  }
+
   const previewHeaderUrl = formState.headerPhotoLink.trim();
   const previewExtraPhotoLinks = formState.extraPhotoLinks;
   const previewDoppelgangers = formState.doppelgangerNames;
-  const isBusy = saveMode !== 'idle' || uploadTarget !== null;
+  const isBusy = saveMode !== 'idle' || uploadTarget !== null || moderatingAction !== null;
 
   return (
     <PageLayout>
@@ -627,9 +676,16 @@ export function EditorMushroomFormPage({ storybookRevision, storybookSource }: E
 
         {feedbackMessage ? (
           <Card className={styles.noticeCard}>
-            <Typography variant="bodyS" className={styles.successText}>
-              {feedbackMessage}
-            </Typography>
+            <Stack gap={8}>
+              <Typography variant="bodyS" className={styles.successText}>
+                {feedbackMessage}
+              </Typography>
+              {publishedLink ? (
+                <Link to={publishedLink} className={styles.backLink}>
+                  Открыть опубликованный гриб
+                </Link>
+              ) : null}
+            </Stack>
           </Card>
         ) : null}
 
@@ -886,6 +942,53 @@ export function EditorMushroomFormPage({ storybookRevision, storybookSource }: E
                   </Button>
                 ) : null}
               </div>
+
+              {canModerateInReview ? (
+                <div className={styles.mediaSection}>
+                  <Typography variant="h4">Модерация ревизии</Typography>
+                  <label className={styles.fieldBlock}>
+                    <span className={styles.fieldLabel}>Комментарий модерации</span>
+                    <textarea
+                      className={styles.textarea}
+                      rows={3}
+                      value={moderationNote}
+                      onChange={(event) => setModerationNote(event.target.value)}
+                      placeholder="Причина отклонения или внутреннее замечание"
+                    />
+                  </label>
+
+                  <div className={styles.bottomActions}>
+                    {canPublish ? (
+                      <Button
+                        type="button"
+                        onClick={() => {
+                          void handleModerationAction('Approve');
+                        }}
+                        disabled={isBusy}
+                      >
+                        {moderatingAction === 'Approve' ? 'Одобряем...' : 'Одобрить'}
+                      </Button>
+                    ) : null}
+
+                    {canReject ? (
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={() => {
+                          void handleModerationAction('Reject');
+                        }}
+                        disabled={isBusy}
+                      >
+                        {moderatingAction === 'Reject' ? 'Отклоняем...' : 'Отклонить'}
+                      </Button>
+                    ) : null}
+
+                    <Link to="/editor/mushrooms/review" className={styles.backLink}>
+                      Открыть очередь модерации
+                    </Link>
+                  </div>
+                </div>
+              ) : null}
             </Stack>
           </Card>
 
