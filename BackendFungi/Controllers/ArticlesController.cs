@@ -17,6 +17,10 @@ namespace BackendFungi.Controllers;
 [Route("[controller]/[action]")]
 public class ArticlesController : ControllerBase
 {
+    private const int DefaultPage = 1;
+    private const int DefaultPageSize = 12;
+    private const int MaxPageSize = 100;
+
     private readonly IAccessCheckService _accessCheckService;
     private readonly IArticlesService _articlesService;
     private readonly IArticleLikesService _articleLikesService;
@@ -65,10 +69,33 @@ public class ArticlesController : ControllerBase
         if (!string.IsNullOrEmpty(articleFilterError))
             throw new ConversionException($"Incorrect data format: {articleFilterError}");
 
-        var filteredArticles = await _articlesService.GetFilteredArticlesAsync(articleFilter, cancellationToken);
+        var page = request.Page ?? DefaultPage;
+        var pageSize = request.PageSize ?? DefaultPageSize;
+
+        if (page < 1)
+            throw new ConversionException("Incorrect data format: page must be greater than or equal to 1");
+
+        if (pageSize < 1 || pageSize > MaxPageSize)
+            throw new ConversionException($"Incorrect data format: pageSize must be in range [1; {MaxPageSize}]");
+
+        var sortMode = ParseSortMode(request.Sort);
+
+        var (filteredArticles, totalCount) = await _articlesService.GetFilteredArticlesAsync(
+            articleFilter,
+            page,
+            pageSize,
+            sortMode,
+            cancellationToken);
+
+        var totalPages = Math.Max(1, (int)Math.Ceiling(totalCount / (double)pageSize));
+        var resolvedPage = totalCount == 0 ? DefaultPage : Math.Min(page, totalPages);
 
         var response = new BaseResponse<GetFilteredArticlesResponse>(
-            new GetFilteredArticlesResponse(await MapArticlesToDtoAsync(filteredArticles, cancellationToken)),
+            new GetFilteredArticlesResponse(
+                await MapArticlesToDtoAsync(filteredArticles, cancellationToken),
+                totalCount,
+                resolvedPage,
+                pageSize),
             null);
 
         return Ok(response);
@@ -546,6 +573,20 @@ public class ArticlesController : ControllerBase
             null);
 
         return Ok(response);
+    }
+
+    private static ArticleSortMode ParseSortMode(string? sort)
+    {
+        if (string.IsNullOrWhiteSpace(sort))
+            return ArticleSortMode.Newest;
+
+        return sort.Trim().ToLowerInvariant() switch
+        {
+            "newest" => ArticleSortMode.Newest,
+            "oldest" => ArticleSortMode.Oldest,
+            "likes" => ArticleSortMode.Likes,
+            _ => throw new ConversionException("Incorrect data format: sort must be one of [newest, oldest, likes]")
+        };
     }
 
     private static List<Paragraph> MapParagraphInputs(Guid articleId, List<ArticleParagraphInput> paragraphInputs)

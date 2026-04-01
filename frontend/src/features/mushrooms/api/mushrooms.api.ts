@@ -3,6 +3,9 @@ import { mapMushroom, mapMushrooms, type Mushroom } from '@entities/mushroom';
 
 interface GetFilteredMushroomsApiResult {
   mushrooms: unknown[];
+  totalCount?: number;
+  page?: number;
+  pageSize?: number;
 }
 
 interface GetMushroomApiResult {
@@ -26,6 +29,16 @@ export interface GetFilteredMushroomsParams {
   family?: string;
   eatable?: string;
   redBook?: boolean;
+  page?: number;
+  pageSize?: number;
+  sort?: 'name' | 'likes';
+}
+
+export interface GetFilteredMushroomsResult {
+  mushrooms: Mushroom[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
 }
 
 function buildQueryString(params: GetFilteredMushroomsParams): string {
@@ -47,15 +60,37 @@ function buildQueryString(params: GetFilteredMushroomsParams): string {
     searchParams.set('RedBook', String(params.redBook));
   }
 
+  if (typeof params.page === 'number' && Number.isFinite(params.page)) {
+    searchParams.set('Page', String(Math.max(1, Math.trunc(params.page))));
+  }
+
+  if (typeof params.pageSize === 'number' && Number.isFinite(params.pageSize)) {
+    searchParams.set('PageSize', String(Math.max(1, Math.trunc(params.pageSize))));
+  }
+
+  if (params.sort === 'likes' || params.sort === 'name') {
+    searchParams.set('Sort', params.sort);
+  }
+
   const queryString = searchParams.toString();
   return queryString ? `?${queryString}` : '';
 }
 
-export async function getFilteredMushrooms(params: GetFilteredMushroomsParams): Promise<Mushroom[]> {
+export async function getFilteredMushrooms(params: GetFilteredMushroomsParams): Promise<GetFilteredMushroomsResult> {
   const path = `/Mushrooms/GetFilteredMushrooms${buildQueryString(params)}`;
   const result = await requestJson<GetFilteredMushroomsApiResult>(path, { method: 'GET' });
   const mushrooms = Array.isArray(result.mushrooms) ? result.mushrooms : [];
-  return mapMushrooms(mushrooms as never[]);
+  const mappedMushrooms = mapMushrooms(mushrooms as never[]);
+  const normalizedPageSize = typeof result.pageSize === 'number' && result.pageSize > 0 ? Math.trunc(result.pageSize) : 12;
+  const normalizedTotalCount = typeof result.totalCount === 'number' && result.totalCount >= 0 ? Math.trunc(result.totalCount) : mappedMushrooms.length;
+  const normalizedPage = typeof result.page === 'number' && result.page > 0 ? Math.trunc(result.page) : 1;
+
+  return {
+    mushrooms: mappedMushrooms,
+    totalCount: normalizedTotalCount,
+    page: normalizedPage,
+    pageSize: normalizedPageSize
+  };
 }
 
 export async function getMushroomById(mushroomId: string): Promise<Mushroom> {
@@ -89,4 +124,3 @@ export async function toggleMushroomLike(mushroomId: string, token: string): Pro
 
   return Boolean(result.isLiked);
 }
-

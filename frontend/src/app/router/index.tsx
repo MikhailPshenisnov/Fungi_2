@@ -6,6 +6,7 @@ import { LoginPage } from '@pages/auth/login';
 import { RegisterPage } from '@pages/auth/register';
 import { ProfilePage } from '@pages/profile';
 import { AboutPage } from '@pages/about';
+import { SearchPage } from '@pages/search';
 import { MushroomsPage } from '@pages/mushrooms';
 import { MushroomDetailPage } from '@pages/mushroom-detail';
 import { ArticlesPage } from '@pages/articles';
@@ -76,6 +77,13 @@ const router = createBrowserRouter([
         element: <AboutPage />,
         handle: {
           title: 'О нас'
+        }
+      },
+      {
+        path: '/search',
+        element: <SearchPage />,
+        handle: {
+          title: 'Поиск'
         }
       },
       {

@@ -3,6 +3,9 @@ import { mapArticle, mapArticles, mapEditorArticle, type Article, type EditorArt
 
 interface GetFilteredArticlesApiResult {
   articles: unknown[];
+  totalCount?: number;
+  page?: number;
+  pageSize?: number;
 }
 
 interface GetArticleApiResult {
@@ -94,6 +97,16 @@ export interface PublicArticlesQuery {
   author?: string;
   dateFrom?: string;
   dateTo?: string;
+  page?: number;
+  pageSize?: number;
+  sort?: 'newest' | 'oldest' | 'likes';
+}
+
+export interface PublicArticlesResult {
+  articles: Article[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
 }
 
 function buildPublicArticlesQueryString(query: PublicArticlesQuery): string {
@@ -113,6 +126,18 @@ function buildPublicArticlesQueryString(query: PublicArticlesQuery): string {
 
   if (query.dateTo) {
     searchParams.set('PublishDateTo', query.dateTo);
+  }
+
+  if (typeof query.page === 'number' && Number.isFinite(query.page)) {
+    searchParams.set('Page', String(Math.max(1, Math.trunc(query.page))));
+  }
+
+  if (typeof query.pageSize === 'number' && Number.isFinite(query.pageSize)) {
+    searchParams.set('PageSize', String(Math.max(1, Math.trunc(query.pageSize))));
+  }
+
+  if (query.sort === 'likes' || query.sort === 'oldest' || query.sort === 'newest') {
+    searchParams.set('Sort', query.sort);
   }
 
   const queryString = searchParams.toString();
@@ -155,11 +180,25 @@ function normalizeMediaUrl(value: string): string {
   return toApiUrl(`/${trimmedValue}`);
 }
 
-export async function getPublicArticles(query: PublicArticlesQuery): Promise<Article[]> {
+export async function getPublicArticles(query: PublicArticlesQuery): Promise<PublicArticlesResult> {
   const path = `/Articles/GetFilteredArticles${buildPublicArticlesQueryString(query)}`;
   const result = await requestJson<GetFilteredArticlesApiResult>(path, { method: 'GET' });
   const articles = Array.isArray(result.articles) ? result.articles : [];
-  return mapArticles(articles as never[]);
+
+  const mappedArticles = mapArticles(articles as never[]);
+  const normalizedPageSize = typeof result.pageSize === 'number' && result.pageSize > 0 ? Math.trunc(result.pageSize) : 12;
+  const normalizedTotalCount = typeof result.totalCount === 'number' && result.totalCount >= 0 ? Math.trunc(result.totalCount) : mappedArticles.length;
+  const normalizedPage =
+    typeof result.page === 'number' && result.page > 0
+      ? Math.trunc(result.page)
+      : 1;
+
+  return {
+    articles: mappedArticles,
+    totalCount: normalizedTotalCount,
+    page: normalizedPage,
+    pageSize: normalizedPageSize
+  };
 }
 
 export async function getPublicArticleById(articleId: string): Promise<Article> {

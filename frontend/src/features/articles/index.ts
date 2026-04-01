@@ -18,7 +18,8 @@ export {
   uploadArticleImage,
   type EditorArticlePayload,
   type EditorParagraphInput,
-  type PublicArticlesQuery
+  type PublicArticlesQuery,
+  type PublicArticlesResult
 } from './api/articles.api';
 export {
   DEFAULT_ARTICLE_CATALOG_QUERY,

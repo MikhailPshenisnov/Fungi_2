@@ -77,25 +77,73 @@ public class ArticlesRepository : IArticlesRepository
             .ToList();
     }
 
-    public async Task<List<Article>> GetFilteredPublishedArticles(ArticleFilter? articleFilter, CancellationToken ct)
+    public async Task<(List<Article> Articles, int TotalCount)> GetFilteredPublishedArticles(
+        ArticleFilter? articleFilter,
+        int page,
+        int pageSize,
+        ArticleSortMode sortMode,
+        CancellationToken ct)
     {
         var utcNow = DateTime.UtcNow;
 
-        var query = _context.Articles
-            .Include(a => a.Paragraphs)
+        var filteredQuery = _context.Articles
             .AsNoTracking()
             .Where(a => a.Status == ArticleStatus.Published.ToString() && a.PublishDate <= utcNow);
 
-        query = ApplyPublishedArticleFilter(query, articleFilter);
+        filteredQuery = ApplyPublishedArticleFilter(filteredQuery, articleFilter);
 
-        var articleEntities = await query
-            .OrderByDescending(a => a.PublishDate)
-            .ThenBy(a => a.Title)
+        var totalCount = await filteredQuery.CountAsync(ct);
+        if (totalCount == 0)
+            return (new List<Article>(), 0);
+
+        IQueryable<Guid> orderedIdsQuery = sortMode switch
+        {
+            ArticleSortMode.Likes => filteredQuery
+                .Select(a => new
+                {
+                    a.Id,
+                    a.Title,
+                    a.PublishDate,
+                    LikesCount = _context.ArticleLikes.Count(x => x.ArticleId == a.Id)
+                })
+                .OrderByDescending(x => x.LikesCount)
+                .ThenByDescending(x => x.PublishDate)
+                .ThenBy(x => x.Title)
+                .Select(x => x.Id),
+            ArticleSortMode.Oldest => filteredQuery
+                .OrderBy(a => a.PublishDate)
+                .ThenBy(a => a.Title)
+                .Select(a => a.Id),
+            _ => filteredQuery
+                .OrderByDescending(a => a.PublishDate)
+                .ThenBy(a => a.Title)
+                .Select(a => a.Id)
+        };
+
+        var ids = await orderedIdsQuery
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync(ct);
 
-        return articleEntities
-            .Select(MapArticleModel)
-            .ToList();
+        if (ids.Count == 0)
+            return (new List<Article>(), totalCount);
+
+        var articleEntities = await _context.Articles
+            .Include(a => a.Paragraphs)
+            .AsNoTracking()
+            .Where(a => ids.Contains(a.Id))
+            .ToListAsync(ct);
+
+        var articleById = articleEntities.ToDictionary(x => x.Id);
+        var orderedResult = new List<Article>(ids.Count);
+
+        foreach (var id in ids)
+        {
+            if (articleById.TryGetValue(id, out var articleEntity))
+                orderedResult.Add(MapArticleModel(articleEntity));
+        }
+
+        return (orderedResult, totalCount);
     }
 
     public async Task<Guid> UpdateArticle(Guid articleId, Article newArticle, CancellationToken cancellationToken)

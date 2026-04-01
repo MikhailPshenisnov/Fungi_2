@@ -28,6 +28,7 @@ interface MushroomApi {
   headerPhotoLink: string;
   extraPhotoLinks?: string[] | null;
   doppelgangers?: MushroomDoppelgangerApi[] | null;
+  likesCount?: number;
 }
 
 interface EditorMushroomDto {
@@ -136,7 +137,8 @@ export function mapMushroom(apiValue: MushroomApi): Mushroom {
     description: apiValue.description,
     headerPhotoLink: apiValue.headerPhotoLink,
     extraPhotoLinks: Array.isArray(apiValue.extraPhotoLinks) ? apiValue.extraPhotoLinks.filter(Boolean) : [],
-    doppelgangers: Array.isArray(apiValue.doppelgangers) ? apiValue.doppelgangers.map(mapDoppelganger) : []
+    doppelgangers: Array.isArray(apiValue.doppelgangers) ? apiValue.doppelgangers.map(mapDoppelganger) : [],
+    likesCount: typeof apiValue.likesCount === 'number' ? apiValue.likesCount : 0
   };
 }
 

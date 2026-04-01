@@ -10,7 +10,7 @@ import {
   toggleMushroomLike
 } from '@features/mushrooms';
 import { ApiError } from '@shared/api';
-import { Button, Card, Container, Stack, Tag, Typography, useToast } from '@shared/ui';
+import { Button, Card, Container, ContentState, Stack, Tag, Typography, useToast } from '@shared/ui';
 import { PageLayout } from '@widgets/layout';
 import styles from './MushroomDetailPage.module.css';
 
@@ -241,17 +241,17 @@ export function MushroomDetailPage({ mushroomId: mushroomIdProp }: MushroomDetai
     return (
       <PageLayout>
         <Container size="lg" className={styles.container}>
-          <Card className={styles.stateCard}>
-            <Stack gap={10}>
-              <Typography variant="h4">Некорректный идентификатор гриба</Typography>
-              <Typography variant="bodyS" className={styles.stateText}>
-                Проверьте адрес страницы и попробуйте снова.
-              </Typography>
+          <ContentState
+            tone="error"
+            className={styles.stateCard}
+            title="Некорректный идентификатор гриба"
+            description="Проверьте адрес страницы и попробуйте снова."
+            action={
               <Link to="/mushrooms" className={styles.backLinkButton}>
                 Вернуться в каталог
               </Link>
-            </Stack>
-          </Card>
+            }
+          />
         </Container>
       </PageLayout>
     );
@@ -278,20 +278,20 @@ export function MushroomDetailPage({ mushroomId: mushroomIdProp }: MushroomDetai
         ) : null}
 
         {mushroomQuery.isError ? (
-          <Card className={styles.stateCard}>
-            <Stack gap={10}>
-              <Typography variant="h4">Карточка временно недоступна</Typography>
-              <Typography variant="bodyS" className={styles.stateText}>
-                Попробуйте повторить запрос чуть позже.
-              </Typography>
+          <ContentState
+            tone="error"
+            className={styles.stateCard}
+            title="Карточка временно недоступна"
+            description="Попробуйте повторить запрос чуть позже."
+            action={
               <div className={styles.stateActions}>
                 <Button onClick={() => mushroomQuery.refetch()}>Повторить</Button>
                 <Link to={backToPath} className={styles.backLinkButton}>
                   К каталогу
                 </Link>
               </div>
-            </Stack>
-          </Card>
+            }
+          />
         ) : null}
 
         {!mushroomQuery.isLoading && !mushroomQuery.isError && mushroom ? (
@@ -445,11 +445,11 @@ export function MushroomDetailPage({ mushroomId: mushroomIdProp }: MushroomDetai
                   })}
                 </div>
               ) : (
-                <Card className={styles.stateCard}>
-                  <Typography variant="bodyS" className={styles.stateText}>
-                    Для этого гриба пока нет дополнительных фотографий.
-                  </Typography>
-                </Card>
+                <ContentState
+                  tone="empty"
+                  className={styles.stateCard}
+                  title="Для этого гриба пока нет дополнительных фотографий."
+                />
               )}
             </section>
           </>

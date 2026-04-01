@@ -80,7 +80,19 @@ export function AppHeader({ onLoginClick, onSignupClick, onProfileClick, onSearc
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const query = String(formData.get('query') ?? '').trim();
-    onSearchSubmit?.(query);
+
+    if (onSearchSubmit) {
+      onSearchSubmit(query);
+      return;
+    }
+
+    const searchParams = new URLSearchParams();
+    if (query.length > 0) {
+      searchParams.set('q', query);
+    }
+
+    const serialized = searchParams.toString();
+    navigate(serialized.length > 0 ? `/search?${serialized}` : '/search');
   }
 
   function handleLoginClick() {

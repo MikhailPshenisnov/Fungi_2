@@ -29,6 +29,7 @@ export interface Mushroom {
   headerPhotoLink: string;
   extraPhotoLinks: string[];
   doppelgangers: MushroomDoppelganger[];
+  likesCount: number;
 }
 
 export interface MushroomRevision {

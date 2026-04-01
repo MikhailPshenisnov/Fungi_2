@@ -19,7 +19,7 @@ import {
   type MushroomRevisionStatus
 } from '@features/mushroom-editor';
 import { ApiError } from '@shared/api';
-import { Button, Card, Container, Checkbox, Input, Stack, Tag, Typography, useToast } from '@shared/ui';
+import { Button, Card, Container, Checkbox, ContentState, Input, Stack, Tag, Typography, useToast } from '@shared/ui';
 import { PageLayout } from '@widgets/layout';
 import styles from './EditorMushroomFormPage.module.css';
 
@@ -690,9 +690,7 @@ export function EditorMushroomFormPage({ storybookRevision, storybookSource }: E
         ) : null}
 
         {editorRevisionQuery.isLoading || sourceMushroomQuery.isLoading ? (
-          <Card className={styles.stateCard}>
-            <Typography variant="body">Загружаем ревизию гриба...</Typography>
-          </Card>
+          <ContentState tone="loading" className={styles.stateCard} title="Загружаем ревизию гриба..." />
         ) : null}
 
         <div className={styles.workspace}>

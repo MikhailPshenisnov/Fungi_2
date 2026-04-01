@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useSession } from '@entities/session';
 import { getModerationQueue, moderateArticle } from '@features/articles';
 import { ApiError } from '@shared/api';
-import { Button, Card, Container, Stack, Typography, useToast } from '@shared/ui';
+import { Button, Card, Container, ContentState, Stack, Typography, useToast } from '@shared/ui';
 import { PageLayout } from '@widgets/layout';
 import styles from './EditorReviewPage.module.css';
 
@@ -127,15 +127,15 @@ export function EditorReviewPage() {
         ) : null}
 
         {queueQuery.isLoading ? (
-          <Card className={styles.stateCard}>
-            <Typography variant="body">Загружаем очередь модерации...</Typography>
-          </Card>
+          <ContentState tone="loading" className={styles.stateCard} title="Загружаем очередь модерации..." />
         ) : null}
 
         {queueQuery.isError ? (
-          <Card className={styles.stateCard}>
-            <Stack gap={10}>
-              <Typography variant="h4">Очередь модерации временно недоступна</Typography>
+          <ContentState
+            tone="error"
+            className={styles.stateCard}
+            title="Очередь модерации временно недоступна"
+            action={
               <Button
                 onClick={() => {
                   void queueQuery.refetch();
@@ -143,8 +143,8 @@ export function EditorReviewPage() {
               >
                 Повторить
               </Button>
-            </Stack>
-          </Card>
+            }
+          />
         ) : null}
 
         {!queueQuery.isLoading && !queueQuery.isError ? (
@@ -211,11 +211,7 @@ export function EditorReviewPage() {
                 );
               })
             ) : (
-              <Card className={styles.stateCard}>
-                <Typography variant="bodyS" className={styles.metaText}>
-                  Очередь модерации сейчас пустая.
-                </Typography>
-              </Card>
+              <ContentState tone="empty" className={styles.stateCard} title="Очередь модерации сейчас пустая." />
             )}
           </div>
         ) : null}

@@ -20,7 +20,7 @@ import {
 } from '@features/mushroom-editor';
 import { ApiError } from '@shared/api';
 import { PageLayout } from '@widgets/layout';
-import { Button, Card, Container, Stack, Tag, Typography, useToast } from '@shared/ui';
+import { Button, Card, Container, ContentState, Stack, Tag, Typography, useToast } from '@shared/ui';
 import styles from './ProfilePage.module.css';
 
 type AvatarStatus = 'idle' | 'uploading' | 'success';
@@ -806,21 +806,23 @@ export function ProfilePage({ section }: ProfilePageProps) {
                 isArticlePreviewTab ? (
                   <div className={styles.editorTilesSection}>
                     {articlePreviewQuery.isLoading ? (
-                      <Typography variant="caption" className={styles.placeholderEmpty}>
-                        {articlePreviewScope === 'moderation'
-                          ? 'Загружаем очередь модерации...'
-                          : 'Загружаем статьи...'}
-                      </Typography>
+                      <ContentState
+                        tone="loading"
+                        className={styles.editorStateCard}
+                        title={articlePreviewScope === 'moderation' ? 'Загружаем очередь модерации...' : 'Загружаем статьи...'}
+                      />
                     ) : null}
 
                     {articlePreviewQuery.isError && !(articlePreviewQuery.error instanceof ApiError && articlePreviewQuery.error.status === 401) ? (
-                      <Card className={styles.editorStateCard}>
-                        <Stack gap={10}>
-                          <Typography variant="bodyS" className={styles.placeholderEmpty}>
-                            {articlePreviewScope === 'moderation'
-                              ? 'Не удалось загрузить очередь модерации.'
-                              : 'Не удалось загрузить список статей.'}
-                          </Typography>
+                      <ContentState
+                        tone="error"
+                        className={styles.editorStateCard}
+                        title={
+                          articlePreviewScope === 'moderation'
+                            ? 'Не удалось загрузить очередь модерации.'
+                            : 'Не удалось загрузить список статей.'
+                        }
+                        action={
                           <Button
                             type="button"
                             variant="secondary"
@@ -830,8 +832,8 @@ export function ProfilePage({ section }: ProfilePageProps) {
                           >
                             Повторить
                           </Button>
-                        </Stack>
-                      </Card>
+                        }
+                      />
                     ) : null}
 
                     {!articlePreviewQuery.isLoading && !articlePreviewQuery.isError ? (
@@ -859,11 +861,11 @@ export function ProfilePage({ section }: ProfilePageProps) {
                           ))}
                         </div>
                       ) : (
-                        <Card className={styles.editorStateCard}>
-                          <Typography variant="caption" className={styles.placeholderEmpty}>
-                            {activeTab.emptyState ?? 'Пока нет данных для отображения.'}
-                          </Typography>
-                        </Card>
+                        <ContentState
+                          tone="empty"
+                          className={styles.editorStateCard}
+                          title={activeTab.emptyState ?? 'Пока нет данных для отображения.'}
+                        />
                       )
                     ) : null}
 
@@ -883,22 +885,28 @@ export function ProfilePage({ section }: ProfilePageProps) {
                 ) : isMushroomPreviewTab ? (
                   <div className={styles.editorTilesSection}>
                     {mushroomPreviewQuery.isLoading ? (
-                      <Typography variant="caption" className={styles.placeholderEmpty}>
-                        {mushroomPreviewScope === 'moderation'
-                          ? 'Загружаем очередь модерации грибов...'
-                          : 'Загружаем грибы...'}
-                      </Typography>
+                      <ContentState
+                        tone="loading"
+                        className={styles.editorStateCard}
+                        title={
+                          mushroomPreviewScope === 'moderation'
+                            ? 'Загружаем очередь модерации грибов...'
+                            : 'Загружаем грибы...'
+                        }
+                      />
                     ) : null}
 
                     {mushroomPreviewQuery.isError &&
                     !(mushroomPreviewQuery.error instanceof ApiError && mushroomPreviewQuery.error.status === 401) ? (
-                      <Card className={styles.editorStateCard}>
-                        <Stack gap={10}>
-                          <Typography variant="bodyS" className={styles.placeholderEmpty}>
-                            {mushroomPreviewScope === 'moderation'
-                              ? 'Не удалось загрузить очередь модерации грибов.'
-                              : 'Не удалось загрузить список грибов.'}
-                          </Typography>
+                      <ContentState
+                        tone="error"
+                        className={styles.editorStateCard}
+                        title={
+                          mushroomPreviewScope === 'moderation'
+                            ? 'Не удалось загрузить очередь модерации грибов.'
+                            : 'Не удалось загрузить список грибов.'
+                        }
+                        action={
                           <Button
                             type="button"
                             variant="secondary"
@@ -908,8 +916,8 @@ export function ProfilePage({ section }: ProfilePageProps) {
                           >
                             Повторить
                           </Button>
-                        </Stack>
-                      </Card>
+                        }
+                      />
                     ) : null}
 
                     {!mushroomPreviewQuery.isLoading && !mushroomPreviewQuery.isError ? (
@@ -969,11 +977,11 @@ export function ProfilePage({ section }: ProfilePageProps) {
                           })}
                         </div>
                       ) : (
-                        <Card className={styles.editorStateCard}>
-                          <Typography variant="caption" className={styles.placeholderEmpty}>
-                            {activeTab.emptyState ?? 'Пока нет данных для отображения.'}
-                          </Typography>
-                        </Card>
+                        <ContentState
+                          tone="empty"
+                          className={styles.editorStateCard}
+                          title={activeTab.emptyState ?? 'Пока нет данных для отображения.'}
+                        />
                       )
                     ) : null}
 

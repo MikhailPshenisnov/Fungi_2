@@ -5,7 +5,7 @@ export {
   hasUserLikedMushroom,
   toggleMushroomLike
 } from './api/mushrooms.api';
-export type { GetFilteredMushroomsParams } from './api/mushrooms.api';
+export type { GetFilteredMushroomsParams, GetFilteredMushroomsResult } from './api/mushrooms.api';
 
 export {
   DEFAULT_MUSHROOM_CATALOG_QUERY,
@@ -21,4 +21,3 @@ export { mapWithConcurrency } from './model/promise-pool';
 export { useDebouncedValue } from './model/useDebouncedValue';
 
 export { AuthRequiredPopup } from './ui/AuthRequiredPopup';
-

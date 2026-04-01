@@ -17,7 +17,7 @@ import {
 } from '@features/articles';
 import { getFilteredMushrooms, getMushroomById, useDebouncedValue } from '@features/mushrooms';
 import { ApiError } from '@shared/api';
-import { Button, Card, Container, Input, Stack, Typography, useToast } from '@shared/ui';
+import { Button, Card, Container, ContentState, Input, Stack, Typography, useToast } from '@shared/ui';
 import { PageLayout } from '@widgets/layout';
 import styles from './EditorArticleFormPage.module.css';
 
@@ -185,12 +185,12 @@ export function EditorArticleFormPage() {
   const debouncedMushroomSearchInput = useDebouncedValue(mushroomSearchInput, 350);
   const normalizedMushroomSearchInput = debouncedMushroomSearchInput.trim();
 
-  const mushroomSearchQuery = useQuery({
+  const mushroomSearchQuery = useQuery<LinkedMushroomOption[]>({
     queryKey: ['editor', 'mushroom-search', normalizedMushroomSearchInput],
     enabled: normalizedMushroomSearchInput.length >= 2,
     queryFn: async () => {
-      const mushrooms = await getFilteredMushrooms({ partOfName: normalizedMushroomSearchInput });
-      return mushrooms.slice(0, 20).map(mapMushroomToLinkedOption);
+      const result = await getFilteredMushrooms({ partOfName: normalizedMushroomSearchInput });
+      return result.mushrooms.slice(0, 20).map(mapMushroomToLinkedOption);
     }
   });
 
@@ -757,9 +757,7 @@ export function EditorArticleFormPage() {
         ) : null}
 
         {editorArticleQuery.isLoading ? (
-          <Card>
-            <Typography variant="body">Загружаем статью...</Typography>
-          </Card>
+          <ContentState tone="loading" title="Загружаем статью..." />
         ) : null}
 
         <div className={styles.workspace}>

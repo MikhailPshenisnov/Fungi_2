@@ -9,9 +9,7 @@ import {
   getPublicArticles,
   hasUserLikedArticle,
   parseArticleCatalogQuery,
-  paginateArticles,
   serializeArticleCatalogQuery,
-  sortArticles,
   toggleArticleLike,
   DEFAULT_ARTICLE_CATALOG_QUERY,
   type ArticleCatalogQueryState,
@@ -20,7 +18,7 @@ import {
 import { useDebouncedValue } from '@features/mushrooms';
 import { ApiError } from '@shared/api';
 import { favoriteIcon } from '@shared/assets/icons';
-import { Button, Card, Container, Input, Select, Stack, Tag, Typography, useToast } from '@shared/ui';
+import { Button, Card, Container, ContentState, Input, Select, Stack, Tag, Typography, useToast } from '@shared/ui';
 import { PageLayout } from '@widgets/layout';
 import styles from './ArticlesPage.module.css';
 
@@ -91,18 +89,23 @@ export function ArticlesPage() {
   const debouncedSearch = useDebouncedValue(searchDraft, 400);
 
   const articlesQuery = useQuery({
-    queryKey: ['articles', 'public', queryState.q, queryState.author],
+    queryKey: ['articles', 'public', queryState.q, queryState.author, queryState.sort, queryState.page, PAGE_SIZE],
     queryFn: () =>
       getPublicArticles({
         q: queryState.q || undefined,
-        author: queryState.author || undefined
+        author: queryState.author || undefined,
+        sort: queryState.sort,
+        page: queryState.page,
+        pageSize: PAGE_SIZE
       })
   });
 
-  const articles = useMemo(() => articlesQuery.data ?? [], [articlesQuery.data]);
-  const sortedArticles = useMemo(() => sortArticles(articles, queryState.sort), [articles, queryState.sort]);
-  const paginatedResult = useMemo(() => paginateArticles(sortedArticles, queryState.page, PAGE_SIZE), [sortedArticles, queryState.page]);
-  const pageArticles = paginatedResult.items;
+  const articlesResult = articlesQuery.data;
+  const pageArticles = useMemo(() => articlesResult?.articles ?? [], [articlesResult?.articles]);
+  const totalCount = articlesResult?.totalCount ?? 0;
+  const resolvedPage = articlesResult?.page ?? queryState.page;
+  const resolvedPageSize = articlesResult?.pageSize ?? PAGE_SIZE;
+  const totalPages = Math.max(1, Math.ceil(totalCount / Math.max(1, resolvedPageSize)));
   const pageArticleIds = useMemo(() => pageArticles.map((article) => article.id), [pageArticles]);
 
   const hasLikedQuery = useQuery({
@@ -166,10 +169,29 @@ export function ArticlesPage() {
   }, [debouncedSearch, queryState.q, updateQueryState]);
 
   useEffect(() => {
-    if (queryState.page !== paginatedResult.page) {
-      updateQueryState({ page: paginatedResult.page });
+    if (queryState.page !== resolvedPage) {
+      updateQueryState({ page: resolvedPage });
     }
-  }, [paginatedResult.page, queryState.page, updateQueryState]);
+  }, [queryState.page, resolvedPage, updateQueryState]);
+
+  useEffect(() => {
+    setLikeOverridesById((previousState) => {
+      const allowedIds = new Set(pageArticleIds);
+      const nextState: Record<string, { likesCount: number; isLiked: boolean }> = {};
+      let isChanged = false;
+
+      for (const [articleId, value] of Object.entries(previousState)) {
+        if (allowedIds.has(articleId)) {
+          nextState[articleId] = value;
+          continue;
+        }
+
+        isChanged = true;
+      }
+
+      return isChanged ? nextState : previousState;
+    });
+  }, [pageArticleIds]);
 
   useEffect(() => {
     if (!hasLikedQuery.error) {
@@ -302,11 +324,11 @@ export function ArticlesPage() {
   }
 
   function handleGoToPreviousPage() {
-    updateQueryState({ page: Math.max(1, queryState.page - 1) });
+    updateQueryState({ page: Math.max(1, resolvedPage - 1) });
   }
 
   function handleGoToNextPage() {
-    updateQueryState({ page: Math.min(paginatedResult.totalPages, queryState.page + 1) });
+    updateQueryState({ page: Math.min(totalPages, resolvedPage + 1) });
   }
 
   return (
@@ -356,28 +378,28 @@ export function ArticlesPage() {
           </div>
         </Card>
 
+        <Typography variant="bodyS" className={styles.stateText}>
+          Найдено материалов: {totalCount}
+        </Typography>
+
         {articlesQuery.isLoading ? (
           <div className={styles.loadingState}>Загружаем публикации...</div>
         ) : null}
 
         {articlesQuery.isError ? (
-          <Card className={styles.stateCard}>
-            <Stack gap={12}>
-              <Typography variant="h4">Каталог статей временно недоступен</Typography>
-              <Typography variant="bodyS" className={styles.stateText}>
-                Попробуйте повторить запрос чуть позже.
-              </Typography>
-              <Button onClick={() => articlesQuery.refetch()}>Повторить</Button>
-            </Stack>
-          </Card>
+          <ContentState
+            tone="error"
+            className={styles.stateCard}
+            title="Каталог статей временно недоступен"
+            description="Попробуйте повторить запрос чуть позже."
+            action={<Button onClick={() => articlesQuery.refetch()}>Повторить</Button>}
+          />
         ) : null}
 
         {!articlesQuery.isLoading && !articlesQuery.isError ? (
           <>
             {pageArticles.length === 0 ? (
-              <Card className={styles.stateCard}>
-                <Typography variant="body">По вашему запросу статьи не найдены.</Typography>
-              </Card>
+              <ContentState tone="empty" className={styles.stateCard} title="По вашему запросу статьи не найдены." />
             ) : (
               <div className={styles.grid}>
                 {pageArticles.map((article) => {
@@ -452,19 +474,15 @@ export function ArticlesPage() {
               </div>
             )}
 
-            {paginatedResult.totalPages > 1 ? (
+            {totalPages > 1 ? (
               <div className={styles.pagination}>
-                <Button variant="secondary" onClick={handleGoToPreviousPage} disabled={queryState.page <= 1}>
+                <Button variant="secondary" onClick={handleGoToPreviousPage} disabled={resolvedPage <= 1}>
                   Назад
                 </Button>
                 <Typography variant="bodyS">
-                  Страница {queryState.page} из {paginatedResult.totalPages}
+                  Страница {resolvedPage} из {totalPages}
                 </Typography>
-                <Button
-                  variant="secondary"
-                  onClick={handleGoToNextPage}
-                  disabled={queryState.page >= paginatedResult.totalPages}
-                >
+                <Button variant="secondary" onClick={handleGoToNextPage} disabled={resolvedPage >= totalPages}>
                   Вперёд
                 </Button>
               </div>

@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useSession, hasPermission, PERMISSION_CODES } from '@entities/session';
 import { getModerationQueue, moderateMushroom, type EditorMushroomRevision, type MushroomModerationDecision } from '@features/mushroom-editor';
 import { ApiError } from '@shared/api';
-import { Button, Card, Container, Stack, Tag, Typography, useToast } from '@shared/ui';
+import { Button, Card, Container, ContentState, Stack, Tag, Typography, useToast } from '@shared/ui';
 import { PageLayout } from '@widgets/layout';
 import styles from './EditorMushroomReviewPage.module.css';
 
@@ -180,15 +180,15 @@ export function EditorMushroomReviewPage({ storybookQueue }: EditorMushroomRevie
         ) : null}
 
         {queueQuery.isLoading ? (
-          <Card className={styles.stateCard}>
-            <Typography variant="body">Загружаем очередь модерации...</Typography>
-          </Card>
+          <ContentState tone="loading" className={styles.stateCard} title="Загружаем очередь модерации..." />
         ) : null}
 
         {queueQuery.isError ? (
-          <Card className={styles.stateCard}>
-            <Stack gap={10}>
-              <Typography variant="h4">Очередь модерации временно недоступна</Typography>
+          <ContentState
+            tone="error"
+            className={styles.stateCard}
+            title="Очередь модерации временно недоступна"
+            action={
               <Button
                 type="button"
                 variant="secondary"
@@ -198,8 +198,8 @@ export function EditorMushroomReviewPage({ storybookQueue }: EditorMushroomRevie
               >
                 Повторить
               </Button>
-            </Stack>
-          </Card>
+            }
+          />
         ) : null}
 
         {!queueQuery.isLoading && !queueQuery.isError ? (
@@ -281,11 +281,7 @@ export function EditorMushroomReviewPage({ storybookQueue }: EditorMushroomRevie
               })}
             </div>
           ) : (
-            <Card className={styles.stateCard}>
-              <Typography variant="bodyS" className={styles.metaText}>
-                Очередь модерации сейчас пустая.
-              </Typography>
-            </Card>
+            <ContentState tone="empty" className={styles.stateCard} title="Очередь модерации сейчас пустая." />
           )
         ) : null}
       </Container>

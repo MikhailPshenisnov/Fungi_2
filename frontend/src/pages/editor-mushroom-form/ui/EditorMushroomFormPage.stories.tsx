@@ -82,7 +82,8 @@ const storybookSource: Mushroom = {
   description: 'Пример источника для новой ревизии.',
   headerPhotoLink: 'https://example.com/source.jpg',
   extraPhotoLinks: ['https://example.com/source-extra.jpg'],
-  doppelgangers: []
+  doppelgangers: [],
+  likesCount: 0
 };
 
 function renderPage() {

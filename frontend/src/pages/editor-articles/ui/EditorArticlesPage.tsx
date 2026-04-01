@@ -5,7 +5,7 @@ import type { Article } from '@entities/article';
 import { useSession } from '@entities/session';
 import { archiveArticle, getMyDrafts, getMyMaterials, submitForReview } from '@features/articles';
 import { ApiError } from '@shared/api';
-import { Button, Card, Container, Stack, Tag, Typography, useToast } from '@shared/ui';
+import { Button, Card, Container, ContentState, Stack, Tag, Typography, useToast } from '@shared/ui';
 import { PageLayout } from '@widgets/layout';
 import styles from './EditorArticlesPage.module.css';
 
@@ -211,15 +211,15 @@ export function EditorArticlesPage() {
         </div>
 
         {articlesQuery.isLoading ? (
-          <Card className={styles.stateCard}>
-            <Typography variant="body">Загружаем список статей...</Typography>
-          </Card>
+          <ContentState tone="loading" className={styles.stateCard} title="Загружаем список статей..." />
         ) : null}
 
         {articlesQuery.isError ? (
-          <Card className={styles.stateCard}>
-            <Stack gap={10}>
-              <Typography variant="h4">Список материалов временно недоступен</Typography>
+          <ContentState
+            tone="error"
+            className={styles.stateCard}
+            title="Список материалов временно недоступен"
+            action={
               <Button
                 onClick={() => {
                   void articlesQuery.refetch();
@@ -227,8 +227,8 @@ export function EditorArticlesPage() {
               >
                 Повторить
               </Button>
-            </Stack>
-          </Card>
+            }
+          />
         ) : null}
 
         {!articlesQuery.isLoading && !articlesQuery.isError ? (
@@ -287,13 +287,15 @@ export function EditorArticlesPage() {
                 );
               })
             ) : (
-              <Card className={styles.stateCard}>
-                <Typography variant="bodyS" className={styles.stateText}>
-                  {scope === 'drafts'
+              <ContentState
+                tone="empty"
+                className={styles.stateCard}
+                title={
+                  scope === 'drafts'
                     ? 'Пока нет черновиков. Создайте первую статью.'
-                    : 'Пока нет опубликованных/архивных материалов.'}
-                </Typography>
-              </Card>
+                    : 'Пока нет опубликованных или архивных материалов.'
+                }
+              />
             )}
           </div>
         ) : null}

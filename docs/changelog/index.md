@@ -25,6 +25,14 @@
 
 ### Frontend
 
+- закрыт frontend P0 по каталогам:
+  - `/articles` и `/mushrooms` переведены на серверную пагинацию/сортировку (`page/pageSize/sort/totalCount`);
+  - удален client-side full-scan и локальная сортировка больших списков.
+- добавлен рабочий глобальный поиск из `AppHeader`:
+  - submit в header ведет на `/search?q=...`;
+  - новая страница `/search` объединяет результаты статей и грибов.
+- введен общий UI-компонент состояний `ContentState` и применен в ключевых экранах
+  (каталоги, детали, профильные preview, editor-списки/очереди/формы).
 - реализован отдельный editor workflow для грибов в rewrite-клиенте:
   - `/editor/mushrooms` (`scope=drafts|materials`);
   - `/editor/mushrooms/new`;

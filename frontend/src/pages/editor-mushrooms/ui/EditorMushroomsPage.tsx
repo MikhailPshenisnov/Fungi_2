@@ -11,7 +11,7 @@ import {
   type MushroomRevisionStatus
 } from '@features/mushroom-editor';
 import { ApiError } from '@shared/api';
-import { Button, Card, Container, Stack, Tag, Typography, useToast } from '@shared/ui';
+import { Button, Card, Container, ContentState, Stack, Tag, Typography, useToast } from '@shared/ui';
 import { PageLayout } from '@widgets/layout';
 import styles from './EditorMushroomsPage.module.css';
 
@@ -235,15 +235,15 @@ export function EditorMushroomsPage({ storybookRevisions }: EditorMushroomsPageP
         </div>
 
         {revisionsQuery.isLoading ? (
-          <Card className={styles.stateCard}>
-            <Typography variant="body">Загружаем список ревизий...</Typography>
-          </Card>
+          <ContentState tone="loading" className={styles.stateCard} title="Загружаем список ревизий..." />
         ) : null}
 
         {revisionsQuery.isError ? (
-          <Card className={styles.stateCard}>
-            <Stack gap={10}>
-              <Typography variant="h4">Список ревизий временно недоступен</Typography>
+          <ContentState
+            tone="error"
+            className={styles.stateCard}
+            title="Список ревизий временно недоступен"
+            action={
               <Button
                 type="button"
                 variant="secondary"
@@ -253,8 +253,8 @@ export function EditorMushroomsPage({ storybookRevisions }: EditorMushroomsPageP
               >
                 Повторить
               </Button>
-            </Stack>
-          </Card>
+            }
+          />
         ) : null}
 
         {!revisionsQuery.isLoading && !revisionsQuery.isError ? (
@@ -354,11 +354,7 @@ export function EditorMushroomsPage({ storybookRevisions }: EditorMushroomsPageP
               })}
             </div>
           ) : (
-            <Card className={styles.stateCard}>
-              <Typography variant="bodyS" className={styles.metaText}>
-                Пока нет ревизий в этом разделе.
-              </Typography>
-            </Card>
+            <ContentState tone="empty" className={styles.stateCard} title="Пока нет ревизий в этом разделе." />
           )
         ) : null}
       </Container>

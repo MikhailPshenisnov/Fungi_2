@@ -12,7 +12,7 @@ import {
 } from '@features/articles';
 import { ApiError } from '@shared/api';
 import { favoriteIcon } from '@shared/assets/icons';
-import { Button, Card, Container, Stack, Tag, Typography, useToast } from '@shared/ui';
+import { Button, Card, Container, ContentState, Stack, Tag, Typography, useToast } from '@shared/ui';
 import { PageLayout } from '@widgets/layout';
 import styles from './ArticleDetailPage.module.css';
 
@@ -282,17 +282,17 @@ export function ArticleDetailPage({ articleId: articleIdProp }: ArticleDetailPag
     return (
       <PageLayout>
         <Container size="lg" className={styles.container}>
-          <Card className={styles.stateCard}>
-            <Stack gap={10}>
-              <Typography variant="h4">Некорректный идентификатор статьи</Typography>
-              <Typography variant="bodyS" className={styles.stateText}>
-                Проверьте адрес страницы и откройте карточку заново из каталога.
-              </Typography>
+          <ContentState
+            tone="error"
+            className={styles.stateCard}
+            title="Некорректный идентификатор статьи"
+            description="Проверьте адрес страницы и откройте карточку заново из каталога."
+            action={
               <Link to="/articles" className={styles.backLinkButton}>
                 Вернуться к статьям
               </Link>
-            </Stack>
-          </Card>
+            }
+          />
         </Container>
       </PageLayout>
     );
@@ -319,20 +319,20 @@ export function ArticleDetailPage({ articleId: articleIdProp }: ArticleDetailPag
         ) : null}
 
         {articleQuery.isError ? (
-          <Card className={styles.stateCard}>
-            <Stack gap={10}>
-              <Typography variant="h4">Статья временно недоступна</Typography>
-              <Typography variant="bodyS" className={styles.stateText}>
-                Попробуйте повторить запрос чуть позже.
-              </Typography>
+          <ContentState
+            tone="error"
+            className={styles.stateCard}
+            title="Статья временно недоступна"
+            description="Попробуйте повторить запрос чуть позже."
+            action={
               <div className={styles.stateActions}>
                 <Button onClick={() => articleQuery.refetch()}>Повторить</Button>
                 <Link to={backToPath} className={styles.backLinkButton}>
                   К списку статей
                 </Link>
               </div>
-            </Stack>
-          </Card>
+            }
+          />
         ) : null}
 
         {!articleQuery.isLoading && !articleQuery.isError && article ? (

@@ -10,7 +10,12 @@ public interface IArticlesService
 
     Task<Article> GetArticleAsync(Guid articleId, CancellationToken ct);
 
-    Task<List<Article>> GetFilteredArticlesAsync(ArticleFilter? articleFilter, CancellationToken ct);
+    Task<(List<Article> Articles, int TotalCount)> GetFilteredArticlesAsync(
+        ArticleFilter? articleFilter,
+        int page,
+        int pageSize,
+        ArticleSortMode sortMode,
+        CancellationToken ct);
 
     Task<Guid> UpdateArticleAsync(Guid articleId, Article newArticle, CancellationToken ct);
 

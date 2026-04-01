@@ -1,0 +1,29 @@
+.root {
+  padding: 20px;
+}
+
+.description {
+  color: var(--color-text-secondary);
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.loading {
+  background: color-mix(in srgb, var(--color-surface-default) 88%, var(--color-status-info-bg));
+}
+
+.empty {
+  background: color-mix(in srgb, var(--color-surface-default) 90%, var(--color-bg-muted));
+}
+
+.error {
+  background: color-mix(in srgb, var(--color-surface-default) 88%, var(--color-status-error-bg));
+}
+
+.info {
+  background: var(--color-surface-default);
+}

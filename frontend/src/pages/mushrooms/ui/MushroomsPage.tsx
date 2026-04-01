@@ -7,14 +7,10 @@ import {
   AuthRequiredPopup,
   DEFAULT_MUSHROOM_CATALOG_QUERY,
   getFilteredMushrooms,
-  getMushroomLikesCount,
   hasUserLikedMushroom,
   mapEatableFilterToApiValue,
-  mapWithConcurrency,
-  paginateMushrooms,
   parseMushroomCatalogQuery,
   serializeMushroomCatalogQuery,
-  sortMushrooms,
   toggleMushroomLike,
   useDebouncedValue,
   type MushroomCatalogQueryState,
@@ -23,12 +19,11 @@ import {
 } from '@features/mushrooms';
 import { ApiError } from '@shared/api';
 import { favoriteIcon } from '@shared/assets/icons';
-import { Button, Card, Checkbox, Container, Input, Select, Stack, Tag, Typography, useToast } from '@shared/ui';
+import { Button, Card, Checkbox, Container, ContentState, Input, Select, Tag, Typography, useToast } from '@shared/ui';
 import { PageLayout } from '@widgets/layout';
 import styles from './MushroomsPage.module.css';
 
 const PAGE_SIZE = 12;
-const REQUEST_CONCURRENCY = 8;
 
 const eatableOptions = [
   { label: 'Все', value: 'all' },
@@ -102,37 +97,27 @@ export function MushroomsPage() {
   const filters = useMemo(() => toMushroomsFilters(queryState), [queryState]);
 
   const mushroomsQuery = useQuery({
-    queryKey: ['mushrooms', 'filtered', filters],
-    queryFn: () => getFilteredMushrooms(filters)
+    queryKey: ['mushrooms', 'filtered', filters, queryState.sort, queryState.page, PAGE_SIZE],
+    queryFn: () =>
+      getFilteredMushrooms({
+        ...filters,
+        sort: queryState.sort,
+        page: queryState.page,
+        pageSize: PAGE_SIZE
+      })
   });
 
-  const mushrooms = useMemo(() => mushroomsQuery.data ?? [], [mushroomsQuery.data]);
-  const mushroomIds = useMemo(() => mapMushroomIds(mushrooms), [mushrooms]);
-  const mushroomIdsKey = mushroomIds.join(',');
-
-  const likesCountsQuery = useQuery({
-    queryKey: ['mushrooms', 'likes-counts', mushroomIdsKey],
-    enabled: mushroomIds.length > 0,
-    queryFn: async () => {
-      const pairs = await mapWithConcurrency(mushroomIds, REQUEST_CONCURRENCY, async (mushroomId) => {
-        const likesCount = await getMushroomLikesCount(mushroomId);
-        return { mushroomId, likesCount };
-      });
-
-      return Object.fromEntries(pairs.map((item) => [item.mushroomId, item.likesCount])) as Record<string, number>;
-    }
-  });
-
-  const likesCountById = useMemo(() => likesCountsQuery.data ?? {}, [likesCountsQuery.data]);
-  const sortedMushrooms = useMemo(
-    () => sortMushrooms(mushrooms, queryState.sort, likesCountById),
-    [likesCountById, mushrooms, queryState.sort]
+  const mushroomsResult = mushroomsQuery.data;
+  const pageMushrooms = useMemo(() => mushroomsResult?.mushrooms ?? [], [mushroomsResult?.mushrooms]);
+  const totalCount = mushroomsResult?.totalCount ?? 0;
+  const resolvedPage = mushroomsResult?.page ?? queryState.page;
+  const resolvedPageSize = mushroomsResult?.pageSize ?? PAGE_SIZE;
+  const totalPages = Math.max(1, Math.ceil(totalCount / Math.max(1, resolvedPageSize)));
+  const likesCountById = useMemo(
+    () =>
+      Object.fromEntries(pageMushrooms.map((mushroom) => [mushroom.id, mushroom.likesCount])) as Record<string, number>,
+    [pageMushrooms]
   );
-  const paginatedResult = useMemo(
-    () => paginateMushrooms(sortedMushrooms, queryState.page, PAGE_SIZE),
-    [queryState.page, sortedMushrooms]
-  );
-  const pageMushrooms = paginatedResult.items;
   const pageMushroomIds = useMemo(() => mapMushroomIds(pageMushrooms), [pageMushrooms]);
   const pageMushroomIdsKey = pageMushroomIds.join(',');
 
@@ -140,10 +125,12 @@ export function MushroomsPage() {
     queryKey: ['mushrooms', 'has-liked', token ?? 'guest', pageMushroomIdsKey],
     enabled: Boolean(isAuthenticated && token && pageMushroomIds.length > 0),
     queryFn: async () => {
-      const rows = await mapWithConcurrency(pageMushroomIds, REQUEST_CONCURRENCY, async (mushroomId) => {
-        const hasLiked = await hasUserLikedMushroom(mushroomId, token!);
-        return { mushroomId, hasLiked };
-      });
+      const rows = await Promise.all(
+        pageMushroomIds.map(async (mushroomId) => {
+          const hasLiked = await hasUserLikedMushroom(mushroomId, token!);
+          return { mushroomId, hasLiked };
+        })
+      );
 
       return Object.fromEntries(rows.map((row) => [row.mushroomId, row.hasLiked])) as Record<string, boolean>;
     }
@@ -189,14 +176,14 @@ export function MushroomsPage() {
   }, [debouncedSearch, queryState.q, updateQueryState]);
 
   useEffect(() => {
-    if (queryState.page !== paginatedResult.page) {
-      updateQueryState({ page: paginatedResult.page });
+    if (queryState.page !== resolvedPage) {
+      updateQueryState({ page: resolvedPage });
     }
-  }, [paginatedResult.page, queryState.page, updateQueryState]);
+  }, [queryState.page, resolvedPage, updateQueryState]);
 
   useEffect(() => {
     setLikeOverridesById((previousState) => {
-      const allowedMushroomIds = new Set(mushroomIds);
+      const allowedMushroomIds = new Set(pageMushroomIds);
       const nextState: Record<string, { likesCount: number; isLiked: boolean }> = {};
       let isChanged = false;
 
@@ -211,7 +198,7 @@ export function MushroomsPage() {
 
       return isChanged ? nextState : previousState;
     });
-  }, [mushroomIds]);
+  }, [pageMushroomIds]);
 
   useEffect(() => {
     if (!hasLikedQuery.error) {
@@ -244,17 +231,6 @@ export function MushroomsPage() {
       dedupeKey: 'mushrooms-catalog-error'
     });
   }, [handleSessionExpired, mushroomsQuery.error, showError]);
-
-  useEffect(() => {
-    if (!likesCountsQuery.error) {
-      return;
-    }
-
-    showError(likesCountsQuery.error instanceof Error ? likesCountsQuery.error.message : 'Не удалось загрузить счётчики лайков.', {
-      title: 'Лайки',
-      dedupeKey: 'mushrooms-likes-counts-error'
-    });
-  }, [likesCountsQuery.error, showError]);
 
   function handleSearchInputChange(event: ChangeEvent<HTMLInputElement>) {
     setSearchDraft(event.target.value);
@@ -291,11 +267,11 @@ export function MushroomsPage() {
   }
 
   function handleGoToPreviousPage() {
-    updateQueryState({ page: Math.max(1, queryState.page - 1) });
+    updateQueryState({ page: Math.max(1, resolvedPage - 1) });
   }
 
   function handleGoToNextPage() {
-    updateQueryState({ page: Math.min(paginatedResult.totalPages, queryState.page + 1) });
+    updateQueryState({ page: Math.min(totalPages, resolvedPage + 1) });
   }
 
   function openMushroomDetails(mushroomId: string) {
@@ -353,7 +329,7 @@ export function MushroomsPage() {
 
     try {
       const confirmedIsLiked = await toggleMushroomLike(mushroomId, token);
-      const confirmedLikesCount = await getMushroomLikesCount(mushroomId);
+      const confirmedLikesCount = Math.max(0, previousState.likesCount + (confirmedIsLiked ? 1 : -1));
 
       setLikeOverridesById((previousMap) => ({
         ...previousMap,
@@ -384,7 +360,7 @@ export function MushroomsPage() {
         return nextMap;
       });
 
-      void queryClient.invalidateQueries({ queryKey: ['mushrooms', 'likes-counts'] });
+      void queryClient.invalidateQueries({ queryKey: ['mushrooms', 'filtered'] });
       if (token) {
         void queryClient.invalidateQueries({ queryKey: ['mushrooms', 'has-liked', token] });
       }
@@ -393,7 +369,7 @@ export function MushroomsPage() {
 
   const hasLoadingState = mushroomsQuery.isLoading;
   const hasErrorState = mushroomsQuery.isError;
-  const hasEmptyState = !hasLoadingState && !hasErrorState && paginatedResult.totalItems === 0;
+  const hasEmptyState = !hasLoadingState && !hasErrorState && totalCount === 0;
   const backToCatalogPath = `${location.pathname}${location.search}`;
 
   return (
@@ -450,7 +426,7 @@ export function MushroomsPage() {
           <section className={styles.resultsPanel}>
             <div className={styles.resultsHeader}>
               <Typography variant="bodyS" className={styles.resultsMeta}>
-                {formatResultCount(paginatedResult.totalItems)}
+                {formatResultCount(totalCount)}
               </Typography>
               <Select
                 label="Сортировка"
@@ -474,26 +450,22 @@ export function MushroomsPage() {
             ) : null}
 
             {hasErrorState ? (
-              <Card className={styles.stateCard}>
-                <Stack gap={10}>
-                  <Typography variant="h5">Каталог временно недоступен</Typography>
-                  <Typography variant="bodyS" className={styles.stateText}>
-                    Попробуйте повторить запрос чуть позже.
-                  </Typography>
-                  <Button onClick={() => mushroomsQuery.refetch()}>Повторить</Button>
-                </Stack>
-              </Card>
+              <ContentState
+                tone="error"
+                className={styles.stateCard}
+                title="Каталог временно недоступен"
+                description="Попробуйте повторить запрос чуть позже."
+                action={<Button onClick={() => mushroomsQuery.refetch()}>Повторить</Button>}
+              />
             ) : null}
 
             {hasEmptyState ? (
-              <Card className={styles.stateCard}>
-                <Stack gap={8}>
-                  <Typography variant="h5">Ничего не найдено</Typography>
-                  <Typography variant="bodyS" className={styles.stateText}>
-                    Попробуйте изменить поисковый запрос или сбросить фильтры.
-                  </Typography>
-                </Stack>
-              </Card>
+              <ContentState
+                tone="empty"
+                className={styles.stateCard}
+                title="Ничего не найдено"
+                description="Попробуйте изменить поисковый запрос или сбросить фильтры."
+              />
             ) : null}
 
             {!hasLoadingState && !hasErrorState && !hasEmptyState ? (
@@ -575,19 +547,15 @@ export function MushroomsPage() {
                   })}
                 </div>
 
-                {paginatedResult.totalPages > 1 ? (
+                {totalPages > 1 ? (
                   <div className={styles.pagination}>
-                    <Button variant="secondary" onClick={handleGoToPreviousPage} disabled={paginatedResult.page <= 1}>
+                    <Button variant="secondary" onClick={handleGoToPreviousPage} disabled={resolvedPage <= 1}>
                       Назад
                     </Button>
                     <Typography variant="bodyS" className={styles.pageInfo}>
-                      Страница {paginatedResult.page} из {paginatedResult.totalPages}
+                      Страница {resolvedPage} из {totalPages}
                     </Typography>
-                    <Button
-                      variant="secondary"
-                      onClick={handleGoToNextPage}
-                      disabled={paginatedResult.page >= paginatedResult.totalPages}
-                    >
+                    <Button variant="secondary" onClick={handleGoToNextPage} disabled={resolvedPage >= totalPages}>
                       Вперед
                     </Button>
                   </div>

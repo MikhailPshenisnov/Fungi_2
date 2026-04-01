@@ -33,9 +33,14 @@ public class ArticlesService : IArticlesService
         return article;
     }
 
-    public async Task<List<Article>> GetFilteredArticlesAsync(ArticleFilter? articleFilter, CancellationToken cancellationToken)
+    public async Task<(List<Article> Articles, int TotalCount)> GetFilteredArticlesAsync(
+        ArticleFilter? articleFilter,
+        int page,
+        int pageSize,
+        ArticleSortMode sortMode,
+        CancellationToken cancellationToken)
     {
-        return await _articlesRepository.GetFilteredPublishedArticles(articleFilter, cancellationToken);
+        return await _articlesRepository.GetFilteredPublishedArticles(articleFilter, page, pageSize, sortMode, cancellationToken);
     }
 
     public async Task<Guid> UpdateArticleAsync(Guid articleId, Article newArticle, CancellationToken cancellationToken)
