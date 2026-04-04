@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SessionProvider, type ProfileTabKey, type SessionUser } from '@entities/session';
 import { ProfilePage } from './ProfilePage';
 
@@ -34,14 +35,28 @@ interface RenderOptions {
 }
 
 function renderProfile({ section = 'profile', user = createSessionUser() }: RenderOptions = {}) {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false
+      }
+    }
+  });
+
   return (
-    <SessionProvider initialUser={user} initialToken="storybook-token">
-      <ProfilePage section={section} />
-    </SessionProvider>
+    <QueryClientProvider client={queryClient}>
+      <SessionProvider initialUser={user} initialToken="storybook-token">
+        <ProfilePage section={section} />
+      </SessionProvider>
+    </QueryClientProvider>
   );
 }
 
 export const CommonUser: Story = {
+  render: () => renderProfile({ section: 'profile' })
+};
+
+export const Default: Story = {
   render: () => renderProfile({ section: 'profile' })
 };
 

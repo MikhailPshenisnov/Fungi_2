@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Input } from './Input';
 
 const meta = {
-  title: 'Shared/UI/Input',
+  title: 'Shared/UI/Primitives/Input',
   component: Input,
   args: {
     label: 'Email',

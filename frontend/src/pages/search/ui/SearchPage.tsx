@@ -176,7 +176,9 @@ export function SearchPage() {
                   {articlesResult.map((article) => (
                     <Card key={article.id} className={styles.card}>
                       <Stack gap={8}>
-                        <Typography variant="h5">{article.title}</Typography>
+                        <Typography variant="h5" as="h4">
+                          {article.title}
+                        </Typography>
                         <Typography variant="caption" className={styles.metaText}>
                           {article.authorString} • {formatDate(article.publishDate)}
                         </Typography>
@@ -205,7 +207,9 @@ export function SearchPage() {
                   {mushroomsResult.map((mushroom) => (
                     <Card key={mushroom.id} className={styles.card}>
                       <Stack gap={8}>
-                        <Typography variant="h5">{mushroom.name}</Typography>
+                        <Typography variant="h5" as="h4">
+                          {mushroom.name}
+                        </Typography>
                         <Typography variant="caption" className={styles.metaText}>
                           {mushroom.family}
                           {mushroom.latinName ? ` • ${mushroom.latinName}` : ''}

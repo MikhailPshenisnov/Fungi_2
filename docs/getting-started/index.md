@@ -6,6 +6,7 @@
 
 - Docker Desktop
 - Git
+- .NET SDK `7.0.410` (для локального запуска backend вне Docker, версия зафиксирована в `global.json`)
 
 ## Запуск через Docker
 
@@ -29,6 +30,8 @@ cp .env.example .env
 ```bash
 docker compose up -d --build
 ```
+
+По умолчанию поднимаются контейнеры `fungi-db`, `fungi-backend`, `fungi-frontend` (rewrite-клиент из `frontend/`).
 
 Проверка контейнеров:
 
@@ -69,13 +72,13 @@ docker compose down
 Запуск docs в режиме разработки (Docker):
 
 ```bash
-docker compose up fungi-docs
+docker compose --profile docs up fungi-docs
 ```
 
 Сборка docs (Docker):
 
 ```bash
-docker compose run --rm fungi-docs mkdocs build --strict
+docker compose --profile docs run --rm fungi-docs mkdocs build --strict
 ```
 
 Остановка docs-сервиса:

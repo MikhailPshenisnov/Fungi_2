@@ -159,7 +159,9 @@ export function EditorReviewPage() {
                     <Stack gap={12}>
                       <div className={styles.cardTop}>
                         <div>
-                          <Typography variant="h4">{article.title}</Typography>
+                          <Typography variant="h4" as="h2">
+                            {article.title}
+                          </Typography>
                           <Typography variant="bodyS" className={styles.metaText}>
                             Автор: {article.authorString}
                           </Typography>

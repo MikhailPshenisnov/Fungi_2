@@ -237,13 +237,13 @@
 .statusDone {
   background: var(--color-status-success-bg);
   border-color: var(--color-status-success-border);
-  color: var(--color-status-success-strong);
+  color: var(--color-text-primary);
 }
 
 .statusInProgress {
   background: var(--color-status-info-bg);
   border-color: var(--color-status-info-border);
-  color: var(--color-status-info-text);
+  color: var(--color-text-primary);
 }
 
 .statusNext {

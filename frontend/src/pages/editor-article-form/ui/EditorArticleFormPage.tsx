@@ -788,7 +788,9 @@ export function EditorArticleFormPage() {
             </div>
 
             <div className={styles.mediaSection}>
-              <Typography variant="h4">Изображения</Typography>
+              <Typography variant="h4" as="h2">
+                Изображения
+              </Typography>
               <div className={styles.mediaControls}>
                 <Button
                   variant="secondary"
@@ -862,7 +864,9 @@ export function EditorArticleFormPage() {
             </div>
 
             <div>
-              <Typography variant="h4">Абзацы статьи</Typography>
+              <Typography variant="h4" as="h2">
+                Абзацы статьи
+              </Typography>
               <div className={styles.paragraphList}>
                 {formState.paragraphs.map((paragraph, index) => (
                   <div key={`${index}-${paragraph.isSubtitle ? 'subtitle' : 'body'}`} className={styles.paragraphItem}>
@@ -904,7 +908,9 @@ export function EditorArticleFormPage() {
             </div>
 
             <div>
-              <Typography variant="h4">Связанные грибы</Typography>
+              <Typography variant="h4" as="h2">
+                Связанные грибы
+              </Typography>
               <div className={styles.mushroomPicker}>
                 <Input
                   label="Поиск гриба"
@@ -1014,7 +1020,9 @@ export function EditorArticleFormPage() {
 
             {canModerateInReview ? (
               <div className={styles.mediaSection}>
-                <Typography variant="h4">Модерация статьи</Typography>
+                <Typography variant="h4" as="h2">
+                  Модерация статьи
+                </Typography>
 
                 <label className={styles.fieldBlock}>
                   <span className={styles.fieldLabel}>Комментарий модерации</span>
@@ -1064,7 +1072,9 @@ export function EditorArticleFormPage() {
             <Card className={styles.previewCard}>
               <Stack gap={14}>
                 <div className={styles.previewHeader}>
-                  <Typography variant="h4">Предпросмотр</Typography>
+                  <Typography variant="h4" as="h2">
+                    Предпросмотр
+                  </Typography>
                   <span className={`${styles.previewStatus} ${previewStatusClassName}`}>
                     {getArticleStatusLabel(status)}
                   </span>

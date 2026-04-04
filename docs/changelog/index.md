@@ -1,5 +1,51 @@
 # Журнал изменений
 
+## 2026-04-04
+
+### Frontend
+
+- добавлены component tests для `shared/ui/primitives`:
+  - `Button`, `Input`, `Select`, `Checkbox`, `Typography`;
+- Storybook конфиг расширен `@storybook/addon-vitest`;
+- добавлен отдельный скрипт `npm run test:components` и включен в frontend quality-gates.
+
+### DevOps / Docs
+
+- добавлен единый GitHub Actions workflow `.github/workflows/ci.yml`:
+  - `frontend` (`lint`, `typecheck`, `stories:check`, `storybook:build`, `test:components`);
+  - `backend` (`dotnet restore/build/test`);
+  - `docs` (`mkdocs build --strict`);
+- удален дублирующий workflow `docs-ci.yml` (docs-проверка перенесена в общий CI);
+- добавлен `global.json` с фиксацией .NET SDK `7.0.410` (`rollForward: latestPatch`);
+- `docker-compose.yml` актуализирован:
+  - `fungi-frontend` переведен на rewrite-клиент `./frontend`;
+  - `fungi-docs` вынесен в профиль `docs` (не запускается по умолчанию);
+- зафиксирован legacy freeze для `frontend_fungi`:
+  - папка оставлена в репозитории как архив;
+  - исключена из runtime/compose/CI;
+  - документация обновлена под rewrite-only контур.
+
+## 2026-04-02
+
+### DevOps / Docs
+
+- добавлена отдельная страница матрицы Storybook-покрытия: `docs/frontend/storybook-coverage.md`;
+- в Storybook-документацию добавлен раздел `coverage matrix` с процессом:
+  - генерация матрицы через `npm run stories:coverage`;
+  - проверка актуальности через `npm run stories:coverage:check`;
+  - валидация через `stories:check`, `storybook:build`, `storybook:check`;
+  - правила обновления при изменениях stories/title/state-наборов/page-flow.
+- добавлены ссылки на `docs/frontend/storybook-coverage.md` в:
+  - `docs/frontend/index.md`;
+  - `docs/frontend/storybook.md`;
+  - `frontend/docs/STORYBOOK.md`;
+  - `frontend/README.md`.
+- `stories:check` расширен: теперь проверяет наличие stories не только в `shared/ui`, но и в `pages/widgets/features/entities` (для директорий `ui` с TSX-компонентами).
+- унифицированы Storybook `title` в `shared/ui`:
+  - `Shared/UI/Primitives/*`;
+  - `Shared/UI/Composites/*`.
+- добавлена история `Pages/Search/SearchPage` для полного прохождения `stories:check`.
+
 ## 2026-04-01
 
 ### Backend
@@ -11,6 +57,9 @@
   - `GetUser` для чужого профиля теперь требует `users.read`;
   - `Users/TestGetUsers` и `Roles/TestGetRoles` закрыты авторизацией и permission-check.
 - `GetFilteredArticles` переведен на DB-level фильтрацию и публичную выборку без in-memory full-scan.
+- `GetFilteredArticles` расширен серверной пагинацией и сортировкой:
+  - query: `Page`, `PageSize`, `Sort`;
+  - response: `totalCount`, `page`, `pageSize`.
 - убран N+1 для likesCount статей:
   - в backend добавлена bulk-агрегация лайков для списка статей.
 - унифицирован контракт ошибок:
@@ -74,6 +123,14 @@
   - string-only `decision` для moderation endpoint-ов;
   - `errorCode` в контракте ошибок;
   - security-ограничения для user/test endpoint-ов.
+- повторно синхронизированы `docs/frontend/index.md` и `frontend/README.md`:
+  - добавлен маршрут `/search` и глобальный поиск из `AppHeader` (`/search?q=...`);
+  - зафиксирован переход каталогов `/articles` и `/mushrooms` на server-side pagination/sort;
+  - зафиксирован общий компонент состояний `ContentState`.
+- отдельно актуализирована документация Storybook:
+  - расширен `frontend/docs/STORYBOOK.md` (runbook, quality gates, providers/decorators, troubleshooting);
+  - добавлена страница `docs/frontend/storybook.md` и ссылка на нее в `mkdocs.yml`;
+  - обновлены Storybook-разделы в `frontend/README.md` и `docs/frontend/index.md`.
 - синхронизирован `QuickStart/Fungi_api_swagger.json` из live Swagger после P0 backend-фиксов.
 
 ## 2026-03-29

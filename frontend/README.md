@@ -1,8 +1,9 @@
 # Fungi Frontend (Rewrite)
 
-Новый фронтенд для постепенного переписывания `frontend_fungi`.
+Новый frontend-клиент Fungi (rewrite).
 
-Цель: развивать приложение компонентно, без больших ломок, на предсказуемой архитектуре.
+Цель: развивать приложение компонентно, без больших ломок, на предсказуемой архитектуре.  
+`frontend_fungi` оставлен в репозитории как архив и в runtime больше не используется.
 
 ## Стек
 - React + TypeScript + Vite
@@ -24,7 +25,7 @@ npm run dev
 - `npm run preview` — предпросмотр сборки
 - `npm run typecheck` — проверка типов
 - `npm run lint` — линтинг
-- `npm run check` — полный quality gate (`lint`, `typecheck`, `design:lint`, `stories:check`, `icons:check`, `test`, `build`)
+- `npm run check` — полный quality gate (`lint`, `typecheck`, `design:lint`, `stories:check`, `icons:check`, `test`, `build`, `storybook:check`)
 - `npm run lint:styles` — stylelint для CSS (запрет raw-цветов вне tokens)
 - `npm run lint:design` — semantic token checks для TS/TSX/CSS
 - `npm run design:lint` — полный gate дизайн-семантики (`lint:styles` + `lint:design`)
@@ -36,7 +37,10 @@ npm run dev
 - `npm run ui:index:sync` — пересборка `src/shared/ui/index.ts` по текущим компонентам
 - `npm run stories:check` — проверка, что у всех `shared/ui` компонентов есть `.stories.tsx`
 - `npm run stories:sync` — автосоздание отсутствующих draft stories (`Draft/*`, `tags: ['wip']`)
+- `npm run stories:coverage` — генерация матрицы покрытия Storybook (`docs/frontend/storybook-coverage.md`)
+- `npm run stories:coverage:check` — проверка, что матрица покрытия актуальна
 - `npm run test` — unit тесты
+- `npm run test:components` — component tests для `shared/ui/primitives` (`Button`, `Input`, `Select`, `Checkbox`, `Typography`)
 - `npm run storybook` — Storybook dev server
 - `npm run storybook:build` — сборка Storybook
 - `npm run storybook:test` — запуск story-тестов (a11y/smoke) для поднятого Storybook
@@ -140,13 +144,11 @@ src/
   - `q` — поиск по названию;
   - `family` — фильтр по семейству;
   - `eatable` — `all | edible | inedible`;
-  - `redBook` — `0 | 1`;
+  - `redBook` — `1` (включен фильтр), отсутствие параметра = `false`;
   - `sort` — `name | likes`;
   - `page` — номер страницы.
 - поиск применяется автоматически с debounce `400ms`;
-- сортировка:
-  - `По названию`;
-  - `По лайкам`;
+- сортировка серверная (`sort=name|likes`);
 - пагинация серверная, по `12` карточек на страницу;
 - карточка гриба ведет на `/mushrooms/:id`;
 - вся карточка кликабельна, отдельная кнопка `Подробнее` удалена;
@@ -164,12 +166,17 @@ src/
 
 ### Глобальный поиск (`/search`)
 
-- форма поиска в `AppHeader` по умолчанию ведет на `/search`;
+- форма поиска в `AppHeader`:
+  - непустой запрос -> `/search?q=<query>`;
+  - пустой запрос -> `/search`;
 - query-параметр `q` — источник истины состояния поиска;
 - страница `/search` объединяет выдачу:
   - статьи (через `GET /Articles/GetFilteredArticles`);
   - грибы (через `GET /Mushrooms/GetFilteredMushrooms`);
-- для обеих секций используются серверные `page/pageSize/sort` (первая страница, лимит `6` на секцию).
+- для обеих секций используются фиксированные параметры:
+  - `sort=likes`;
+  - `page=1`;
+  - `pageSize=6`.
 
 ## Auth и профиль (текущее поведение)
 
@@ -223,10 +230,16 @@ src/
   - hover/focus паузит автозакрытие.
 - крупные error-card экраны переведены в нейтральные fallback-состояния с `Повторить`; основной канал ошибок — toast.
 
+## Общий компонент состояний (`ContentState`)
+
+- единый компонент page-level состояний: `loading | empty | error | info`;
+- базовый контракт: `title`, `description?`, `tone?`, `action?`, `className?`;
+- используется в каталогах, деталках, профильных preview и editor-экранах.
+
 ## Статьи и editor workflow
 
 - `/articles`:
-  - публичный каталог статей с фильтрами `q`, `author`, сортировкой и серверной пагинацией;
+  - публичный каталог статей с фильтрами `q`, `author`, серверной сортировкой (`sort`) и серверной пагинацией (`page/pageSize`);
   - карточки ведут на `/articles/:id`;
   - лайки поддерживают optimistic update + rollback.
 - `/articles/:id`:
@@ -294,42 +307,29 @@ module-name/
 
 ## Storybook: правила использования
 
-Основная идея: Storybook — это контракт UI-kit и feature-компонентов.
+Быстрый runbook:
 
-1. Что обязательно покрываем story:
-- каждый компонент из `src/shared/ui`;
-- каждый визуально сложный компонент из `features/*/ui`;
-- ключевые состояния: `default`, `loading`, `error`, `empty`, `disabled` (где применимо).
+```bash
+npm run storybook
+npm run stories:check
+npm run storybook:build
+npm run storybook:check
+npm run test:components
+```
 
-2. Где храним stories:
-- рядом с компонентом: `Component.stories.tsx`.
+- Storybook dev URL: `http://localhost:6006`.
+- Глобальные decorators в `.storybook/preview.ts`: `MemoryRouter` + `ToastProvider`.
+- Истории с `react-query`/session должны явно подключать `QueryClientProvider` и `SessionProvider`.
+- Реальные HTTP-запросы внутри story запрещены, только mock/fixtures.
+- При ошибке `useLocation() may be used only in the context of a <Router>` проверьте, что story не отключила router-декоратор.
+- При ошибке `You cannot render a <Router> inside another <Router>` уберите лишний `BrowserRouter/MemoryRouter` из конкретной story.
+- Coverage matrix: [`docs/frontend/storybook-coverage.md`](../docs/frontend/storybook-coverage.md).
+- Для обновления matrix:
+  - выполнить `npm run stories:coverage`;
+  - прогнать `npm run stories:check`, `npm run stories:coverage:check`, `npm run storybook:build`, `npm run storybook:check`;
+  - обновить matrix при изменении stories/title/обязательных state-сценариев.
 
-3. Что запрещено в story:
-- реальные сетевые запросы;
-- зависимость от внешнего backend;
-- состояние, которое нельзя воспроизвести через args/mocks.
-
-4. Что должно быть в каждой story:
-- понятный `title` по слоям (`Shared/UI/Button`, `Features/Auth/LoginForm`);
-- `args` по умолчанию;
-- минимум одна интерактивная вариация, если компонент интерактивный.
-
-5. Review policy:
-- изменения в `shared/ui` без обновления stories не принимаются;
-- визуальные изменения в компонентах сопровождаются скриншотами из Storybook.
-
-6. Draft stories policy:
-- автогенерация создаёт stories в `Draft/Shared/UI/*` с `tags: ['wip']`;
-- такие stories считаются временными и должны быть переведены в `Shared/UI/*` после review;
-- перед релизной итерацией запускаем `npm run stories:check`.
-
-7. Управление жизненным циклом компонента:
-- создание через `npm run scaffold:ui -- <ComponentName>` (по умолчанию `primitives`);
-- для composition-компонентов используем `--category=composites`;
-- удаление через `npm run remove:ui -- <ComponentName> --yes` (при конфликте имён указываем `--category=...`);
-- `src/shared/ui/index.ts`, `src/shared/ui/primitives/index.ts`, `src/shared/ui/composites/index.ts` не редактируем вручную, они синхронизируются скриптом.
-
-Детали: `docs/STORYBOOK.md`.
+Полный регламент: `frontend/docs/STORYBOOK.md`.
 
 ### Storybook: покрытие по каталогу грибов
 

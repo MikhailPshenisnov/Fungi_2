@@ -808,7 +808,9 @@ export function EditorMushroomFormPage({ storybookRevision, storybookSource }: E
               </label>
 
               <div className={styles.mediaSection}>
-                <Typography variant="h4">Изображения</Typography>
+                <Typography variant="h4" as="h2">
+                  Изображения
+                </Typography>
                 <div className={styles.mediaControls}>
                   <Button
                     type="button"
@@ -892,7 +894,9 @@ export function EditorMushroomFormPage({ storybookRevision, storybookSource }: E
               </div>
 
               <div>
-                <Typography variant="h4">Двойники</Typography>
+                <Typography variant="h4" as="h2">
+                  Двойники
+                </Typography>
                 <label className={styles.fieldBlock}>
                   <span className={styles.fieldLabel}>Список двойников</span>
                   <textarea
@@ -943,7 +947,9 @@ export function EditorMushroomFormPage({ storybookRevision, storybookSource }: E
 
               {canModerateInReview ? (
                 <div className={styles.mediaSection}>
-                  <Typography variant="h4">Модерация ревизии</Typography>
+                  <Typography variant="h4" as="h2">
+                    Модерация ревизии
+                  </Typography>
                   <label className={styles.fieldBlock}>
                     <span className={styles.fieldLabel}>Комментарий модерации</span>
                     <textarea
@@ -994,7 +1000,9 @@ export function EditorMushroomFormPage({ storybookRevision, storybookSource }: E
             <Card className={styles.previewCard}>
               <Stack gap={14}>
                 <div className={styles.previewHeader}>
-                  <Typography variant="h4">Предпросмотр</Typography>
+                  <Typography variant="h4" as="h2">
+                    Предпросмотр
+                  </Typography>
                   <Tag tone={getStatusTone(formState.status)}>{getStatusLabel(formState.status)}</Tag>
                 </div>
 

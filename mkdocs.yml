@@ -15,7 +15,10 @@ nav:
   - Backend API:
       - Обзор: backend-api/index.md
       - OpenAPI и Swagger: backend-api/openapi.md
-  - Frontend: frontend/index.md
+  - Frontend:
+      - Обзор: frontend/index.md
+      - Storybook: frontend/storybook.md
+      - Storybook Coverage: frontend/storybook-coverage.md
   - Mobile: mobile/index.md
   - Процессы разработки: workflow/index.md
   - Журнал изменений: changelog/index.md

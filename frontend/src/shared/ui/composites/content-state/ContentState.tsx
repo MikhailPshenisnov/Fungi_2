@@ -17,7 +17,9 @@ export function ContentState({ title, description, tone = 'info', action, classN
   return (
     <Card className={clsx(styles.root, styles[tone], className)}>
       <Stack gap={10}>
-        <Typography variant="h5">{title}</Typography>
+        <Typography variant="h5" as="h2">
+          {title}
+        </Typography>
         {description ? (
           <Typography variant="bodyS" className={styles.description}>
             {description}

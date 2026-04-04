@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Checkbox } from './Checkbox';
 
 const meta = {
-  title: 'Shared/UI/Checkbox',
+  title: 'Shared/UI/Primitives/Checkbox',
   component: Checkbox,
   args: {
     label: 'Показывать только съедобные'

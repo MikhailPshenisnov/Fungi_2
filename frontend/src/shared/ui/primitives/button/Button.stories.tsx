@@ -14,7 +14,7 @@ const iconDot = (
 );
 
 const meta = {
-  title: 'Shared/UI/Button',
+  title: 'Shared/UI/Primitives/Button',
   component: Button,
   args: {
     children: 'Действие'

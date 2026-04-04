@@ -243,7 +243,9 @@ export function EditorArticlesPage() {
                     <Stack gap={12}>
                       <div className={styles.cardHeader}>
                         <div>
-                          <Typography variant="h4">{article.title}</Typography>
+                          <Typography variant="h4" as="h2">
+                            {article.title}
+                          </Typography>
                           <Typography variant="caption" className={styles.cardMeta}>
                             Обновлено: {formatDate(article.updatedAt)} • Лайков: {article.likesCount}
                           </Typography>

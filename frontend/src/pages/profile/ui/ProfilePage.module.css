@@ -387,7 +387,7 @@
 .placeholderEmpty {
   display: inline-block;
   margin-top: 10px;
-  color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
 }
 
 .placeholderActionRow {

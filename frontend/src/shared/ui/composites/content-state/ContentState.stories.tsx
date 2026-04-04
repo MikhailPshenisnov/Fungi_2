@@ -3,7 +3,7 @@ import { Button } from '@shared/ui/primitives';
 import { ContentState } from './ContentState';
 
 const meta = {
-  title: 'Shared/UI/ContentState',
+  title: 'Shared/UI/Composites/ContentState',
   component: ContentState,
   args: {
     title: 'Состояние экрана',

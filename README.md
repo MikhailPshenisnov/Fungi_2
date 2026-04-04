@@ -2,6 +2,9 @@
 
 Репозиторий для реализации новой версии приложения Fungi.
 
+Активный веб-клиент в runtime: `frontend/` (rewrite).  
+Папка `frontend_fungi/` оставлена в репозитории как архив и в docker/runtime больше не используется.
+
 ## Единая документация
 
 - Основной источник документации: `docs/` (MkDocs).
@@ -21,6 +24,8 @@ cp .env.example .env
 docker compose up -d --build
 ```
 
+Команда поднимает: `db + backend + rewrite frontend`.
+
 ## Важно для существующей БД
 
 Если база уже была создана раньше (старый docker volume), после обновления backend нужно один раз применить upgrade-скрипты:
@@ -35,5 +40,5 @@ cat DBInit/5-upgrade-mushrooms-workflow.sql | docker exec -i fungi-db psql -U <D
 ## Документация локально (Docker)
 
 ```bash
-docker compose up fungi-docs
+docker compose --profile docs up fungi-docs
 ```

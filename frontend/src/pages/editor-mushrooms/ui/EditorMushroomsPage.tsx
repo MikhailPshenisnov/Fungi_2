@@ -274,7 +274,9 @@ export function EditorMushroomsPage({ storybookRevisions }: EditorMushroomsPageP
                     <Stack gap={12}>
                       <div className={styles.cardTop}>
                         <div className={styles.cardHeadline}>
-                          <Typography variant="h4">{revision.name}</Typography>
+                          <Typography variant="h4" as="h2">
+                            {revision.name}
+                          </Typography>
                           <Typography variant="bodyS" className={styles.metaText}>
                             {revision.family}
                             {revision.latinName ? ` • ${revision.latinName}` : ''}

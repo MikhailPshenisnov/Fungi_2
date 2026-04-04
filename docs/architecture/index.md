@@ -8,7 +8,7 @@
 
 - `BackendFungi/` — ASP.NET Core API + бизнес-логика + доступ к БД.
 - `frontend/` — новый веб-клиент (rewrite, FSD-подход).
-- `frontend_fungi/` — legacy веб-клиент (исторически основной UI).
+- `frontend_fungi/` — legacy веб-клиент (архивный модуль, не участвует в runtime).
 - `mobile-dev/` — мобильный клиент (React Native/Expo).
 - `QuickStart/` — экспорт OpenAPI и стартовые инструкции.
 - `DBInit/` — SQL-инициализация БД для локального запуска.
@@ -16,7 +16,7 @@
 
 ## Поток данных
 
-1. Клиенты (`frontend`, `frontend_fungi`, `mobile-dev`) отправляют HTTP-запросы в backend.
+1. Клиенты (`frontend`, `mobile-dev`) отправляют HTTP-запросы в backend.
 2. Backend обрабатывает запросы в контроллерах, вызывает сервисы и репозитории.
 3. Доступ к данным идет через `FungiDbContext` (PostgreSQL).
 4. Ответы возвращаются в формате `BaseResponse`.
@@ -34,6 +34,6 @@
 
 ## Технический долг / переходные зоны
 
-- В проекте сосуществуют новый и legacy веб-клиенты.
-- Часть legacy endpoint/поведения еще поддерживается для обратной совместимости.
+- Основной веб-контур переведен на rewrite `frontend/`.
+- `frontend_fungi/` сохранен как historical artifact (без runtime/compose/CI интеграции).
 - Долг и риск-пункты фиксируются в `TODO.md` и закрываются через отдельные PR.

@@ -439,7 +439,7 @@ export function ArticlesPage() {
 
                       <Stack gap={12}>
                         <div className={styles.cardHeader}>
-                          <Typography variant="h4" className={styles.cardTitle}>
+                          <Typography variant="h4" as="h2" className={styles.cardTitle}>
                             {article.title}
                           </Typography>
                           <Tag tone={statusTone(article.status)}>{statusLabel(article.status)}</Tag>

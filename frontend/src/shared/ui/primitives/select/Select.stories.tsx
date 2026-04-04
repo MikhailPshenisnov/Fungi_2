@@ -7,7 +7,7 @@ const options = [
 ];
 
 const meta = {
-  title: 'Shared/UI/Select',
+  title: 'Shared/UI/Primitives/Select',
   component: Select,
   args: {
     label: 'Сортировка',

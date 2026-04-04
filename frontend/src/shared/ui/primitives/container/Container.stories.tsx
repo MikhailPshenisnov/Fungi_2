@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Container } from './Container';
 
 const meta = {
-  title: 'Shared/UI/Container',
+  title: 'Shared/UI/Primitives/Container',
   component: Container
 } satisfies Meta<typeof Container>;
 

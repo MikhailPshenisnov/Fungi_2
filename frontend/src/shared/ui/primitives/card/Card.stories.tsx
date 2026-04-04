@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Card } from './Card';
 
 const meta = {
-  title: 'Shared/UI/Card',
+  title: 'Shared/UI/Primitives/Card',
   component: Card,
   args: {
     children: 'Карточка контента'

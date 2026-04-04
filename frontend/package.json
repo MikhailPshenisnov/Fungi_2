@@ -4,6 +4,7 @@
   "description": "Этот каталог — чистая база для переписывания `frontend_fungi` с упором на: - предсказуемую архитектуру; - минимальный техдолг; - понятные правила для команды; - удобную поддержку и масштабирование.",
   "scripts": {
     "test": "vitest run --passWithNoTests",
+    "test:components": "vitest run --dir src/shared/ui/primitives",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
@@ -25,7 +26,9 @@
     "icons:sync": "node scripts/sync-icons-index.mjs",
     "icons:check": "node scripts/check-icons.mjs",
     "stories:check": "node scripts/check-missing-stories.mjs",
-    "stories:sync": "node scripts/check-missing-stories.mjs --write"
+    "stories:sync": "node scripts/check-missing-stories.mjs --write",
+    "stories:coverage": "node scripts/generate-storybook-coverage.mjs",
+    "stories:coverage:check": "node scripts/generate-storybook-coverage.mjs --check"
   },
   "keywords": [],
   "author": "",
@@ -43,6 +46,7 @@
     "@eslint/js": "^9.39.3",
     "@storybook/addon-a11y": "^10.2.10",
     "@storybook/addon-docs": "^10.2.10",
+    "@storybook/addon-vitest": "^10.3.4",
     "@storybook/react-vite": "^10.2.10",
     "@storybook/test-runner": "^0.24.2",
     "@testing-library/jest-dom": "^6.9.1",

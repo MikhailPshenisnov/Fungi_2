@@ -2,10 +2,10 @@
 
 ## Клиентские части
 
-В репозитории есть два веб-клиента:
+В репозитории есть rewrite-клиент и legacy-архив:
 
-- `frontend/` — новый rewrite-клиент (основной вектор развития);
-- `frontend_fungi/` — legacy-клиент, который еще используется частично.
+- `frontend/` — единственный активный веб-клиент (runtime + CI);
+- `frontend_fungi/` — legacy-архив (в репозитории для истории, без runtime/compose/CI).
 
 ## Rewrite (`frontend`)
 
@@ -120,7 +120,7 @@
   - `q` — строка поиска;
   - `family` — семейство;
   - `eatable` — `all | edible | inedible`;
-  - `redBook` — `0 | 1`;
+  - `redBook` — `1` (включен фильтр), отсутствие параметра = `false`;
   - `sort` — `name | likes`;
   - `page` — номер страницы.
 - layout каталога:
@@ -128,9 +128,7 @@
   - правый блок результатов с сортировкой, сеткой карточек и пагинацией.
 - поиск по названию применяется автоматически с debounce `400ms`;
 - пагинация серверная, размер страницы `12`;
-- сортировки:
-  - по названию (`localeCompare('ru')`);
-  - по лайкам (descending, tie-breaker по имени).
+- сортировка серверная (`sort=name|likes`).
 - карточка списка ведет на `/mushrooms/:id`, обратный переход в каталог сохраняет query из `location.state.backTo`.
 - вся карточка гриба кликабельна (переход в деталку), отдельная кнопка `Подробнее` не используется;
 - лайк-кнопка в карточке:
@@ -151,7 +149,7 @@
 ### Каталог статей и editor workspace
 
 - публичный каталог `/articles`:
-  - фильтры `q`, `author`, сортировка `newest|oldest|likes`, серверная пагинация;
+  - фильтры `q`, `author`, сортировка `newest|oldest|likes`, серверная пагинация (`page/pageSize`, `pageSize=12`);
   - карточка статьи кликабельна и ведет на `/articles/:id`;
   - лайк в карточке: optimistic toggle + rollback, guest popup при неавторизованном сценарии.
 - детальная статья `/articles/:id`:
@@ -190,45 +188,104 @@
   - после approve доступен переход на опубликованную карточку `/mushrooms/:id` при наличии `publishedMushroomId`.
   - в API отправляется строковый `decision`: `"Approve"` / `"Reject"`.
 
-### Storybook покрытие (актуально)
+### Storybook: runbook и правила
 
-Новые/обновленные истории для сценария каталога грибов:
+- Storybook guide: [docs/frontend/storybook.md](storybook.md);
+- coverage matrix: [docs/frontend/storybook-coverage.md](storybook-coverage.md);
+- основной локальный запуск:
+  - `cd frontend`;
+  - `npm run storybook` (`http://localhost:6006`);
+- проверки перед PR с UI-изменениями:
+  - `npm run stories:check`;
+  - `npm run stories:coverage:check`;
+  - `npm run storybook:build`;
+  - `npm run storybook:check`;
+  - `npm run test:components`.
+- для unit/component тестов primitives используется Vitest + Testing Library:
+  - `Button`, `Input`, `Select`, `Checkbox`, `Typography`.
+- глобальные decorators уже подключены в `.storybook/preview.ts`:
+  - `MemoryRouter`;
+  - `ToastProvider`.
+- для stories с `react-query` и auth/session добавляем локальные обертки:
+  - `QueryClientProvider`;
+  - `SessionProvider`.
+- реальные HTTP-запросы в stories запрещены: только mocks/fixtures и детерминированные state-сценарии.
+- coverage matrix обновляем при:
+  - добавлении/удалении/переименовании story;
+  - изменении Storybook `title`;
+  - изменении обязательных state-сценариев или ключевых page-level flow.
+  - команда обновления: `npm run stories:coverage`.
 
-- `Pages/Mushrooms/MushroomsPage`;
-- `Pages/Mushrooms/MushroomDetailPage`;
-- `Features/Mushrooms/AuthRequiredPopup`.
+### Storybook: покрытие ключевых сценариев
 
-Покрытие для article/editor flow:
+- грибной каталог и детальная:
+  - `Pages/Mushrooms/MushroomsPage`;
+  - `Pages/Mushrooms/MushroomDetailPage`;
+  - `Features/Mushrooms/AuthRequiredPopup`.
+- статьи и редакторский workflow:
+  - `Pages/Articles/ArticlesPage`;
+  - `Pages/Articles/ArticleDetailPage`;
+  - `Pages/Editor/EditorArticlesPage`;
+  - `Pages/Editor/EditorArticleFormPage`;
+  - `Pages/Editor/EditorReviewPage`;
+  - `Pages/Editor/EditorMushroomsPage`;
+  - `Pages/Editor/EditorMushroomFormPage`;
+  - `Pages/Editor/EditorMushroomReviewPage`;
+  - `Features/Articles/AuthRequiredPopup`.
+- общие state-компоненты:
+  - `Shared/UI/ContentState`;
+  - `Shared/UI/Composites/Toast`.
 
-- `Pages/Articles/ArticlesPage`;
-- `Pages/Articles/ArticleDetailPage`;
-- `Pages/Editor/EditorArticlesPage`;
-- `Pages/Editor/EditorArticleFormPage`;
-- `Pages/Editor/EditorReviewPage`;
-- `Pages/Editor/EditorMushroomsPage`;
-- `Pages/Editor/EditorMushroomFormPage`;
-- `Pages/Editor/EditorMushroomReviewPage`;
-- `Features/Articles/AuthRequiredPopup`.
+Минимум для page-level stories:
 
-Минимальный набор состояний:
-
-- гость и авторизованный пользователь;
-- открытое/закрытое состояние popup;
-- fallback-состояния картинок в карточках и деталке.
+- `loading`;
+- `empty`;
+- `error`;
+- базовый рабочий сценарий (`default`/`filled`);
+- auth-ветки (гость vs авторизованный) для экранов, где это влияет на UX.
 
 ### Навигация в header
 
 - `О нас` ведет на отдельную страницу `/about`;
 - `Грибы` ведет на отдельную страницу `/mushrooms`;
 - `Статьи` ведет на `/articles`;
-- поиск из `AppHeader` ведет на `/search?q=<query>` и показывает объединенную выдачу по статьям и грибам;
+- поиск из `AppHeader`:
+  - непустой запрос -> `/search?q=<query>`;
+  - пустой запрос -> `/search`.
 - `Отзывы` ведет на якорь главной страницы `/#reviews`, чтобы не создавать URL вида `/profile#about`;
 - переходы `Войти/Регистрация/Профиль` выполняются через client-side routing (без full page reload).
 
+### Глобальный поиск (`/search`)
+
+- `q` в query-параметрах — источник истины состояния поиска;
+- страница делает два server-side запроса:
+  - статьи (`GET /Articles/GetFilteredArticles`);
+  - грибы (`GET /Mushrooms/GetFilteredMushrooms`);
+- для обеих секций применяются фиксированные параметры:
+  - `sort=likes`;
+  - `page=1`;
+  - `pageSize=6`.
+
+### Общий компонент состояний (`ContentState`)
+
+- единый UI-компонент для page-level состояний:
+  - `loading`;
+  - `empty`;
+  - `error`;
+  - `info`.
+- контракт пропсов:
+  - `title`;
+  - `description?`;
+  - `tone?`;
+  - `action?`;
+  - `className?`.
+- используется в каталогах, деталках, профильных preview-блоках и editor-списках.
+
 ## Legacy (`frontend_fungi`)
 
-- Поддерживается для текущих рабочих сценариев и миграции.
-- Новые изменения желательно вносить в rewrite-часть, если нет блокеров.
+- Папка сохранена только как historical artifact.
+- В runtime/CI/Docker compose legacy-клиент не используется.
+- Новые изменения в `frontend_fungi/` не вносятся.
 
 ## Интеграция с API
 
@@ -251,4 +308,5 @@
 - сборка и линтер проходят;
 - нет raw debug/log кода в финальном варианте;
 - учтены loading/error/empty состояния;
+- для UI-изменений пройдены Storybook-проверки (`stories:check`, `storybook:build`, `storybook:check`);
 - если менялся API-контракт, обновлены docs и OpenAPI snapshot.

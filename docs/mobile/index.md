@@ -32,7 +32,10 @@
 ## Каталог грибов и лайки (актуальный контракт)
 
 - `GET /Mushrooms/GetFilteredMushrooms`:
-  - получить список грибов с фильтрами (поиск, семейство, съедобность, red book).
+  - получить список грибов с фильтрами (поиск, семейство, съедобность, red book);
+  - поддержка `Sort=name|likes`, `Page`, `PageSize`;
+  - значения по умолчанию: `Page=1`, `PageSize=12`;
+  - в ответе приходят `totalCount`, `page`, `pageSize` и `mushrooms[].likesCount`.
 - `GET /Mushrooms/GetMushroom?MushroomId=<guid>`:
   - получить полную карточку гриба для detail-screen.
 - `GET /MushroomLikes/GetLikesCount/count?mushroomId=<guid>`:
@@ -53,6 +56,9 @@
 Публичные endpoint-ы статей:
 
 - `GET /Articles/GetFilteredArticles` — публичный список статей (только опубликованные и уже доступные по дате);
+  - поддержка фильтров/параметров: `PartOfTitle`, `PartOfAuthorString`, `PublishDateFrom`, `PublishDateTo`, `Sort`, `Page`, `PageSize`;
+  - значения по умолчанию: `Page=1`, `PageSize=12`;
+  - в ответе приходят `totalCount`, `page`, `pageSize` и `articles[].likesCount`;
 - `GET /Articles/GetArticle?ArticleId=<guid>` — публичная карточка статьи;
 - `GET /ArticleLikes/GetLikesCount/count?ArticleId=<guid>` — счетчик лайков статьи;
 - `GET /ArticleLikes/HasUserLiked/user?ArticleId=<guid>` — проверка лайка текущего пользователя (auth);
@@ -74,6 +80,7 @@ Editor/moderation endpoint-ы (для web rewrite в этой итерации, 
 
 - `decision` в `POST /Articles/ModerateArticle` и `POST /Mushrooms/ModerateMushroom`
   принимается только строкой: `"Approve"` или `"Reject"`;
+- поле `decision` обязательно (отсутствие/null -> `400 invalid_request`);
 - числовые enum-значения (`0/1/...`) backend отклоняет `400`.
 
 Media endpoint-ы статей:

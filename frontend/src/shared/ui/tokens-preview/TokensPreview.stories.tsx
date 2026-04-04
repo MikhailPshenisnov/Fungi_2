@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { TokensPreview } from './TokensPreview';
 
 const meta = {
-  title: 'Foundation/Tokens',
+  title: 'Shared/UI/Composites/TokensPreview',
   component: TokensPreview,
   parameters: {
     layout: 'padded'

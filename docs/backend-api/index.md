@@ -39,6 +39,7 @@
 Стабильные `errorCode`:
 
 - `invalid_request` — ошибки валидации/конвертации запроса;
+- `registration_error` — ошибка регистрации (например, попытка `RegisterUser` при уже авторизованном пользователе);
 - `authorization_error` — нет/невалидный bearer-токен;
 - `access_denied` — недостаточно прав;
 - `not_found` — сущность не найдена;
@@ -58,6 +59,7 @@ HTTP-коды:
 ## Security hardening (P0)
 
 - `GET /Users/GetUser`:
+  - требует bearer-авторизацию;
   - доступ к чужому профилю только при праве `users.read`;
   - пользователь всегда может читать только свой профиль.
 - `GET /Users/TestGetUsers`:
@@ -173,6 +175,10 @@ Content-Type: application/json
   - DB-level фильтрация (без загрузки всех грибов в память);
   - поддержка сортировки: `Sort=name|likes`;
   - поддержка пагинации: `Page`, `PageSize`;
+  - значения по умолчанию: `Page=1`, `PageSize=12`;
+  - ограничение `PageSize`: `1..100`;
+  - невалидные `Page/PageSize/Sort` возвращают `400 invalid_request`;
+  - endpoint публичный (без `[Authorize]`), lock в Swagger отображается из-за глобальной security-схемы;
   - в ответе:
     - `mushrooms[].likesCount`;
     - `totalCount`, `page`, `pageSize`.
@@ -222,6 +228,8 @@ Editor/moderation endpoint-ы:
 - `decision` в `ModerateMushroomRequest` принимается строго строкой:
   - `"Approve"` или `"Reject"`;
   - числовые значения (`0/1/...`) отклоняются как `400 invalid_request`.
+- поле `decision` обязательно:
+  - отсутствие/null отклоняется как `400 invalid_request`.
 
 Legacy endpoint-ы (оставлены для совместимости, но закрыты purge-правом):
 
@@ -306,6 +314,14 @@ Media для грибов:
 - `Draft/InReview/Rejected/Archived/Scheduled (до даты)` не попадают в публичную выдачу.
 - фильтрация выполняется на уровне БД (без полного in-memory скана);
 - `likesCount` для списка статей заполняется bulk-агрегацией, без N+1 на каждый элемент.
+- в `GetFilteredArticles` доступны query-параметры:
+  - `PartOfTitle`, `PartOfAuthorString`, `PublishDateFrom`, `PublishDateTo`, `Sort`, `Page`, `PageSize`;
+  - значения по умолчанию: `Page=1`, `PageSize=12`;
+  - ограничение `PageSize`: `1..100`;
+  - невалидные `Page/PageSize/Sort` возвращают `400 invalid_request`;
+  - endpoint публичный (без `[Authorize]`), lock в Swagger отображается из-за глобальной security-схемы.
+- в ответе `GetFilteredArticles` дополнительно возвращаются:
+  - `totalCount`, `page`, `pageSize`.
 
 ### Editor/moderation endpoint-ы
 
@@ -320,6 +336,7 @@ Media для грибов:
 - `POST /Articles/ModerateArticle`:
   - решение `Approve/Reject`;
   - `decision` принимается строго строкой `"Approve"` или `"Reject"` (числа отклоняются `400 invalid_request`);
+  - поле `decision` обязательно (отсутствие/null -> `400 invalid_request`);
   - при approve:
     - `Published`, если `PublishDate <= now`;
     - `Scheduled`, если дата в будущем.

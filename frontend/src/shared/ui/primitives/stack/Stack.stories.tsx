@@ -9,7 +9,7 @@ const blockStyle = {
 };
 
 const meta = {
-  title: 'Shared/UI/Stack',
+  title: 'Shared/UI/Primitives/Stack',
   component: Stack
 } satisfies Meta<typeof Stack>;
 

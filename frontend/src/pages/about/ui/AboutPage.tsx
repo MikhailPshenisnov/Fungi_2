@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useSession } from '@entities/session';
 import { Card, Container, Stack, Typography } from '@shared/ui';
 import { PageLayout } from '@widgets/layout';
 import styles from './AboutPage.module.css';
@@ -99,6 +100,10 @@ const statusClassByLabel: Record<string, string> = {
 };
 
 export function AboutPage() {
+  const { isAuthenticated } = useSession();
+  const secondaryCtaHref = isAuthenticated ? '/profile' : '/register';
+  const secondaryCtaLabel = isAuthenticated ? 'Открыть профиль' : 'Создать аккаунт';
+
   return (
     <PageLayout>
       <div className={styles.page}>
@@ -128,7 +133,9 @@ export function AboutPage() {
 
               <Card className={styles.heroPanel}>
                 <Stack gap={12}>
-                  <Typography variant="h4">Почему мы это делаем</Typography>
+                  <Typography variant="h4" as="h2">
+                    Почему мы это делаем
+                  </Typography>
                   <Typography variant="bodyS" className={styles.mutedText}>
                     В теме грибов много разрозненных источников и сложных описаний. Мы собираем данные в единую
                     структуру и даем понятный вход для новичков и практикующих грибников.
@@ -162,7 +169,9 @@ export function AboutPage() {
             <div className={styles.twoColumnGrid}>
               <Card className={styles.sectionCard}>
                 <Stack gap={10}>
-                  <Typography variant="h4">Проблема</Typography>
+                  <Typography variant="h4" as="h3">
+                    Проблема
+                  </Typography>
                   <Typography variant="bodyS" className={styles.mutedText}>
                     Информация о грибах часто разбросана, а важные признаки подаются неструктурно. В результате
                     сложнее сравнивать виды и принимать осторожные решения.
@@ -171,7 +180,9 @@ export function AboutPage() {
               </Card>
               <Card className={styles.sectionCard}>
                 <Stack gap={10}>
-                  <Typography variant="h4">Наша идея</Typography>
+                  <Typography variant="h4" as="h3">
+                    Наша идея
+                  </Typography>
                   <Typography variant="bodyS" className={styles.mutedText}>
                     Объединить каталог, статьи и персональный профиль в одну систему, где всё связано едиными
                     контрактами и понятной навигацией.
@@ -192,7 +203,9 @@ export function AboutPage() {
               {productFeatures.map((feature) => (
                 <Card key={feature.title} className={styles.featureCard}>
                   <Stack gap={10}>
-                    <Typography variant="h5">{feature.title}</Typography>
+                    <Typography variant="h5" as="h3">
+                      {feature.title}
+                    </Typography>
                     <Typography variant="bodyS" className={styles.mutedText}>
                       {feature.description}
                     </Typography>
@@ -214,7 +227,9 @@ export function AboutPage() {
                 <li key={step.title} className={styles.flowItem}>
                   <span className={styles.flowIndex}>{index + 1}</span>
                   <div>
-                    <Typography variant="h5">{step.title}</Typography>
+                    <Typography variant="h5" as="h3">
+                      {step.title}
+                    </Typography>
                     <Typography variant="bodyS" className={styles.mutedText}>
                       {step.description}
                     </Typography>
@@ -250,7 +265,9 @@ export function AboutPage() {
               {teamMembers.map((member) => (
                 <Card key={member.title} className={styles.teamCard}>
                   <Stack gap={8}>
-                    <Typography variant="h5">{member.title}</Typography>
+                    <Typography variant="h5" as="h3">
+                      {member.title}
+                    </Typography>
                     <Typography variant="bodyS" className={styles.mutedText}>
                       {member.description}
                     </Typography>
@@ -290,7 +307,9 @@ export function AboutPage() {
                     <span className={`${styles.statusBadge} ${statusClassByLabel[item.status] ?? styles.statusNext}`}>
                       {item.status}
                     </span>
-                    <Typography variant="h5">{item.title}</Typography>
+                    <Typography variant="h5" as="h3">
+                      {item.title}
+                    </Typography>
                     <Typography variant="bodyS" className={styles.mutedText}>
                       {item.description}
                     </Typography>
@@ -306,7 +325,9 @@ export function AboutPage() {
             <div className={styles.contactsGrid}>
               <Card className={styles.sectionCard}>
                 <Stack gap={10}>
-                  <Typography variant="h4">Связаться с командой</Typography>
+                  <Typography variant="h4" as="h2">
+                    Связаться с командой
+                  </Typography>
                   <Typography variant="bodyS" className={styles.mutedText}>
                     Если заметили неточность или хотите предложить улучшение, напишите нам.
                   </Typography>
@@ -317,7 +338,7 @@ export function AboutPage() {
               </Card>
               <Card className={styles.finalCtaCard}>
                 <Stack gap={10}>
-                  <Typography variant="h4" className={styles.finalCtaTitle}>
+                  <Typography variant="h4" as="h2" className={styles.finalCtaTitle}>
                     Готовы начать?
                   </Typography>
                   <Typography variant="bodyS" className={styles.mutedTextOnDark}>
@@ -327,8 +348,8 @@ export function AboutPage() {
                     <Link to="/mushrooms" className={styles.primaryLink}>
                       Открыть каталог
                     </Link>
-                    <Link to="/register" className={styles.secondaryLinkInverted}>
-                      Создать аккаунт
+                    <Link to={secondaryCtaHref} className={styles.secondaryLinkInverted}>
+                      {secondaryCtaLabel}
                     </Link>
                   </div>
                 </Stack>

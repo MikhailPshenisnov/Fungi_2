@@ -393,7 +393,9 @@ export function MushroomsPage() {
 
         <div className={styles.layout}>
           <aside className={styles.filtersPanel}>
-            <Typography variant="h5">Фильтры</Typography>
+            <Typography variant="h5" as="h3">
+              Фильтры
+            </Typography>
 
             <Input
               label="Семейство"
@@ -507,7 +509,9 @@ export function MushroomsPage() {
                           )}
                         </div>
 
-                        <Typography variant="h5">{mushroom.name}</Typography>
+                        <Typography variant="h5" as="h3">
+                          {mushroom.name}
+                        </Typography>
                         <Typography variant="caption" className={styles.latinName}>
                           {mushroom.latinName ?? 'Латинское название отсутствует'}
                         </Typography>

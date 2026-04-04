@@ -40,6 +40,21 @@
 - frontend: сборка/линт проходят;
 - docs: `mkdocs build --strict` проходит в CI.
 
+## CI (GitHub Actions)
+
+Единый workflow `.github/workflows/ci.yml` запускается на `push` (`dev`, `feature/**`) и `pull_request`:
+
+- `frontend` job:
+  - `npm run lint`;
+  - `npm run typecheck`;
+  - `npm run stories:check`;
+  - `npm run storybook:build`;
+  - `npm run test:components`.
+- `backend` job:
+  - `dotnet restore/build/test` для `BackendFungi/BackendFungi.sln`.
+- `docs` job:
+  - `mkdocs build --strict`.
+
 ## Релизный чеклист backend (существующая БД)
 
 - применить SQL upgrade-скрипты:
