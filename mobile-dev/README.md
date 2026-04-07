@@ -17,11 +17,14 @@ git clone https://github.com/MikhailPshenisnov/Fungi_2/
 # Перейдите в папку проекта
 cd Fungi_2
 
-# Показать все удаленные ветки (должна быть origin/mobile)
+# перейдите еще дальше
+cd mobile-dev
+
+# Показать все удаленные ветки (должна быть origin/mobile-dev)
 git branch -r
 
 # Загрузить удалённую ветку к себе локально и перейти на нее
-git checkout mobile
+git checkout mobile-dev
 ```
 
 ### 2.Откройте проект в любой среде разработки (Я использую VS code)
@@ -43,3 +46,43 @@ npm install
 npm start
 ```
 Должен появиться QR-код. Сканируйте его с помощью телефона и у вас откроется ваше приложение
+
+### 4. Дефолтные ошибки 
+Package-name -- имя пакета (условно 'expo')
+version -версия (улсовно 54.0.33)
+## 4.1 Unable to resolve package-name@version
+У вас скорее всего не установлен пакет 'package-name'
+решение:
+```
+npm install package-name@version
+```
+
+## 4.2 Package-name@verion1 expected version version2
+У вас установлена версия 'version1', а рекомендуемая версия -- version2 (лучше установить новую)
+решение:
+```
+npm install package-name@version2
+```
+
+## 4.3 Could not read package.json
+Скорее всего вы не в директории проекта
+Запуск npm start должен производится из директории с файлом package.json
+решение:
+посмотри файлы директории командами ls или dir
+если файла package.json нет продолите поиски по ближайшим каталогам
+каталог верхнего уровня 
+``` 
+cd ..
+```
+каталоги нижнего уровня
+```
+ls
+name1 name2 name3 name4
+cd name1
+```
+где name1-4 это вывод команды ls (или же dir для виндовс) 
+
+
+
+
+
