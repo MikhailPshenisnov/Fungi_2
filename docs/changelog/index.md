@@ -1,5 +1,36 @@
 # Журнал изменений
 
+## 2026-04-06
+
+### Backend
+
+- baseline грибов переведен с моков на импорт из CSV:
+  - добавлен источник `DBInit/data/mushrooms.csv`;
+  - добавлен генератор `DBInit/scripts/generate_mushrooms_seed.py`;
+  - добавлены SQL-артефакты `DBInit/6-seed-mushrooms-csv.sql` и `DBInit/6-replace-mushrooms-csv.sql`.
+- активный `1-mock-data.sql` очищен от старых моковых вставок грибов/ревизий/лайков;
+- для существующих БД добавлен upgrade `DBInit/6-upgrade-mushroom-field-lengths.sql`;
+- расширены лимиты полей грибов в схеме/EF/моделях:
+  - `SynonymousName: 128 -> 256`;
+  - `StemColor: 64 -> 256`;
+  - `CapColor: 64 -> 256`.
+- `Eatable` расширен новым допустимым значением `"Неизвестно"` (используется для CSV baseline).
+
+### Frontend
+
+- в форме редактора грибов добавлено значение съедобности `"Неизвестно"` в списке вариантов.
+
+### DevOps / Docs
+
+- обновлены runbook-инструкции по БД в `README.md`:
+  - добавлен `6-upgrade-mushroom-field-lengths.sql`;
+  - добавлен one-time импорт `6-replace-mushrooms-csv.sql`;
+  - добавлена команда генерации seed из CSV.
+- обновлена `docs/backend-api/index.md`:
+  - зафиксирован CSV baseline и правила нормализации;
+  - добавлен апгрейд `6-upgrade-mushroom-field-lengths.sql`;
+  - отражено значение `Eatable = "Неизвестно"`.
+
 ## 2026-04-04
 
 ### Frontend

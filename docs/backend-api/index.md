@@ -163,7 +163,8 @@ Content-Type: application/json
   - `DBInit/2-upgrade-avatar.sql`;
   - `DBInit/3-upgrade-rbac.sql`;
   - `DBInit/4-upgrade-articles-workflow.sql`;
-  - `DBInit/5-upgrade-mushrooms-workflow.sql`.
+  - `DBInit/5-upgrade-mushrooms-workflow.sql`;
+  - `DBInit/6-upgrade-mushroom-field-lengths.sql`.
 - `DBInit/3-upgrade-rbac.sql` создает таблицы `Permissions`/`RolePermissions` и baseline-набор прав.
 
 ## Контракт каталога грибов и лайков
@@ -182,6 +183,7 @@ Content-Type: application/json
   - в ответе:
     - `mushrooms[].likesCount`;
     - `totalCount`, `page`, `pageSize`.
+  - в baseline-данных `Eatable` может быть `"Неизвестно"` (кроме `"Съедобный"`, `"Полусъедобный"`, `"Несъедобный"`).
 - `GET /Mushrooms/GetMushroom?MushroomId=<guid>`:
   - детальная карточка гриба для страницы `/mushrooms/:id`.
   - возвращает только опубликованный snapshot из `Mushrooms`.
@@ -258,6 +260,21 @@ Legacy endpoint-ы (оставлены для совместимости, но �
 Единообразие ошибок:
 
 - для несуществующего `mushroomId` все likes endpoint-ы возвращают `404`.
+
+## Baseline грибов из CSV
+
+- источник baseline: `DBInit/data/mushrooms.csv`;
+- генератор SQL: `python3 DBInit/scripts/generate_mushrooms_seed.py`;
+- артефакты генератора:
+  - `DBInit/6-seed-mushrooms-csv.sql`;
+  - `DBInit/6-replace-mushrooms-csv.sql`.
+- текущая политика baseline (v1):
+  - исключается строка `Тестовый гриб`;
+  - дедуп по `Наименование` (берётся первое вхождение);
+  - отбрасываются записи с невалидными stem-данными;
+  - фото временно технические:
+    - `HeaderPhotoLink = /media/mushrooms/placeholder.webp`;
+    - `ExtraPhotoLinks = null`.
 
 Media для грибов:
 
@@ -399,7 +416,8 @@ Media для грибов:
   1. `DBInit/2-upgrade-avatar.sql`;
   2. `DBInit/3-upgrade-rbac.sql`;
   3. `DBInit/4-upgrade-articles-workflow.sql`;
-  4. `DBInit/5-upgrade-mushrooms-workflow.sql`.
+  4. `DBInit/5-upgrade-mushrooms-workflow.sql`;
+  5. `DBInit/6-upgrade-mushroom-field-lengths.sql`.
 - `4-upgrade-articles-workflow.sql`:
   - добавляет поля lifecycle/audit для `Articles`;
   - backfill старых записей в `Published`;
@@ -410,6 +428,14 @@ Media для грибов:
   - создает таблицы `MushroomRevisions` и `MushroomRevisionDoppelgangers`;
   - выполняет backfill опубликованных ревизий из текущего каталога;
   - seed permission-кодов workflow/media для грибов и role-permissions.
+- `6-upgrade-mushroom-field-lengths.sql`:
+  - расширяет лимиты колонок грибов под CSV baseline:
+    - `SynonymousName` до `256`;
+    - `StemColor` до `256`;
+    - `CapColor` до `256`.
+- `6-replace-mushrooms-csv.sql`:
+  - one-time full replace грибного baseline в существующей БД;
+  - очищает старый грибной домен и загружает актуальные данные из CSV-генератора.
 - в backend запущен background scheduler:
   - каждые `60s` переводит `Scheduled -> Published`, когда наступила дата.
 

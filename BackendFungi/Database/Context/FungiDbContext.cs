@@ -94,7 +94,7 @@ public partial class FungiDbContext : DbContext
             entity.HasIndex(e => e.Name, "mushrooms_unique_name").IsUnique();
             entity.HasIndex(e => e.IsArchived, "idx_mushrooms_is_archived");
             entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.CapColor).HasMaxLength(64);
+            entity.Property(e => e.CapColor).HasMaxLength(256);
             entity.Property(e => e.CapType).HasMaxLength(64);
             entity.Property(e => e.CapUndersideType).HasMaxLength(64);
             entity.Property(e => e.Eatable).HasMaxLength(16);
@@ -104,9 +104,9 @@ public partial class FungiDbContext : DbContext
             entity.Property(e => e.LatinName).HasMaxLength(128);
             entity.Property(e => e.Name).HasMaxLength(128);
             entity.Property(e => e.IsArchived).HasDefaultValue(false);
-            entity.Property(e => e.StemColor).HasMaxLength(64);
+            entity.Property(e => e.StemColor).HasMaxLength(256);
             entity.Property(e => e.StemType).HasMaxLength(64);
-            entity.Property(e => e.SynonymousName).HasMaxLength(128);
+            entity.Property(e => e.SynonymousName).HasMaxLength(256);
         });
 
         modelBuilder.Entity<MushroomRevision>(entity =>
@@ -123,14 +123,14 @@ public partial class FungiDbContext : DbContext
                 "\"Status\" IN ('Draft', 'InReview', 'Published', 'Rejected', 'Archived')");
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Name).HasMaxLength(128);
-            entity.Property(e => e.SynonymousName).HasMaxLength(128);
+            entity.Property(e => e.SynonymousName).HasMaxLength(256);
             entity.Property(e => e.LatinName).HasMaxLength(128);
             entity.Property(e => e.Family).HasMaxLength(128);
             entity.Property(e => e.Eatable).HasMaxLength(16);
             entity.Property(e => e.StemType).HasMaxLength(64);
-            entity.Property(e => e.StemColor).HasMaxLength(64);
+            entity.Property(e => e.StemColor).HasMaxLength(256);
             entity.Property(e => e.CapType).HasMaxLength(64);
-            entity.Property(e => e.CapColor).HasMaxLength(64);
+            entity.Property(e => e.CapColor).HasMaxLength(256);
             entity.Property(e => e.CapUndersideType).HasMaxLength(64);
             entity.Property(e => e.HeaderPhotoLink).HasMaxLength(256);
             entity.Property(e => e.ExtraPhotoLinks).HasMaxLength(1024);

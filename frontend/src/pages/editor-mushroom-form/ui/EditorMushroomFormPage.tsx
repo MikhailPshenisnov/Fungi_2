@@ -55,7 +55,7 @@ interface MushroomFormState {
 type SaveMode = 'idle' | 'saving' | 'submitting' | 'archiving' | 'uploading';
 type UploadTarget = 'header' | 'extra' | null;
 
-const EATABLE_OPTIONS = ['Съедобный', 'Полусъедобный', 'Несъедобный'];
+const EATABLE_OPTIONS = ['Съедобный', 'Полусъедобный', 'Несъедобный', 'Неизвестно'];
 const STORYBOOK_TOKEN = 'storybook-token';
 
 function splitLines(value: string): string[] {

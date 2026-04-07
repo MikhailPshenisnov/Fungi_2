@@ -3,15 +3,15 @@ namespace BackendFungi.Models;
 public class Mushroom
 {
     public const int MaxNameLength = 128;
-    public const int MaxSynonymousNameLength = 128;
+    public const int MaxSynonymousNameLength = 256;
     public const int MaxLatinNameLength = 128;
     public const int MaxFamilyLength = 128;
     public const int MaxEatableLength = 16;
-    public static readonly List<string> PossibleEatableVariants = new() { "Съедобный", "Полусъедобный", "Несъедобный" };
+    public static readonly List<string> PossibleEatableVariants = new() { "Съедобный", "Полусъедобный", "Несъедобный", "Неизвестно" };
     public const int MaxStemTypeLength = 64;
-    public const int MaxStemColorLength = 64;
+    public const int MaxStemColorLength = 256;
     public const int MaxCapTypeLength = 64;
-    public const int MaxCapColorLength = 64;
+    public const int MaxCapColorLength = 256;
     public const int MaxCapUndersideTypeLength = 64;
     public const int MaxHeaderPhotoLinkLength = 256;
     public const int MaxExtraPhotoLinksLength = 1024;
