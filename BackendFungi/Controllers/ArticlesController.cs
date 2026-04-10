@@ -38,9 +38,14 @@ public class ArticlesController : ControllerBase
         _articleMediaStorageService = articleMediaStorageService;
     }
 
+    [AllowAnonymous]
     [HttpGet]
     [SwaggerOperation(OperationId = "GetArticle", Summary = "Get article",
         Description = "Receives published article information by id")]
+    [ProducesResponseType(typeof(BaseResponse<GetArticleResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<BaseResponse<GetArticleResponse>>> GetArticle(
         [FromQuery] GetArticleRequest request,
         CancellationToken cancellationToken)
@@ -53,9 +58,13 @@ public class ArticlesController : ControllerBase
         return Ok(response);
     }
 
+    [AllowAnonymous]
     [HttpGet]
     [SwaggerOperation(OperationId = "GetFilteredArticles", Summary = "Get filtered articles",
         Description = "Gets a list of published articles with filters")]
+    [ProducesResponseType(typeof(BaseResponse<GetFilteredArticlesResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<BaseResponse<GetFilteredArticlesResponse>>> GetFilteredArticles(
         [FromQuery] GetFilteredArticlesRequest request,
         CancellationToken cancellationToken)
@@ -105,6 +114,12 @@ public class ArticlesController : ControllerBase
     [HttpGet]
     [SwaggerOperation(OperationId = "GetEditorArticle", Summary = "Get editor article",
         Description = "Returns full article data for editor and moderation flow")]
+    [ProducesResponseType(typeof(BaseResponse<GetEditorArticleResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<BaseResponse<GetEditorArticleResponse>>> GetEditorArticle(
         [FromQuery] GetEditorArticleRequest request,
         CancellationToken cancellationToken)
@@ -136,6 +151,10 @@ public class ArticlesController : ControllerBase
     [HttpGet]
     [SwaggerOperation(OperationId = "GetMyDrafts", Summary = "Get my drafts",
         Description = "Returns current user drafts, rejected and in-review articles")]
+    [ProducesResponseType(typeof(BaseResponse<GetMyDraftsResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<BaseResponse<GetMyDraftsResponse>>> GetMyDrafts(CancellationToken cancellationToken)
     {
         var user = await _accessCheckService.CheckPermission(
@@ -156,6 +175,10 @@ public class ArticlesController : ControllerBase
     [HttpGet]
     [SwaggerOperation(OperationId = "GetMyMaterials", Summary = "Get my materials",
         Description = "Returns current user published, scheduled and archived articles")]
+    [ProducesResponseType(typeof(BaseResponse<GetMyMaterialsResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<BaseResponse<GetMyMaterialsResponse>>> GetMyMaterials(CancellationToken cancellationToken)
     {
         var user = await _accessCheckService.CheckPermission(
@@ -176,6 +199,10 @@ public class ArticlesController : ControllerBase
     [HttpGet]
     [SwaggerOperation(OperationId = "GetModerationQueue", Summary = "Get moderation queue",
         Description = "Returns articles waiting for moderation")]
+    [ProducesResponseType(typeof(BaseResponse<GetModerationQueueResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<BaseResponse<GetModerationQueueResponse>>> GetModerationQueue(
         CancellationToken cancellationToken)
     {
@@ -197,6 +224,13 @@ public class ArticlesController : ControllerBase
     [HttpPost]
     [SwaggerOperation(OperationId = "CreateDraft", Summary = "Create draft",
         Description = "Creates draft article for current editor")]
+    [ProducesResponseType(typeof(BaseResponse<CreateDraftResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<BaseResponse<CreateDraftResponse>>> CreateDraft(
         [FromBody] CreateDraftRequest request,
         CancellationToken cancellationToken)
@@ -249,6 +283,13 @@ public class ArticlesController : ControllerBase
     [HttpPut]
     [SwaggerOperation(OperationId = "UpdateDraft", Summary = "Update draft",
         Description = "Updates draft/rejected article content")]
+    [ProducesResponseType(typeof(BaseResponse<UpdateDraftResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<BaseResponse<UpdateDraftResponse>>> UpdateDraft(
         [FromBody] UpdateDraftRequest request,
         CancellationToken cancellationToken)
@@ -311,6 +352,12 @@ public class ArticlesController : ControllerBase
     [HttpPost]
     [SwaggerOperation(OperationId = "SubmitForReview", Summary = "Submit for review",
         Description = "Moves draft/rejected article to moderation queue")]
+    [ProducesResponseType(typeof(BaseResponse<SubmitForReviewResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<BaseResponse<SubmitForReviewResponse>>> SubmitForReview(
         [FromBody] SubmitForReviewRequest request,
         CancellationToken cancellationToken)
@@ -342,6 +389,12 @@ public class ArticlesController : ControllerBase
     [HttpPost]
     [SwaggerOperation(OperationId = "ModerateArticle", Summary = "Moderate article",
         Description = "Approves or rejects article from moderation queue")]
+    [ProducesResponseType(typeof(BaseResponse<ModerateArticleResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<BaseResponse<ModerateArticleResponse>>> ModerateArticle(
         [FromBody] ModerateArticleRequest request,
         CancellationToken cancellationToken)
@@ -374,6 +427,12 @@ public class ArticlesController : ControllerBase
     [HttpPost]
     [SwaggerOperation(OperationId = "ArchiveArticle", Summary = "Archive article",
         Description = "Archives article instead of deleting it")]
+    [ProducesResponseType(typeof(BaseResponse<ArchiveArticleResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<BaseResponse<ArchiveArticleResponse>>> ArchiveArticle(
         [FromBody] ArchiveArticleRequest request,
         CancellationToken cancellationToken)
@@ -406,6 +465,11 @@ public class ArticlesController : ControllerBase
     [Consumes("multipart/form-data")]
     [SwaggerOperation(OperationId = "UploadArticleImage", Summary = "Upload article image",
         Description = "Uploads image for article content and returns media url/path")]
+    [ProducesResponseType(typeof(BaseResponse<UploadArticleImageResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<BaseResponse<UploadArticleImageResponse>>> UploadArticleImage(
         [FromForm] UploadArticleImageRequest request,
         CancellationToken cancellationToken)
@@ -429,6 +493,11 @@ public class ArticlesController : ControllerBase
     [HttpDelete]
     [SwaggerOperation(OperationId = "DeleteArticleImage", Summary = "Delete article image",
         Description = "Deletes uploaded article image by relative path")]
+    [ProducesResponseType(typeof(BaseResponse<DeleteArticleImageResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<BaseResponse<DeleteArticleImageResponse>>> DeleteArticleImage(
         [FromQuery] DeleteArticleImageRequest request,
         CancellationToken cancellationToken)
@@ -451,6 +520,12 @@ public class ArticlesController : ControllerBase
     [HttpPost]
     [SwaggerOperation(OperationId = "CreateArticle", Summary = "Create article (legacy)",
         Description = "Legacy endpoint. Prefer CreateDraft/SubmitForReview workflow")]
+    [ProducesResponseType(typeof(BaseResponse<CreateArticleResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<BaseResponse<CreateArticleResponse>>> CreateArticle(
         [FromBody] CreateArticleRequest request,
         CancellationToken cancellationToken)
@@ -503,6 +578,13 @@ public class ArticlesController : ControllerBase
     [HttpPut]
     [SwaggerOperation(OperationId = "UpdateArticle", Summary = "Update article (legacy)",
         Description = "Legacy endpoint. Prefer UpdateDraft")]
+    [ProducesResponseType(typeof(BaseResponse<UpdateArticleResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<BaseResponse<UpdateArticleResponse>>> UpdateArticle(
         [FromBody] UpdateArticleRequest request,
         CancellationToken cancellationToken)
@@ -557,6 +639,11 @@ public class ArticlesController : ControllerBase
     [Obsolete("Use ArchiveArticle for business workflow. Hard delete is reserved for purge operations.")]
     [SwaggerOperation(OperationId = "DeleteArticle", Summary = "Delete article (deprecated)",
         Description = "Hard delete endpoint. Deprecated, use ArchiveArticle")]
+    [ProducesResponseType(typeof(BaseResponse<DeleteArticleResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<BaseResponse<DeleteArticleResponse>>> DeleteArticle(
         [FromQuery] DeleteArticleRequest request,
         CancellationToken cancellationToken)

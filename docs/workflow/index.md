@@ -13,14 +13,14 @@
 
 - общая документация: `docs/` (MkDocs);
 - API-контракт: backend-код + swagger-аннотации + live OpenAPI (`/swagger/v1/swagger.json`);
-- snapshot OpenAPI: `quickstart/fungi-api-swagger.json`.
+- snapshot OpenAPI: [quickstart/fungi-api-swagger.json](https://github.com/MikhailPshenisnov/Fungi_2/blob/HEAD/quickstart/fungi-api-swagger.json).
 
 ## Что обновлять при изменениях
 
 - изменение API (routes/DTO/auth/codes):
   - обновить `docs/backend-api/*`;
   - обновить `quickstart/fungi-api-swagger.json`;
-  - добавить changelog для frontend/mobile при breaking changes.
+  - добавить changelog для frontend/mobile в [docs/changelog/index.md](../changelog/index.md) при client-impact изменениях.
 - изменение архитектуры:
   - обновить `docs/architecture/*` и затронутые клиентские разделы.
 - изменение процесса разработки:
@@ -131,14 +131,14 @@ npm --prefix frontend run e2e:smoke
 
 ## Релизный чеклист backend (существующая БД)
 
-- применить SQL upgrade-скрипты:
-  - `DBInit/2-upgrade-avatar.sql`;
-  - `DBInit/3-upgrade-rbac.sql`.
+- применить SQL upgrade-скрипты по каноническому списку из [Быстрого старта](../getting-started/index.md).
 - перезапустить backend после применения upgrade-скриптов.
 - обновить OpenAPI snapshot:
-  - `curl -fsS http://localhost:5000/swagger/v1/swagger.json -o quickstart/fungi-api-swagger.json`.
+  - `curl -fsS http://localhost:5000/swagger/v1/swagger.json | jq -S . > quickstart/fungi-api-swagger.json.tmp && mv quickstart/fungi-api-swagger.json.tmp quickstart/fungi-api-swagger.json`.
 - выполнить smoke-проверку:
   - login;
   - `GET /Users/GetCurrentUserProfile`;
   - upload/delete avatar;
-  - доступ к `GET /Roles/GetAllPermissions`.
+  - доступ к `GET /Roles/GetAllPermissions`;
+  - article workflow: `CreateDraft -> UpdateDraft -> SubmitForReview -> ModerateArticle(Approve/Reject) -> ArchiveArticle`;
+  - проверка публичного чтения статей (`GetFilteredArticles`/`GetArticle`) и scheduled-публикации (lag до `60s`).

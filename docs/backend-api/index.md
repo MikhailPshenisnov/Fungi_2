@@ -5,7 +5,7 @@
 ## Swagger / OpenAPI
 
 - Live Swagger UI: `http://localhost:5000/swagger/index.html`
-- Snapshot OpenAPI: `quickstart/fungi-api-swagger.json`
+- Snapshot OpenAPI: [quickstart/fungi-api-swagger.json](https://github.com/MikhailPshenisnov/Fungi_2/blob/HEAD/quickstart/fungi-api-swagger.json)
 - Детали по источнику истины и обновлению snapshot: [OpenAPI и Swagger](openapi.md)
 
 ## Контракт валидации auth
@@ -179,7 +179,7 @@ Content-Type: application/json
   - значения по умолчанию: `Page=1`, `PageSize=12`;
   - ограничение `PageSize`: `1..100`;
   - невалидные `Page/PageSize/Sort` возвращают `400 invalid_request`;
-  - endpoint публичный (без `[Authorize]`), lock в Swagger отображается из-за глобальной security-схемы;
+  - endpoint публичный (без `[Authorize]`);
   - в ответе:
     - `mushrooms[].likesCount`;
     - `totalCount`, `page`, `pageSize`.
@@ -315,137 +315,29 @@ Media для грибов:
 
 ## Контракт статей: editor workflow (v1)
 
-### Статусы статьи
+Полный операционный контракт публикации статей вынесен в отдельный runbook:
 
-- `Draft`;
-- `InReview`;
-- `Scheduled`;
-- `Published`;
-- `Rejected`;
-- `Archived`.
+- [Runbook публикации статей (mobile/web)](articles-publication-runbook.md)
 
-### Публичные правила видимости
+Кратко:
 
-- `GET /Articles/GetFilteredArticles` возвращает только `Published` статьи с наступившей датой публикации (`PublishDate <= now`);
-- `GET /Articles/GetArticle` в публичном сценарии также доступен только для уже опубликованных статей;
-- `Draft/InReview/Rejected/Archived/Scheduled (до даты)` не попадают в публичную выдачу.
-- фильтрация выполняется на уровне БД (без полного in-memory скана);
-- `likesCount` для списка статей заполняется bulk-агрегацией, без N+1 на каждый элемент.
-- в `GetFilteredArticles` доступны query-параметры:
-  - `PartOfTitle`, `PartOfAuthorString`, `PublishDateFrom`, `PublishDateTo`, `Sort`, `Page`, `PageSize`;
-  - значения по умолчанию: `Page=1`, `PageSize=12`;
-  - ограничение `PageSize`: `1..100`;
-  - невалидные `Page/PageSize/Sort` возвращают `400 invalid_request`;
-  - endpoint публичный (без `[Authorize]`), lock в Swagger отображается из-за глобальной security-схемы.
-- в ответе `GetFilteredArticles` дополнительно возвращаются:
-  - `totalCount`, `page`, `pageSize`.
-
-### Editor/moderation endpoint-ы
-
-- `POST /Articles/CreateDraft`:
-  - создаёт черновик текущего автора;
-  - bearer auth + `content.articles.write`.
-- `PUT /Articles/UpdateDraft`:
-  - обновляет черновик;
-  - owner или роль с `content.articles.manage-any`.
-- `POST /Articles/SubmitForReview`:
-  - переводит `Draft/Rejected -> InReview`.
-- `POST /Articles/ModerateArticle`:
-  - решение `Approve/Reject`;
-  - `decision` принимается строго строкой `"Approve"` или `"Reject"` (числа отклоняются `400 invalid_request`);
-  - поле `decision` обязательно (отсутствие/null -> `400 invalid_request`);
-  - при approve:
-    - `Published`, если `PublishDate <= now`;
-    - `Scheduled`, если дата в будущем.
-- `POST /Articles/ArchiveArticle`:
-  - бизнес-удаление через архивирование (`-> Archived`).
-- `GET /Articles/GetMyDrafts`:
-  - возвращает материалы текущего автора в статусах `Draft/Rejected/InReview`.
-- `GET /Articles/GetMyMaterials`:
-  - возвращает материалы текущего автора в статусах `Published/Scheduled/Archived`.
-- `GET /Articles/GetModerationQueue`:
-  - очередь статей в `InReview`.
-- `GET /Articles/GetEditorArticle`:
-  - полная editor-модель статьи для owner/manage-any/review ролей.
-
-### Media endpoint-ы статей
-
-- `POST /Articles/UploadArticleImage`:
-  - `multipart/form-data`, поле `image`;
-  - bearer auth + `content.article-media.write`;
-  - response: `mediaUrl`, `mediaPath`.
-- `DELETE /Articles/DeleteArticleImage?MediaPath=...`:
-  - удаление файла по относительному пути;
-  - bearer auth + `content.article-media.write`.
-
-Валидация media (v1):
-
-- размер файла до `8MB`;
-- MIME: `image/jpeg`, `image/png`, `image/webp`;
-- ext: `.jpg`, `.jpeg`, `.png`, `.webp`;
-- min side: `128px`;
-- max side: `4096px`;
-- max pixels: `20MP`;
-- итоговое сохранение: `webp`, публичный URL через `/media/articles/*`.
-
-### Article likes и привязка грибов
-
-- лайки:
-  - `POST /ArticleLikes/ToggleLike?ArticleId=<guid>`;
-  - `GET /ArticleLikes/GetLikesCount/count?ArticleId=<guid>`;
-  - `GET /ArticleLikes/HasUserLiked/user?ArticleId=<guid>` (auth).
-- связи статьи и грибов:
-  - `GET /ArticleMushrooms/GetAllMushrooms?ArticleId=<guid>`;
-  - `POST /ArticleMushrooms/AddMushroomToArticle?ArticleId=<guid>&MushroomId=<guid>`;
-  - `DELETE /ArticleMushrooms/DeleteMushroomFromArticle?ArticleId=<guid>&MushroomId=<guid>`;
-  - `PUT /ArticleMushrooms/ReplaceArticleMushrooms` (bulk replace).
-
-### DTO и совместимость
-
-- `ArticleDto` расширен полями lifecycle/audit:
-  - `status`, `createdByUserId`, `updatedByUserId`, `createdAt`, `updatedAt`,
-  - `submittedAt`, `publishedAt`, `reviewedAt`, `reviewedByUserId`, `reviewNote`, `archivedAt`,
-  - `likesCount`.
-- `EditorArticleDto` включает `linkedMushroomIds` + полный список параграфов.
-- `DELETE /Articles/DeleteArticle` переведен в deprecated purge-сценарий:
-  - используется только с `content.articles.purge`.
+- публичные endpoint-ы чтения:
+  - `GET /Articles/GetFilteredArticles` (только `Published` и `PublishDate <= now(UTC)`);
+  - `GET /Articles/GetArticle`;
+- editor/moderation workflow:
+  - `CreateDraft -> UpdateDraft (0..N) -> SubmitForReview -> ModerateArticle (Approve/Reject) -> ArchiveArticle`;
+- media:
+  - `POST /Articles/UploadArticleImage`;
+  - `DELETE /Articles/DeleteArticleImage`;
+- legacy article endpoint-ы (`CreateArticle/UpdateArticle/DeleteArticle`) оставлены только для совместимости и не используются в новых клиентах.
 
 ### Миграция и rollout
 
-- для существующей БД обязательная последовательность:
-  1. `DBInit/2-upgrade-avatar.sql`;
-  2. `DBInit/3-upgrade-rbac.sql`;
-  3. `DBInit/4-upgrade-articles-workflow.sql`;
-  4. `DBInit/5-upgrade-mushrooms-workflow.sql`;
-  5. `DBInit/6-upgrade-mushroom-field-lengths.sql`.
-- `4-upgrade-articles-workflow.sql`:
-  - добавляет поля lifecycle/audit для `Articles`;
-  - backfill старых записей в `Published`;
-  - seed новых permission-кодов workflow;
-  - назначение owner старым статьям на SuperUser.
-- `5-upgrade-mushrooms-workflow.sql`:
-  - добавляет `IsArchived` в `Mushrooms`;
-  - создает таблицы `MushroomRevisions` и `MushroomRevisionDoppelgangers`;
-  - выполняет backfill опубликованных ревизий из текущего каталога;
-  - seed permission-кодов workflow/media для грибов и role-permissions.
-- `6-upgrade-mushroom-field-lengths.sql`:
-  - расширяет лимиты колонок грибов под CSV baseline:
-    - `SynonymousName` до `256`;
-    - `StemColor` до `256`;
-    - `CapColor` до `256`.
-- `6-replace-mushrooms-csv.sql`:
-  - one-time full replace грибного baseline в существующей БД;
-  - очищает старый грибной домен и загружает актуальные данные из CSV-генератора.
-- в backend запущен background scheduler:
+- единый канонический checklist upgrade-скриптов и локального rollout описан в [Быстрый старт](../getting-started/index.md);
+- background scheduler:
   - каждые `60s` переводит `Scheduled -> Published`, когда наступила дата.
 
-## Changelog для mobile-команды (breaking changes)
+## Changelog для mobile/backend команд
 
-- `POST /Authorization/ValidateToken`:
-  - раньше: token мог передаваться в `body`;
-  - теперь: token обязателен только в `Authorization: Bearer <token>`.
-- Cookie `jwt_token` больше не используется как источник авторизации API.
-- `Authorization/LoginUser` и `Authorization/RegisterUser` возвращают token в `data.token`, но не записывают auth-cookie.
-- `Authorization/LogoutUser` для bearer-схемы stateless: сервер не очищает cookie, клиент удаляет локальный token сам.
-- Для web-dev запусков с разными портами CORS в локальных окружениях поддерживает `localhost/127.0.0.1` без ручного добавления порта в репозиторий.
-- `UserDto` больше не возвращает `PasswordHash` в публичных user-ответах (security fix).
+- единый канонический журнал клиентских API-изменений ведется в [docs/changelog/index.md](../changelog/index.md);
+- backend-api/mobile разделы содержат только текущий контракт и ссылки на changelog-записи, без дублирования истории изменений.

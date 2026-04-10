@@ -1,5 +1,31 @@
 # Журнал изменений
 
+## 2026-04-10
+
+### Backend
+
+- синхронизирован OpenAPI-контракт статей с runtime:
+  - для `Articles/*` добавлены явные `ProducesResponseType` с non-200 ответами;
+  - уточнена схема required-полей в article request DTO;
+  - security в Swagger переведена на per-operation режим:
+    - публичные `GetArticle/GetFilteredArticles` отображаются как anonymous;
+    - защищенные article endpoint-ы отображаются с bearer requirement.
+
+### DevOps / Docs
+
+- добавлен отдельный runbook публикации статей для web/mobile:
+  - [docs/backend-api/articles-publication-runbook.md](../backend-api/articles-publication-runbook.md);
+  - зафиксированы state machine, пошаговый flow, матрица прав, примеры payload/response, known issues.
+- выполнен docs-pass по связности и каноническим источникам:
+  - breaking/client-impact изменения централизованы через [docs/changelog/index.md](index.md);
+  - upgrade-checklist для существующей БД закреплен в [docs/getting-started/index.md](../getting-started/index.md).
+- обновлены ссылки и краткие разделы в:
+  - [docs/backend-api/index.md](../backend-api/index.md);
+  - [docs/mobile/index.md](../mobile/index.md);
+  - [docs/backend-api/openapi.md](../backend-api/openapi.md);
+  - `mkdocs.yml` (nav).
+- синхронизирован [quickstart/fungi-api-swagger.json](https://github.com/MikhailPshenisnov/Fungi_2/blob/HEAD/quickstart/fungi-api-swagger.json) после обновления Swagger-контракта.
+
 ## 2026-04-07
 
 ### Frontend

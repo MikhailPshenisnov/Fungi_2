@@ -1,5 +1,9 @@
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+
 namespace BackendFungi.Contracts.Requests.ArticlesRequests;
 
-public record GetArticleLikesCountRequest(
-    Guid ArticleId
-);
+public record GetArticleLikesCountRequest
+{
+    [BindRequired]
+    public Guid ArticleId { get; init; }
+}

@@ -53,6 +53,10 @@
 
 ## Статьи и editor workflow (контракт совместимости)
 
+Подробный backend runbook:
+
+- [Runbook публикации статей (backend-api)](../backend-api/articles-publication-runbook.md)
+
 Публичные endpoint-ы статей:
 
 - `GET /Articles/GetFilteredArticles` — публичный список статей (только опубликованные и уже доступные по дате);
@@ -76,6 +80,17 @@ Editor/moderation endpoint-ы (для web rewrite в этой итерации, 
 - `GET /Articles/GetModerationQueue`;
 - `GET /Articles/GetEditorArticle`.
 
+Интеграционный сценарий (если mobile подключает editor-flow):
+
+1. Загрузить изображения через `UploadArticleImage` (при необходимости).
+2. Создать черновик через `CreateDraft`.
+3. Обновлять контент через `UpdateDraft`.
+4. Отправить на модерацию через `SubmitForReview`.
+5. Дождаться решения:
+   - `ModerateArticle(Approve)` -> `Published` или `Scheduled`;
+   - `ModerateArticle(Reject)` -> `Rejected`.
+6. Для бизнес-удаления использовать только `ArchiveArticle`.
+
 Важно по контракту модерации:
 
 - `decision` в `POST /Articles/ModerateArticle` и `POST /Mushrooms/ModerateMushroom`
@@ -91,7 +106,10 @@ Media endpoint-ы статей:
 Важно для mobile-интеграции:
 
 - бизнес-удаление статьи выполняется через архивирование (`ArchiveArticle`);
-- `DELETE /Articles/DeleteArticle` считается purge-операцией и не используется в обычном workflow;
+- legacy endpoint-ы статей не использовать в mobile-клиенте:
+  - `POST /Articles/CreateArticle`;
+  - `PUT /Articles/UpdateArticle`;
+  - `DELETE /Articles/DeleteArticle` (purge);
 - статусы `Draft/InReview/Rejected/Archived/Scheduled` не должны ожидаться в публичной выдаче `GetFilteredArticles`.
 
 ## Конфигурация окружения
@@ -108,4 +126,4 @@ Media endpoint-ы статей:
 ## Что обновлять при изменениях
 
 - при смене backend auth/API-контракта синхронизировать mobile API-слой;
-- фиксировать breaking changes в `docs/backend-api/index.md`.
+- фиксировать client-impact изменения в [docs/changelog/index.md](../changelog/index.md).

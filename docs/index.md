@@ -22,31 +22,10 @@
 
 ## Статус ревизии контента
 
-Актуально на 7 апреля 2026:
+История актуальных изменений ведется в [Журнале изменений](changelog/index.md).
 
-- auth/cors контракт синхронизирован с backend;
-- OpenAPI snapshot обновлен из live Swagger;
-- добавлена документация по каталогу грибов, деталке и лайк-сценариям;
-- добавлен полный workflow статей: draft/review/publish/archive + editor endpoints;
-- закрыт P0 backend hardening:
-  - string-only moderation decision;
-  - `errorCode` в API-ошибках;
-  - security-ограничения для `GetUser` и `Test*` endpoint-ов;
-  - integration regression-тесты backend;
-- добавлены frontend-маршруты `/articles`, `/articles/:id`, `/editor/*` и их описание;
-- добавлен frontend-маршрут `/search` и обновлён глобальный поиск из header;
-- каталоги `/articles` и `/mushrooms` переведены на серверную пагинацию/сортировку;
-- Storybook-документация вынесена в отдельный runbook-раздел (запуск, quality gates, troubleshooting);
-- добавлена автогенерируемая матрица Storybook-покрытия и проверки её актуальности;
-- добавлен единый CI workflow (frontend/backend/docs) с quality-gates;
-- добавлен CI job `e2e-smoke` (Playwright smoke + artifacts);
-- `frontend_fungi` переведен в архивный статус (runtime работает на rewrite `frontend/`);
-- в `shared/ui/primitives` добавлены component tests и подключен `@storybook/addon-vitest`;
-- в корне подключены `husky + lint-staged + commitlint` (Conventional Commits);
-- зафиксирован naming standard (`kebab-case` для директорий/docs/служебных файлов);
-- каталог `QuickStart/` переименован в `quickstart/`, OpenAPI snapshot перенесен в `quickstart/fungi-api-swagger.json`;
-- зафиксировано i18n-решение этапа P2: RU-only без техподготовки мультиязычности;
-- onboarding и workflow оформлены в отдельных разделах;
-- зафиксированы текущие known issues.
+См. также:
 
-См. также: [Известные проблемы](getting-started/known-issues.md).
+- [Известные проблемы](getting-started/known-issues.md)
+- [Быстрый старт](getting-started/index.md)
+- [Backend API](backend-api/index.md)

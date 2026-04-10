@@ -14,6 +14,7 @@ nav:
   - Архитектура: architecture/index.md
   - Backend API:
       - Обзор: backend-api/index.md
+      - Runbook публикации статей: backend-api/articles-publication-runbook.md
       - OpenAPI и Swagger: backend-api/openapi.md
   - Frontend:
       - Обзор: frontend/index.md

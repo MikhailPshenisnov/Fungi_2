@@ -54,6 +54,8 @@ Swagger UI после запуска:
 
 Если база данных уже была создана раньше (старый docker volume), после обновления backend нужно один раз применить upgrade-скрипты:
 
+Этот раздел является каноническим checklist для rollout существующей БД.
+
 ```bash
 cat DBInit/2-upgrade-avatar.sql | docker exec -i fungi-db psql -U <DB_USER> -d <DB_NAME> -p <DB_PORT>
 cat DBInit/3-upgrade-rbac.sql | docker exec -i fungi-db psql -U <DB_USER> -d <DB_NAME> -p <DB_PORT>
@@ -86,7 +88,7 @@ npm --prefix frontend run e2e:smoke
 ## Полезные ссылки
 
 - API-документация: [Backend API](../backend-api/index.md)
-- Статичный OpenAPI snapshot: `quickstart/fungi-api-swagger.json`
+- Статичный OpenAPI snapshot: [quickstart/fungi-api-swagger.json](https://github.com/MikhailPshenisnov/Fungi_2/blob/HEAD/quickstart/fungi-api-swagger.json)
 
 ## Локальный запуск документации
 

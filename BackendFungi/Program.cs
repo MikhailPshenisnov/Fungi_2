@@ -5,6 +5,7 @@ using BackendFungi.Exceptions.SpecificExceptions;
 using BackendFungi.Middlewares;
 using BackendFungi.Repositories;
 using BackendFungi.Services;
+using BackendFungi.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -79,23 +80,9 @@ builder.Services.AddSwaggerGen(opt =>
         Scheme = "bearer"
     });
 
-    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new List<string>()
-        }
-    });
-
     opt.EnableAnnotations();
     opt.SupportNonNullableReferenceTypes();
+    opt.OperationFilter<AuthorizeOperationFilter>();
 
     Action<SwaggerGenOptions>? configure = null;
 
