@@ -6,6 +6,7 @@
 
 - Docker Desktop
 - Git
+- Node.js 20+
 - .NET SDK `7.0.410` (для локального запуска backend вне Docker, версия зафиксирована в `global.json`)
 
 ## Запуск через Docker
@@ -26,6 +27,12 @@ cp .env.example .env
 - `JWT_KEY`;
 - `DEFAULT_SUPERUSER_USERNAME`;
 - `DEFAULT_SUPERUSER_PASSWORD`.
+
+Для локальных git-hooks (husky/lint-staged/commitlint) установите зависимости в корне:
+
+```bash
+npm install
+```
 
 ```bash
 docker compose up -d --build
@@ -69,10 +76,17 @@ cat DBInit/6-replace-mushrooms-csv.sql | docker exec -i fungi-db psql -U <DB_USE
 docker compose down
 ```
 
+## Smoke e2e (Playwright)
+
+```bash
+docker compose up -d --build fungi-db fungi-backend
+npm --prefix frontend run e2e:smoke
+```
+
 ## Полезные ссылки
 
 - API-документация: [Backend API](../backend-api/index.md)
-- Статичный OpenAPI snapshot: `QuickStart/Fungi_api_swagger.json`
+- Статичный OpenAPI snapshot: `quickstart/fungi-api-swagger.json`
 
 ## Локальный запуск документации
 

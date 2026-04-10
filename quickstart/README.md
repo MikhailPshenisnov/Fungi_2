@@ -10,4 +10,4 @@
 
 OpenAPI snapshot для импорта в инструменты:
 
-- `QuickStart/Fungi_api_swagger.json`
+- `quickstart/fungi-api-swagger.json`

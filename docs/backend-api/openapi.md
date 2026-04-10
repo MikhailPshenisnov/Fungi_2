@@ -16,12 +16,12 @@
 
 Для фиксации состояния контракта используется snapshot:
 
-- `QuickStart/Fungi_api_swagger.json`
+- `quickstart/fungi-api-swagger.json`
 
 Обновление snapshot:
 
 ```bash
-curl -fsS http://localhost:5000/swagger/v1/swagger.json | jq . > QuickStart/Fungi_api_swagger.json
+curl -fsS http://localhost:5000/swagger/v1/swagger.json | jq . > quickstart/fungi-api-swagger.json
 ```
 
 ## Правило сопровождения
@@ -35,4 +35,4 @@ curl -fsS http://localhost:5000/swagger/v1/swagger.json | jq . > QuickStart/Fung
 
 ## Текущий статус snapshot
 
-- Snapshot `QuickStart/Fungi_api_swagger.json` синхронизирован с live backend (`http://localhost:5000/swagger/v1/swagger.json`) на 1 апреля 2026.
+- Snapshot `quickstart/fungi-api-swagger.json` синхронизирован с live backend (`http://localhost:5000/swagger/v1/swagger.json`) на 1 апреля 2026.

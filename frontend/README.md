@@ -6,6 +6,7 @@
 `frontend_fungi` оставлен в репозитории как архив и в runtime больше не используется.
 
 ## Стек
+
 - React + TypeScript + Vite
 - React Router
 - TanStack Query
@@ -14,12 +15,14 @@
 - Vitest + Testing Library
 
 ## Запуск
+
 ```bash
 npm install
 npm run dev
 ```
 
 ## Скрипты
+
 - `npm run dev` — локальная разработка
 - `npm run build` — production build
 - `npm run preview` — предпросмотр сборки
@@ -41,6 +44,9 @@ npm run dev
 - `npm run stories:coverage:check` — проверка, что матрица покрытия актуальна
 - `npm run test` — unit тесты
 - `npm run test:components` — component tests для `shared/ui/primitives` (`Button`, `Input`, `Select`, `Checkbox`, `Typography`)
+- `npm run e2e` — полный прогон Playwright тестов
+- `npm run e2e:smoke` — минимальный smoke-набор Playwright (`@smoke`)
+- `npm run e2e:headed` — e2e в headed-режиме (для локальной отладки)
 - `npm run storybook` — Storybook dev server
 - `npm run storybook:build` — сборка Storybook
 - `npm run storybook:test` — запуск story-тестов (a11y/smoke) для поднятого Storybook
@@ -73,6 +79,7 @@ src/
 ```
 
 ### Смысл слоев
+
 - `app` — инициализация приложения, роутер, провайдеры, глобальные стили.
 - `pages` — маршруты и композиция виджетов.
 - `widgets` — крупные UI-блоки страниц.
@@ -81,7 +88,9 @@ src/
 - `shared` — общие примитивы и инфраструктура.
 
 ### Правило зависимостей
+
 Импорт только вниз по слоям:
+
 - `pages -> widgets/features/entities/shared`
 - `widgets -> features/entities/shared`
 - `features -> entities/shared`
@@ -90,12 +99,14 @@ src/
 Запрещено импортировать вверх.
 
 ## Head (title/description/favicon)
+
 - `title` страницы управляется через `handle` в роутере (`src/app/router/index.tsx`).
 - Формат заголовка: `<Название страницы> | Fungi` (например: `Статьи | Fungi`).
 - Если `title` не задан, используется `Fungi`.
 - Favicon по умолчанию: `/images/branding/fungi-logo.svg`.
 
 Пример маршрута:
+
 ```tsx
 {
   path: '/articles',
@@ -291,7 +302,31 @@ Guard-политика:
   - `content.mushrooms.review`,
   - `content.mushrooms.publish`.
 
+## E2E smoke (Playwright)
+
+- расположение smoke-тестов: `tests/e2e/workflows`;
+- покрытие smoke-пути:
+  - `auth` (login/logout);
+  - `catalog` (`/mushrooms` -> `/mushrooms/:id`);
+  - `profile`;
+  - `likes`;
+  - `editor workflows` (статьи и грибы).
+
+Локальный запуск smoke:
+
+```bash
+docker compose up -d --build fungi-db fungi-backend
+npm run e2e:smoke
+```
+
+## Локализация
+
+- текущее решение: `RU-only`;
+- в текущем этапе не внедряется i18n-библиотека и не добавляются EN-ресурсы;
+- пересмотр решения делается отдельным product-задачником.
+
 ## Правила модулей
+
 Каждый `feature/entity/widget/page` держим в формате:
 
 ```txt
@@ -338,40 +373,48 @@ npm run test:components
 - `Features/Mushrooms/AuthRequiredPopup`
 
 ## Assets: Icons & Images
+
 - Переиспользуемые UI-иконки храним в `src/shared/assets/icons`.
 - Маркетинговые/контентные изображения и файлы по URL храним в `public/images`.
 - Рекомендуемые подпапки:
   - `public/images/branding` — логотипы и бренд-графика.
 
 Ограничения:
+
 - Единственный источник UI-иконок: только `src/shared/assets/icons`.
 - В `public` UI-иконки не храним.
 - Импорт UI-иконок делаем только через `src/shared/assets/icons/index.ts`.
 
 Процесс работы с иконками:
+
 1. Добавь `*.svg` в `src/shared/assets/icons`.
 2. Запусти `npm run icons:sync` (обновит `index.ts`).
 3. Импортируй только из `@shared/assets/icons`.
 
 Пример импорта:
+
 ```ts
 import { mailIcon, profileIcon } from '@shared/assets/icons';
 ```
 
 ## Пошаговый rewrite-процесс
+
 1. Сначала переносим базовые примитивы в `shared/ui`.
 2. Затем переносим фичи (auth, filter, search) в `features`.
 3. После этого собираем `widgets` и `pages`.
 4. В конце вычищаем legacy и дубли.
 
 ## Definition of Done
+
 Задача готова, если:
+
 - соблюдены слои и публичные API модулей;
 - нет `any` без обоснования;
 - `typecheck`, `lint`, `design:lint`, `build` зелёные;
 - для UI-изменений обновлены stories.
 
 ## ADR (Architecture Decision Records)
+
 ADR используется для фиксации архитектурных решений, чтобы команда понимала причину и последствия выбора.
 
 - Храним ADR в `docs/adr`.
@@ -380,17 +423,21 @@ ADR используется для фиксации архитектурных 
 - Статусы: `Proposed` -> `Accepted` -> `Superseded` (если решение заменено новым ADR).
 
 Когда ADR обязателен:
+
 - изменение слоёв/границ модулей (`shared/entities/features/widgets/pages`);
 - изменение контракта design system (tokens, naming, rules, quality gates);
 - внедрение или изменение ключевых инженерных процессов (scaffold/remove/sync/check scripts, CI quality gates).
 
 ## Design Token Quality Gate
+
 Для всех UI-изменений обязательна проверка:
+
 ```bash
 npm run design:lint
 ```
 
 Что проверяется:
+
 1. В компонентных CSS запрещены прямые цвета (`#...`, `rgb/rgba`, `hsl/hsla`).
 2. Вне `src/shared/assets/styles/tokens.css` запрещено использовать primitive-токены `--ref-*`.
 3. Запрещены legacy-алиасы вида `var(--color-text)`, `var(--color-bg)` и т.д.

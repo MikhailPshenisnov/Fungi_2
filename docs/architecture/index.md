@@ -10,7 +10,7 @@
 - `frontend/` — новый веб-клиент (rewrite, FSD-подход).
 - `frontend_fungi/` — legacy веб-клиент (архивный модуль, не участвует в runtime).
 - `mobile-dev/` — мобильный клиент (React Native/Expo).
-- `QuickStart/` — экспорт OpenAPI и стартовые инструкции.
+- `quickstart/` — экспорт OpenAPI и стартовые инструкции.
 - `DBInit/` — SQL-инициализация БД для локального запуска.
 - `DBBackups/` — резервные копии БД.
 

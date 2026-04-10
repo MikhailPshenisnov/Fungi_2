@@ -5,7 +5,7 @@
 ## Swagger / OpenAPI
 
 - Live Swagger UI: `http://localhost:5000/swagger/index.html`
-- Snapshot OpenAPI: `QuickStart/Fungi_api_swagger.json`
+- Snapshot OpenAPI: `quickstart/fungi-api-swagger.json`
 - Детали по источнику истины и обновлению snapshot: [OpenAPI и Swagger](openapi.md)
 
 ## Контракт валидации auth

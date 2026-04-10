@@ -16,3 +16,5 @@ pnpm-debug.log*
 .temp
 .eslintcache
 .stylelintcache
+playwright-report
+test-results

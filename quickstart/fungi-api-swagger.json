@@ -14,9 +14,7 @@
   "paths": {
     "/ArticleLikes/ToggleLike": {
       "post": {
-        "tags": [
-          "ArticleLikes"
-        ],
+        "tags": ["ArticleLikes"],
         "summary": "Toggle like",
         "description": "Toggles the like state for an article",
         "operationId": "ToggleArticleLike",
@@ -56,9 +54,7 @@
     },
     "/ArticleLikes/GetLikesCount/count": {
       "get": {
-        "tags": [
-          "ArticleLikes"
-        ],
+        "tags": ["ArticleLikes"],
         "summary": "Get likes count",
         "description": "Gets the number of likes for an article",
         "operationId": "GetArticleLikesCount",
@@ -98,9 +94,7 @@
     },
     "/ArticleLikes/HasUserLiked/user": {
       "get": {
-        "tags": [
-          "ArticleLikes"
-        ],
+        "tags": ["ArticleLikes"],
         "summary": "Has user liked",
         "description": "Shows whether the user liked the article",
         "operationId": "HasUserLikedArticle",
@@ -140,9 +134,7 @@
     },
     "/ArticleMushrooms/GetAllMushrooms": {
       "get": {
-        "tags": [
-          "ArticleMushrooms"
-        ],
+        "tags": ["ArticleMushrooms"],
         "summary": "Get article mushrooms",
         "description": "Gets linked mushrooms for article",
         "operationId": "GetArticleMushrooms",
@@ -182,9 +174,7 @@
     },
     "/ArticleMushrooms/AddMushroomToArticle": {
       "post": {
-        "tags": [
-          "ArticleMushrooms"
-        ],
+        "tags": ["ArticleMushrooms"],
         "summary": "Add mushroom to article",
         "description": "Adds a link to the mushroom to the article",
         "operationId": "AddMushroomToArticle",
@@ -232,9 +222,7 @@
     },
     "/ArticleMushrooms/DeleteMushroomFromArticle": {
       "delete": {
-        "tags": [
-          "ArticleMushrooms"
-        ],
+        "tags": ["ArticleMushrooms"],
         "summary": "Delete mushroom from article",
         "description": "Deletes a link to the mushroom from the article",
         "operationId": "DeleteMushroomFromArticle",
@@ -282,9 +270,7 @@
     },
     "/ArticleMushrooms/ReplaceArticleMushrooms": {
       "put": {
-        "tags": [
-          "ArticleMushrooms"
-        ],
+        "tags": ["ArticleMushrooms"],
         "summary": "Replace article mushrooms",
         "description": "Replaces full set of linked mushrooms for the article",
         "operationId": "ReplaceArticleMushrooms",
@@ -333,9 +319,7 @@
     },
     "/Articles/GetArticle": {
       "get": {
-        "tags": [
-          "Articles"
-        ],
+        "tags": ["Articles"],
         "summary": "Get article",
         "description": "Receives published article information by id",
         "operationId": "GetArticle",
@@ -375,9 +359,7 @@
     },
     "/Articles/GetFilteredArticles": {
       "get": {
-        "tags": [
-          "Articles"
-        ],
+        "tags": ["Articles"],
         "summary": "Get filtered articles",
         "description": "Gets a list of published articles with filters",
         "operationId": "GetFilteredArticles",
@@ -462,9 +444,7 @@
     },
     "/Articles/GetEditorArticle": {
       "get": {
-        "tags": [
-          "Articles"
-        ],
+        "tags": ["Articles"],
         "summary": "Get editor article",
         "description": "Returns full article data for editor and moderation flow",
         "operationId": "GetEditorArticle",
@@ -504,9 +484,7 @@
     },
     "/Articles/GetMyDrafts": {
       "get": {
-        "tags": [
-          "Articles"
-        ],
+        "tags": ["Articles"],
         "summary": "Get my drafts",
         "description": "Returns current user drafts, rejected and in-review articles",
         "operationId": "GetMyDrafts",
@@ -536,9 +514,7 @@
     },
     "/Articles/GetMyMaterials": {
       "get": {
-        "tags": [
-          "Articles"
-        ],
+        "tags": ["Articles"],
         "summary": "Get my materials",
         "description": "Returns current user published, scheduled and archived articles",
         "operationId": "GetMyMaterials",
@@ -568,9 +544,7 @@
     },
     "/Articles/GetModerationQueue": {
       "get": {
-        "tags": [
-          "Articles"
-        ],
+        "tags": ["Articles"],
         "summary": "Get moderation queue",
         "description": "Returns articles waiting for moderation",
         "operationId": "GetModerationQueue",
@@ -600,9 +574,7 @@
     },
     "/Articles/CreateDraft": {
       "post": {
-        "tags": [
-          "Articles"
-        ],
+        "tags": ["Articles"],
         "summary": "Create draft",
         "description": "Creates draft article for current editor",
         "operationId": "CreateDraft",
@@ -651,9 +623,7 @@
     },
     "/Articles/UpdateDraft": {
       "put": {
-        "tags": [
-          "Articles"
-        ],
+        "tags": ["Articles"],
         "summary": "Update draft",
         "description": "Updates draft/rejected article content",
         "operationId": "UpdateDraft",
@@ -702,9 +672,7 @@
     },
     "/Articles/SubmitForReview": {
       "post": {
-        "tags": [
-          "Articles"
-        ],
+        "tags": ["Articles"],
         "summary": "Submit for review",
         "description": "Moves draft/rejected article to moderation queue",
         "operationId": "SubmitForReview",
@@ -753,9 +721,7 @@
     },
     "/Articles/ModerateArticle": {
       "post": {
-        "tags": [
-          "Articles"
-        ],
+        "tags": ["Articles"],
         "summary": "Moderate article",
         "description": "Approves or rejects article from moderation queue",
         "operationId": "ModerateArticle",
@@ -804,9 +770,7 @@
     },
     "/Articles/ArchiveArticle": {
       "post": {
-        "tags": [
-          "Articles"
-        ],
+        "tags": ["Articles"],
         "summary": "Archive article",
         "description": "Archives article instead of deleting it",
         "operationId": "ArchiveArticle",
@@ -855,9 +819,7 @@
     },
     "/Articles/UploadArticleImage": {
       "post": {
-        "tags": [
-          "Articles"
-        ],
+        "tags": ["Articles"],
         "summary": "Upload article image",
         "description": "Uploads image for article content and returns media url/path",
         "operationId": "UploadArticleImage",
@@ -907,9 +869,7 @@
     },
     "/Articles/DeleteArticleImage": {
       "delete": {
-        "tags": [
-          "Articles"
-        ],
+        "tags": ["Articles"],
         "summary": "Delete article image",
         "description": "Deletes uploaded article image by relative path",
         "operationId": "DeleteArticleImage",
@@ -948,9 +908,7 @@
     },
     "/Articles/CreateArticle": {
       "post": {
-        "tags": [
-          "Articles"
-        ],
+        "tags": ["Articles"],
         "summary": "Create article (legacy)",
         "description": "Legacy endpoint. Prefer CreateDraft/SubmitForReview workflow",
         "operationId": "CreateArticle",
@@ -999,9 +957,7 @@
     },
     "/Articles/UpdateArticle": {
       "put": {
-        "tags": [
-          "Articles"
-        ],
+        "tags": ["Articles"],
         "summary": "Update article (legacy)",
         "description": "Legacy endpoint. Prefer UpdateDraft",
         "operationId": "UpdateArticle",
@@ -1050,9 +1006,7 @@
     },
     "/Articles/DeleteArticle": {
       "delete": {
-        "tags": [
-          "Articles"
-        ],
+        "tags": ["Articles"],
         "summary": "Delete article (deprecated)",
         "description": "Hard delete endpoint. Deprecated, use ArchiveArticle",
         "operationId": "DeleteArticle",
@@ -1093,9 +1047,7 @@
     },
     "/Authorization/LoginUser": {
       "post": {
-        "tags": [
-          "Authorization"
-        ],
+        "tags": ["Authorization"],
         "summary": "Login user",
         "description": "Performs the user login procedure",
         "operationId": "LoginUser",
@@ -1144,9 +1096,7 @@
     },
     "/Authorization/RegisterUser": {
       "post": {
-        "tags": [
-          "Authorization"
-        ],
+        "tags": ["Authorization"],
         "summary": "Register user",
         "description": "Performs user registration procedure",
         "operationId": "RegisterUser",
@@ -1195,9 +1145,7 @@
     },
     "/Authorization/GetCurrentUserToken": {
       "get": {
-        "tags": [
-          "Authorization"
-        ],
+        "tags": ["Authorization"],
         "summary": "Get current user token",
         "description": "Returns current user token",
         "operationId": "GetCurrentUserToken",
@@ -1227,9 +1175,7 @@
     },
     "/Authorization/ValidateToken": {
       "post": {
-        "tags": [
-          "Authorization"
-        ],
+        "tags": ["Authorization"],
         "summary": "Validate token",
         "description": "Allows you to obtain information about the user by token. Requires Authorization header in format: Bearer <token>.",
         "operationId": "ValidateToken",
@@ -1259,9 +1205,7 @@
     },
     "/Authorization/LogoutUser": {
       "post": {
-        "tags": [
-          "Authorization"
-        ],
+        "tags": ["Authorization"],
         "summary": "Logout user",
         "description": "Completes logout on API side for stateless bearer authentication",
         "operationId": "LogoutUser",
@@ -1274,9 +1218,7 @@
     },
     "/Authorization/GetCurrentDataUser": {
       "get": {
-        "tags": [
-          "Authorization"
-        ],
+        "tags": ["Authorization"],
         "summary": "Get current data user [NOT RECOMMENDED TO USE]",
         "description": "An analogue of the ValidateToken method, but this is a piece of some king of strange code that Sanya made to connect front easier (P. S. Выпилите этот метод пожалуйста, ну что за треш, господа)",
         "operationId": "GetCurrentDataUser",
@@ -1306,9 +1248,7 @@
     },
     "/MushroomLikes/ToggleLike": {
       "post": {
-        "tags": [
-          "MushroomLikes"
-        ],
+        "tags": ["MushroomLikes"],
         "summary": "Toggle like",
         "description": "Toggles the like state for a mushroom",
         "operationId": "ToggleMushroomLike",
@@ -1348,9 +1288,7 @@
     },
     "/MushroomLikes/GetLikesCount/count": {
       "get": {
-        "tags": [
-          "MushroomLikes"
-        ],
+        "tags": ["MushroomLikes"],
         "summary": "Get likes count",
         "description": "Gets the number of likes for a mushroom",
         "operationId": "GetMushroomLikesCount",
@@ -1390,9 +1328,7 @@
     },
     "/MushroomLikes/HasUserLiked/user": {
       "get": {
-        "tags": [
-          "MushroomLikes"
-        ],
+        "tags": ["MushroomLikes"],
         "summary": "Has user liked",
         "description": "Shows whether the user liked the mushroom",
         "operationId": "HasUserLikedMushroom",
@@ -1432,9 +1368,7 @@
     },
     "/Mushrooms/GetMushroom": {
       "get": {
-        "tags": [
-          "Mushrooms"
-        ],
+        "tags": ["Mushrooms"],
         "summary": "Get mushroom",
         "description": "Receives information about the published mushroom by id",
         "operationId": "GetMushroom",
@@ -1474,9 +1408,7 @@
     },
     "/Mushrooms/GetFilteredMushrooms": {
       "get": {
-        "tags": [
-          "Mushrooms"
-        ],
+        "tags": ["Mushrooms"],
         "summary": "Get filtered mushrooms",
         "description": "Gets a list of published mushrooms with filters, sorting and pagination",
         "operationId": "GetFilteredMushrooms",
@@ -1617,9 +1549,7 @@
     },
     "/Mushrooms/GetEditorMushroom": {
       "get": {
-        "tags": [
-          "Mushrooms"
-        ],
+        "tags": ["Mushrooms"],
         "summary": "Get editor mushroom revision",
         "description": "Returns full mushroom revision data for editor and moderation flow",
         "operationId": "GetEditorMushroom",
@@ -1659,9 +1589,7 @@
     },
     "/Mushrooms/GetMyDrafts": {
       "get": {
-        "tags": [
-          "Mushrooms"
-        ],
+        "tags": ["Mushrooms"],
         "summary": "Get my mushroom drafts",
         "description": "Returns current user mushroom drafts, rejected and in-review revisions",
         "operationId": "GetMyDrafts",
@@ -1691,9 +1619,7 @@
     },
     "/Mushrooms/GetMyMaterials": {
       "get": {
-        "tags": [
-          "Mushrooms"
-        ],
+        "tags": ["Mushrooms"],
         "summary": "Get my mushroom materials",
         "description": "Returns current user published and archived mushroom revisions",
         "operationId": "GetMyMaterials",
@@ -1723,9 +1649,7 @@
     },
     "/Mushrooms/GetModerationQueue": {
       "get": {
-        "tags": [
-          "Mushrooms"
-        ],
+        "tags": ["Mushrooms"],
         "summary": "Get mushroom moderation queue",
         "description": "Returns mushroom revisions waiting for moderation",
         "operationId": "GetModerationQueue",
@@ -1755,9 +1679,7 @@
     },
     "/Mushrooms/CreateDraft": {
       "post": {
-        "tags": [
-          "Mushrooms"
-        ],
+        "tags": ["Mushrooms"],
         "summary": "Create mushroom draft",
         "description": "Creates draft mushroom revision for current editor",
         "operationId": "CreateDraft",
@@ -1806,9 +1728,7 @@
     },
     "/Mushrooms/UpdateDraft": {
       "put": {
-        "tags": [
-          "Mushrooms"
-        ],
+        "tags": ["Mushrooms"],
         "summary": "Update mushroom draft",
         "description": "Updates draft/rejected mushroom revision content",
         "operationId": "UpdateDraft",
@@ -1857,9 +1777,7 @@
     },
     "/Mushrooms/SubmitForReview": {
       "post": {
-        "tags": [
-          "Mushrooms"
-        ],
+        "tags": ["Mushrooms"],
         "summary": "Submit mushroom for review",
         "description": "Moves draft/rejected mushroom revision to moderation queue",
         "operationId": "SubmitForReview",
@@ -1908,9 +1826,7 @@
     },
     "/Mushrooms/ModerateMushroom": {
       "post": {
-        "tags": [
-          "Mushrooms"
-        ],
+        "tags": ["Mushrooms"],
         "summary": "Moderate mushroom revision",
         "description": "Approves or rejects mushroom revision from moderation queue",
         "operationId": "ModerateMushroom",
@@ -1959,9 +1875,7 @@
     },
     "/Mushrooms/ArchiveMushroom": {
       "post": {
-        "tags": [
-          "Mushrooms"
-        ],
+        "tags": ["Mushrooms"],
         "summary": "Archive mushroom revision",
         "description": "Archives mushroom revision and hides published mushroom snapshot",
         "operationId": "ArchiveMushroom",
@@ -2010,9 +1924,7 @@
     },
     "/Mushrooms/UploadMushroomImage": {
       "post": {
-        "tags": [
-          "Mushrooms"
-        ],
+        "tags": ["Mushrooms"],
         "summary": "Upload mushroom image",
         "description": "Uploads image for mushroom content and returns media url/path",
         "operationId": "UploadMushroomImage",
@@ -2062,9 +1974,7 @@
     },
     "/Mushrooms/DeleteMushroomImage": {
       "delete": {
-        "tags": [
-          "Mushrooms"
-        ],
+        "tags": ["Mushrooms"],
         "summary": "Delete mushroom image",
         "description": "Deletes uploaded mushroom image by relative path",
         "operationId": "DeleteMushroomImage",
@@ -2103,9 +2013,7 @@
     },
     "/Mushrooms/CreateMushroom": {
       "post": {
-        "tags": [
-          "Mushrooms"
-        ],
+        "tags": ["Mushrooms"],
         "summary": "Create mushroom (legacy)",
         "description": "Legacy endpoint. Prefer CreateDraft/SubmitForReview workflow",
         "operationId": "CreateMushroom",
@@ -2155,9 +2063,7 @@
     },
     "/Mushrooms/UpdateMushroom": {
       "put": {
-        "tags": [
-          "Mushrooms"
-        ],
+        "tags": ["Mushrooms"],
         "summary": "Update mushroom (legacy)",
         "description": "Legacy endpoint. Prefer UpdateDraft",
         "operationId": "UpdateMushroom",
@@ -2207,9 +2113,7 @@
     },
     "/Mushrooms/DeleteMushroom": {
       "delete": {
-        "tags": [
-          "Mushrooms"
-        ],
+        "tags": ["Mushrooms"],
         "summary": "Delete mushroom (deprecated)",
         "description": "Hard delete endpoint. Deprecated, use ArchiveMushroom",
         "operationId": "DeleteMushroom",
@@ -2250,9 +2154,7 @@
     },
     "/Roles/TestGetRoles": {
       "get": {
-        "tags": [
-          "Roles"
-        ],
+        "tags": ["Roles"],
         "summary": "Test get roles",
         "description": "I don't know, something like GetFilteredRoles, but something crazy",
         "operationId": "TestGetRoles",
@@ -2282,9 +2184,7 @@
     },
     "/Roles/GetRole": {
       "get": {
-        "tags": [
-          "Roles"
-        ],
+        "tags": ["Roles"],
         "summary": "Get role",
         "description": "Receives information about the role by id",
         "operationId": "GetRole",
@@ -2324,9 +2224,7 @@
     },
     "/Roles/GetFilteredRoles": {
       "get": {
-        "tags": [
-          "Roles"
-        ],
+        "tags": ["Roles"],
         "summary": "Get filtered roles",
         "description": "Gets a list of roles with filters",
         "operationId": "GetFilteredRoles",
@@ -2381,9 +2279,7 @@
     },
     "/Roles/CreateRole": {
       "post": {
-        "tags": [
-          "Roles"
-        ],
+        "tags": ["Roles"],
         "summary": "Create role",
         "description": "Creates role",
         "operationId": "CreateRole",
@@ -2432,9 +2328,7 @@
     },
     "/Roles/UpdateRole": {
       "put": {
-        "tags": [
-          "Roles"
-        ],
+        "tags": ["Roles"],
         "summary": "Update role",
         "description": "Updates role info by id",
         "operationId": "UpdateRole",
@@ -2483,9 +2377,7 @@
     },
     "/Roles/DeleteRole": {
       "delete": {
-        "tags": [
-          "Roles"
-        ],
+        "tags": ["Roles"],
         "summary": "Delete role",
         "description": "Deletes role by id",
         "operationId": "DeleteRole",
@@ -2525,9 +2417,7 @@
     },
     "/Roles/GetAllPermissions": {
       "get": {
-        "tags": [
-          "Roles"
-        ],
+        "tags": ["Roles"],
         "summary": "Get all permissions",
         "description": "Returns available permission codes from the database",
         "operationId": "GetAllPermissions",
@@ -2557,9 +2447,7 @@
     },
     "/Roles/GetRolePermissions": {
       "get": {
-        "tags": [
-          "Roles"
-        ],
+        "tags": ["Roles"],
         "summary": "Get role permissions",
         "description": "Returns assigned permission codes for role",
         "operationId": "GetRolePermissions",
@@ -2599,9 +2487,7 @@
     },
     "/Roles/SetRolePermissions": {
       "put": {
-        "tags": [
-          "Roles"
-        ],
+        "tags": ["Roles"],
         "summary": "Set role permissions",
         "description": "Replaces role permissions with provided permission codes",
         "operationId": "SetRolePermissions",
@@ -2650,9 +2536,7 @@
     },
     "/Users/TestGetUsers": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Test get users",
         "description": "I don't know, something like GetFilteredUsers, but something crazy",
         "operationId": "TestGetUsers",
@@ -2682,9 +2566,7 @@
     },
     "/Users/GetUser": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Get user",
         "description": "Receives information about the user by id",
         "operationId": "GetUser",
@@ -2724,9 +2606,7 @@
     },
     "/Users/GetFilteredUsers": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Get filtered users",
         "description": "Gets a list of users with filters",
         "operationId": "GetFilteredUsers",
@@ -2780,9 +2660,7 @@
     },
     "/Users/CreateUser": {
       "post": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Create user",
         "description": "Creates user",
         "operationId": "CreateUser",
@@ -2831,9 +2709,7 @@
     },
     "/Users/GetCurrentUserProfile": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Get current user profile",
         "description": "Returns profile data for the currently authenticated user",
         "operationId": "GetCurrentUserProfile",
@@ -2863,9 +2739,7 @@
     },
     "/Users/UploadMyAvatar": {
       "post": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Upload current user avatar",
         "description": "Uploads avatar image, crops it to square and stores as WebP",
         "operationId": "UploadMyAvatar",
@@ -2873,9 +2747,7 @@
           "content": {
             "multipart/form-data": {
               "schema": {
-                "required": [
-                  "Avatar"
-                ],
+                "required": ["Avatar"],
                 "type": "object",
                 "properties": {
                   "Avatar": {
@@ -2918,9 +2790,7 @@
     },
     "/Users/DeleteMyAvatar": {
       "delete": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Delete current user avatar",
         "description": "Deletes avatar for the currently authenticated user",
         "operationId": "DeleteMyAvatar",
@@ -2950,9 +2820,7 @@
     },
     "/Users/UpdateUser": {
       "put": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Update user",
         "description": "Updates user info by id",
         "operationId": "UpdateUser",
@@ -3001,9 +2869,7 @@
     },
     "/Users/DeleteUser": {
       "delete": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Delete user",
         "description": "Deletes user by id",
         "operationId": "DeleteUser",
@@ -3043,9 +2909,7 @@
     },
     "/Users/UpdateUserSmallParam": {
       "post": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Update user with small parameters",
         "description": "Short version of UpdateUser",
         "operationId": "UpdateUserSmallParam",
@@ -4763,10 +4627,7 @@
         "additionalProperties": false
       },
       "LoginUserRequest": {
-        "required": [
-          "email",
-          "password"
-        ],
+        "required": ["email", "password"],
         "type": "object",
         "properties": {
           "email": {
@@ -4902,10 +4763,7 @@
         "additionalProperties": false
       },
       "ModerationDecision": {
-        "enum": [
-          "Approve",
-          "Reject"
-        ],
+        "enum": ["Approve", "Reject"],
         "type": "string"
       },
       "MushroomDto": {
@@ -5039,11 +4897,7 @@
         "additionalProperties": false
       },
       "RegisterUserRequest": {
-        "required": [
-          "email",
-          "name",
-          "password"
-        ],
+        "required": ["email", "name", "password"],
         "type": "object",
         "properties": {
           "name": {

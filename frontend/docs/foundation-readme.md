@@ -57,6 +57,7 @@
 ### 1.4 Нейминг токенов (контракт)
 
 #### Primitive tokens (raw palette)
+
 - Формат: `--ref-color-<hue>-<step>`
 - Примеры:
   - `--ref-color-amber-100`
@@ -64,10 +65,12 @@
 - Правило: primitives не используются напрямую в компонентах.
 
 #### Semantic tokens
+
 - Формат: `--color-<role>-<slot>[-<state>]`
 - state всегда последним сегментом.
 
 ##### Роль `bg/surface`
+
 - Слоты:
   - `default`
   - `subtle`
@@ -76,6 +79,7 @@
   - `inverse`
 
 ##### Роль `text`
+
 - Слоты:
   - `primary`
   - `secondary`
@@ -85,6 +89,7 @@
   - `on-brand`
 
 ##### Роль `border`
+
 - Слоты:
   - `default`
   - `subtle`
@@ -92,6 +97,7 @@
   - `focus`
 
 #### Actions (интерактив)
+
 - Формат: `--color-action-<variant>-<part>[-<state>]`
 - Примеры:
   - `--color-action-primary-bg`
@@ -101,6 +107,7 @@
 - Для читаемости и контраста обязательно используем пару `bg + on-bg`.
 
 #### Status
+
 - Формат: `--color-status-<type>-<part>`
 - Примеры:
   - `--color-status-success-bg`
@@ -110,11 +117,13 @@
 - Для статусов также обязательно используем `on-bg`.
 
 #### Overlay
+
 - Разделяем:
   - `--color-overlay-scrim` (затемнение под модалками)
   - `--color-overlay-backdrop` (подложка/эффект фона)
 
 #### Theme contract
+
 - Семантика — стабильный контракт (`--color-*` имена не меняем).
 - Значения меняются через тему (`[data-theme='light']`, `[data-theme='...']`).
 - Это позволяет менять бренд/тему без правок компонентов.
@@ -128,6 +137,7 @@ npm run design:lint
 ```
 
 Проверка включает:
+
 1. `lint:styles`:
    - в CSS-компонентах запрещены raw-цвета (`#...`, `rgb/rgba`, `hsl/hsla`);
    - допускается только семантическое использование токенов.

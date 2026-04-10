@@ -39,6 +39,26 @@
 - `/editor/mushrooms/:revisionId/edit` — редактирование ревизии гриба;
 - `/editor/mushrooms/review` — очередь модерации ревизий грибов.
 
+### E2E smoke (Playwright)
+
+- browser smoke-тесты rewrite-клиента находятся в `frontend/tests/e2e/workflows`;
+- запуск локально:
+  - `docker compose up -d --build fungi-db fungi-backend`;
+  - `npm --prefix frontend run e2e:smoke`.
+- покрытие smoke-набора:
+  - `auth` (login/logout);
+  - `catalog` (грибы -> детальная);
+  - `profile`;
+  - `likes`;
+  - `editor workflows` (статьи и грибы).
+- CI job `e2e-smoke` публикует артефакты Playwright при падениях (`playwright-report`, `test-results`).
+
+### i18n статус
+
+- текущее решение: **RU-only**;
+- в этом этапе не внедряется i18n-библиотека и не добавляются EN-ресурсы;
+- пересмотр решения — только по отдельному product-запросу (см. `docs/workflow/index.md`).
+
 ### Текущий auth UX
 
 - после успешного `login` и `register` пользователь перенаправляется на `/profile`;

@@ -22,7 +22,7 @@
 
 ## Статус ревизии контента
 
-Актуально на 4 апреля 2026:
+Актуально на 7 апреля 2026:
 
 - auth/cors контракт синхронизирован с backend;
 - OpenAPI snapshot обновлен из live Swagger;
@@ -39,8 +39,13 @@
 - Storybook-документация вынесена в отдельный runbook-раздел (запуск, quality gates, troubleshooting);
 - добавлена автогенерируемая матрица Storybook-покрытия и проверки её актуальности;
 - добавлен единый CI workflow (frontend/backend/docs) с quality-gates;
+- добавлен CI job `e2e-smoke` (Playwright smoke + artifacts);
 - `frontend_fungi` переведен в архивный статус (runtime работает на rewrite `frontend/`);
 - в `shared/ui/primitives` добавлены component tests и подключен `@storybook/addon-vitest`;
+- в корне подключены `husky + lint-staged + commitlint` (Conventional Commits);
+- зафиксирован naming standard (`kebab-case` для директорий/docs/служебных файлов);
+- каталог `QuickStart/` переименован в `quickstart/`, OpenAPI snapshot перенесен в `quickstart/fungi-api-swagger.json`;
+- зафиксировано i18n-решение этапа P2: RU-only без техподготовки мультиязычности;
 - onboarding и workflow оформлены в отдельных разделах;
 - зафиксированы текущие known issues.
 

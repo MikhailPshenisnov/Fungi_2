@@ -13,13 +13,13 @@
 
 - общая документация: `docs/` (MkDocs);
 - API-контракт: backend-код + swagger-аннотации + live OpenAPI (`/swagger/v1/swagger.json`);
-- snapshot OpenAPI: `QuickStart/Fungi_api_swagger.json`.
+- snapshot OpenAPI: `quickstart/fungi-api-swagger.json`.
 
 ## Что обновлять при изменениях
 
 - изменение API (routes/DTO/auth/codes):
   - обновить `docs/backend-api/*`;
-  - обновить `QuickStart/Fungi_api_swagger.json`;
+  - обновить `quickstart/fungi-api-swagger.json`;
   - добавить changelog для frontend/mobile при breaking changes.
 - изменение архитектуры:
   - обновить `docs/architecture/*` и затронутые клиентские разделы.
@@ -40,6 +40,46 @@
 - frontend: сборка/линт проходят;
 - docs: `mkdocs build --strict` проходит в CI.
 
+## Локальные git-quality проверки
+
+В корне репозитория подключены:
+
+- `husky`;
+- `lint-staged`;
+- `commitlint` (Conventional Commits).
+
+Установка (один раз после `git clone`):
+
+```bash
+npm install
+```
+
+Что проверяется в hooks:
+
+- `pre-commit`:
+  - `frontend/**/*.{ts,tsx,js,jsx}` -> `eslint --fix`;
+  - `frontend/**/*.css` -> `stylelint --fix`;
+  - `*.{md,yml,yaml,json}` -> `prettier --write`.
+- `commit-msg`:
+  - формат commit message через `commitlint` + `@commitlint/config-conventional`.
+
+Политика:
+
+- backend-сборка и backend-тесты не запускаются в pre-commit (они остаются в CI);
+- commit message должен соответствовать Conventional Commits, иначе коммит блокируется.
+
+## Naming standard
+
+Единый стандарт именования в репозитории:
+
+- директории и служебные файлы: `kebab-case`;
+- React components: `PascalCase.tsx` внутри `kebab-case` директорий;
+- C# типы/файлы: `PascalCase`;
+- SQL миграции: `NN-description.sql`;
+- docs-страницы: `kebab-case` (исключение: `README.md`).
+
+`mobile-dev` не входит в автоматический rename batch и сопровождается отдельно.
+
 ## CI (GitHub Actions)
 
 Единый workflow `.github/workflows/ci.yml` запускается на `push` (`dev`, `feature/**`) и `pull_request`:
@@ -52,8 +92,42 @@
   - `npm run test:components`.
 - `backend` job:
   - `dotnet restore/build/test` для `BackendFungi/BackendFungi.sln`.
+- `e2e-smoke` job:
+  - поднимает `fungi-db + fungi-backend` через docker compose;
+  - ждет readiness backend по `http://localhost:5000/swagger/v1/swagger.json`;
+  - запускает Playwright smoke (`npm --prefix frontend run e2e:smoke`);
+  - публикует `playwright-report` и `test-results` как CI artifacts.
 - `docs` job:
   - `mkdocs build --strict`.
+
+## E2E smoke (rewrite frontend)
+
+Базовые browser smoke-тесты находятся в `frontend/tests/e2e/workflows` и покрывают:
+
+- `auth` (login/logout);
+- `catalog` (открытие списка и переход в деталку);
+- `profile` (доступ в профиль из header);
+- `likes` (toggle лайка авторизованным пользователем);
+- `editor workflows`:
+  - статьи (draft -> submit);
+  - грибы (draft -> submit).
+
+Локальный запуск:
+
+```bash
+docker compose up -d --build fungi-db fungi-backend
+npm --prefix frontend run e2e:smoke
+```
+
+## i18n решение (P2)
+
+На текущем этапе зафиксировано решение: **RU-only без технической подготовки под мультиязычность**.
+
+Условия пересмотра решения:
+
+- явный product-запрос на EN/мультиязычность;
+- запуск новых регионов/аудиторий;
+- отдельный утвержденный backlog на i18n-этап.
 
 ## Релизный чеклист backend (существующая БД)
 
@@ -62,7 +136,7 @@
   - `DBInit/3-upgrade-rbac.sql`.
 - перезапустить backend после применения upgrade-скриптов.
 - обновить OpenAPI snapshot:
-  - `curl -fsS http://localhost:5000/swagger/v1/swagger.json -o QuickStart/Fungi_api_swagger.json`.
+  - `curl -fsS http://localhost:5000/swagger/v1/swagger.json -o quickstart/fungi-api-swagger.json`.
 - выполнить smoke-проверку:
   - login;
   - `GET /Users/GetCurrentUserProfile`;

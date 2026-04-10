@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - dev
-      - 'feature/**'
+      - "feature/**"
   pull_request:
 
 concurrency:
@@ -25,7 +25,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
@@ -69,6 +69,61 @@ jobs:
       - name: Test
         run: dotnet test BackendFungi/BackendFungi.sln --configuration Release --no-build
 
+  e2e-smoke:
+    name: E2E Smoke
+    runs-on: ubuntu-latest
+    needs:
+      - frontend
+      - backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci --prefix frontend
+
+      - name: Install Playwright browser
+        run: npx --prefix frontend playwright install --with-deps chromium
+
+      - name: Start backend stack
+        run: docker compose up -d --build fungi-db fungi-backend
+
+      - name: Wait backend readiness
+        run: |
+          for i in {1..90}; do
+            if curl -fsS http://localhost:5000/swagger/v1/swagger.json > /dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Backend is not ready in time"
+          docker compose logs fungi-backend
+          exit 1
+
+      - name: Run Playwright smoke tests
+        run: npm --prefix frontend run e2e:smoke
+
+      - name: Upload Playwright artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            frontend/playwright-report
+            frontend/test-results
+          if-no-files-found: ignore
+
+      - name: Stop backend stack
+        if: always()
+        run: docker compose down -v
+
   docs:
     name: Docs
     runs-on: ubuntu-latest
@@ -79,7 +134,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
           cache: pip
           cache-dependency-path: docs/requirements.txt
 

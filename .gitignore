@@ -31,6 +31,7 @@ mobile-dev/.env.local
 **/obj/
 
 # Node / frontend artifacts
+node_modules/
 frontend/node_modules/
 frontend_fungi/node_modules/
 mobile-dev/node_modules/
@@ -63,3 +64,9 @@ notes/
 
 # Local task file
 TODO.md
+
+# Weekly local reports
+weekly-logs/
+
+# Husky generated internals
+.husky/_/

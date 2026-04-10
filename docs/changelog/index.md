@@ -1,5 +1,45 @@
 # Журнал изменений
 
+## 2026-04-07
+
+### Frontend
+
+- добавлены browser smoke/e2e тесты на Playwright (`frontend/tests/e2e/workflows`):
+  - `auth` (login/logout);
+  - `catalog` (грибы -> детальная);
+  - `profile`;
+  - `likes`;
+  - `editor workflows` (статьи и грибы).
+- в `frontend/package.json` добавлены скрипты:
+  - `e2e`;
+  - `e2e:smoke`;
+  - `e2e:headed`.
+
+### DevOps / Docs
+
+- в корне репозитория подключен git-quality контур:
+  - `husky`;
+  - `lint-staged`;
+  - `commitlint` + Conventional Commits.
+- добавлены конфиги и хуки:
+  - `.lintstagedrc.cjs`;
+  - `commitlint.config.cjs`;
+  - `.husky/pre-commit`;
+  - `.husky/commit-msg`.
+- CI workflow расширен job `e2e-smoke`:
+  - подъем `fungi-db + fungi-backend`;
+  - ожидание readiness backend;
+  - запуск `npm --prefix frontend run e2e:smoke`;
+  - публикация Playwright artifacts.
+- выполнен high-impact naming batch (без `mobile-dev`):
+  - `QuickStart/` -> `quickstart/`;
+  - `quickstart/QuickStart.md` -> `quickstart/README.md`;
+  - `quickstart/Fungi_api_swagger.json` -> `quickstart/fungi-api-swagger.json`;
+  - `DBBackups/Фикс ошибки при загрузке бэкапа.txt` -> `DBBackups/backup-restore-fix.md`;
+  - `frontend/FOUNDATION_README.md` -> `frontend/docs/foundation-readme.md`.
+- обновлены ссылки на OpenAPI snapshot и quickstart пути по документации.
+- зафиксировано решение по локализации: `RU-only` (без внедрения i18n-библиотеки на этапе P2).
+
 ## 2026-04-06
 
 ### Backend
@@ -162,7 +202,7 @@
   - расширен `frontend/docs/STORYBOOK.md` (runbook, quality gates, providers/decorators, troubleshooting);
   - добавлена страница `docs/frontend/storybook.md` и ссылка на нее в `mkdocs.yml`;
   - обновлены Storybook-разделы в `frontend/README.md` и `docs/frontend/index.md`.
-- синхронизирован `QuickStart/Fungi_api_swagger.json` из live Swagger после P0 backend-фиксов.
+- синхронизирован `quickstart/fungi-api-swagger.json` из live Swagger после P0 backend-фиксов.
 
 ## 2026-03-29
 
@@ -309,7 +349,7 @@
 
 ### DevOps / Docs
 
-- `QuickStart/Fungi_api_swagger.json` обновлен по актуальному backend Swagger.
+- `quickstart/fungi-api-swagger.json` обновлен по актуальному backend Swagger.
 - обновлены разделы документации:
   - `docs/backend-api/index.md` — workflow статей, media, миграции;
   - `docs/frontend/index.md` — новые маршруты `/articles` и `/editor/*`;
@@ -385,7 +425,7 @@
 ### DevOps / Docs
 
 - добавлен обязательный runbook для существующей БД: последовательный запуск `2-upgrade-avatar.sql` и `3-upgrade-rbac.sql`;
-- синхронизирован `QuickStart/Fungi_api_swagger.json` с live Swagger.
+- синхронизирован `quickstart/fungi-api-swagger.json` с live Swagger.
 - расширена документация:
   - backend-api: контракт каталога грибов и лайков;
   - frontend/mobile: маршруты `/mushrooms`, detail-flow, guest-like сценарий;
