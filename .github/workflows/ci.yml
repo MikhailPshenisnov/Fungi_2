@@ -58,7 +58,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
-          cache: true
 
       - name: Restore
         run: dotnet restore BackendFungi/BackendFungi.sln
