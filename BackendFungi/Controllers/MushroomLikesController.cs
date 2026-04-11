@@ -68,4 +68,39 @@ public class MushroomLikesController : ControllerBase
 
         return Ok(response);
     }
+
+    [HttpGet]
+    [Authorize]
+    [SwaggerOperation(OperationId = "GetMyFavoriteMushrooms", Summary = "Get my favorite mushrooms",
+        Description = "Returns paginated list of current user's favorite visible mushrooms")]
+    [ProducesResponseType(typeof(BaseResponse<GetMyFavoriteMushroomsResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<BaseResponse<GetMyFavoriteMushroomsResponse>>> GetMyFavoriteMushrooms(
+        [FromQuery] GetMyFavoriteMushroomsRequest request,
+        CancellationToken ct)
+    {
+        var (items, totalCount) = await _likesService.GetMyFavoriteMushroomsAsync(User, request.Page, request.PageSize, ct);
+
+        var response = new BaseResponse<GetMyFavoriteMushroomsResponse>(
+            new GetMyFavoriteMushroomsResponse(
+                items
+                    .Select(item => new FavoriteMushroomItemDto(
+                        item.MushroomId,
+                        item.Name,
+                        item.SynonymousName,
+                        item.LatinName,
+                        item.Family,
+                        item.HeaderPhotoLink,
+                        item.LikedAt,
+                        item.LikesCount))
+                    .ToList(),
+                totalCount,
+                request.Page,
+                request.PageSize),
+            null);
+
+        return Ok(response);
+    }
 }

@@ -384,6 +384,67 @@
   gap: 10px;
 }
 
+.favoritesLayout {
+  display: grid;
+  gap: 18px;
+}
+
+.favoritesSection {
+  display: grid;
+  gap: 10px;
+}
+
+.favoritesSectionHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.favoritesSectionMeta {
+  color: var(--color-text-secondary);
+}
+
+.favoritesGrid {
+  display: grid;
+  gap: 10px;
+}
+
+.favoriteCard {
+  display: grid;
+  gap: 10px;
+}
+
+.favoriteCardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.favoriteCardTitle {
+  color: var(--color-text-primary);
+}
+
+.favoriteCardMeta {
+  color: var(--color-text-secondary);
+}
+
+.favoriteCardActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.favoritesPagination {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 .placeholderEmpty {
   display: inline-block;
   margin-top: 10px;

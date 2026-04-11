@@ -68,4 +68,38 @@ public class ArticleLikesController : ControllerBase
 
         return Ok(response);
     }
+
+    [HttpGet]
+    [Authorize]
+    [SwaggerOperation(OperationId = "GetMyFavoriteArticles", Summary = "Get my favorite articles",
+        Description = "Returns paginated list of current user's favorite published articles")]
+    [ProducesResponseType(typeof(BaseResponse<GetMyFavoriteArticlesResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(BaseResponse<object>), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<BaseResponse<GetMyFavoriteArticlesResponse>>> GetMyFavoriteArticles(
+        [FromQuery] GetMyFavoriteArticlesRequest request,
+        CancellationToken ct)
+    {
+        var (items, totalCount) = await _likesService.GetMyFavoriteArticlesAsync(User, request.Page, request.PageSize, ct);
+
+        var response = new BaseResponse<GetMyFavoriteArticlesResponse>(
+            new GetMyFavoriteArticlesResponse(
+                items
+                    .Select(item => new FavoriteArticleItemDto(
+                        item.ArticleId,
+                        item.Title,
+                        item.AuthorString,
+                        item.PublishDate,
+                        item.HeaderPhotoLink,
+                        item.LikedAt,
+                        item.LikesCount))
+                    .ToList(),
+                totalCount,
+                request.Page,
+                request.PageSize),
+            null);
+
+        return Ok(response);
+    }
 }

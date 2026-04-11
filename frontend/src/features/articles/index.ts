@@ -2,6 +2,7 @@ export {
   archiveArticle,
   createDraft,
   deleteArticleImage,
+  getMyFavoriteArticles,
   getArticleMushroomIds,
   getArticleLikesCount,
   getEditorArticle,
@@ -18,6 +19,9 @@ export {
   uploadArticleImage,
   type EditorArticlePayload,
   type EditorParagraphInput,
+  type FavoriteArticleItem,
+  type FavoriteArticlesQuery,
+  type FavoriteArticlesResult,
   type PublicArticlesQuery,
   type PublicArticlesResult
 } from './api/articles.api';

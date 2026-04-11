@@ -51,6 +51,41 @@
 - при попытке лайка без токена показывать CTA на login/register;
 - при `401` на `HasUserLiked/ToggleLike` считать сессию истекшей и переводить пользователя в auth-flow.
 
+## Избранное (mobile-ready контракт)
+
+Endpoint-ы favorites:
+
+- `GET /ArticleLikes/GetMyFavoriteArticles`
+- `GET /MushroomLikes/GetMyFavoriteMushrooms`
+
+Общие правила:
+
+- endpoint-ы защищенные: обязательный `Authorization: Bearer <token>`;
+- пагинация query-параметрами:
+  - `Page` (default `1`);
+  - `PageSize` (default `12`);
+  - max `PageSize = 100`;
+- невалидные `Page/PageSize` возвращают `400 invalid_request`;
+- сортировка на backend: `LikeDate DESC` (последние добавленные в избранное выше).
+
+Фильтры видимости favorites:
+
+- статьи: только `Published` и `PublishDate <= now(UTC)`;
+- грибы: только записи с `IsArchived = false`.
+
+Рекомендуемый mobile-сценарий:
+
+1. После login/register загрузить session через `GET /Users/GetCurrentUserProfile`.
+2. Для экрана `Избранное` запрашивать оба списка (`articles` + `mushrooms`) с `Page=1&PageSize=12`.
+3. Для `load more` увеличивать `Page`, сохраняя выбранный `PageSize`.
+4. При `401` на favorites endpoint-ах переводить пользователя в auth-flow (сессия истекла).
+5. Пустой результат (`200` и пустой массив/страница) трактовать как валидное состояние пустого избранного.
+
+Важно про legacy route:
+
+- `/profile/favorites` — это web UI redirect-маршрут (на `/profile?tab=favorites`);
+- это **не** API endpoint и не mobile-контракт.
+
 ## Статьи и editor workflow (контракт совместимости)
 
 Подробный backend runbook:

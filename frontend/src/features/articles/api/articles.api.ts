@@ -20,6 +20,23 @@ interface GetMyArticlesApiResult {
   articles: unknown[];
 }
 
+interface FavoriteArticleItemApi {
+  articleId: string;
+  title: string;
+  authorString: string;
+  publishDate: string;
+  headerPhotoLink: string;
+  likedAt: string;
+  likesCount?: number;
+}
+
+interface GetMyFavoriteArticlesApiResult {
+  items: FavoriteArticleItemApi[];
+  totalCount?: number;
+  page?: number;
+  pageSize?: number;
+}
+
 interface CreateDraftApiResult {
   createdArticleId: string;
   status: string;
@@ -109,6 +126,28 @@ export interface PublicArticlesResult {
   pageSize: number;
 }
 
+export interface FavoriteArticlesQuery {
+  page?: number;
+  pageSize?: number;
+}
+
+export interface FavoriteArticleItem {
+  articleId: string;
+  title: string;
+  authorString: string;
+  publishDate: string;
+  headerPhotoLink: string;
+  likedAt: string;
+  likesCount: number;
+}
+
+export interface FavoriteArticlesResult {
+  items: FavoriteArticleItem[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+}
+
 function buildPublicArticlesQueryString(query: PublicArticlesQuery): string {
   const searchParams = new URLSearchParams();
 
@@ -138,6 +177,21 @@ function buildPublicArticlesQueryString(query: PublicArticlesQuery): string {
 
   if (query.sort === 'likes' || query.sort === 'oldest' || query.sort === 'newest') {
     searchParams.set('Sort', query.sort);
+  }
+
+  const queryString = searchParams.toString();
+  return queryString ? `?${queryString}` : '';
+}
+
+function buildFavoritesQueryString(query: FavoriteArticlesQuery): string {
+  const searchParams = new URLSearchParams();
+
+  if (typeof query.page === 'number' && Number.isFinite(query.page)) {
+    searchParams.set('Page', String(Math.max(1, Math.trunc(query.page))));
+  }
+
+  if (typeof query.pageSize === 'number' && Number.isFinite(query.pageSize)) {
+    searchParams.set('PageSize', String(Math.max(1, Math.trunc(query.pageSize))));
   }
 
   const queryString = searchParams.toString();
@@ -178,6 +232,18 @@ function normalizeMediaUrl(value: string): string {
   }
 
   return toApiUrl(`/${trimmedValue}`);
+}
+
+function mapFavoriteArticleItem(apiValue: FavoriteArticleItemApi): FavoriteArticleItem {
+  return {
+    articleId: apiValue.articleId,
+    title: apiValue.title,
+    authorString: apiValue.authorString,
+    publishDate: apiValue.publishDate,
+    headerPhotoLink: normalizeMediaUrl(apiValue.headerPhotoLink),
+    likedAt: apiValue.likedAt,
+    likesCount: typeof apiValue.likesCount === 'number' ? apiValue.likesCount : 0
+  };
 }
 
 export async function getPublicArticles(query: PublicArticlesQuery): Promise<PublicArticlesResult> {
@@ -229,6 +295,42 @@ export async function getModerationQueue(token: string): Promise<Article[]> {
   const result = await requestJson<GetMyArticlesApiResult>('/Articles/GetModerationQueue', { method: 'GET', token });
   const articles = Array.isArray(result.articles) ? result.articles : [];
   return mapArticles(articles as never[]);
+}
+
+export async function getMyFavoriteArticles(
+  token: string,
+  query: FavoriteArticlesQuery = {}
+): Promise<FavoriteArticlesResult> {
+  const path = `/ArticleLikes/GetMyFavoriteArticles${buildFavoritesQueryString(query)}`;
+  const result = await requestJson<GetMyFavoriteArticlesApiResult>(path, { method: 'GET', token });
+  const items = Array.isArray(result.items) ? result.items.map(mapFavoriteArticleItem) : [];
+  const fallbackPageSize =
+    typeof query.pageSize === 'number' && Number.isFinite(query.pageSize)
+      ? Math.max(1, Math.trunc(query.pageSize))
+      : 12;
+  const fallbackPage =
+    typeof query.page === 'number' && Number.isFinite(query.page)
+      ? Math.max(1, Math.trunc(query.page))
+      : 1;
+  const normalizedPageSize =
+    typeof result.pageSize === 'number' && result.pageSize > 0
+      ? Math.trunc(result.pageSize)
+      : fallbackPageSize;
+  const normalizedTotalCount =
+    typeof result.totalCount === 'number' && result.totalCount >= 0
+      ? Math.trunc(result.totalCount)
+      : items.length;
+  const normalizedPage =
+    typeof result.page === 'number' && result.page > 0
+      ? Math.trunc(result.page)
+      : fallbackPage;
+
+  return {
+    items,
+    totalCount: normalizedTotalCount,
+    page: normalizedPage,
+    pageSize: normalizedPageSize
+  };
 }
 
 export async function createDraft(payload: EditorArticlePayload, token: string): Promise<CreateDraftApiResult> {

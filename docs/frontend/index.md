@@ -29,7 +29,7 @@
 - `/register` — регистрация;
 - `/profile` — профиль пользователя;
 - `/profile?tab=<key>` — вкладки профиля (query-based);
-- `/profile/favorites` и `/profile/history` — backward-compatible редиректы на query tabs.
+- `/profile/favorites` и `/profile/history` — backward-compatible UI-редиректы на query tabs (это не API endpoint-ы).
 - `/editor/articles` — workspace редактора (`scope=drafts|materials`);
 - `/editor/articles/new` — создание статьи;
 - `/editor/articles/:id/edit` — редактирование статьи;
@@ -81,6 +81,7 @@
   - `Профиль`;
   - `Избранное`;
   - `История просмотров`.
+- `Избранное` в текущем web rewrite использует profile-tab routing; отдельный backend контракт данных для favorites доступен через likes endpoint-ы (см. раздел «Интеграция с API»).
 - role-specific вкладки и пункты dropdown показываются только при наличии нужных permission-кодов;
 - быстрые переходы из профиля:
   - `editor-materials` -> `/editor/articles?scope=materials`;
@@ -321,6 +322,10 @@
   - `GET /MushroomLikes/GetLikesCount/count`;
   - `GET /MushroomLikes/HasUserLiked/user` (только авторизованный);
   - `POST /MushroomLikes/ToggleLike` (только авторизованный).
+- Endpoint-ы favorites (контракт backend/mobile, также для web-интеграции):
+  - `GET /ArticleLikes/GetMyFavoriteArticles` (auth, `Page/PageSize`, defaults `1/12`, `PageSize <= 100`, invalid -> `400`, сортировка `LikeDate DESC`);
+  - `GET /MushroomLikes/GetMyFavoriteMushrooms` (auth, `Page/PageSize`, defaults `1/12`, `PageSize <= 100`, invalid -> `400`, сортировка `LikeDate DESC`).
+- `/profile/favorites` остается routing-алиасом UI и не является HTTP endpoint-ом backend.
 - При изменении API-контракта обновлять docs в `docs/backend-api/*`.
 
 ## Минимальный чеклист для frontend PR

@@ -1,11 +1,18 @@
 export {
   getFilteredMushrooms,
+  getMyFavoriteMushrooms,
   getMushroomById,
   getMushroomLikesCount,
   hasUserLikedMushroom,
   toggleMushroomLike
 } from './api/mushrooms.api';
-export type { GetFilteredMushroomsParams, GetFilteredMushroomsResult } from './api/mushrooms.api';
+export type {
+  FavoriteMushroomItem,
+  FavoriteMushroomsQuery,
+  FavoriteMushroomsResult,
+  GetFilteredMushroomsParams,
+  GetFilteredMushroomsResult
+} from './api/mushrooms.api';
 
 export {
   DEFAULT_MUSHROOM_CATALOG_QUERY,

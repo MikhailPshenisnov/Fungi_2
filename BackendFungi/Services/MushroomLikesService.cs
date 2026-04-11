@@ -35,6 +35,16 @@ public class MushroomLikesService : IMushroomLikesService
         var userId = GetUserId(user);
         return await _likesRepository.HasUserLikedAsync(mushroomId, userId, ct);
     }
+
+    public async Task<(List<FavoriteMushroomListItem> Items, int TotalCount)> GetMyFavoriteMushroomsAsync(
+        ClaimsPrincipal user,
+        int page,
+        int pageSize,
+        CancellationToken ct)
+    {
+        var userId = GetUserId(user);
+        return await _likesRepository.GetMyFavoriteMushroomsAsync(userId, page, pageSize, ct);
+    }
     
     private static Guid GetUserId(ClaimsPrincipal user)
     {

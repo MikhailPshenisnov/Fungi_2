@@ -1059,6 +1059,72 @@
         },
         "type": "object"
       },
+      "FavoriteArticleItemDto": {
+        "additionalProperties": false,
+        "properties": {
+          "articleId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "authorString": {
+            "type": "string"
+          },
+          "headerPhotoLink": {
+            "type": "string"
+          },
+          "likedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "likesCount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "publishDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "FavoriteMushroomItemDto": {
+        "additionalProperties": false,
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "headerPhotoLink": {
+            "type": "string"
+          },
+          "latinName": {
+            "nullable": true,
+            "type": "string"
+          },
+          "likedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "likesCount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "mushroomId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "synonymousName": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
       "GetAllPermissionsResponse": {
         "additionalProperties": false,
         "properties": {
@@ -1501,6 +1567,78 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/GetMyDraftsResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "type": "object"
+      },
+      "GetMyFavoriteArticlesResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/FavoriteArticleItemDto"
+            },
+            "type": "array"
+          },
+          "page": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "pageSize": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "totalCount": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "GetMyFavoriteArticlesResponseBaseResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetMyFavoriteArticlesResponse"
+          },
+          "errorMessage": {
+            "$ref": "#/components/schemas/ExceptionDto"
+          }
+        },
+        "type": "object"
+      },
+      "GetMyFavoriteMushroomsResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/FavoriteMushroomItemDto"
+            },
+            "type": "array"
+          },
+          "page": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "pageSize": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "totalCount": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "GetMyFavoriteMushroomsResponseBaseResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetMyFavoriteMushroomsResponse"
           },
           "errorMessage": {
             "$ref": "#/components/schemas/ExceptionDto"
@@ -2949,6 +3087,123 @@
           }
         },
         "summary": "Get likes count",
+        "tags": ["ArticleLikes"]
+      }
+    },
+    "/ArticleLikes/GetMyFavoriteArticles": {
+      "get": {
+        "description": "Returns paginated list of current user's favorite published articles",
+        "operationId": "GetMyFavoriteArticles",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "Page",
+            "schema": {
+              "format": "int32",
+              "maximum": 2147483647,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "PageSize",
+            "schema": {
+              "format": "int32",
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyFavoriteArticlesResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyFavoriteArticlesResponseBaseResponse"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyFavoriteArticlesResponseBaseResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "summary": "Get my favorite articles",
         "tags": ["ArticleLikes"]
       }
     },
@@ -5676,6 +5931,123 @@
           }
         },
         "summary": "Get likes count",
+        "tags": ["MushroomLikes"]
+      }
+    },
+    "/MushroomLikes/GetMyFavoriteMushrooms": {
+      "get": {
+        "description": "Returns paginated list of current user's favorite visible mushrooms",
+        "operationId": "GetMyFavoriteMushrooms",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "Page",
+            "schema": {
+              "format": "int32",
+              "maximum": 2147483647,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "PageSize",
+            "schema": {
+              "format": "int32",
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyFavoriteMushroomsResponseBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyFavoriteMushroomsResponseBaseResponse"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyFavoriteMushroomsResponseBaseResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "summary": "Get my favorite mushrooms",
         "tags": ["MushroomLikes"]
       }
     },

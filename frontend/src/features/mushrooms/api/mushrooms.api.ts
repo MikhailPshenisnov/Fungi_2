@@ -1,8 +1,15 @@
-import { requestJson } from '@shared/api';
+import { requestJson, toApiUrl } from '@shared/api';
 import { mapMushroom, mapMushrooms, type Mushroom } from '@entities/mushroom';
 
 interface GetFilteredMushroomsApiResult {
   mushrooms: unknown[];
+  totalCount?: number;
+  page?: number;
+  pageSize?: number;
+}
+
+interface GetMyFavoriteMushroomsApiResult {
+  items: FavoriteMushroomItemApi[];
   totalCount?: number;
   page?: number;
   pageSize?: number;
@@ -24,6 +31,17 @@ interface ToggleLikeApiResult {
   isLiked: boolean;
 }
 
+interface FavoriteMushroomItemApi {
+  mushroomId: string;
+  name: string;
+  synonymousName?: string | null;
+  latinName?: string | null;
+  family: string;
+  headerPhotoLink: string;
+  likedAt: string;
+  likesCount?: number;
+}
+
 export interface GetFilteredMushroomsParams {
   partOfName?: string;
   family?: string;
@@ -40,6 +58,32 @@ export interface GetFilteredMushroomsResult {
   page: number;
   pageSize: number;
 }
+
+export interface FavoriteMushroomsQuery {
+  page?: number;
+  pageSize?: number;
+}
+
+export interface FavoriteMushroomItem {
+  mushroomId: string;
+  name: string;
+  synonymousName: string | null;
+  latinName: string | null;
+  family: string;
+  headerPhotoLink: string;
+  likedAt: string;
+  likesCount: number;
+}
+
+export interface FavoriteMushroomsResult {
+  items: FavoriteMushroomItem[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+}
+
+const PROTOCOL_URL_PATTERN = /^[a-z][a-z\d+.-]*:/i;
+const SCHEME_RELATIVE_URL_PATTERN = /^\/\//;
 
 function buildQueryString(params: GetFilteredMushroomsParams): string {
   const searchParams = new URLSearchParams();
@@ -76,6 +120,51 @@ function buildQueryString(params: GetFilteredMushroomsParams): string {
   return queryString ? `?${queryString}` : '';
 }
 
+function buildFavoritesQueryString(query: FavoriteMushroomsQuery): string {
+  const searchParams = new URLSearchParams();
+
+  if (typeof query.page === 'number' && Number.isFinite(query.page)) {
+    searchParams.set('Page', String(Math.max(1, Math.trunc(query.page))));
+  }
+
+  if (typeof query.pageSize === 'number' && Number.isFinite(query.pageSize)) {
+    searchParams.set('PageSize', String(Math.max(1, Math.trunc(query.pageSize))));
+  }
+
+  const queryString = searchParams.toString();
+  return queryString ? `?${queryString}` : '';
+}
+
+function normalizeMediaUrl(value: string): string {
+  const trimmedValue = value.trim();
+  if (!trimmedValue) {
+    return '';
+  }
+
+  if (PROTOCOL_URL_PATTERN.test(trimmedValue) || SCHEME_RELATIVE_URL_PATTERN.test(trimmedValue)) {
+    return trimmedValue;
+  }
+
+  if (trimmedValue.startsWith('/')) {
+    return toApiUrl(trimmedValue);
+  }
+
+  return toApiUrl(`/${trimmedValue}`);
+}
+
+function mapFavoriteMushroomItem(apiValue: FavoriteMushroomItemApi): FavoriteMushroomItem {
+  return {
+    mushroomId: apiValue.mushroomId,
+    name: apiValue.name,
+    synonymousName: apiValue.synonymousName ?? null,
+    latinName: apiValue.latinName ?? null,
+    family: apiValue.family,
+    headerPhotoLink: normalizeMediaUrl(apiValue.headerPhotoLink),
+    likedAt: apiValue.likedAt,
+    likesCount: typeof apiValue.likesCount === 'number' ? apiValue.likesCount : 0
+  };
+}
+
 export async function getFilteredMushrooms(params: GetFilteredMushroomsParams): Promise<GetFilteredMushroomsResult> {
   const path = `/Mushrooms/GetFilteredMushrooms${buildQueryString(params)}`;
   const result = await requestJson<GetFilteredMushroomsApiResult>(path, { method: 'GET' });
@@ -87,6 +176,39 @@ export async function getFilteredMushrooms(params: GetFilteredMushroomsParams): 
 
   return {
     mushrooms: mappedMushrooms,
+    totalCount: normalizedTotalCount,
+    page: normalizedPage,
+    pageSize: normalizedPageSize
+  };
+}
+
+export async function getMyFavoriteMushrooms(
+  token: string,
+  query: FavoriteMushroomsQuery = {}
+): Promise<FavoriteMushroomsResult> {
+  const path = `/MushroomLikes/GetMyFavoriteMushrooms${buildFavoritesQueryString(query)}`;
+  const result = await requestJson<GetMyFavoriteMushroomsApiResult>(path, { method: 'GET', token });
+  const items = Array.isArray(result.items) ? result.items.map(mapFavoriteMushroomItem) : [];
+  const fallbackPageSize =
+    typeof query.pageSize === 'number' && Number.isFinite(query.pageSize)
+      ? Math.max(1, Math.trunc(query.pageSize))
+      : 12;
+  const fallbackPage =
+    typeof query.page === 'number' && Number.isFinite(query.page)
+      ? Math.max(1, Math.trunc(query.page))
+      : 1;
+  const normalizedPageSize =
+    typeof result.pageSize === 'number' && result.pageSize > 0
+      ? Math.trunc(result.pageSize)
+      : fallbackPageSize;
+  const normalizedTotalCount =
+    typeof result.totalCount === 'number' && result.totalCount >= 0
+      ? Math.trunc(result.totalCount)
+      : items.length;
+  const normalizedPage = typeof result.page === 'number' && result.page > 0 ? Math.trunc(result.page) : fallbackPage;
+
+  return {
+    items,
     totalCount: normalizedTotalCount,
     page: normalizedPage,
     pageSize: normalizedPageSize

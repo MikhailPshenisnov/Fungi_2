@@ -12,7 +12,19 @@ import {
   type ProfileTabKey
 } from '@entities/session';
 import { getCurrentUserProfile, removeAvatar, uploadAvatar } from '@features/avatar';
-import { getModerationQueue, getMyDrafts, getMyMaterials } from '@features/articles';
+import {
+  getModerationQueue,
+  getMyDrafts,
+  getMyFavoriteArticles,
+  getMyMaterials,
+  toggleArticleLike,
+  type FavoriteArticleItem
+} from '@features/articles';
+import {
+  getMyFavoriteMushrooms,
+  toggleMushroomLike,
+  type FavoriteMushroomItem
+} from '@features/mushrooms';
 import {
   getModerationQueue as getMushroomModerationQueue,
   getMyDrafts as getMushroomDrafts,
@@ -35,6 +47,7 @@ const STORYBOOK_TOKEN = 'storybook-token';
 const MAX_AVATAR_SIZE_BYTES = 5 * 1024 * 1024;
 const ALLOWED_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
 const ALLOWED_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp']);
+const FAVORITES_PAGE_SIZE = 6;
 const NO_PERMISSIONS: string[] = [];
 const TAB_PREVIEW_POINTS: Partial<Record<ProfileTabKey, string[]>> = {
   'editor-materials': [
@@ -215,6 +228,12 @@ export function ProfilePage({ section }: ProfilePageProps) {
   const [avatarProgress, setAvatarProgress] = useState(0);
   const [avatarMessage, setAvatarMessage] = useState<string | null>(null);
   const [isRemovingAvatar, setIsRemovingAvatar] = useState(false);
+  const [favoriteArticlesPage, setFavoriteArticlesPage] = useState(1);
+  const [favoriteMushroomsPage, setFavoriteMushroomsPage] = useState(1);
+  const [favoriteRemovingArticleIds, setFavoriteRemovingArticleIds] = useState<Record<string, boolean>>({});
+  const [favoriteRemovingMushroomIds, setFavoriteRemovingMushroomIds] = useState<Record<string, boolean>>({});
+  const [hiddenFavoriteArticleIds, setHiddenFavoriteArticleIds] = useState<Record<string, boolean>>({});
+  const [hiddenFavoriteMushroomIds, setHiddenFavoriteMushroomIds] = useState<Record<string, boolean>>({});
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const dragEnterCounterRef = useRef(0);
@@ -246,6 +265,50 @@ export function ProfilePage({ section }: ProfilePageProps) {
           : null;
   const isArticlePreviewTab = articlePreviewScope !== null;
   const isMushroomPreviewTab = mushroomPreviewScope !== null;
+  const isFavoritesTab = activeSection === 'favorites';
+  const isFavoritesEnabled = Boolean(isFavoritesTab && token && token !== STORYBOOK_TOKEN);
+  const favoriteArticlesQuery = useQuery({
+    queryKey: ['profile', 'favorites', 'articles', token ?? 'missing-token', favoriteArticlesPage, FAVORITES_PAGE_SIZE],
+    enabled: isFavoritesEnabled,
+    queryFn: () =>
+      getMyFavoriteArticles(token!, {
+        page: favoriteArticlesPage,
+        pageSize: FAVORITES_PAGE_SIZE
+      })
+  });
+  const favoriteMushroomsQuery = useQuery({
+    queryKey: ['profile', 'favorites', 'mushrooms', token ?? 'missing-token', favoriteMushroomsPage, FAVORITES_PAGE_SIZE],
+    enabled: isFavoritesEnabled,
+    queryFn: () =>
+      getMyFavoriteMushrooms(token!, {
+        page: favoriteMushroomsPage,
+        pageSize: FAVORITES_PAGE_SIZE
+      })
+  });
+  const favoriteArticlesResult = favoriteArticlesQuery.data;
+  const favoriteMushroomsResult = favoriteMushroomsQuery.data;
+  const favoriteArticles = useMemo(
+    () => (favoriteArticlesResult?.items ?? []).filter((article) => !hiddenFavoriteArticleIds[article.articleId]),
+    [favoriteArticlesResult?.items, hiddenFavoriteArticleIds]
+  );
+  const favoriteMushrooms = useMemo(
+    () => (favoriteMushroomsResult?.items ?? []).filter((mushroom) => !hiddenFavoriteMushroomIds[mushroom.mushroomId]),
+    [favoriteMushroomsResult?.items, hiddenFavoriteMushroomIds]
+  );
+  const favoriteArticlesTotalCount = favoriteArticlesResult?.totalCount ?? 0;
+  const favoriteMushroomsTotalCount = favoriteMushroomsResult?.totalCount ?? 0;
+  const favoriteArticlesResolvedPage = favoriteArticlesResult?.page ?? favoriteArticlesPage;
+  const favoriteMushroomsResolvedPage = favoriteMushroomsResult?.page ?? favoriteMushroomsPage;
+  const favoriteArticlesResolvedPageSize = favoriteArticlesResult?.pageSize ?? FAVORITES_PAGE_SIZE;
+  const favoriteMushroomsResolvedPageSize = favoriteMushroomsResult?.pageSize ?? FAVORITES_PAGE_SIZE;
+  const favoriteArticlesTotalPages = Math.max(
+    1,
+    Math.ceil(favoriteArticlesTotalCount / Math.max(1, favoriteArticlesResolvedPageSize))
+  );
+  const favoriteMushroomsTotalPages = Math.max(
+    1,
+    Math.ceil(favoriteMushroomsTotalCount / Math.max(1, favoriteMushroomsResolvedPageSize))
+  );
   const articlePreviewQuery = useQuery({
     queryKey: ['profile', 'editor-preview', articlePreviewScope ?? 'none', token ?? 'missing-token'],
     enabled: Boolean(articlePreviewScope && token && token !== STORYBOOK_TOKEN),
@@ -299,8 +362,10 @@ export function ProfilePage({ section }: ProfilePageProps) {
   const hasAvatar = Boolean(activeAvatarUrl);
 
   const handleSessionExpired = useCallback(() => {
-    signOut();
-    navigate('/login', { replace: true, state: { reason: 'session-expired' } });
+    navigate('/login?reason=session-expired', { replace: true, state: { reason: 'session-expired' } });
+    window.setTimeout(() => {
+      signOut();
+    }, 0);
   }, [navigate, signOut]);
 
   useEffect(() => {
@@ -431,6 +496,116 @@ export function ProfilePage({ section }: ProfilePageProps) {
       dedupeKey: `profile-mushroom-preview-${mushroomPreviewScope ?? 'none'}-error`
     });
   }, [handleSessionExpired, mushroomPreviewQuery.error, mushroomPreviewScope, showError]);
+
+  useEffect(() => {
+    if (favoriteArticlesPage !== favoriteArticlesResolvedPage) {
+      setFavoriteArticlesPage(favoriteArticlesResolvedPage);
+    }
+  }, [favoriteArticlesPage, favoriteArticlesResolvedPage]);
+
+  useEffect(() => {
+    if (favoriteMushroomsPage !== favoriteMushroomsResolvedPage) {
+      setFavoriteMushroomsPage(favoriteMushroomsResolvedPage);
+    }
+  }, [favoriteMushroomsPage, favoriteMushroomsResolvedPage]);
+
+  useEffect(() => {
+    const favoriteArticleIds = new Set((favoriteArticlesResult?.items ?? []).map((article) => article.articleId));
+    setHiddenFavoriteArticleIds((previousMap) => {
+      const nextMap: Record<string, boolean> = {};
+      let isChanged = false;
+
+      for (const articleId of Object.keys(previousMap)) {
+        if (favoriteArticleIds.has(articleId)) {
+          nextMap[articleId] = true;
+        } else {
+          isChanged = true;
+        }
+      }
+
+      if (!isChanged && Object.keys(nextMap).length === Object.keys(previousMap).length) {
+        return previousMap;
+      }
+
+      return nextMap;
+    });
+  }, [favoriteArticlesResult?.items]);
+
+  useEffect(() => {
+    const favoriteMushroomIds = new Set((favoriteMushroomsResult?.items ?? []).map((mushroom) => mushroom.mushroomId));
+    setHiddenFavoriteMushroomIds((previousMap) => {
+      const nextMap: Record<string, boolean> = {};
+      let isChanged = false;
+
+      for (const mushroomId of Object.keys(previousMap)) {
+        if (favoriteMushroomIds.has(mushroomId)) {
+          nextMap[mushroomId] = true;
+        } else {
+          isChanged = true;
+        }
+      }
+
+      if (!isChanged && Object.keys(nextMap).length === Object.keys(previousMap).length) {
+        return previousMap;
+      }
+
+      return nextMap;
+    });
+  }, [favoriteMushroomsResult?.items]);
+
+  useEffect(() => {
+    if (!(favoriteArticlesQuery.error instanceof ApiError)) {
+      if (favoriteArticlesQuery.error) {
+        showError(
+          favoriteArticlesQuery.error instanceof Error
+            ? favoriteArticlesQuery.error.message
+            : 'Не удалось загрузить избранные статьи.',
+          {
+            title: 'Избранное',
+            dedupeKey: 'profile-favorites-articles-error'
+          }
+        );
+      }
+      return;
+    }
+
+    if (favoriteArticlesQuery.error.status === 401) {
+      handleSessionExpired();
+      return;
+    }
+
+    showError(favoriteArticlesQuery.error.message, {
+      title: 'Избранное',
+      dedupeKey: 'profile-favorites-articles-error'
+    });
+  }, [favoriteArticlesQuery.error, handleSessionExpired, showError]);
+
+  useEffect(() => {
+    if (!(favoriteMushroomsQuery.error instanceof ApiError)) {
+      if (favoriteMushroomsQuery.error) {
+        showError(
+          favoriteMushroomsQuery.error instanceof Error
+            ? favoriteMushroomsQuery.error.message
+            : 'Не удалось загрузить избранные грибы.',
+          {
+            title: 'Избранное',
+            dedupeKey: 'profile-favorites-mushrooms-error'
+          }
+        );
+      }
+      return;
+    }
+
+    if (favoriteMushroomsQuery.error.status === 401) {
+      handleSessionExpired();
+      return;
+    }
+
+    showError(favoriteMushroomsQuery.error.message, {
+      title: 'Избранное',
+      dedupeKey: 'profile-favorites-mushrooms-error'
+    });
+  }, [favoriteMushroomsQuery.error, handleSessionExpired, showError]);
 
   useEffect(() => {
     if (avatarPreviewUrl) {
@@ -648,6 +823,100 @@ export function ProfilePage({ section }: ProfilePageProps) {
     }
   }
 
+  function handleFavoriteArticlesPreviousPage() {
+    setFavoriteArticlesPage((currentPage) => Math.max(1, currentPage - 1));
+  }
+
+  function handleFavoriteArticlesNextPage() {
+    setFavoriteArticlesPage((currentPage) => Math.min(favoriteArticlesTotalPages, currentPage + 1));
+  }
+
+  function handleFavoriteMushroomsPreviousPage() {
+    setFavoriteMushroomsPage((currentPage) => Math.max(1, currentPage - 1));
+  }
+
+  function handleFavoriteMushroomsNextPage() {
+    setFavoriteMushroomsPage((currentPage) => Math.min(favoriteMushroomsTotalPages, currentPage + 1));
+  }
+
+  async function handleRemoveFavoriteArticle(articleId: string) {
+    if (!token || token === STORYBOOK_TOKEN || favoriteRemovingArticleIds[articleId]) {
+      return;
+    }
+
+    setFavoriteRemovingArticleIds((previousMap) => ({ ...previousMap, [articleId]: true }));
+
+    try {
+      const isLiked = await toggleArticleLike(articleId, token);
+      if (isLiked) {
+        showError('Не удалось убрать статью из избранного.', {
+          title: 'Избранное',
+          dedupeKey: `profile-favorites-article-toggle-conflict-${articleId}`
+        });
+        await favoriteArticlesQuery.refetch();
+        return;
+      }
+
+      setHiddenFavoriteArticleIds((previousMap) => ({ ...previousMap, [articleId]: true }));
+      await favoriteArticlesQuery.refetch();
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 401) {
+        handleSessionExpired();
+        return;
+      }
+
+      showError(error instanceof Error ? error.message : 'Не удалось удалить статью из избранного.', {
+        title: 'Избранное',
+        dedupeKey: `profile-favorites-article-remove-${articleId}`
+      });
+    } finally {
+      setFavoriteRemovingArticleIds((previousMap) => {
+        const nextMap = { ...previousMap };
+        delete nextMap[articleId];
+        return nextMap;
+      });
+    }
+  }
+
+  async function handleRemoveFavoriteMushroom(mushroomId: string) {
+    if (!token || token === STORYBOOK_TOKEN || favoriteRemovingMushroomIds[mushroomId]) {
+      return;
+    }
+
+    setFavoriteRemovingMushroomIds((previousMap) => ({ ...previousMap, [mushroomId]: true }));
+
+    try {
+      const isLiked = await toggleMushroomLike(mushroomId, token);
+      if (isLiked) {
+        showError('Не удалось убрать гриб из избранного.', {
+          title: 'Избранное',
+          dedupeKey: `profile-favorites-mushroom-toggle-conflict-${mushroomId}`
+        });
+        await favoriteMushroomsQuery.refetch();
+        return;
+      }
+
+      setHiddenFavoriteMushroomIds((previousMap) => ({ ...previousMap, [mushroomId]: true }));
+      await favoriteMushroomsQuery.refetch();
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 401) {
+        handleSessionExpired();
+        return;
+      }
+
+      showError(error instanceof Error ? error.message : 'Не удалось удалить гриб из избранного.', {
+        title: 'Избранное',
+        dedupeKey: `profile-favorites-mushroom-remove-${mushroomId}`
+      });
+    } finally {
+      setFavoriteRemovingMushroomIds((previousMap) => {
+        const nextMap = { ...previousMap };
+        delete nextMap[mushroomId];
+        return nextMap;
+      });
+    }
+  }
+
   return (
     <PageLayout>
       <Container size="lg" className={styles.container}>
@@ -803,7 +1072,214 @@ export function ProfilePage({ section }: ProfilePageProps) {
               ) : null}
 
               {activeSection !== 'profile' ? (
-                isArticlePreviewTab ? (
+                isFavoritesTab ? (
+                  <div className={styles.favoritesLayout} data-testid="favorites-page">
+                    <section className={styles.favoritesSection} aria-label="Избранные статьи" data-testid="favorites-articles-section">
+                      <div className={styles.favoritesSectionHeader}>
+                        <Typography variant="h4">Избранные статьи</Typography>
+                        <Typography variant="caption" className={styles.favoritesSectionMeta}>
+                          Всего: {favoriteArticlesTotalCount}
+                        </Typography>
+                      </div>
+
+                      {favoriteArticlesQuery.isLoading ? (
+                        <ContentState tone="loading" className={styles.editorStateCard} title="Загружаем избранные статьи..." />
+                      ) : null}
+
+                      {favoriteArticlesQuery.isError &&
+                      !(favoriteArticlesQuery.error instanceof ApiError && favoriteArticlesQuery.error.status === 401) ? (
+                        <ContentState
+                          tone="error"
+                          className={styles.editorStateCard}
+                          title="Не удалось загрузить избранные статьи."
+                          action={
+                            <Button
+                              type="button"
+                              variant="secondary"
+                              onClick={() => {
+                                void favoriteArticlesQuery.refetch();
+                              }}
+                            >
+                              Повторить
+                            </Button>
+                          }
+                        />
+                      ) : null}
+
+                      {!favoriteArticlesQuery.isLoading && !favoriteArticlesQuery.isError ? (
+                        favoriteArticles.length > 0 ? (
+                          <>
+                            <div className={styles.favoritesGrid}>
+                              {favoriteArticles.map((article: FavoriteArticleItem) => (
+                                <Card key={article.articleId} className={styles.favoriteCard} data-testid="favorite-article-card">
+                                  <div className={styles.favoriteCardHeader}>
+                                    <Typography variant="bodyS" className={styles.favoriteCardTitle} data-testid="favorite-article-title">
+                                      {article.title}
+                                    </Typography>
+                                    <Tag tone="success">Опубликовано</Tag>
+                                  </div>
+                                  <Typography variant="caption" className={styles.favoriteCardMeta}>
+                                    {article.authorString} • {formatArticleDate(article.publishDate)} • Лайков: {article.likesCount}
+                                  </Typography>
+                                  <div className={styles.favoriteCardActions}>
+                                    <Link to={`/articles/${article.articleId}`} className={styles.editorTileActionLink}>
+                                      Открыть статью
+                                    </Link>
+                                    <Button
+                                      type="button"
+                                      variant="secondary"
+                                      onClick={() => {
+                                        void handleRemoveFavoriteArticle(article.articleId);
+                                      }}
+                                      disabled={Boolean(favoriteRemovingArticleIds[article.articleId])}
+                                      data-testid="favorite-article-remove"
+                                    >
+                                      {favoriteRemovingArticleIds[article.articleId] ? 'Удаляем...' : 'Убрать из избранного'}
+                                    </Button>
+                                  </div>
+                                </Card>
+                              ))}
+                            </div>
+
+                            {favoriteArticlesTotalPages > 1 ? (
+                              <div className={styles.favoritesPagination}>
+                                <Button
+                                  type="button"
+                                  variant="secondary"
+                                  onClick={handleFavoriteArticlesPreviousPage}
+                                  disabled={favoriteArticlesResolvedPage <= 1}
+                                >
+                                  Назад
+                                </Button>
+                                <Typography variant="bodyS">
+                                  Страница {favoriteArticlesResolvedPage} из {favoriteArticlesTotalPages}
+                                </Typography>
+                                <Button
+                                  type="button"
+                                  variant="secondary"
+                                  onClick={handleFavoriteArticlesNextPage}
+                                  disabled={favoriteArticlesResolvedPage >= favoriteArticlesTotalPages}
+                                >
+                                  Вперёд
+                                </Button>
+                              </div>
+                            ) : null}
+                          </>
+                        ) : (
+                          <ContentState
+                            tone="empty"
+                            className={styles.editorStateCard}
+                            title="В избранных статьях пока пусто."
+                            description="Ставьте лайки в каталоге или на странице статьи."
+                          />
+                        )
+                      ) : null}
+                    </section>
+
+                    <section className={styles.favoritesSection} aria-label="Избранные грибы" data-testid="favorites-mushrooms-section">
+                      <div className={styles.favoritesSectionHeader}>
+                        <Typography variant="h4">Избранные грибы</Typography>
+                        <Typography variant="caption" className={styles.favoritesSectionMeta}>
+                          Всего: {favoriteMushroomsTotalCount}
+                        </Typography>
+                      </div>
+
+                      {favoriteMushroomsQuery.isLoading ? (
+                        <ContentState tone="loading" className={styles.editorStateCard} title="Загружаем избранные грибы..." />
+                      ) : null}
+
+                      {favoriteMushroomsQuery.isError &&
+                      !(favoriteMushroomsQuery.error instanceof ApiError && favoriteMushroomsQuery.error.status === 401) ? (
+                        <ContentState
+                          tone="error"
+                          className={styles.editorStateCard}
+                          title="Не удалось загрузить избранные грибы."
+                          action={
+                            <Button
+                              type="button"
+                              variant="secondary"
+                              onClick={() => {
+                                void favoriteMushroomsQuery.refetch();
+                              }}
+                            >
+                              Повторить
+                            </Button>
+                          }
+                        />
+                      ) : null}
+
+                      {!favoriteMushroomsQuery.isLoading && !favoriteMushroomsQuery.isError ? (
+                        favoriteMushrooms.length > 0 ? (
+                          <>
+                            <div className={styles.favoritesGrid}>
+                              {favoriteMushrooms.map((mushroom: FavoriteMushroomItem) => (
+                                <Card key={mushroom.mushroomId} className={styles.favoriteCard} data-testid="favorite-mushroom-card">
+                                  <div className={styles.favoriteCardHeader}>
+                                    <Typography variant="bodyS" className={styles.favoriteCardTitle} data-testid="favorite-mushroom-title">
+                                      {mushroom.name}
+                                    </Typography>
+                                    <Tag tone="info">В каталоге</Tag>
+                                  </div>
+                                  <Typography variant="caption" className={styles.favoriteCardMeta}>
+                                    {mushroom.family}
+                                    {mushroom.latinName ? ` • ${mushroom.latinName}` : ''} • Лайков: {mushroom.likesCount}
+                                  </Typography>
+                                  <div className={styles.favoriteCardActions}>
+                                    <Link to={`/mushrooms/${mushroom.mushroomId}`} className={styles.editorTileActionLink}>
+                                      Открыть гриб
+                                    </Link>
+                                    <Button
+                                      type="button"
+                                      variant="secondary"
+                                      onClick={() => {
+                                        void handleRemoveFavoriteMushroom(mushroom.mushroomId);
+                                      }}
+                                      disabled={Boolean(favoriteRemovingMushroomIds[mushroom.mushroomId])}
+                                      data-testid="favorite-mushroom-remove"
+                                    >
+                                      {favoriteRemovingMushroomIds[mushroom.mushroomId] ? 'Удаляем...' : 'Убрать из избранного'}
+                                    </Button>
+                                  </div>
+                                </Card>
+                              ))}
+                            </div>
+
+                            {favoriteMushroomsTotalPages > 1 ? (
+                              <div className={styles.favoritesPagination}>
+                                <Button
+                                  type="button"
+                                  variant="secondary"
+                                  onClick={handleFavoriteMushroomsPreviousPage}
+                                  disabled={favoriteMushroomsResolvedPage <= 1}
+                                >
+                                  Назад
+                                </Button>
+                                <Typography variant="bodyS">
+                                  Страница {favoriteMushroomsResolvedPage} из {favoriteMushroomsTotalPages}
+                                </Typography>
+                                <Button
+                                  type="button"
+                                  variant="secondary"
+                                  onClick={handleFavoriteMushroomsNextPage}
+                                  disabled={favoriteMushroomsResolvedPage >= favoriteMushroomsTotalPages}
+                                >
+                                  Вперёд
+                                </Button>
+                              </div>
+                            ) : null}
+                          </>
+                        ) : (
+                          <ContentState
+                            tone="empty"
+                            className={styles.editorStateCard}
+                            title="В избранных грибах пока пусто."
+                            description="Ставьте лайки в каталоге или на странице гриба."
+                          />
+                        )
+                      ) : null}
+                    </section>
+                  </div>
+                ) : isArticlePreviewTab ? (
                   <div className={styles.editorTilesSection}>
                     {articlePreviewQuery.isLoading ? (
                       <ContentState

@@ -36,6 +36,16 @@ public class ArticleLikesService : IArticleLikesService
         return await _likesRepository.HasUserLikedAsync(articleId, userId, ct);
     }
 
+    public async Task<(List<FavoriteArticleListItem> Items, int TotalCount)> GetMyFavoriteArticlesAsync(
+        ClaimsPrincipal user,
+        int page,
+        int pageSize,
+        CancellationToken ct)
+    {
+        var userId = GetUserId(user);
+        return await _likesRepository.GetMyFavoriteArticlesAsync(userId, page, pageSize, ct);
+    }
+
     private static Guid GetUserId(ClaimsPrincipal user)
     {
         return Guid.Parse(user.FindFirst("UserId")?.Value ?? throw new UnauthorizedAccessException());

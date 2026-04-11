@@ -38,6 +38,11 @@ mv quickstart/fungi-api-swagger.json.tmp quickstart/fungi-api-swagger.json
   - защищенные endpoint-ы должны иметь bearer security на уровне операции;
   - request-схемы должны содержать актуальные `required` поля;
   - для workflow endpoint-ов должны быть явно описаны non-200 ответы (`400/401/403/404/409/500`, где применимо).
+- Для mobile-ready favorites-контракта проверять, что в OpenAPI отражены:
+  - `GET /ArticleLikes/GetMyFavoriteArticles`;
+  - `GET /MushroomLikes/GetMyFavoriteMushrooms`;
+  - bearer security на обеих операциях;
+  - query-параметры `Page`/`PageSize` и их валидационные `400` ответы.
 - `operationId` в текущем цикле не переименовывается (ограничение совместимости codegen клиентов).
 
 ## Текущий статус snapshot

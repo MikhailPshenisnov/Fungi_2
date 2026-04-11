@@ -4,12 +4,28 @@
 
 ### Backend
 
+- добавлен mobile-ready контракт `Избранное`:
+  - `GET /ArticleLikes/GetMyFavoriteArticles`;
+  - `GET /MushroomLikes/GetMyFavoriteMushrooms`;
+  - auth required (bearer);
+  - пагинация `Page/PageSize` (defaults `1/12`, max `100`, invalid -> `400 invalid_request`);
+  - сортировка `LikeDate DESC`;
+  - visibility-фильтры:
+    - статьи: только `Published` и `PublishDate <= now(UTC)`;
+    - грибы: только `IsArchived = false`.
 - синхронизирован OpenAPI-контракт статей с runtime:
   - для `Articles/*` добавлены явные `ProducesResponseType` с non-200 ответами;
   - уточнена схема required-полей в article request DTO;
   - security в Swagger переведена на per-operation режим:
     - публичные `GetArticle/GetFilteredArticles` отображаются как anonymous;
     - защищенные article endpoint-ы отображаются с bearer requirement.
+
+### Mobile
+
+- зафиксирован сценарий интеграции favorites для mobile-клиента:
+  - загрузка избранных статей и грибов через новые likes endpoint-ы;
+  - единая обработка `401` как истечения сессии;
+  - уточнение, что `/profile/favorites` — UI redirect web-клиента, а не API.
 
 ### DevOps / Docs
 

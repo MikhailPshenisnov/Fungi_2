@@ -67,4 +67,43 @@ public class MushroomLikesRepository : IMushroomLikesRepository
         return await _context.MushroomLikes
             .AnyAsync(x => x.MushroomId == mushroomId && x.UserId == userId, ct);
     }
+
+    public async Task<(List<FavoriteMushroomListItem> Items, int TotalCount)> GetMyFavoriteMushroomsAsync(
+        Guid userId,
+        int page,
+        int pageSize,
+        CancellationToken ct)
+    {
+        var favoritesQuery = _context.MushroomLikes
+            .AsNoTracking()
+            .Where(like => like.UserId == userId)
+            .Join(
+                _context.Mushrooms.AsNoTracking(),
+                like => like.MushroomId,
+                mushroom => mushroom.Id,
+                (like, mushroom) => new { Like = like, Mushroom = mushroom })
+            .Where(x => !x.Mushroom.IsArchived);
+
+        var totalCount = await favoritesQuery.CountAsync(ct);
+        if (totalCount == 0)
+            return (new List<FavoriteMushroomListItem>(), 0);
+
+        var items = await favoritesQuery
+            .OrderByDescending(x => x.Like.LikeDate)
+            .ThenByDescending(x => x.Like.Id)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(x => new FavoriteMushroomListItem(
+                x.Mushroom.Id,
+                x.Mushroom.Name,
+                x.Mushroom.SynonymousName,
+                x.Mushroom.LatinName,
+                x.Mushroom.Family,
+                x.Mushroom.HeaderPhotoLink,
+                x.Like.LikeDate,
+                _context.MushroomLikes.Count(l => l.MushroomId == x.Mushroom.Id)))
+            .ToListAsync(ct);
+
+        return (items, totalCount);
+    }
 }
