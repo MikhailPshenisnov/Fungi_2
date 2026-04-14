@@ -19,20 +19,20 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-// LoginScreen.js - РѕР±РЅРѕРІР»РµРЅРЅС‹Р№ handleLogin
+// LoginScreen.js - обновленный handleLogin
 
 const handleLogin = async () => {
   console.log('1. handleLogin started');
   console.log('Email:', email);
   console.log('Password:', password);
   
-  // Р’Р°Р»РёРґР°С†РёСЏ
+  // Валидация
   if (!email.trim()) {
-    Alert.alert("РћС€РёР±РєР°", "Р’РІРµРґРёС‚Рµ email");
+    Alert.alert("Ошибка", "Введите email");
     return;
   }
   if (!password.trim()) {
-    Alert.alert("РћС€РёР±РєР°", "Р’РІРµРґРёС‚Рµ РїР°СЂРѕР»СЊ");
+    Alert.alert("Ошибка", "Введите пароль");
     return;
   }
 
@@ -46,18 +46,18 @@ const handleLogin = async () => {
   if (result.success) {
     console.log('Login successful, navigating to TestProfile');
     
-    // РСЃРїРѕР»СЊР·СѓРµРј reset РІРјРµСЃС‚Рѕ navigate
+    // Используем reset вместо navigate
     navigation.reset({
       index: 0,
       routes: [{ name: 'TestProfile' }],
     });
   } else {
       console.log('Login failed:', result.error);
-      Alert.alert("РћС€РёР±РєР° РІС…РѕРґР°", result.error);
+      Alert.alert("Ошибка входа", result.error);
     }
   } catch (error) {
     console.log('Unexpected error:', error);
-    Alert.alert("РћС€РёР±РєР°", "РџСЂРѕРёР·РѕС€Р»Р° РЅРµРїСЂРµРґРІРёРґРµРЅРЅР°СЏ РѕС€РёР±РєР°");
+    Alert.alert("Ошибка", "Произошла непредвиденная ошибка");
   } finally {
     setLoading(false);
   }
@@ -69,7 +69,7 @@ const handleLogin = async () => {
         contentContainerStyle={styles.container}
         showsVerticalScrollIndicator={false}
       >
-        {/* Р›РћР“Рћ + РќРђР—Р’РђРќРР• */}
+        {/* ЛОГО + НАЗВАНИЕ */}
         <View style={styles.logoBlock}>
           <View style={styles.logoCircle}>
             <Image
@@ -81,12 +81,12 @@ const handleLogin = async () => {
           <Text style={styles.appName}>Fungi</Text>
         </View>
 
-        {/* РўР•РљРЎРў "Р’РѕР№С‚Рё РІ Fungi" */}
+        {/* ТЕКСТ "Войти в Fungi" */}
         <Text style={styles.title}>
-          Р’РѕР№С‚Рё РІ <Text style={styles.titleAccent}>Fungi</Text>
+          Войти в <Text style={styles.titleAccent}>Fungi</Text>
         </Text>
 
-        {/* РљРќРћРџРљР GOOGLE / APPLE */}
+        {/* КНОПКИ GOOGLE / APPLE */}
         <View style={styles.socialRow}>
           <TouchableOpacity style={styles.socialButton}>
             <Image
@@ -105,11 +105,11 @@ const handleLogin = async () => {
           </TouchableOpacity>
         </View>
         
-        <Text style={styles.orText}>РР›Р</Text>
+        <Text style={styles.orText}>ИЛИ</Text>
 
         {/* EMAIL */}
         <View style={styles.inputWrapper}>
-          <Text style={styles.inputIcon}>вњ‰пёЏ</Text>
+          <Text style={styles.inputIcon}>??</Text>
           <TextInput
             style={styles.input}
             placeholder="EMAIL"
@@ -122,12 +122,12 @@ const handleLogin = async () => {
           />
         </View>
 
-        {/* РџРђР РћР›Р¬ */}
+        {/* ПАРОЛЬ */}
         <View style={styles.inputWrapper}>
-          <Text style={styles.inputIcon}>рџ”’</Text>
+          <Text style={styles.inputIcon}>??</Text>
           <TextInput
             style={styles.input}
-            placeholder="РџРђР РћР›Р¬"
+            placeholder="ПАРОЛЬ"
             placeholderTextColor="#C2C3CB"
             secureTextEntry={!showPassword}
             value={password}
@@ -140,21 +140,21 @@ const handleLogin = async () => {
             disabled={loading}
           >
             <Text style={styles.eyeText}>
-              {showPassword ? "РЎРєСЂС‹С‚СЊ" : "РџРѕРєР°Р·Р°С‚СЊ"}
+              {showPassword ? "Скрыть" : "Показать"}
             </Text>
           </TouchableOpacity>
         </View>
 
-        {/* Р—РђР‘Р«Р›Р РџРђР РћР›Р¬ */}
+        {/* ЗАБЫЛИ ПАРОЛЬ */}
         <TouchableOpacity 
           style={styles.forgotWrapper}
           onPress={() => navigation.navigate("ForgotPassword")}
           disabled={loading}
         >
-          <Text style={styles.forgotText}>Р—Р°Р±С‹Р»Рё РїР°СЂРѕР»СЊ?</Text>
+          <Text style={styles.forgotText}>Забыли пароль?</Text>
         </TouchableOpacity>
 
-        {/* РљРќРћРџРљРђ "Р’РћР™РўР" */}
+        {/* КНОПКА "ВОЙТИ" */}
         <TouchableOpacity 
           style={[styles.primaryButton, loading && styles.disabledButton]}
           onPress={handleLogin}
@@ -163,22 +163,22 @@ const handleLogin = async () => {
           {loading ? (
             <ActivityIndicator color="#323142" />
           ) : (
-            <Text style={styles.primaryButtonText}>Р’РћР™РўР</Text>
+            <Text style={styles.primaryButtonText}>ВОЙТИ</Text>
           )}
         </TouchableOpacity>
 
-        {/* "Р•С‰С‘ РЅРµС‚ Р°РєРєР°СѓРЅС‚Р°? РЎРѕР·РґР°С‚СЊ" */}
+        {/* "Ещё нет аккаунта? Создать" */}
         <View style={styles.bottomRow}>
-          <Text style={styles.bottomText}>Р•С‰С‘ РЅРµС‚ Р°РєРєР°СѓРЅС‚Р°? </Text>
+          <Text style={styles.bottomText}>Ещё нет аккаунта? </Text>
           <TouchableOpacity 
             onPress={() => navigation.navigate("Registration")}
             disabled={loading}
           >
-            <Text style={styles.bottomLink}>РЎРѕР·РґР°С‚СЊ</Text>
+            <Text style={styles.bottomLink}>Создать</Text>
           </TouchableOpacity>
         </View>
 
-        {/* РќРР–РќРР™ РўР•РљРЎРў */}
+        {/* НИЖНИЙ ТЕКСТ */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>Privacy Policy</Text>
           <Text style={styles.footerText}>Copyright 2025</Text>
@@ -199,28 +199,28 @@ const styles = StyleSheet.create({
     paddingBottom: 120,
   },
 
-  // Р›РћР“Рћ Р‘Р›РћРљ вЂ” С†РµРЅС‚СЂ
+  // ЛОГО БЛОК — центр
   logoBlock: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",   // С†РµРЅС‚СЂРёСЂСѓРµРј СЂСЏРґ С†РµР»РёРєРѕРј
+    justifyContent: "center",   // центрируем ряд целиком
     marginBottom: 24,
   },
   logoCircle: {
-    width: 92,
-    height: 92,
+    width: 75,
+    height: 71,
     borderRadius: 46,
     backgroundColor: "#FFE8C4",
     justifyContent: "center",
     alignItems: "center",
   },
   logoImage: {
-    width: 80,
-    height: 80,
+    width: 62,
+    height: 62,
   },
   appName: {
     fontFamily: "Raleway-Bold",
-    fontSize: 32,
+    fontSize: 42,
     color: "#323142",
     marginLeft: 16,
   },
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
     height: 20,
   },
 
-  // Р—РђР“РћР›РћР’РћРљ
+  // ЗАГОЛОВОК
   title: {
     fontFamily: "Raleway-Medium",
     fontSize: 20,
@@ -243,31 +243,31 @@ const styles = StyleSheet.create({
     fontFamily: "Raleway-Bold",
   },
 
-  // РЎРћР¦РљРќРћРџРљР
+  // СОЦКНОПКИ
   socialRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     gap: 16,
-    marginBottom: 8, // РЅРµР±РѕР»СЊС€РѕР№ РѕС‚СЃС‚СѓРї РґРѕ "РР›Р"
+    marginBottom: 8, // небольшой отступ до "ИЛИ"
   },
   socialButton: {
     flex: 1,
     paddingVertical: 14,
     borderRadius: 16,
-    backgroundColor: "#F5F5F5", // СЃРІРµС‚Р»Рѕ-СЃРµСЂС‹Рµ
+    backgroundColor: "#F5F5F5", // светло-серые
     justifyContent: "center",
     alignItems: "center",
   },
   orText: {
     textAlign: "center",
     marginTop: 12,
-    marginBottom: 24,           // Р±РѕР»СЊС€Рµ РІРѕР·РґСѓС…Р° РґРѕ EMAIL
+    marginBottom: 24,           // больше воздуха до EMAIL
     fontFamily: "Raleway-Bold",
     fontSize: 12,
-    color: "#005A6459",           // СЃРёРЅРµРІР°С‚С‹Р№
+    color: "#005A6459",           // синеватый
   },
 
-  // РРќРџРЈРўР«
+  // ИНПУТЫ
   inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
@@ -308,9 +308,9 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
 
-  // РљРќРћРџРљРђ Р’РћР™РўР вЂ” РїРµСЂСЃРёРєРѕРІР°СЏ СЃ С‚РµРЅСЊСЋ
+  // КНОПКА ВОЙТИ — персиковая с тенью
   primaryButton: {
-    backgroundColor: "#FFE6C4", // Р±Р»РёР·РєРѕ Рє РјР°РєРµС‚Сѓ
+    backgroundColor: "#FFE6C4", // близко к макету
     borderRadius: 24,
     paddingVertical: 16,
     alignItems: "center",

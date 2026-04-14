@@ -20,7 +20,7 @@ export default function RegistrationScreen({ navigation }) {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-// RegistrationScreen.js - РѕР±РЅРѕРІР»СЏРµРј handleRegister
+// RegistrationScreen.js - обновляем handleRegister
 
 const handleRegister = async () => {
   console.log('1. handleRegister started');
@@ -28,20 +28,20 @@ const handleRegister = async () => {
   console.log('Email:', email);
   console.log('Password:', password);
   
-  // РўРѕР»СЊРєРѕ РїСЂРѕРІРµСЂРєР° РЅР° Р·Р°РїРѕР»РЅРµРЅРЅРѕСЃС‚СЊ РїРѕР»РµР№
+  // Только проверка на заполненность полей
   if (!name.trim()) {
     console.log('2. Name is empty');
-    Alert.alert("РћС€РёР±РєР°", "Р’РІРµРґРёС‚Рµ РёРјСЏ");
+    Alert.alert("Ошибка", "Введите имя");
     return;
   }
   if (!email.trim()) {
     console.log('2. Email is empty');
-    Alert.alert("РћС€РёР±РєР°", "Р’РІРµРґРёС‚Рµ email");
+    Alert.alert("Ошибка", "Введите email");
     return;
   }
   if (!password.trim()) {
     console.log('2. Password is empty');
-    Alert.alert("РћС€РёР±РєР°", "Р’РІРµРґРёС‚Рµ РїР°СЂРѕР»СЊ");
+    Alert.alert("Ошибка", "Введите пароль");
     return;
   }
 
@@ -56,14 +56,14 @@ const handleRegister = async () => {
     if (result.success) {
       console.log('6. Registration successful');
       Alert.alert(
-        "РЈСЃРїРµС…", 
-        "Р РµРіРёСЃС‚СЂР°С†РёСЏ РїСЂРѕС€Р»Р° СѓСЃРїРµС€РЅРѕ!",
+        "Успех", 
+        "Регистрация прошла успешно!",
         [
           { 
             text: "OK", 
             onPress: () => {
               console.log('7. Navigating to TestProfile');
-              // РџРµСЂРµРЅР°РїСЂР°РІР»СЏРµРј РЅР° С‚РµСЃС‚РѕРІСѓСЋ СЃС‚СЂР°РЅРёС†Сѓ РїСЂРѕС„РёР»СЏ
+              // Перенаправляем на тестовую страницу профиля
               navigation.navigate("TestProfile");
             } 
           }
@@ -71,11 +71,11 @@ const handleRegister = async () => {
       );
     } else {
       console.log('6. Registration failed:', result.error);
-      Alert.alert("РћС€РёР±РєР° СЂРµРіРёСЃС‚СЂР°С†РёРё", result.error);
+      Alert.alert("Ошибка регистрации", result.error);
     }
   } catch (error) {
     console.log('6. Unexpected error:', error);
-    Alert.alert("РћС€РёР±РєР°", "РџСЂРѕРёР·РѕС€Р»Р° РЅРµРїСЂРµРґРІРёРґРµРЅРЅР°СЏ РѕС€РёР±РєР°");
+    Alert.alert("Ошибка", "Произошла непредвиденная ошибка");
     console.error(error);
   } finally {
     console.log('7. Setting loading to false');
@@ -89,7 +89,7 @@ const handleRegister = async () => {
         contentContainerStyle={styles.container}
         showsVerticalScrollIndicator={false}
       >
-        {/* Р›РћР“Рћ + РќРђР—Р’РђРќРР• */}
+        {/* ЛОГО + НАЗВАНИЕ */}
         <View style={styles.logoBlock}>
           <View style={styles.logoCircle}>
             <Image
@@ -101,12 +101,12 @@ const handleRegister = async () => {
           <Text style={styles.appName}>Fungi</Text>
         </View>
 
-        {/* РўР•РљРЎРў "Р РµРіРёСЃС‚СЂР°С†РёСЏ РІ Fungi" */}
+        {/* ТЕКСТ "Регистрация в Fungi" */}
         <Text style={styles.title}>
-          Р РµРіРёСЃС‚СЂР°С†РёСЏ РІ <Text style={styles.titleAccent}>Fungi</Text>
+          Регистрация в <Text style={styles.titleAccent}>Fungi</Text>
         </Text>
 
-        {/* РљРќРћРџРљР GOOGLE / APPLE */}
+        {/* КНОПКИ GOOGLE / APPLE */}
         <View style={styles.socialRow}>
           <TouchableOpacity style={styles.socialButton}>
             <Image
@@ -125,14 +125,14 @@ const handleRegister = async () => {
           </TouchableOpacity>
         </View>
         
-        <Text style={styles.orText}>РР›Р</Text>
+        <Text style={styles.orText}>ИЛИ</Text>
 
-        {/* РРњРЇ */}
+        {/* ИМЯ */}
         <View style={styles.inputWrapper}>
-          <Text style={styles.inputIcon}>рџ‘¤</Text>
+          <Text style={styles.inputIcon}>??</Text>
           <TextInput
             style={styles.input}
-            placeholder="РРњРЇ"
+            placeholder="ИМЯ"
             placeholderTextColor="#C2C3CB"
             autoCapitalize="words"
             value={name}
@@ -143,7 +143,7 @@ const handleRegister = async () => {
 
         {/* EMAIL */}
         <View style={styles.inputWrapper}>
-          <Text style={styles.inputIcon}>вњ‰пёЏ</Text>
+          <Text style={styles.inputIcon}>??</Text>
           <TextInput
             style={styles.input}
             placeholder="EMAIL"
@@ -156,12 +156,12 @@ const handleRegister = async () => {
           />
         </View>
 
-        {/* РџРђР РћР›Р¬ */}
+        {/* ПАРОЛЬ */}
         <View style={styles.inputWrapper}>
-          <Text style={styles.inputIcon}>рџ”’</Text>
+          <Text style={styles.inputIcon}>??</Text>
           <TextInput
             style={styles.input}
-            placeholder="РџРђР РћР›Р¬"
+            placeholder="ПАРОЛЬ"
             placeholderTextColor="#C2C3CB"
             secureTextEntry={!showPassword}
             value={password}
@@ -174,26 +174,26 @@ const handleRegister = async () => {
             disabled={loading}
           >
             <Text style={styles.eyeText}>
-              {showPassword ? "РЎРєСЂС‹С‚СЊ" : "РџРѕРєР°Р·Р°С‚СЊ"}
+              {showPassword ? "Скрыть" : "Показать"}
             </Text>
           </TouchableOpacity>
         </View>
 
-        {/* РЈРЎР›РћР’РРЇ РРЎРџРћР›Р¬Р—РћР’РђРќРРЇ */}
+        {/* УСЛОВИЯ ИСПОЛЬЗОВАНИЯ */}
         <View style={styles.termsContainer}>
           <Text style={styles.termsText}>
-            Р РµРіРёСЃС‚СЂРёСЂСѓСЏСЃСЊ, РІС‹ СЃРѕРіР»Р°С€Р°РµС‚РµСЃСЊ СЃ{" "}
+            Регистрируясь, вы соглашаетесь с{" "}
           </Text>
           <TouchableOpacity onPress={() => navigation.navigate("Terms")}>
-            <Text style={styles.termsLink}>СѓСЃР»РѕРІРёСЏРјРё РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ</Text>
+            <Text style={styles.termsLink}>условиями использования</Text>
           </TouchableOpacity>
-          <Text style={styles.termsText}> Рё </Text>
+          <Text style={styles.termsText}> и </Text>
           <TouchableOpacity onPress={() => navigation.navigate("Privacy")}>
-            <Text style={styles.termsLink}>РїРѕР»РёС‚РёРєРѕР№ РєРѕРЅС„РёРґРµРЅС†РёР°Р»СЊРЅРѕСЃС‚Рё</Text>
+            <Text style={styles.termsLink}>политикой конфиденциальности</Text>
           </TouchableOpacity>
         </View>
 
-        {/* РљРќРћРџРљРђ "Р—РђР Р•Р“РРЎРўР РР РћР’РђРўР¬РЎРЇ" */}
+        {/* КНОПКА "ЗАРЕГИСТРИРОВАТЬСЯ" */}
         <TouchableOpacity 
           style={[styles.primaryButton, loading && styles.disabledButton]}
           onPress={handleRegister}
@@ -202,22 +202,22 @@ const handleRegister = async () => {
           {loading ? (
             <ActivityIndicator color="#323142" />
           ) : (
-            <Text style={styles.primaryButtonText}>Р—РђР Р•Р“РРЎРўР РР РћР’РђРўР¬РЎРЇ</Text>
+            <Text style={styles.primaryButtonText}>ЗАРЕГИСТРИРОВАТЬСЯ</Text>
           )}
         </TouchableOpacity>
 
-        {/* "РЈР¶Рµ РµСЃС‚СЊ Р°РєРєР°СѓРЅС‚? Р’РѕР№С‚Рё" */}
+        {/* "Уже есть аккаунт? Войти" */}
         <View style={styles.bottomRow}>
-          <Text style={styles.bottomText}>РЈР¶Рµ РµСЃС‚СЊ Р°РєРєР°СѓРЅС‚? </Text>
+          <Text style={styles.bottomText}>Уже есть аккаунт? </Text>
           <TouchableOpacity 
             onPress={() => navigation.navigate("Login")}
             disabled={loading}
           >
-            <Text style={styles.bottomLink}>Р’РѕР№С‚Рё</Text>
+            <Text style={styles.bottomLink}>Войти</Text>
           </TouchableOpacity>
         </View>
 
-        {/* РќРР–РќРР™ РўР•РљРЎРў */}
+        {/* НИЖНИЙ ТЕКСТ */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>Privacy Policy</Text>
           <Text style={styles.footerText}>Copyright 2025</Text>
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     paddingBottom: 120,
   },
 
-  // Р›РћР“Рћ Р‘Р›РћРљ вЂ” С†РµРЅС‚СЂ
+  // ЛОГО БЛОК — центр
   logoBlock: {
     flexDirection: "row",
     alignItems: "center",
@@ -246,20 +246,20 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   logoCircle: {
-    width: 92,
-    height: 92,
+    width: 75,
+    height: 71,
     borderRadius: 46,
     backgroundColor: "#FFE8C4",
     justifyContent: "center",
     alignItems: "center",
   },
   logoImage: {
-    width: 80,
-    height: 80,
+    width: 62,
+    height: 62,
   },
   appName: {
     fontFamily: "Raleway-Bold",
-    fontSize: 32,
+    fontSize: 42,
     color: "#323142",
     marginLeft: 16,
   },
@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     height: 20,
   },
 
-  // Р—РђР“РћР›РћР’РћРљ
+  // ЗАГОЛОВОК
   title: {
     fontFamily: "Raleway-Medium",
     fontSize: 20,
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
     fontFamily: "Raleway-Bold",
   },
 
-  // РЎРћР¦РљРќРћРџРљР
+  // СОЦКНОПКИ
   socialRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
     color: "#005A6459",
   },
 
-  // РРќРџРЈРўР«
+  // ИНПУТЫ
   inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
     color: "#F9A94A",
   },
 
-  // РЈРЎР›РћР’РРЇ РРЎРџРћР›Р¬Р—РћР’РђРќРРЇ
+  // УСЛОВИЯ ИСПОЛЬЗОВАНИЯ
   termsContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -357,7 +357,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
-  // РљРќРћРџРљРђ Р Р•Р“РРЎРўР РђР¦РР вЂ” РїРµСЂСЃРёРєРѕРІР°СЏ СЃ С‚РµРЅСЊСЋ
+  // КНОПКА РЕГИСТРАЦИИ — персиковая с тенью
   primaryButton: {
     backgroundColor: "#FFE6C4",
     borderRadius: 24,
