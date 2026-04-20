@@ -2,7 +2,8 @@
 
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
-
+.expo/
+node_modules/
 # User-specific stuff
 .idea/**/workspace.xml
 .idea/**/tasks.xml
@@ -130,3 +131,5 @@ bh_unicode_properties.cache
 # Sublime-github package stores a github token in this file
 # https://packagecontrol.io/packages/sublime-github
 GitHub.sublime-settings
+
+1-mock-data.sql
