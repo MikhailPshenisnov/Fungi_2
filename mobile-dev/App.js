@@ -13,6 +13,10 @@ import MushroomClassifierScreen from './components/MushroomClassifierScreen';
 import ProfileScreen from './components/ProfileScreen';
 import FungiDetails from './components/fungiDetails';
 
+// НОВЫЕ ИМПОРТЫ
+import ErrorScreen from './components/ErrorScreen';
+import NotFoundScreen from './components/NotFoundScreen';
+
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
 
@@ -29,12 +33,11 @@ const Stack = createStackNavigator();
 function EncyclopediaStack() {
   return (
    <Stack.Navigator
+      initialRouteName="Error" # Или NotFound для вывода экрана
       screenOptions={{
-        //анимация
         cardStyleInterpolator: ({ current, layouts }) => {
           return {
             cardStyle: {
-              
               transform: [
                 {
                   translateX: current.progress.interpolate({
@@ -66,7 +69,6 @@ function EncyclopediaStack() {
           headerTintColor: '#ffffff',
         }}
       />
-      {/*ЭКРАН ДЕТАЛЕЙ */}
       <Stack.Screen 
         name="FungiDetails" 
         component={FungiDetails}
@@ -76,6 +78,18 @@ function EncyclopediaStack() {
           headerTitleAlign: 'center',
           headerTintColor: '#ffffff',
         }}
+      />
+
+      {/* РЕГИСТРАЦИЯ НОВЫХ ЭКРАНОВ В СТЕКЕ */}
+      <Stack.Screen 
+        name="NotFound" 
+        component={NotFoundScreen}
+        options={{ headerShown: false }} 
+      />
+      <Stack.Screen 
+        name="Error" 
+        component={ErrorScreen}
+        options={{headerShown: false}}
       />
     </Stack.Navigator>
   );
@@ -124,7 +138,6 @@ function ProfileStack() {
         component={ForgotPasswordScreen}
         options={{ headerShown: false }}
       />
-      {/* ДОБАВЛЯЕМ ТЕСТОВЫЙ ПРОФИЛЬ */}
       <Stack.Screen 
         name="TestProfile" 
         component={TestProfileScreen}
