@@ -20,6 +20,10 @@ import RegistrationScreen from './components/RegistrationScreen';
 import LoginScreen from './components/LoginScreen';
 import ForgotPasswordScreen from './components/ForgotPasswordScreen';
 import TestProfileScreen from './components/TestProfileScreen';
+import UserProfileScreen from './components/UserProfileScreen';
+import NewUserProfileScreen from "./components/NewUserProfileScreen";
+import SettingsScreen from "./components/SettingsScreen";
+import MobileAccountScreen from './components/MobileAccountScreen';
 
 
 const Tab = createBottomTabNavigator();
@@ -103,7 +107,7 @@ function CardsStack() {
 
 function ProfileStack() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="NewProfile">
       <Stack.Screen 
         name="ProfileMain" 
         component={ProfileScreen} 
@@ -125,15 +129,25 @@ function ProfileStack() {
         options={{ headerShown: false }}
       />
       {/* ДОБАВЛЯЕМ ТЕСТОВЫЙ ПРОФИЛЬ */}
-      <Stack.Screen 
-        name="TestProfile" 
-        component={TestProfileScreen}
-        options={{ 
-          title: "Тестовый профиль",
-          headerStyle: { backgroundColor: '#452929' },
-          headerTitleAlign: 'center',
-          headerTintColor: '#ffffff',
-        }}
+      <Stack.Screen
+        name="TestProfile"
+        component={UserProfileScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+          name="NewProfile"
+          component={NewUserProfileScreen}
+          options={{ headerShown: false }}
+      />
+      <Stack.Screen
+          name="Settings"
+          component={SettingsScreen}
+          options={{ headerShown: false }}
+      />
+      <Stack.Screen
+          name="MobileAccount"
+          component={MobileAccountScreen}
+          options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
