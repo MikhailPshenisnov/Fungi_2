@@ -27,12 +27,26 @@ const PAGE_SIZE = 12;
 const sortOptions = [
   { label: 'Сначала новые', value: 'newest' },
   { label: 'Сначала старые', value: 'oldest' },
-  { label: 'По лайкам', value: 'likes' }
+  { label: 'По популярности', value: 'likes' }
 ];
+
+const skeletonCards = Array.from({ length: 6 }, (_, index) => index);
 
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
   return Number.isNaN(date.getTime()) ? '—' : date.toLocaleDateString('ru-RU');
+}
+
+function formatResultCount(totalItems: number): string {
+  if (totalItems === 1) {
+    return '1 материал';
+  }
+
+  if (totalItems >= 2 && totalItems <= 4) {
+    return `${totalItems} материала`;
+  }
+
+  return `${totalItems} материалов`;
 }
 
 function statusTone(status: string): 'info' | 'success' | 'warning' | 'error' {
@@ -130,6 +144,7 @@ export function ArticlesPage() {
     return serialized.length > 0 ? `/articles?${serialized}` : '/articles';
   }, [queryState]);
   const canOpenEditorWorkspace = user ? hasPermission(user.permissions, PERMISSION_CODES.articlesWrite) : false;
+  const currentSortLabel = sortOptions.find((option) => option.value === queryState.sort)?.label ?? sortOptions[0].label;
 
   const handleSessionExpired = useCallback(() => {
     signOut();
@@ -203,8 +218,8 @@ export function ArticlesPage() {
       return;
     }
 
-    showError(hasLikedQuery.error instanceof Error ? hasLikedQuery.error.message : 'Не удалось получить статус лайка.', {
-      title: 'Лайки',
+    showError(hasLikedQuery.error instanceof Error ? hasLikedQuery.error.message : 'Не удалось получить статус избранного.', {
+      title: 'Избранное',
       dedupeKey: 'articles-has-liked-error'
     });
   }, [handleSessionExpired, hasLikedQuery.error, showError]);
@@ -314,8 +329,8 @@ export function ArticlesPage() {
         return;
       }
 
-      showError(error instanceof Error ? error.message : 'Не удалось обновить лайк.', {
-        title: 'Лайки',
+      showError(error instanceof Error ? error.message : 'Не удалось обновить избранное.', {
+        title: 'Избранное',
         dedupeKey: 'articles-like-toggle-error'
       });
     } finally {
@@ -336,10 +351,13 @@ export function ArticlesPage() {
       <Container size="lg" className={styles.container}>
         <section className={styles.hero}>
           <div className={styles.heroTop}>
-            <Stack gap={14}>
+            <Stack gap={12}>
+              <Typography variant="caption" className={styles.heroKicker}>
+                Библиотека Fungi
+              </Typography>
               <Typography variant="h1">Статьи о грибах</Typography>
               <Typography variant="body" className={styles.heroText}>
-                Публикации, подборки и практические заметки от редакторов проекта.
+                Редакционные материалы, сезонные подборки и практические заметки для спокойного изучения грибов.
               </Typography>
             </Stack>
             {canOpenEditorWorkspace ? (
@@ -355,7 +373,7 @@ export function ArticlesPage() {
           </div>
         </section>
 
-        <Card className={styles.filtersCard}>
+        <section className={styles.filtersPanel} aria-label="Фильтры статей">
           <div className={styles.filtersGrid}>
             <Input
               label="Поиск по названию"
@@ -376,14 +394,30 @@ export function ArticlesPage() {
               </Button>
             </div>
           </div>
-        </Card>
+        </section>
 
-        <Typography variant="bodyS" className={styles.stateText}>
-          Найдено материалов: {totalCount}
-        </Typography>
+        <div className={styles.resultsHeader}>
+          <div>
+            <Typography variant="h3" as="h2">
+              Материалы
+            </Typography>
+            <Typography variant="bodyS" className={styles.stateText}>
+              Найдено: {formatResultCount(totalCount)}
+            </Typography>
+          </div>
+          <Tag tone="info">{currentSortLabel}</Tag>
+        </div>
 
         {articlesQuery.isLoading ? (
-          <div className={styles.loadingState}>Загружаем публикации...</div>
+          <div className={styles.grid} aria-hidden="true">
+            {skeletonCards.map((skeletonCard) => (
+              <Card key={skeletonCard} className={styles.skeletonCard}>
+                <div className={styles.skeletonImage} />
+                <div className={styles.skeletonLine} />
+                <div className={styles.skeletonLineShort} />
+              </Card>
+            ))}
+          </div>
         ) : null}
 
         {articlesQuery.isError ? (
@@ -399,7 +433,17 @@ export function ArticlesPage() {
         {!articlesQuery.isLoading && !articlesQuery.isError ? (
           <>
             {pageArticles.length === 0 ? (
-              <ContentState tone="empty" className={styles.stateCard} title="По вашему запросу статьи не найдены." />
+              <ContentState
+                tone="empty"
+                className={styles.stateCard}
+                title="По вашему запросу статьи не найдены."
+                description="Попробуйте изменить запрос, автора или сортировку."
+                action={
+                  <Button variant="secondary" onClick={handleResetFilters}>
+                    Сбросить фильтры
+                  </Button>
+                }
+              />
             ) : (
               <div className={styles.grid}>
                 {pageArticles.map((article) => {
@@ -437,13 +481,14 @@ export function ArticlesPage() {
                         )}
                       </div>
 
-                      <Stack gap={12}>
-                        <div className={styles.cardHeader}>
-                          <Typography variant="h4" as="h2" className={styles.cardTitle}>
-                            {article.title}
-                          </Typography>
+                      <div className={styles.cardBody}>
+                        <div className={styles.cardTags}>
                           <Tag tone={statusTone(article.status)}>{statusLabel(article.status)}</Tag>
                         </div>
+
+                        <Typography variant="h4" as="h2" className={styles.cardTitle}>
+                          {article.title}
+                        </Typography>
 
                         <Typography variant="bodyS" className={styles.cardMeta}>
                           {article.authorString} • {formatDate(article.publishDate)}
@@ -462,12 +507,13 @@ export function ArticlesPage() {
                             void handleToggleLike(article);
                           }}
                           disabled={isLiking}
-                          aria-label={likeState.isLiked ? 'Убрать лайк статье' : 'Поставить лайк статье'}
+                          aria-label={likeState.isLiked ? 'Убрать статью из избранного' : 'Добавить статью в избранное'}
                         >
                           <img src={favoriteIcon} alt="" aria-hidden="true" className={styles.likeIcon} />
-                          <span>{likeState.likesCount}</span>
+                          <span>{likeState.isLiked ? 'В избранном' : 'В избранное'}</span>
+                          <span className={styles.likeCount}>{likeState.likesCount}</span>
                         </button>
-                      </Stack>
+                      </div>
                     </Card>
                   );
                 })}

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import type { Mushroom } from '@entities/mushroom';
 import { useSession } from '@entities/session';
 import {
   AuthRequiredPopup,
@@ -10,6 +11,7 @@ import {
   hasUserLikedArticle,
   toggleArticleLike
 } from '@features/articles';
+import { getMushroomById } from '@features/mushrooms';
 import { ApiError } from '@shared/api';
 import { favoriteIcon } from '@shared/assets/icons';
 import { Button, Card, Container, ContentState, Stack, Tag, Typography, useToast } from '@shared/ui';
@@ -108,6 +110,7 @@ export function ArticleDetailPage({ articleId: articleIdProp }: ArticleDetailPag
   const [isAuthPopupOpen, setIsAuthPopupOpen] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
   const [likeOverride, setLikeOverride] = useState<{ likesCount: number; isLiked: boolean } | null>(null);
+  const [brokenRelatedImageById, setBrokenRelatedImageById] = useState<Record<string, boolean>>({});
 
   const articleQuery = useQuery({
     queryKey: ['articles', 'detail', articleId],
@@ -127,6 +130,16 @@ export function ArticleDetailPage({ articleId: articleIdProp }: ArticleDetailPag
     queryFn: () => getArticleMushroomIds(articleId)
   });
 
+  const relatedMushroomsQuery = useQuery({
+    queryKey: ['articles', 'detail', articleId, 'mushroom-cards', linkedMushroomsQuery.data?.join(',') ?? 'none'],
+    enabled: Boolean(articleId.length > 0 && linkedMushroomsQuery.data && linkedMushroomsQuery.data.length > 0),
+    queryFn: async () => {
+      const mushroomIds = linkedMushroomsQuery.data ?? [];
+      const mushrooms = await Promise.all(mushroomIds.map((mushroomId) => getMushroomById(mushroomId)));
+      return mushrooms;
+    }
+  });
+
   const hasLikedQuery = useQuery({
     queryKey: ['articles', 'detail', articleId, 'has-liked', token ?? 'guest'],
     enabled: Boolean(articleId.length > 0 && isAuthenticated && token),
@@ -135,6 +148,7 @@ export function ArticleDetailPage({ articleId: articleIdProp }: ArticleDetailPag
 
   const article = articleQuery.data;
   const linkedMushroomIds = linkedMushroomsQuery.data ?? [];
+  const relatedMushrooms = relatedMushroomsQuery.data ?? [];
 
   const galleryImages = useMemo(() => {
     if (!article) {
@@ -168,8 +182,8 @@ export function ArticleDetailPage({ articleId: articleIdProp }: ArticleDetailPag
       return;
     }
 
-    showError(hasLikedQuery.error instanceof Error ? hasLikedQuery.error.message : 'Не удалось получить статус лайка.', {
-      title: 'Лайки',
+    showError(hasLikedQuery.error instanceof Error ? hasLikedQuery.error.message : 'Не удалось получить статус избранного.', {
+      title: 'Избранное',
       dedupeKey: `article-detail-has-liked-error-${articleId}`
     });
   }, [articleId, handleSessionExpired, hasLikedQuery.error, showError]);
@@ -207,12 +221,28 @@ export function ArticleDetailPage({ articleId: articleIdProp }: ArticleDetailPag
   }, [articleId, linkedMushroomsQuery.error, showError]);
 
   useEffect(() => {
+    if (!relatedMushroomsQuery.error) {
+      return;
+    }
+
+    showError(
+      relatedMushroomsQuery.error instanceof Error
+        ? relatedMushroomsQuery.error.message
+        : 'Не удалось загрузить карточки связанных грибов.',
+      {
+        title: 'Связанные грибы',
+        dedupeKey: `article-detail-related-mushrooms-error-${articleId}`
+      }
+    );
+  }, [articleId, relatedMushroomsQuery.error, showError]);
+
+  useEffect(() => {
     if (!likesCountQuery.error) {
       return;
     }
 
-    showError(likesCountQuery.error instanceof Error ? likesCountQuery.error.message : 'Не удалось загрузить счётчик лайков.', {
-      title: 'Лайки',
+    showError(likesCountQuery.error instanceof Error ? likesCountQuery.error.message : 'Не удалось загрузить счётчик избранного.', {
+      title: 'Избранное',
       dedupeKey: `article-detail-like-count-error-${articleId}`
     });
   }, [articleId, likesCountQuery.error, showError]);
@@ -220,6 +250,7 @@ export function ArticleDetailPage({ articleId: articleIdProp }: ArticleDetailPag
   useEffect(() => {
     setIsHeaderImageBroken(false);
     setBrokenGalleryImageByUrl({});
+    setBrokenRelatedImageById({});
     setLikeOverride(null);
     setIsLiking(false);
   }, [articleId]);
@@ -263,8 +294,8 @@ export function ArticleDetailPage({ articleId: articleIdProp }: ArticleDetailPag
         return;
       }
 
-      showError(error instanceof Error ? error.message : 'Не удалось обновить лайк.', {
-        title: 'Лайки',
+      showError(error instanceof Error ? error.message : 'Не удалось обновить избранное.', {
+        title: 'Избранное',
         dedupeKey: `article-detail-like-toggle-error-${articleId}`
       });
     } finally {
@@ -371,66 +402,107 @@ export function ArticleDetailPage({ articleId: articleIdProp }: ArticleDetailPag
                     void handleToggleLike();
                   }}
                   disabled={isLiking}
-                  aria-label={likeState.isLiked ? 'Убрать лайк статье' : 'Поставить лайк статье'}
+                  aria-label={likeState.isLiked ? 'Убрать статью из избранного' : 'Добавить статью в избранное'}
                 >
                   <img src={favoriteIcon} alt="" aria-hidden="true" className={styles.likeIcon} />
+                  <span>{isLiking ? 'Обновляем...' : likeState.isLiked ? 'В избранном' : 'В избранное'}</span>
                   <span className={styles.likeCount}>{likeState.likesCount}</span>
                 </button>
               </div>
             </section>
 
-            <section className={styles.contentGrid}>
-              <Card className={styles.sectionCard}>
-                <Stack gap={12}>
-                  <Typography variant="h4">Содержание</Typography>
-                  <div className={styles.paragraphs}>
-                    {article.paragraphs.length > 0 ? (
-                      article.paragraphs.map((paragraph) =>
-                        paragraph.isSubtitle ? (
-                          <Typography key={paragraph.id} variant="h5">
-                            {paragraph.paragraphText}
-                          </Typography>
-                        ) : (
-                          <Typography key={paragraph.id} variant="body">
-                            {paragraph.paragraphText}
-                          </Typography>
-                        )
+            <section className={styles.contentLayout}>
+              <article className={styles.articleBody}>
+                <Typography variant="h3" as="h2" className={styles.sectionTitle}>
+                  Содержание
+                </Typography>
+                <div className={styles.paragraphs}>
+                  {article.paragraphs.length > 0 ? (
+                    article.paragraphs.map((paragraph) =>
+                      paragraph.isSubtitle ? (
+                        <Typography key={paragraph.id} variant="h4" as="h3" className={styles.articleSubtitle}>
+                          {paragraph.paragraphText}
+                        </Typography>
+                      ) : (
+                        <Typography key={paragraph.id} variant="bodyL" className={styles.articleParagraph}>
+                          {paragraph.paragraphText}
+                        </Typography>
                       )
-                    ) : (
-                      <Typography variant="bodyS" className={styles.mutedText}>
-                        Для этой статьи пока не добавлены параграфы.
-                      </Typography>
-                    )}
-                  </div>
-                </Stack>
-              </Card>
-
-              <Card className={styles.sectionCard}>
-                <Stack gap={12}>
-                  <Typography variant="h4">Связанные грибы</Typography>
-                  {linkedMushroomsQuery.isLoading ? (
-                    <Typography variant="bodyS" className={styles.mutedText}>
-                      Загружаем связи...
-                    </Typography>
-                  ) : linkedMushroomsQuery.isError ? (
-                    <Typography variant="bodyS" className={styles.mutedText}>
-                      Связанные грибы временно недоступны.
-                    </Typography>
-                  ) : linkedMushroomIds.length > 0 ? (
-                    <div className={styles.linksGrid}>
-                      {linkedMushroomIds.map((mushroomId) => (
-                        <Link key={mushroomId} to={`/mushrooms/${mushroomId}`} className={styles.relatedLink}>
-                          {mushroomId}
-                        </Link>
-                      ))}
-                    </div>
+                    )
                   ) : (
                     <Typography variant="bodyS" className={styles.mutedText}>
-                      Связанные грибы не указаны.
+                      Для этой статьи пока не добавлены параграфы.
                     </Typography>
                   )}
-                </Stack>
-              </Card>
+                </div>
+              </article>
+
+              <aside className={styles.aside} aria-label="Дополнительная информация о статье">
+                <Card className={styles.asideCard}>
+                  <Stack gap={12}>
+                    <Typography variant="h4">О материале</Typography>
+                    <div className={styles.metaList}>
+                      <span>Автор</span>
+                      <strong>{article.authorString}</strong>
+                      <span>Дата публикации</span>
+                      <strong>{formatDate(article.publishDate)}</strong>
+                      <span>Статус</span>
+                      <strong>{getStatusLabel(article.status)}</strong>
+                    </div>
+                  </Stack>
+                </Card>
+
+                <Card className={styles.asideCard}>
+                  <Stack gap={12}>
+                    <Typography variant="h4">Связанные грибы</Typography>
+                    {linkedMushroomsQuery.isLoading || relatedMushroomsQuery.isLoading ? (
+                      <Typography variant="bodyS" className={styles.mutedText}>
+                        Загружаем связанные грибы...
+                      </Typography>
+                    ) : linkedMushroomsQuery.isError || relatedMushroomsQuery.isError ? (
+                      <Typography variant="bodyS" className={styles.mutedText}>
+                        Связанные грибы временно недоступны.
+                      </Typography>
+                    ) : linkedMushroomIds.length > 0 && relatedMushrooms.length > 0 ? (
+                      <div className={styles.relatedGrid}>
+                        {relatedMushrooms.map((mushroom: Mushroom) => {
+                          const isBroken = Boolean(brokenRelatedImageById[mushroom.id]);
+
+                          return (
+                            <Link key={mushroom.id} to={`/mushrooms/${mushroom.id}`} className={styles.relatedCard}>
+                              <div className={styles.relatedImageWrap}>
+                                {!isBroken ? (
+                                  <img
+                                    src={mushroom.headerPhotoLink}
+                                    alt={mushroom.name}
+                                    className={styles.relatedImage}
+                                    onError={() =>
+                                      setBrokenRelatedImageById((previousState) => ({
+                                        ...previousState,
+                                        [mushroom.id]: true
+                                      }))
+                                    }
+                                  />
+                                ) : (
+                                  <div className={styles.relatedFallback} aria-hidden="true">
+                                    {mushroom.name}
+                                  </div>
+                                )}
+                              </div>
+                              <span className={styles.relatedTitle}>{mushroom.name}</span>
+                              <span className={styles.relatedMeta}>{mushroom.family}</span>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <Typography variant="bodyS" className={styles.mutedText}>
+                        Связанные грибы не указаны.
+                      </Typography>
+                    )}
+                  </Stack>
+                </Card>
+              </aside>
             </section>
 
             {galleryImages.length > 1 ? (

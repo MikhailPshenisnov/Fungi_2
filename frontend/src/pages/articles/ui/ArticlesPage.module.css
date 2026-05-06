@@ -1,36 +1,65 @@
 .container {
   display: grid;
-  gap: 20px;
-  padding-block: 24px 40px;
+  gap: var(--space-5);
+  padding-block: var(--space-6) var(--space-7);
 }
 
 .hero {
-  padding: 28px;
-  border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-xl);
-  background: linear-gradient(120deg, var(--color-surface-default), var(--color-surface-elevated));
+  position: relative;
+  overflow: hidden;
+  padding: var(--space-7);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-l);
+  background:
+    linear-gradient(90deg, var(--color-surface-elevated) 0%, color-mix(in srgb, var(--color-bg-muted) 46%, var(--color-surface-elevated)) 100%),
+    var(--color-surface-elevated);
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: auto -48px -72px auto;
+  width: 280px;
+  height: 180px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 50%;
+  opacity: 0.55;
+  pointer-events: none;
 }
 
 .heroTop {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-4);
+}
+
+.heroKicker {
+  width: fit-content;
+  color: var(--color-text-secondary);
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .heroText {
-  max-width: 62ch;
+  max-width: 66ch;
   color: var(--color-text-secondary);
 }
 
-.filtersCard {
-  padding: 20px;
+.filtersPanel {
+  padding: var(--space-5);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-l);
+  background: var(--color-surface-elevated);
+  box-shadow: var(--shadow-base);
 }
 
 .filtersGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr 220px;
-  gap: 14px;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) 220px auto;
+  gap: var(--space-4);
   align-items: end;
 }
 
@@ -39,51 +68,82 @@
   justify-content: flex-end;
 }
 
+.resultsHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.stateText {
+  color: var(--color-text-secondary);
+}
+
 .grid {
   display: grid;
-  gap: 16px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-5);
 }
 
 .card {
   display: grid;
-  gap: 14px;
+  grid-template-rows: auto 1fr;
+  gap: 0;
+  overflow: hidden;
+  padding: 0;
   cursor: pointer;
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 3px;
 }
 
 .cardImageWrap {
   width: 100%;
-  border-radius: var(--radius-lg);
   overflow: hidden;
   background: var(--color-bg-muted);
 }
 
 .cardImage {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 4 / 3;
   object-fit: cover;
   display: block;
+  transition: transform 180ms ease;
+}
+
+.card:hover .cardImage {
+  transform: scale(1.025);
 }
 
 .imageFallback {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 4 / 3;
   display: grid;
   place-items: center;
   text-align: center;
-  padding: 16px;
+  padding: var(--space-5);
   color: var(--color-text-tertiary);
+  background: var(--color-bg-subtle);
 }
 
-.cardHeader {
+.cardBody {
+  display: grid;
+  gap: var(--space-3);
+  align-content: start;
+  padding: var(--space-4);
+}
+
+.cardTags {
   display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
 }
 
 .cardTitle {
-  font-size: 1.1rem;
+  margin: 0;
+  line-height: 1.28;
 }
 
 .cardMeta {
@@ -93,49 +153,115 @@
 .likeButton {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 38px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 0 var(--space-3);
   border-radius: 999px;
   border: 1px solid var(--color-border-default);
-  background: var(--color-surface-default);
+  background: var(--color-surface-elevated);
   color: var(--color-text-secondary);
+  font: inherit;
+  font-size: var(--text-meta-size);
+  font-weight: 700;
   cursor: pointer;
 }
 
+.likeButton:hover:not(:disabled) {
+  border-color: var(--color-status-warning-border);
+  background: color-mix(in srgb, var(--color-status-warning-bg) 36%, var(--color-surface-elevated));
+  color: var(--color-text-primary);
+}
+
 .likeButton:disabled {
-  opacity: 0.7;
+  opacity: 0.72;
   cursor: not-allowed;
 }
 
 .likeButtonActive {
-  border-color: var(--color-status-warning-on-bg);
-  background: color-mix(in srgb, var(--color-status-warning-bg) 32%, var(--color-surface-default));
+  border-color: var(--color-status-warning-border);
+  background: color-mix(in srgb, var(--color-status-warning-bg) 52%, var(--color-surface-elevated));
   color: var(--color-text-primary);
 }
 
 .likeIcon {
   width: 16px;
   height: 16px;
+  flex: 0 0 auto;
+}
+
+.likeCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  color: var(--color-text-secondary);
 }
 
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
-.stateCard,
-.loadingState {
-  padding: 24px;
+.stateCard {
+  padding: var(--space-5);
 }
 
-.stateText {
-  color: var(--color-text-secondary);
+.skeletonCard {
+  display: grid;
+  gap: var(--space-4);
+  padding: 0;
+  overflow: hidden;
+}
+
+.skeletonImage,
+.skeletonLine,
+.skeletonLineShort {
+  border-radius: var(--radius-s);
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-subtle) 0%,
+    color-mix(in srgb, var(--color-bg-subtle) 45%, var(--color-surface-elevated)) 50%,
+    var(--color-bg-subtle) 100%
+  );
+  background-size: 220% 100%;
+  animation: skeletonShimmer 1.2s ease infinite;
+}
+
+.skeletonImage {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 0;
+}
+
+.skeletonLine {
+  min-height: 18px;
+  margin-inline: var(--space-4);
+}
+
+.skeletonLineShort {
+  min-height: 14px;
+  width: 62%;
+  margin: 0 var(--space-4) var(--space-4);
+}
+
+@keyframes skeletonShimmer {
+  0% {
+    background-position: 100% 0;
+  }
+
+  100% {
+    background-position: -100% 0;
+  }
 }
 
 @media (max-width: 1100px) {
-  .heroTop {
+  .heroTop,
+  .resultsHeader {
     flex-direction: column;
     align-items: flex-start;
   }
@@ -149,17 +275,26 @@
   }
 
   .filterActions {
-    grid-column: 1 / -1;
     justify-content: flex-start;
   }
 }
 
 @media (max-width: 760px) {
-  .grid {
+  .container {
+    padding-block: var(--space-5) var(--space-6);
+  }
+
+  .hero,
+  .filtersPanel {
+    padding: var(--space-5);
+  }
+
+  .grid,
+  .filtersGrid {
     grid-template-columns: 1fr;
   }
 
-  .filtersGrid {
-    grid-template-columns: 1fr;
+  .pagination {
+    flex-wrap: wrap;
   }
 }

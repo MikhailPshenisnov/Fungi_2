@@ -1,16 +1,15 @@
 .container {
-  padding-top: 30px;
-  padding-bottom: 40px;
+  padding-block: var(--space-6) var(--space-7);
 }
 
 .backLink {
   display: inline-flex;
   align-items: center;
-  min-height: 32px;
+  min-height: 34px;
+  margin-bottom: var(--space-4);
   border-radius: var(--radius-s);
   color: var(--color-text-secondary);
   text-decoration: none;
-  margin-bottom: 14px;
 }
 
 .backLink:hover {
@@ -19,43 +18,43 @@
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
-  gap: 16px;
-  padding: 16px;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  min-height: 460px;
+  overflow: hidden;
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-l);
   background: var(--color-surface-elevated);
+  box-shadow: var(--shadow-base);
 }
 
 .heroImageWrap {
-  border-radius: var(--radius-l);
-  border: 1px solid var(--color-border-subtle);
-  overflow: hidden;
-  background: var(--color-bg-subtle);
-  min-height: 220px;
+  min-height: 460px;
+  background: var(--color-bg-muted);
 }
 
 .heroImage {
   display: block;
   width: 100%;
   height: 100%;
-  min-height: 220px;
+  min-height: 460px;
   object-fit: cover;
 }
 
 .heroImageFallback {
   display: grid;
   place-items: center;
-  min-height: 220px;
+  min-height: 460px;
   text-align: center;
-  padding: 14px;
+  padding: var(--space-6);
   color: var(--color-text-tertiary);
+  background: var(--color-bg-subtle);
 }
 
 .heroContent {
   display: grid;
-  align-content: start;
-  gap: 10px;
+  align-content: center;
+  gap: var(--space-4);
+  padding: var(--space-7);
 }
 
 .title {
@@ -68,30 +67,33 @@
 
 .tags {
   display: flex;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: var(--space-2);
 }
 
 .likeButton {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  min-height: 38px;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 42px;
   width: fit-content;
+  max-width: 100%;
   border: 1px solid var(--color-border-default);
   border-radius: 999px;
   background: var(--color-surface-elevated);
   color: var(--color-text-secondary);
   font: inherit;
-  font-size: var(--text-meta-size);
+  font-size: var(--text-body-s-size);
   font-weight: 700;
-  padding: 0 12px;
+  padding: 0 var(--space-4);
   cursor: pointer;
 }
 
 .likeButton:hover:not(:disabled) {
   border-color: var(--color-status-warning-border);
-  background: color-mix(in srgb, var(--color-status-warning-bg) 32%, var(--color-surface-elevated));
-  color: var(--color-status-warning-strong);
+  background: color-mix(in srgb, var(--color-status-warning-bg) 36%, var(--color-surface-elevated));
+  color: var(--color-text-primary);
 }
 
 .likeButton:disabled {
@@ -101,14 +103,15 @@
 
 .likeButtonActive {
   border-color: var(--color-status-warning-border);
-  background: color-mix(in srgb, var(--color-status-warning-bg) 48%, var(--color-surface-elevated));
-  color: var(--color-status-warning-strong);
+  background: color-mix(in srgb, var(--color-status-warning-bg) 52%, var(--color-surface-elevated));
+  color: var(--color-text-primary);
 }
 
 .likeIcon {
   display: block;
   width: 16px;
   height: 16px;
+  flex: 0 0 auto;
 }
 
 .likeCount {
@@ -116,57 +119,145 @@
   align-items: center;
   justify-content: center;
   min-width: 22px;
+  color: var(--color-text-secondary);
 }
 
-.contentGrid {
+.contentLayout {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
-  gap: 16px;
-  margin-top: 16px;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: var(--space-6);
+  align-items: start;
+  margin-top: var(--space-6);
 }
 
-.sectionCard {
-  padding: 16px;
+.articleBody {
+  min-width: 0;
+  max-width: 760px;
+}
+
+.sectionTitle {
+  margin-bottom: var(--space-5);
 }
 
 .paragraphs {
   display: grid;
-  gap: 10px;
+  gap: var(--space-4);
 }
 
-.linksGrid {
+.articleSubtitle {
+  margin: var(--space-4) 0 0;
+}
+
+.articleParagraph {
+  color: var(--color-text-primary);
+  line-height: 1.75;
+}
+
+.aside {
+  position: sticky;
+  top: var(--space-5);
   display: grid;
-  gap: 8px;
+  gap: var(--space-4);
 }
 
-.relatedLink {
-  display: inline-flex;
+.asideCard {
+  padding: var(--space-4);
+}
+
+.metaList {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-1);
+}
+
+.metaList span {
+  color: var(--color-text-secondary);
+  font-size: var(--text-caption-size);
+}
+
+.metaList strong {
+  margin-bottom: var(--space-2);
+  color: var(--color-text-primary);
+  font-size: var(--text-body-s-size);
+}
+
+.relatedGrid {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.relatedCard {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  gap: var(--space-1) var(--space-3);
   align-items: center;
-  min-height: 34px;
-  width: fit-content;
-  padding: 0 12px;
-  border-radius: 999px;
-  border: 1px solid var(--color-border-default);
-  background: var(--color-bg-subtle);
+  padding: var(--space-2);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-m);
   color: var(--color-text-primary);
   text-decoration: none;
+  background: var(--color-bg-subtle);
 }
 
-.relatedLink:hover {
+.relatedCard:hover {
   border-color: var(--color-action-primary-border);
   background: var(--color-surface-elevated);
 }
 
-.gallerySection {
-  margin-top: 16px;
+.relatedImageWrap {
+  grid-row: 1 / span 2;
+  width: 76px;
+  height: 64px;
+  overflow: hidden;
+  border-radius: var(--radius-s);
+  background: var(--color-bg-muted);
+}
+
+.relatedImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.relatedFallback {
   display: grid;
-  gap: 10px;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  padding: var(--space-2);
+  color: var(--color-text-tertiary);
+  font-size: var(--text-meta-size);
+  text-align: center;
+}
+
+.relatedTitle {
+  overflow: hidden;
+  color: var(--color-text-primary);
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.relatedMeta {
+  overflow: hidden;
+  color: var(--color-text-secondary);
+  font-size: var(--text-caption-size);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gallerySection {
+  margin-top: var(--space-6);
+  display: grid;
+  gap: var(--space-4);
 }
 
 .galleryGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: var(--space-4);
 }
 
 .galleryItem {
@@ -179,7 +270,7 @@
 .galleryImage {
   display: block;
   width: 100%;
-  height: 190px;
+  height: 220px;
   object-fit: cover;
 }
 
@@ -187,24 +278,20 @@
   display: grid;
   place-items: center;
   width: 100%;
-  height: 190px;
+  height: 220px;
   text-align: center;
-  padding: 12px;
+  padding: var(--space-4);
   color: var(--color-text-tertiary);
 }
 
 .stateCard {
-  padding: 18px;
-}
-
-.stateText {
-  color: var(--color-text-secondary);
+  padding: var(--space-5);
 }
 
 .stateActions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: var(--space-3);
 }
 
 .backLinkButton {
@@ -212,7 +299,7 @@
   align-items: center;
   justify-content: center;
   min-height: 36px;
-  padding: 0 14px;
+  padding: 0 var(--space-4);
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-m);
   color: var(--color-text-primary);
@@ -226,12 +313,12 @@
 
 .loadingLayout {
   display: grid;
-  grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
-  gap: 12px;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: var(--space-4);
 }
 
 .skeletonCard {
-  padding: 14px;
+  padding: var(--space-4);
 }
 
 .skeletonImage,
@@ -249,12 +336,12 @@
 }
 
 .skeletonImage {
-  min-height: 220px;
+  min-height: 360px;
 }
 
 .skeletonLine {
-  min-height: 16px;
-  margin-bottom: 8px;
+  min-height: 18px;
+  margin-bottom: var(--space-3);
 }
 
 .skeletonLineShort {
@@ -278,9 +365,27 @@
 
 @media (max-width: 980px) {
   .hero,
-  .contentGrid,
+  .contentLayout,
   .loadingLayout {
     grid-template-columns: 1fr;
+  }
+
+  .heroImageWrap,
+  .heroImage,
+  .heroImageFallback {
+    min-height: 340px;
+  }
+
+  .heroContent {
+    padding: var(--space-5);
+  }
+
+  .articleBody {
+    max-width: none;
+  }
+
+  .aside {
+    position: static;
   }
 
   .galleryGrid {
@@ -289,6 +394,16 @@
 }
 
 @media (max-width: 720px) {
+  .container {
+    padding-block: var(--space-5) var(--space-6);
+  }
+
+  .heroImageWrap,
+  .heroImage,
+  .heroImageFallback {
+    min-height: 260px;
+  }
+
   .galleryGrid {
     grid-template-columns: 1fr;
   }
