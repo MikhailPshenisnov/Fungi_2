@@ -2122,6 +2122,14 @@
             "minLength": 1,
             "type": "string"
           },
+          "isPersonalDataProcessingConsentAccepted": {
+            "enum": [true],
+            "type": "boolean"
+          },
+          "isUserAgreementAccepted": {
+            "enum": [true],
+            "type": "boolean"
+          },
           "name": {
             "maxLength": 128,
             "minLength": 8,
@@ -2133,9 +2141,29 @@
             "minLength": 8,
             "pattern": "^(?=.*\\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*(),.?\"{}|<>]).+$",
             "type": "string"
+          },
+          "personalDataProcessingConsentVersion": {
+            "maxLength": 32,
+            "minLength": 1,
+            "pattern": "^2026-04-21-v1$",
+            "type": "string"
+          },
+          "userAgreementVersion": {
+            "maxLength": 32,
+            "minLength": 1,
+            "pattern": "^2026-04-21-v1$",
+            "type": "string"
           }
         },
-        "required": ["email", "name", "password"],
+        "required": [
+          "email",
+          "isPersonalDataProcessingConsentAccepted",
+          "isUserAgreementAccepted",
+          "name",
+          "password",
+          "personalDataProcessingConsentVersion",
+          "userAgreementVersion"
+        ],
         "type": "object"
       },
       "RegisterUserResponse": {

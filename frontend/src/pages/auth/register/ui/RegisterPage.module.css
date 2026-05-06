@@ -15,6 +15,10 @@
   width: 70%;
 }
 
+.fields a {
+  color: var(--color-text-primary);
+}
+
 .switch {
   color: var(--color-text-secondary);
 }
@@ -70,4 +74,12 @@
   flex: 1;
   height: 1px;
   background: var(--color-border-subtle);
+}
+
+@media (max-width: 1024px) {
+  .fields,
+  .socialAuth,
+  .divider {
+    width: 100%;
+  }
 }

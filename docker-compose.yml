@@ -10,7 +10,7 @@ services:
       PGPORT: ${DB_PORT:-5531}
     volumes:
       - pg_fungi_data:/var/lib/postgresql/data
-      - ./DBInit:/docker-entrypoint-initdb.d  
+      - ./DBInit:/docker-entrypoint-initdb.d
     ports:
       - "${DB_PORT:-5531}:${DB_PORT:-5531}"
 
@@ -37,7 +37,7 @@ services:
     container_name: fungi-frontend
     image: node:20-alpine
     working_dir: /app
-    command: sh -c "if [ ! -d node_modules ] || [ -z \"$(ls -A node_modules 2>/dev/null)\" ]; then npm ci --no-audit --no-fund; fi && npm run dev -- --host 0.0.0.0 --port 5173"
+    command: sh -c "LOCK_HASH=$$(sha256sum package-lock.json | awk '{print $$1}'); if [ ! -d node_modules ] || [ ! -f node_modules/.package-lock.hash ] || [ \"$$(cat node_modules/.package-lock.hash 2>/dev/null)\" != \"$$LOCK_HASH\" ]; then npm ci --no-audit --no-fund && echo \"$$LOCK_HASH\" > node_modules/.package-lock.hash; fi && npm run dev -- --host 0.0.0.0 --port 5173"
     environment:
       - CHOKIDAR_USEPOLLING=true
     volumes:
@@ -61,7 +61,6 @@ services:
       - ./:/workspace
     ports:
       - "8000:8000"
-
 
 volumes:
   pg_fungi_data:

@@ -1,0 +1,107 @@
+.page {
+  padding-top: 28px;
+  padding-bottom: 40px;
+  background:
+    radial-gradient(circle at 8% 6%, color-mix(in srgb, var(--color-action-primary-bg) 14%, transparent) 0%, transparent 30%),
+    radial-gradient(circle at 92% 4%, color-mix(in srgb, var(--color-status-info-bg) 16%, transparent) 0%, transparent 38%),
+    var(--color-bg-default);
+}
+
+.content {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.hero {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.metaLabel {
+  color: var(--color-text-tertiary);
+}
+
+.title {
+  margin: 0;
+}
+
+.metaList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.metaItem {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border-default);
+  background: var(--color-surface-elevated);
+  color: var(--color-text-secondary);
+  font-size: var(--text-caption-size);
+}
+
+.lead {
+  color: var(--color-text-secondary);
+  max-width: 78ch;
+}
+
+.sections {
+  display: grid;
+  gap: 12px;
+}
+
+.sectionCard {
+  padding: 18px;
+}
+
+.sectionTitle {
+  margin-bottom: 8px;
+}
+
+.sectionText {
+  color: var(--color-text-secondary);
+}
+
+.sectionText + .sectionText {
+  margin-top: 6px;
+}
+
+.sectionList {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 8px;
+}
+
+.noticeCard {
+  margin-top: 14px;
+  padding: 18px;
+  border-color: var(--color-status-info-border);
+  background:
+    radial-gradient(circle at 94% 12%, color-mix(in srgb, var(--color-status-info-bg) 28%, transparent) 0%, transparent 44%),
+    var(--color-surface-elevated);
+}
+
+.noticeText {
+  margin-top: 6px;
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 767px) {
+  .page {
+    padding-top: 18px;
+    padding-bottom: 28px;
+  }
+
+  .sectionCard,
+  .noticeCard {
+    padding: 14px;
+  }
+}

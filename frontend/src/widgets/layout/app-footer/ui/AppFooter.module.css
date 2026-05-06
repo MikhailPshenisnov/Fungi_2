@@ -24,6 +24,22 @@
   flex-wrap: wrap;
 }
 
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-s);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color 0.18s ease, background-color 0.18s ease;
+}
+
+.link:hover {
+  color: var(--color-text-primary);
+  background: var(--color-surface-elevated);
+}
+
 @media (min-width: 768px) {
   .row {
     grid-template-columns: 1fr auto;

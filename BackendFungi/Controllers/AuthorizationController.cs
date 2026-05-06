@@ -3,6 +3,8 @@ using BackendFungi.Contracts.Other;
 using BackendFungi.Contracts.Requests.AuthorizationRequests;
 using BackendFungi.Contracts.Responses;
 using BackendFungi.Contracts.Responses.AuthorizationResponses;
+using BackendFungi.Database.Context;
+using BackendFungi.Database.Entities;
 using BackendFungi.Exceptions.SpecificExceptions;
 using BackendFungi.Models.Filters;
 using BackendFungi.Models.Other;
@@ -29,14 +31,16 @@ public class AuthorizationController : ControllerBase
     private readonly IAuthorizationService _authorizationService;
     private readonly IRolesService _rolesService;
     private readonly IUsersService _usersService;
+    private readonly FungiDbContext _context;
 
     public AuthorizationController(IAuthorizationService authorizationService,
-        IRolesService rolesService, IUsersService usersService, IConfiguration configuration)
+        IRolesService rolesService, IUsersService usersService, IConfiguration configuration, FungiDbContext context)
     {
         _authorizationService = authorizationService;
         _rolesService = rolesService;
         _usersService = usersService;
         _configuration = configuration;
+        _context = context;
     }
 
     [HttpPost]
@@ -73,6 +77,8 @@ public class AuthorizationController : ControllerBase
                     "You cannot register, first leave the account"));
             return StatusCode(StatusCodes.Status403Forbidden, res);
         }
+
+        ValidateRegistrationLegalConsents(registerUserRequest);
 
         // try
         // {
@@ -111,8 +117,44 @@ public class AuthorizationController : ControllerBase
         if (!string.IsNullOrEmpty(userError))
             throw new ConversionException($"Incorrect data format: {userError}");
 
-        var createdUserId = await _usersService
-            .CreateUserAsync(user, cancellationToken);
+        var acceptedAt = DateTime.UtcNow;
+        var ipAddress = TrimToMaxLength(HttpContext.Connection.RemoteIpAddress?.ToString(), 64);
+        var userAgent = TrimToMaxLength(Request.Headers.UserAgent.ToString(), 512);
+
+        await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+
+        await _usersService.CreateUserAsync(user, cancellationToken);
+
+        var userConsents = new[]
+        {
+            new UserConsent
+            {
+                Id = Guid.NewGuid(),
+                UserId = user.Id,
+                ConsentType = LegalConsentConstants.UserAgreementConsentType,
+                DocumentVersion = registerUserRequest.UserAgreementVersion,
+                AcceptedAt = acceptedAt,
+                IpAddress = ipAddress,
+                UserAgent = userAgent,
+                Source = LegalConsentConstants.SourceWeb
+            },
+            new UserConsent
+            {
+                Id = Guid.NewGuid(),
+                UserId = user.Id,
+                ConsentType = LegalConsentConstants.PersonalDataProcessingConsentType,
+                DocumentVersion = registerUserRequest.PersonalDataProcessingConsentVersion,
+                AcceptedAt = acceptedAt,
+                IpAddress = ipAddress,
+                UserAgent = userAgent,
+                Source = LegalConsentConstants.SourceWeb
+            }
+        };
+
+        await _context.UserConsents.AddRangeAsync(userConsents, cancellationToken);
+
+        await _context.SaveChangesAsync(cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
 
         // вход в аккаунт нового пользователя
         var token = await _authorizationService
@@ -249,5 +291,39 @@ public class AuthorizationController : ControllerBase
 
         var token = authorizationValue[bearerPrefix.Length..].Trim();
         return string.IsNullOrWhiteSpace(token) ? null : token;
+    }
+
+    private static void ValidateRegistrationLegalConsents(RegisterUserRequest request)
+    {
+        if (!request.IsUserAgreementAccepted)
+            throw new ConversionException("User agreement consent must be accepted");
+
+        if (!request.IsPersonalDataProcessingConsentAccepted)
+            throw new ConversionException("Personal data processing consent must be accepted");
+
+        if (!string.Equals(
+                request.UserAgreementVersion,
+                LegalConsentConstants.UserAgreementVersion,
+                StringComparison.Ordinal))
+        {
+            throw new ConversionException("Unsupported user agreement version");
+        }
+
+        if (!string.Equals(
+                request.PersonalDataProcessingConsentVersion,
+                LegalConsentConstants.PersonalDataProcessingConsentVersion,
+                StringComparison.Ordinal))
+        {
+            throw new ConversionException("Unsupported personal data processing consent version");
+        }
+    }
+
+    private static string? TrimToMaxLength(string? value, int maxLength)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return null;
+
+        var trimmed = value.Trim();
+        return trimmed.Length <= maxLength ? trimmed : trimmed[..maxLength];
     }
 }

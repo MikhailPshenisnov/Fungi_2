@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json.Nodes;
+using BackendFungi.Contracts.Other;
 using BackendFungi.IntegrationTests.Infrastructure;
 using Xunit;
 
@@ -241,7 +242,11 @@ public sealed class FavoritesApiTests
         {
             Name = $"fav_{marker}_{shortSuffix}",
             Email = $"fav_{marker}_{shortSuffix}@fungi.test",
-            Password = "Aa1!aaaa"
+            Password = "Aa1!aaaa",
+            IsUserAgreementAccepted = true,
+            IsPersonalDataProcessingConsentAccepted = true,
+            UserAgreementVersion = LegalConsentConstants.UserAgreementVersion,
+            PersonalDataProcessingConsentVersion = LegalConsentConstants.PersonalDataProcessingConsentVersion
         });
         registerResponse.EnsureSuccessStatusCode();
 

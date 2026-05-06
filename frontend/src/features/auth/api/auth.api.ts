@@ -1,5 +1,8 @@
 import { ApiError, requestJson } from '@shared/api';
 
+export const USER_AGREEMENT_VERSION = '2026-04-21-v1';
+export const PERSONAL_DATA_CONSENT_VERSION = '2026-04-21-v1';
+
 interface TokenPayload {
   token?: string;
 }
@@ -13,6 +16,10 @@ export interface RegisterRequest {
   name: string;
   email: string;
   password: string;
+  isUserAgreementAccepted: boolean;
+  isPersonalDataProcessingConsentAccepted: boolean;
+  userAgreementVersion: string;
+  personalDataProcessingConsentVersion: string;
 }
 
 export interface AuthResult {

@@ -1,7 +1,11 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text;
+using BackendFungi.Contracts.Other;
+using BackendFungi.Database.Context;
 using BackendFungi.IntegrationTests.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace BackendFungi.IntegrationTests.Tests;
@@ -14,6 +18,112 @@ public sealed class ContractTests
     public ContractTests(BackendFungiApiFactory factory)
     {
         _factory = factory;
+    }
+
+    [Fact]
+    public async Task RegisterUser_without_legal_consent_fields_returns_400()
+    {
+        using var client = _factory.CreateClient(new() { AllowAutoRedirect = false });
+        var suffix = Guid.NewGuid().ToString("N")[..8];
+
+        var response = await client.PostAsJsonAsync("/Authorization/RegisterUser", new
+        {
+            Name = $"consent_missing_{suffix}",
+            Email = $"consent_missing_{suffix}@fungi.test",
+            Password = "Aa1!aaaa"
+        });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        var payload = await response.Content.ReadAsStringAsync();
+        Assert.Contains("\"errorCode\":\"invalid_request\"", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task RegisterUser_with_false_legal_consent_returns_400()
+    {
+        using var client = _factory.CreateClient(new() { AllowAutoRedirect = false });
+        var suffix = Guid.NewGuid().ToString("N")[..8];
+
+        var response = await client.PostAsJsonAsync("/Authorization/RegisterUser", new
+        {
+            Name = $"consent_false_{suffix}",
+            Email = $"consent_false_{suffix}@fungi.test",
+            Password = "Aa1!aaaa",
+            IsUserAgreementAccepted = false,
+            IsPersonalDataProcessingConsentAccepted = true,
+            UserAgreementVersion = LegalConsentConstants.UserAgreementVersion,
+            PersonalDataProcessingConsentVersion = LegalConsentConstants.PersonalDataProcessingConsentVersion
+        });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        var payload = await response.Content.ReadAsStringAsync();
+        Assert.Contains("\"errorCode\":\"invalid_request\"", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task RegisterUser_with_wrong_document_version_returns_400()
+    {
+        using var client = _factory.CreateClient(new() { AllowAutoRedirect = false });
+        var suffix = Guid.NewGuid().ToString("N")[..8];
+
+        var response = await client.PostAsJsonAsync("/Authorization/RegisterUser", new
+        {
+            Name = $"consent_version_{suffix}",
+            Email = $"consent_version_{suffix}@fungi.test",
+            Password = "Aa1!aaaa",
+            IsUserAgreementAccepted = true,
+            IsPersonalDataProcessingConsentAccepted = true,
+            UserAgreementVersion = "2026-04-20-v1",
+            PersonalDataProcessingConsentVersion = LegalConsentConstants.PersonalDataProcessingConsentVersion
+        });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        var payload = await response.Content.ReadAsStringAsync();
+        Assert.Contains("\"errorCode\":\"invalid_request\"", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task RegisterUser_creates_two_user_consents()
+    {
+        using var client = _factory.CreateClient(new() { AllowAutoRedirect = false });
+        var suffix = Guid.NewGuid().ToString("N")[..8];
+        var email = $"consent_success_{suffix}@fungi.test";
+
+        var response = await client.PostAsJsonAsync("/Authorization/RegisterUser", new
+        {
+            Name = $"consent_success_{suffix}",
+            Email = email,
+            Password = "Aa1!aaaa",
+            IsUserAgreementAccepted = true,
+            IsPersonalDataProcessingConsentAccepted = true,
+            UserAgreementVersion = LegalConsentConstants.UserAgreementVersion,
+            PersonalDataProcessingConsentVersion = LegalConsentConstants.PersonalDataProcessingConsentVersion
+        });
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var json = await ApiJson.ParseAsync(response);
+        Assert.False(string.IsNullOrWhiteSpace(ApiJson.RequiredString(json, "data", "token")));
+
+        await using var scope = _factory.Services.CreateAsyncScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<FungiDbContext>();
+
+        var createdUser = await dbContext.Users
+            .AsNoTracking()
+            .SingleAsync(user => user.Email == email);
+
+        var consents = await dbContext.UserConsents
+            .AsNoTracking()
+            .Where(consent => consent.UserId == createdUser.Id)
+            .ToListAsync();
+
+        Assert.Equal(2, consents.Count);
+        Assert.Contains(consents, consent =>
+            consent.ConsentType == LegalConsentConstants.UserAgreementConsentType &&
+            consent.DocumentVersion == LegalConsentConstants.UserAgreementVersion);
+        Assert.Contains(consents, consent =>
+            consent.ConsentType == LegalConsentConstants.PersonalDataProcessingConsentType &&
+            consent.DocumentVersion == LegalConsentConstants.PersonalDataProcessingConsentVersion);
+        Assert.All(consents, consent => Assert.Equal(LegalConsentConstants.SourceWeb, consent.Source));
     }
 
     [Fact]

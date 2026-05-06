@@ -13,4 +13,5 @@ public partial class User
     public virtual ICollection<Article> CreatedArticles { get; set; } = new List<Article>();
     public virtual ICollection<Article> UpdatedArticles { get; set; } = new List<Article>();
     public virtual ICollection<Article> ReviewedArticles { get; set; } = new List<Article>();
+    public virtual ICollection<UserConsent> UserConsents { get; set; } = new List<UserConsent>();
 }

@@ -11,6 +11,8 @@ import { MushroomsPage } from '@pages/mushrooms';
 import { MushroomDetailPage } from '@pages/mushroom-detail';
 import { ArticlesPage } from '@pages/articles';
 import { ArticleDetailPage } from '@pages/article-detail';
+import { PersonalDataConsentPage } from '@pages/legal/personal-data-consent';
+import { UserAgreementPage } from '@pages/legal/user-agreement';
 import { EditorArticlesPage } from '@pages/editor-articles';
 import { EditorArticleFormPage } from '@pages/editor-article-form';
 import { EditorReviewPage } from '@pages/editor-review';
@@ -126,6 +128,20 @@ const router = createBrowserRouter([
         element: <RegisterPage />,
         handle: {
           title: 'Регистрация'
+        }
+      },
+      {
+        path: '/legal/user-agreement',
+        element: <UserAgreementPage />,
+        handle: {
+          title: 'Пользовательское соглашение'
+        }
+      },
+      {
+        path: '/legal/personal-data-consent',
+        element: <PersonalDataConsentPage />,
+        handle: {
+          title: 'Согласие на обработку ПДн'
         }
       },
       {

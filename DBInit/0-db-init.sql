@@ -27,6 +27,20 @@ CREATE INDEX "fki_Users_RoleId_fkey" ON public."Users" USING btree ("RoleId");
 CREATE UNIQUE INDEX users_unique_email ON public."Users" USING btree ("Email");
 CREATE UNIQUE INDEX users_unique_username ON public."Users" USING btree ("Username");
 
+CREATE TABLE public."UserConsents" (
+  "Id" uuid PRIMARY KEY NOT NULL,
+  "UserId" uuid NOT NULL,
+  "ConsentType" character varying(64) NOT NULL,
+  "DocumentVersion" character varying(32) NOT NULL,
+  "AcceptedAt" timestamp with time zone NOT NULL DEFAULT now(),
+  "IpAddress" character varying(64),
+  "UserAgent" character varying(512),
+  "Source" character varying(32) NOT NULL DEFAULT 'web',
+  CONSTRAINT "UserConsents_UserId_fkey" FOREIGN KEY ("UserId") REFERENCES public."Users"("Id") ON DELETE CASCADE
+);
+CREATE INDEX idx_user_consents_user_id ON public."UserConsents" USING btree ("UserId");
+CREATE INDEX idx_user_consents_user_type ON public."UserConsents" USING btree ("UserId", "ConsentType");
+
 CREATE TABLE public."Articles" (
   "Id" uuid PRIMARY KEY NOT NULL,
   "Title" character varying(256) NOT NULL,

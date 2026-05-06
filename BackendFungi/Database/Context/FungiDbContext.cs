@@ -26,6 +26,7 @@ public partial class FungiDbContext : DbContext
     public virtual DbSet<Role> Roles { get; set; }
     public virtual DbSet<RolePermission> RolePermissions { get; set; }
     public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<UserConsent> UserConsents { get; set; }
     public virtual DbSet<ArticleLike> ArticleLikes { get; set; }
     public virtual DbSet<MushroomLike> MushroomLikes { get; set; }
     public virtual DbSet<ArticleMushroom> ArticleMushrooms { get; set; }
@@ -241,6 +242,24 @@ public partial class FungiDbContext : DbContext
                 .HasForeignKey(d => d.RoleId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("Users_RoleId_fkey");
+        });
+
+        modelBuilder.Entity<UserConsent>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("UserConsents_pkey");
+            entity.HasIndex(e => e.UserId, "idx_user_consents_user_id");
+            entity.HasIndex(e => new { e.UserId, e.ConsentType }, "idx_user_consents_user_type");
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.ConsentType).HasMaxLength(64);
+            entity.Property(e => e.DocumentVersion).HasMaxLength(32);
+            entity.Property(e => e.AcceptedAt).HasDefaultValueSql("now()");
+            entity.Property(e => e.IpAddress).HasMaxLength(64);
+            entity.Property(e => e.UserAgent).HasMaxLength(512);
+            entity.Property(e => e.Source).HasMaxLength(32).HasDefaultValue("web");
+            entity.HasOne(d => d.User).WithMany(p => p.UserConsents)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("UserConsents_UserId_fkey");
         });
         
         modelBuilder.Entity<ArticleLike>(entity =>

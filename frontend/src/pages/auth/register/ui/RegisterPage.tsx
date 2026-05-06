@@ -1,7 +1,11 @@
 import { FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthLayout } from '@widgets/layout';
-import { registerUser } from '@features/auth';
+import {
+  PERSONAL_DATA_CONSENT_VERSION,
+  registerUser,
+  USER_AGREEMENT_VERSION
+} from '@features/auth';
 import { getCurrentUserProfile } from '@features/avatar';
 import { normalizePermissionCodes, useSession } from '@entities/session';
 import { appleLogo, googleLogo } from '@shared/assets/icons';
@@ -15,7 +19,10 @@ export function RegisterPage() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isUserAgreementAccepted, setIsUserAgreementAccepted] = useState(false);
+  const [isPersonalDataConsentAccepted, setIsPersonalDataConsentAccepted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const canSubmit = !isSubmitting && isUserAgreementAccepted && isPersonalDataConsentAccepted;
 
   function handleSocialAuth(provider: 'google' | 'apple') {
     showInfo(`Авторизация через ${provider === 'google' ? 'Google' : 'Apple'} будет добавлена в следующей итерации.`, {
@@ -25,10 +32,22 @@ export function RegisterPage() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!isUserAgreementAccepted || !isPersonalDataConsentAccepted) {
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      const authResult = await registerUser({ name: username.trim(), email: email.trim(), password });
+      const authResult = await registerUser({
+        name: username.trim(),
+        email: email.trim(),
+        password,
+        isUserAgreementAccepted,
+        isPersonalDataProcessingConsentAccepted: isPersonalDataConsentAccepted,
+        userAgreementVersion: USER_AGREEMENT_VERSION,
+        personalDataProcessingConsentVersion: PERSONAL_DATA_CONSENT_VERSION
+      });
       const profileResult = await getCurrentUserProfile(authResult.token);
       const roleAccessLevel = profileResult.user.role?.accessLevel ?? 20;
       const roleName =
@@ -71,8 +90,8 @@ export function RegisterPage() {
       }
       contentFooter={
         <Typography variant="meta" className={styles.footerText}>
-          Продолжая, вы принимаете <a href="#">условия использования</a> и{' '}
-          <a href="#">политику конфиденциальности</a>.
+          Продолжая, вы принимаете <Link to="/legal/user-agreement">пользовательское соглашение</Link> и{' '}
+          <Link to="/legal/personal-data-consent">согласие на обработку персональных данных</Link>.
         </Typography>
       }
     >
@@ -141,11 +160,31 @@ export function RegisterPage() {
               disabled={isSubmitting}
             />
             <Checkbox
-              name="agree"
-              label="Согласен с политикой конфиденциальности и условиями использования"
+              name="isUserAgreementAccepted"
+              label={
+                <>
+                  Я принимаю <Link to="/legal/user-agreement">Пользовательское соглашение</Link>
+                </>
+              }
+              checked={isUserAgreementAccepted}
+              onChange={(event) => setIsUserAgreementAccepted(event.target.checked)}
               disabled={isSubmitting}
+              required
             />
-            <Button type="submit" disabled={isSubmitting}>
+            <Checkbox
+              name="isPersonalDataProcessingConsentAccepted"
+              label={
+                <>
+                  Я даю согласие на{' '}
+                  <Link to="/legal/personal-data-consent">обработку персональных данных</Link>
+                </>
+              }
+              checked={isPersonalDataConsentAccepted}
+              onChange={(event) => setIsPersonalDataConsentAccepted(event.target.checked)}
+              disabled={isSubmitting}
+              required
+            />
+            <Button type="submit" disabled={!canSubmit}>
               {isSubmitting ? 'Создаём аккаунт...' : 'Создать аккаунт'}
             </Button>
           </Stack>

@@ -1,9 +1,9 @@
-import { InputHTMLAttributes, useId } from 'react';
+import { InputHTMLAttributes, ReactNode, useId } from 'react';
 import clsx from 'clsx';
 import styles from './Checkbox.module.css';
 
 export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
-  label: string;
+  label: ReactNode;
   helperText?: string;
   errorText?: string;
 }

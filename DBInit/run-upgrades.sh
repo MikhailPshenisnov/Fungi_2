@@ -68,6 +68,8 @@ UPGRADE_FILES=(
   "4-upgrade-articles-workflow.sql"
   "5-upgrade-mushrooms-workflow.sql"
   "6-upgrade-mushroom-field-lengths.sql"
+  "7-upgrade-user-consents.sql"
+  "8-replace-demo-articles.sql"
 )
 
 if [[ "${WITH_CSV_REPLACE}" == "true" ]]; then

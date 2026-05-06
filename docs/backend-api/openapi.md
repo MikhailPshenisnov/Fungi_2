@@ -47,4 +47,4 @@ mv quickstart/fungi-api-swagger.json.tmp quickstart/fungi-api-swagger.json
 
 ## Текущий статус snapshot
 
-- Snapshot `quickstart/fungi-api-swagger.json` синхронизирован с live backend (`http://localhost:5000/swagger/v1/swagger.json`) на 10 апреля 2026.
+- Snapshot `quickstart/fungi-api-swagger.json` синхронизирован с текущим контрактом на 21 апреля 2026.

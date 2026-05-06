@@ -1,3 +1,4 @@
+using BackendFungi.Contracts.Other;
 using BackendFungi.Models;
 using System.ComponentModel.DataAnnotations;
 
@@ -21,4 +22,22 @@ public record RegisterUserRequest
     [MaxLength(User.MaxPasswordLength)]
     [RegularExpression(User.PasswordPolicyPattern)]
     public string Password { get; init; } = string.Empty;
+
+    [Range(typeof(bool), "true", "true", ErrorMessage = "User agreement consent must be accepted")]
+    public bool IsUserAgreementAccepted { get; init; }
+
+    [Range(typeof(bool), "true", "true", ErrorMessage = "Personal data processing consent must be accepted")]
+    public bool IsPersonalDataProcessingConsentAccepted { get; init; }
+
+    [Required]
+    [MaxLength(32)]
+    [RegularExpression(LegalConsentConstants.UserAgreementVersionPattern, ErrorMessage = "Unsupported user agreement version")]
+    public string UserAgreementVersion { get; init; } = string.Empty;
+
+    [Required]
+    [MaxLength(32)]
+    [RegularExpression(
+        LegalConsentConstants.PersonalDataProcessingConsentVersionPattern,
+        ErrorMessage = "Unsupported personal data processing consent version")]
+    public string PersonalDataProcessingConsentVersion { get; init; } = string.Empty;
 }

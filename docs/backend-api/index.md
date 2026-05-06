@@ -15,6 +15,10 @@
 - `name`: 8..128 символов, только `a-zA-Z0-9_.-`
 - `email`: валидный email, максимум 128 символов
 - `password`: 8..32 символов, минимум 1 цифра, 1 заглавная буква, 1 строчная буква, 1 спецсимвол из набора `!@#$%^&*(),.?\"{}|<>`
+- `isUserAgreementAccepted`: обязательно `true`
+- `isPersonalDataProcessingConsentAccepted`: обязательно `true`
+- `userAgreementVersion`: обязательное значение `2026-04-21-v1`
+- `personalDataProcessingConsentVersion`: обязательное значение `2026-04-21-v1`
 
 `Authorization/LoginUser`:
 
@@ -164,7 +168,8 @@ Content-Type: application/json
   - `DBInit/3-upgrade-rbac.sql`;
   - `DBInit/4-upgrade-articles-workflow.sql`;
   - `DBInit/5-upgrade-mushrooms-workflow.sql`;
-  - `DBInit/6-upgrade-mushroom-field-lengths.sql`.
+  - `DBInit/6-upgrade-mushroom-field-lengths.sql`;
+  - `DBInit/7-upgrade-user-consents.sql`.
 - `DBInit/3-upgrade-rbac.sql` создает таблицы `Permissions`/`RolePermissions` и baseline-набор прав.
 
 ## Контракт каталога грибов и лайков

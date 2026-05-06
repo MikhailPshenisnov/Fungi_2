@@ -1,10 +1,11 @@
-import { Button, Container, Stack, Typography } from '@shared/ui';
+import { Link } from 'react-router-dom';
+import { Container, Stack, Typography } from '@shared/ui';
 import styles from './AppFooter.module.css';
 
 const footerLinks = [
-  { label: 'Условия использования', href: '#' },
-  { label: 'Конфиденциальность', href: '#' },
-  { label: 'Контакты', href: '#' }
+  { label: 'Условия использования', href: '/legal/user-agreement' },
+  { label: 'Конфиденциальность', href: '/legal/personal-data-consent' },
+  { label: 'Контакты', href: '/about' }
 ];
 
 export function AppFooter() {
@@ -23,9 +24,9 @@ export function AppFooter() {
 
           <nav aria-label="Ссылки в подвале" className={styles.nav}>
             {footerLinks.map((item) => (
-              <Button key={item.label} variant="tertiary" onClick={() => window.location.assign(item.href)}>
-                {item.label}
-              </Button>
+              <Link key={item.label} to={item.href} className={styles.link}>
+                <Typography variant="caption">{item.label}</Typography>
+              </Link>
             ))}
           </nav>
         </div>
