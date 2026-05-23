@@ -31,20 +31,28 @@ docker compose up -d --build
 Если база уже была создана раньше (старый docker volume), после обновления backend нужно один раз применить upgrade-скрипты:
 
 ```bash
-cat DBInit/2-upgrade-avatar.sql | docker exec -i fungi-db psql -U <DB_USER> -d <DB_NAME> -p <DB_PORT>
-cat DBInit/3-upgrade-rbac.sql | docker exec -i fungi-db psql -U <DB_USER> -d <DB_NAME> -p <DB_PORT>
-cat DBInit/4-upgrade-articles-workflow.sql | docker exec -i fungi-db psql -U <DB_USER> -d <DB_NAME> -p <DB_PORT>
-cat DBInit/5-upgrade-mushrooms-workflow.sql | docker exec -i fungi-db psql -U <DB_USER> -d <DB_NAME> -p <DB_PORT>
-cat DBInit/6-upgrade-mushroom-field-lengths.sql | docker exec -i fungi-db psql -U <DB_USER> -d <DB_NAME> -p <DB_PORT>
-cat DBInit/7-upgrade-user-consents.sql | docker exec -i fungi-db psql -U <DB_USER> -d <DB_NAME> -p <DB_PORT>
+docker compose up -d fungi-db
+bash DBInit/run-upgrades.sh
 ```
+
+Скрипт `DBInit/run-upgrades.sh` применяет все актуальные upgrade-скрипты, включая `7-upgrade-user-consents.sql` и `8-replace-demo-articles.sql`.
 
 ### One-time замена baseline грибов из CSV
 
 Если нужно заменить старые моковые грибы в уже существующей БД на актуальный CSV baseline:
 
 ```bash
-cat DBInit/6-replace-mushrooms-csv.sql | docker exec -i fungi-db psql -U <DB_USER> -d <DB_NAME> -p <DB_PORT>
+bash DBInit/run-upgrades.sh --with-csv-replace
+```
+
+### Чистая БД для передачи тимлиду
+
+Если нужно передать другому человеку чистую базу без старого volume:
+
+```bash
+docker compose down -v
+docker compose up -d fungi-db
+bash DBInit/run-upgrades.sh --with-csv-replace
 ```
 
 Генерация SQL из `DBInit/data/mushrooms.csv`:

@@ -24,8 +24,8 @@ export const Authorized: Story = {
     <SessionProvider
       initialUser={{
         id: '1',
-        name: 'test',
-        email: 'example@example.com',
+        name: 'Алексей Воронов',
+        email: 'alexey.voronov@fungi.local',
         avatarUrl: null,
         roleId: 'role-common',
         roleName: 'CommonUser',
@@ -38,4 +38,3 @@ export const Authorized: Story = {
     </SessionProvider>
   )
 };
-

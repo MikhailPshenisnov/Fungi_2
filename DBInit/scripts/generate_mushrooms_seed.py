@@ -51,6 +51,7 @@ class CsvColumns:
     cap_underside: str
     description: str
     doppelgangers: str
+    photos: str
 
 
 def normalize_text(value: str | None) -> str:
@@ -67,6 +68,37 @@ def normalize_text(value: str | None) -> str:
 def normalize_optional(value: str | None) -> str | None:
     normalized = normalize_text(value)
     return normalized or None
+
+
+def normalize_photo_url(value: str | None) -> str:
+    normalized = normalize_text(value)
+    if not normalized:
+        return ""
+
+    if "drive.google.com" in normalized:
+        if "uc?export=view&id=" in normalized:
+            return normalized
+
+        if "open?id=" in normalized:
+            file_id = normalized.split("open?id=", 1)[1].split("&", 1)[0]
+            if file_id:
+                return f"https://drive.google.com/uc?export=view&id={file_id}"
+
+        if "/file/d/" in normalized:
+            file_id = normalized.split("/file/d/", 1)[1].split("/", 1)[0]
+            if file_id:
+                return f"https://drive.google.com/uc?export=view&id={file_id}"
+
+    return normalized
+
+
+def split_photo_links(value: str | None) -> list[str]:
+    normalized = normalize_text(value)
+    if not normalized:
+        return []
+
+    links = [normalize_photo_url(part) for part in normalized.split(",")]
+    return [link for link in links if link]
 
 
 def detect_columns(header: list[str]) -> CsvColumns:
@@ -92,6 +124,7 @@ def detect_columns(header: list[str]) -> CsvColumns:
         cap_underside=pick("под шляпкой"),
         description=pick("описание гриба"),
         doppelgangers=pick("двойники"),
+        photos=pick("фотограф"),
     )
 
 
@@ -172,17 +205,12 @@ def load_rows(csv_path: Path) -> tuple[list[MushroomRow], dict[str, int]]:
 
         seen_names: set[str] = set()
         result: list[MushroomRow] = []
-        dropped_test = 0
         dropped_duplicates = 0
         dropped_invalid_stem = 0
 
         for row in reader:
             name = normalize_text(row.get(columns.name))
             if not name:
-                continue
-
-            if name == "Тестовый гриб":
-                dropped_test += 1
                 continue
 
             dedupe_key = name.casefold()
@@ -197,6 +225,7 @@ def load_rows(csv_path: Path) -> tuple[list[MushroomRow], dict[str, int]]:
             cap_color = normalize_text(row.get(columns.cap_color))
             cap_underside = normalize_text(row.get(columns.cap_underside))
             description = normalize_text(row.get(columns.description))
+            photos = split_photo_links(row.get(columns.photos))
 
             if not all((family, cap_type, cap_color, cap_underside, description)):
                 dropped_invalid_stem += 1
@@ -247,15 +276,14 @@ def load_rows(csv_path: Path) -> tuple[list[MushroomRow], dict[str, int]]:
                     cap_color=cap_color,
                     cap_underside_type=cap_underside,
                     description=description,
-                    header_photo_link=PLACEHOLDER_HEADER_PHOTO,
-                    extra_photo_links=None,
+                    header_photo_link=photos[0] if photos else PLACEHOLDER_HEADER_PHOTO,
+                    extra_photo_links=";".join(photos[1:]) if len(photos) > 1 else None,
                     doppelgangers=split_doppelgangers(row.get(columns.doppelgangers)),
                 )
             )
 
     stats = {
         "total_loaded": len(result),
-        "dropped_test": dropped_test,
         "dropped_duplicates": dropped_duplicates,
         "dropped_invalid_stem": dropped_invalid_stem,
     }
@@ -446,7 +474,7 @@ def build_header(rows: list[MushroomRow], stats: dict[str, int]) -> list[str]:
         "-- AUTO-GENERATED FILE. DO NOT EDIT MANUALLY.",
         "-- Source: DBInit/data/mushrooms.csv",
         f"-- Baseline mushrooms: {stats['total_loaded']}",
-        f"-- Dropped rows: test={stats['dropped_test']}, duplicates={stats['dropped_duplicates']}, invalid_stem={stats['dropped_invalid_stem']}",
+        f"-- Dropped rows: duplicates={stats['dropped_duplicates']}, invalid_stem={stats['dropped_invalid_stem']}",
         "",
     ]
 
@@ -520,7 +548,6 @@ def main() -> None:
     print(
         "Summary: "
         f"total={stats['total_loaded']}, "
-        f"dropped_test={stats['dropped_test']}, "
         f"dropped_duplicates={stats['dropped_duplicates']}, "
         f"dropped_invalid_stem={stats['dropped_invalid_stem']}"
     )

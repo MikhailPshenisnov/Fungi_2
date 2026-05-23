@@ -18,8 +18,8 @@ type Story = StoryObj<typeof meta>;
 function createSessionUser(overrides: Partial<SessionUser> = {}): SessionUser {
   return {
     id: '1',
-    name: 'Test User',
-    email: 'example@example.com',
+    name: 'Алексей Воронов',
+    email: 'alexey.voronov@fungi.local',
     avatarUrl: null,
     roleId: 'role-common',
     roleName: 'CommonUser',
@@ -116,5 +116,5 @@ export const SuperUserMenu: Story = {
 
 export const AuthorizedBrokenAvatarFallback: Story = {
   render: () =>
-    renderAuthorizedHeader(createSessionUser({ avatarUrl: 'https://example.invalid/broken-avatar.webp' }))
+    renderAuthorizedHeader(createSessionUser({ avatarUrl: 'https://invalid.local/broken-avatar.webp' }))
 };

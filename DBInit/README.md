@@ -20,6 +20,8 @@ bash DBInit/run-upgrades.sh
   - `4-upgrade-articles-workflow.sql`
   - `5-upgrade-mushrooms-workflow.sql`
   - `6-upgrade-mushroom-field-lengths.sql`
+  - `7-upgrade-user-consents.sql`
+  - `8-replace-demo-articles.sql`
 
 ## Если нужно также заменить baseline грибов из CSV
 
@@ -27,7 +29,17 @@ bash DBInit/run-upgrades.sh
 bash DBInit/run-upgrades.sh --with-csv-replace
 ```
 
-Это дополнительно выполнит `6-replace-mushrooms-csv.sql`.
+Это дополнительно выполнит `6-replace-mushrooms-csv.sql` и обновит baseline грибов на актуальный CSV с реальными фото.
+
+## Чистая БД для передачи
+
+Если нужно передать другому человеку чистую базу без старого volume:
+
+```bash
+docker compose down -v
+docker compose up -d fungi-db
+bash DBInit/run-upgrades.sh --with-csv-replace
+```
 
 ## Полезно
 

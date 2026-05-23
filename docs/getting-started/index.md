@@ -57,19 +57,26 @@ Swagger UI после запуска:
 Этот раздел является каноническим checklist для rollout существующей БД.
 
 ```bash
-cat DBInit/2-upgrade-avatar.sql | docker exec -i fungi-db psql -U <DB_USER> -d <DB_NAME> -p <DB_PORT>
-cat DBInit/3-upgrade-rbac.sql | docker exec -i fungi-db psql -U <DB_USER> -d <DB_NAME> -p <DB_PORT>
-cat DBInit/4-upgrade-articles-workflow.sql | docker exec -i fungi-db psql -U <DB_USER> -d <DB_NAME> -p <DB_PORT>
-cat DBInit/5-upgrade-mushrooms-workflow.sql | docker exec -i fungi-db psql -U <DB_USER> -d <DB_NAME> -p <DB_PORT>
-cat DBInit/6-upgrade-mushroom-field-lengths.sql | docker exec -i fungi-db psql -U <DB_USER> -d <DB_NAME> -p <DB_PORT>
+docker compose up -d fungi-db
+bash DBInit/run-upgrades.sh
 ```
 
 Это единый обязательный шаг миграции перед проверкой login/profile/avatar/RBAC/editor-workflow.
 
+Внутри `DBInit/run-upgrades.sh` уже включены актуальные upgrades, включая замену демо-статей.
+
 One-time замена baseline грибов на CSV (по необходимости):
 
 ```bash
-cat DBInit/6-replace-mushrooms-csv.sql | docker exec -i fungi-db psql -U <DB_USER> -d <DB_NAME> -p <DB_PORT>
+bash DBInit/run-upgrades.sh --with-csv-replace
+```
+
+Чистая БД для передачи другому человеку:
+
+```bash
+docker compose down -v
+docker compose up -d fungi-db
+bash DBInit/run-upgrades.sh --with-csv-replace
 ```
 
 Остановка:
