@@ -38,6 +38,7 @@ import styles from './ProfilePage.module.css';
 type AvatarStatus = 'idle' | 'uploading' | 'success';
 type ProfileArticlePreviewScope = 'drafts' | 'materials' | 'moderation';
 type ProfileMushroomPreviewScope = 'drafts' | 'materials' | 'moderation';
+type ProfileNavigationGroupKey = 'main' | 'materials' | 'admin';
 
 interface ProfilePageProps {
   section?: ProfileTabKey;
@@ -49,6 +50,28 @@ const ALLOWED_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
 const ALLOWED_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp']);
 const FAVORITES_PAGE_SIZE = 6;
 const NO_PERMISSIONS: string[] = [];
+const MATERIAL_PROFILE_TABS = new Set<ProfileTabKey>([
+  'editor-materials',
+  'editor-drafts',
+  'mushroom-materials',
+  'mushroom-drafts'
+]);
+const ADMIN_PROFILE_TABS = new Set<ProfileTabKey>([
+  'ja-moderation',
+  'mushroom-moderation',
+  'ja-reports',
+  'ja-users-read',
+  'admin-users-roles',
+  'admin-action-logs',
+  'su-system',
+  'su-audit',
+  'su-config'
+]);
+const PROFILE_NAVIGATION_GROUP_LABELS: Record<ProfileNavigationGroupKey, string> = {
+  main: 'Основное',
+  materials: 'Материалы',
+  admin: 'Администрирование'
+};
 const TAB_PREVIEW_POINTS: Partial<Record<ProfileTabKey, string[]>> = {
   'editor-materials': [
     'Список опубликованных, запланированных и архивных материалов.',
@@ -79,6 +102,18 @@ const TAB_PREVIEW_POINTS: Partial<Record<ProfileTabKey, string[]>> = {
     'Инструменты для оперативной модерации материалов.'
   ]
 };
+
+function getProfileNavigationGroupKey(tabKey: ProfileTabKey): ProfileNavigationGroupKey {
+  if (MATERIAL_PROFILE_TABS.has(tabKey)) {
+    return 'materials';
+  }
+
+  if (ADMIN_PROFILE_TABS.has(tabKey)) {
+    return 'admin';
+  }
+
+  return 'main';
+}
 
 function formatMushroomDate(value: string): string {
   const date = new Date(value);
@@ -224,6 +259,8 @@ export function ProfilePage({ section }: ProfilePageProps) {
   const [avatarPreviewUrl, setAvatarPreviewUrl] = useState<string | null>(null);
   const [isAvatarImageFailed, setIsAvatarImageFailed] = useState(false);
   const [isAvatarDragActive, setIsAvatarDragActive] = useState(false);
+  const [brokenFavoriteArticleImageIds, setBrokenFavoriteArticleImageIds] = useState<Record<string, boolean>>({});
+  const [brokenFavoriteMushroomImageIds, setBrokenFavoriteMushroomImageIds] = useState<Record<string, boolean>>({});
   const [avatarStatus, setAvatarStatus] = useState<AvatarStatus>('idle');
   const [avatarProgress, setAvatarProgress] = useState(0);
   const [avatarMessage, setAvatarMessage] = useState<string | null>(null);
@@ -242,6 +279,23 @@ export function ProfilePage({ section }: ProfilePageProps) {
 
   const userPermissions = user?.permissions ?? NO_PERMISSIONS;
   const availableTabs = getAvailableProfileTabs(userPermissions);
+  const availableTabGroups = useMemo(() => {
+    const groupedTabs = new Map<ProfileNavigationGroupKey, typeof availableTabs>();
+
+    for (const tab of availableTabs) {
+      const groupKey = getProfileNavigationGroupKey(tab.key);
+      groupedTabs.set(groupKey, [...(groupedTabs.get(groupKey) ?? []), tab]);
+    }
+
+    return (['main', 'materials', 'admin'] satisfies ProfileNavigationGroupKey[])
+      .map((groupKey) => ({
+        key: groupKey,
+        label: PROFILE_NAVIGATION_GROUP_LABELS[groupKey],
+        tabs: groupedTabs.get(groupKey) ?? []
+      }))
+      .filter((group) => group.tabs.length > 0);
+  }, [availableTabs]);
+  const workspaceTabs = useMemo(() => availableTabs.filter((tab) => Boolean(tab.routePath)), [availableTabs]);
   const queryTab = searchParams.get('tab');
   const activeSection = resolveProfileTabKey(section ?? queryTab, userPermissions);
   const activeTab = getProfileTabDefinition(activeSection);
@@ -266,7 +320,7 @@ export function ProfilePage({ section }: ProfilePageProps) {
   const isArticlePreviewTab = articlePreviewScope !== null;
   const isMushroomPreviewTab = mushroomPreviewScope !== null;
   const isFavoritesTab = activeSection === 'favorites';
-  const isFavoritesEnabled = Boolean(isFavoritesTab && token && token !== STORYBOOK_TOKEN);
+  const isFavoritesEnabled = Boolean((isFavoritesTab || activeSection === 'profile') && token && token !== STORYBOOK_TOKEN);
   const favoriteArticlesQuery = useQuery({
     queryKey: ['profile', 'favorites', 'articles', token ?? 'missing-token', favoriteArticlesPage, FAVORITES_PAGE_SIZE],
     enabled: isFavoritesEnabled,
@@ -921,96 +975,149 @@ export function ProfilePage({ section }: ProfilePageProps) {
     <PageLayout>
       <Container size="lg" className={styles.container}>
         <section className={styles.hero} aria-label="Шапка профиля">
-          <button
-            type="button"
-            className={
-              isAvatarDragActive
-                ? `${styles.heroAvatarButton} ${styles.heroAvatarDragActive}`
-                : styles.heroAvatarButton
-            }
-            onClick={openFilePicker}
-            onDragEnter={handleAvatarDragEnter}
-            onDragOver={handleAvatarDragOver}
-            onDragLeave={handleAvatarDragLeave}
-            onDrop={handleAvatarDrop}
-            disabled={isAvatarOperationLocked}
-            aria-label="Сменить аватар"
-          >
-            {showAvatarImage ? (
-              <img
-                src={activeAvatarUrl ?? ''}
-                alt=""
-                className={styles.heroAvatarImage}
-                onError={() => setIsAvatarImageFailed(true)}
-              />
-            ) : (
-              <span className={styles.heroAvatarFallback} aria-hidden="true">
-                {userInitials}
-              </span>
-            )}
-            <span className={styles.heroAvatarOverlay}>Сменить</span>
-          </button>
+          <div className={styles.heroCover} aria-hidden="true" />
 
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
-            onChange={handleFileChange}
-            className={styles.hiddenFileInput}
-            tabIndex={-1}
-          />
+          <div className={styles.heroBody}>
+            <button
+              type="button"
+              className={
+                isAvatarDragActive
+                  ? `${styles.heroAvatarButton} ${styles.heroAvatarDragActive}`
+                  : styles.heroAvatarButton
+              }
+              onClick={openFilePicker}
+              onDragEnter={handleAvatarDragEnter}
+              onDragOver={handleAvatarDragOver}
+              onDragLeave={handleAvatarDragLeave}
+              onDrop={handleAvatarDrop}
+              disabled={isAvatarOperationLocked}
+              aria-label="Сменить аватар"
+            >
+              {showAvatarImage ? (
+                <img
+                  src={activeAvatarUrl ?? ''}
+                  alt=""
+                  className={styles.heroAvatarImage}
+                  onError={() => setIsAvatarImageFailed(true)}
+                />
+              ) : (
+                <span className={styles.heroAvatarFallback} aria-hidden="true">
+                  {userInitials}
+                </span>
+              )}
+              <span className={styles.heroAvatarOverlay}>Сменить</span>
+            </button>
 
-          <div className={styles.heroContent}>
-            <Typography variant="h2">{userName}</Typography>
-            <Typography variant="bodyS" className={styles.heroMeta}>
-              {user.roleName} · Access {user.roleAccessLevel}
-            </Typography>
-            <Typography variant="caption" className={styles.heroMetaSecondary}>
-              Последний вход: сегодня
-            </Typography>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+              onChange={handleFileChange}
+              className={styles.hiddenFileInput}
+              tabIndex={-1}
+            />
 
-            <div className={styles.heroActions}>
-              <Button type="button" onClick={openFilePicker} disabled={isAvatarOperationLocked}>
-                {isUploadingAvatar ? `Загрузка ${avatarProgress}%` : 'Сменить аватар'}
-              </Button>
-              <Button type="button" variant="secondary" onClick={handleAvatarRemove} disabled={!hasAvatar || isAvatarOperationLocked}>
-                {isRemovingAvatar ? 'Удаляем...' : 'Удалить аватар'}
-              </Button>
-            </div>
+            <div className={styles.heroContent}>
+              <div className={styles.heroIdentity}>
+                <div className={styles.heroTitleBlock}>
+                  <Typography variant="h1" className={styles.heroTitle}>
+                    {userName}
+                  </Typography>
+                  <Typography variant="bodyS" className={styles.heroMeta}>
+                    {userEmail}
+                  </Typography>
+                </div>
 
-            {isUploadingAvatar ? (
-              <div className={styles.progressTrack} role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={avatarProgress}>
-                <span className={styles.progressBar} style={{ width: `${avatarProgress}%` }} />
+                <div className={styles.heroBadges} aria-label="Роль и доступ">
+                  <Tag tone="info">{user.roleName}</Tag>
+                  <Tag tone="success">Access {user.roleAccessLevel}</Tag>
+                </div>
               </div>
-            ) : null}
 
-            {avatarMessage ? (
-              <Typography
-                variant="caption"
-                className={
-                  avatarStatus === 'success'
-                    ? `${styles.avatarMessage} ${styles.avatarMessageSuccess}`
-                    : styles.avatarMessage
-                }
-              >
-                {avatarMessage}
-              </Typography>
-            ) : null}
+              <div className={styles.heroStats} aria-label="Сводка профиля">
+                <div className={styles.heroStat}>
+                  <span className={styles.heroStatValue}>
+                    {favoriteArticlesResult ? favoriteArticlesTotalCount : '—'}
+                  </span>
+                  <span className={styles.heroStatLabel}>Статей в избранном</span>
+                </div>
+                <div className={styles.heroStat}>
+                  <span className={styles.heroStatValue}>
+                    {favoriteMushroomsResult ? favoriteMushroomsTotalCount : '—'}
+                  </span>
+                  <span className={styles.heroStatLabel}>Грибов в избранном</span>
+                </div>
+                <div className={styles.heroStat}>
+                  <span className={styles.heroStatValue}>{workspaceTabs.length}</span>
+                  <span className={styles.heroStatLabel}>Рабочих разделов</span>
+                </div>
+              </div>
+
+              <div className={styles.heroActions}>
+                <Button type="button" onClick={openFilePicker} disabled={isAvatarOperationLocked}>
+                  {isUploadingAvatar ? `Загрузка ${avatarProgress}%` : 'Сменить аватар'}
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={handleAvatarRemove}
+                  disabled={!hasAvatar || isAvatarOperationLocked}
+                >
+                  {isRemovingAvatar ? 'Удаляем...' : 'Удалить аватар'}
+                </Button>
+              </div>
+
+              {isUploadingAvatar ? (
+                <div
+                  className={styles.progressTrack}
+                  role="progressbar"
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={avatarProgress}
+                >
+                  <span className={styles.progressBar} style={{ width: `${avatarProgress}%` }} />
+                </div>
+              ) : null}
+
+              {avatarMessage ? (
+                <Typography
+                  variant="caption"
+                  className={
+                    avatarStatus === 'success'
+                      ? `${styles.avatarMessage} ${styles.avatarMessageSuccess}`
+                      : styles.avatarMessage
+                  }
+                >
+                  {avatarMessage}
+                </Typography>
+              ) : null}
+            </div>
           </div>
         </section>
 
-        <Card>
+        <div className={styles.profileShell}>
           <div className={styles.layout}>
             <aside className={styles.aside} aria-label="Разделы профиля">
-              {availableTabs.map((tab) => (
-                <button
-                  key={tab.key}
-                  type="button"
-                  className={activeSection === tab.key ? `${styles.asideItem} ${styles.asideItemActive}` : styles.asideItem}
-                  onClick={() => handleSectionChange(tab.key)}
-                >
-                  {tab.label}
-                </button>
+              {availableTabGroups.map((group) => (
+                <div key={group.key} className={styles.asideGroup}>
+                  <Typography variant="meta" className={styles.asideGroupLabel}>
+                    {group.label}
+                  </Typography>
+                  <div className={styles.asideGroupItems}>
+                    {group.tabs.map((tab) => (
+                      <button
+                        key={tab.key}
+                        type="button"
+                        className={activeSection === tab.key ? `${styles.asideItem} ${styles.asideItemActive}` : styles.asideItem}
+                        onClick={() => handleSectionChange(tab.key)}
+                        aria-current={activeSection === tab.key ? 'page' : undefined}
+                      >
+                        <span className={styles.asideItemLabel}>{tab.label}</span>
+                        <span className={styles.asideItemSubtitle}>{tab.subtitle}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
               ))}
             </aside>
 
@@ -1022,50 +1129,119 @@ export function ProfilePage({ section }: ProfilePageProps) {
 
               {activeSection === 'profile' ? (
                 <>
-                  <div className={styles.accountGrid}>
-                    <Stack gap={6}>
-                      <Typography variant="bodyS" className={styles.label}>
-                        Имя
-                      </Typography>
-                      <Typography variant="body">{userName}</Typography>
-                    </Stack>
+                  <div className={styles.dashboardGrid}>
+                    <Card className={styles.dashboardPanel}>
+                      <div className={styles.dashboardPanelHeader}>
+                        <Typography variant="h4">Об аккаунте</Typography>
+                        <Tag tone="info">Личный профиль</Tag>
+                      </div>
 
-                    <Stack gap={6}>
-                      <Typography variant="bodyS" className={styles.label}>
-                        Email
-                      </Typography>
-                      <Typography variant="body">{userEmail}</Typography>
-                    </Stack>
+                      <div className={styles.accountGrid}>
+                        <Stack gap={6} className={`${styles.accountField} ${styles.accountFieldWide}`}>
+                          <Typography variant="bodyS" className={styles.label}>
+                            Email
+                          </Typography>
+                          <Typography variant="body" className={styles.accountValue}>
+                            {userEmail}
+                          </Typography>
+                        </Stack>
 
-                    <Stack gap={6}>
-                      <Typography variant="bodyS" className={styles.label}>
-                        Роль
-                      </Typography>
-                      <Typography variant="body">{user.roleName}</Typography>
-                    </Stack>
+                        <Stack gap={6} className={styles.accountField}>
+                          <Typography variant="bodyS" className={styles.label}>
+                            Имя
+                          </Typography>
+                          <Typography variant="body" className={styles.accountValue}>
+                            {userName}
+                          </Typography>
+                        </Stack>
 
-                    <Stack gap={6}>
-                      <Typography variant="bodyS" className={styles.label}>
-                        Уровень доступа
-                      </Typography>
-                      <Typography variant="body">{user.roleAccessLevel}</Typography>
-                    </Stack>
+                        <Stack gap={6} className={styles.accountField}>
+                          <Typography variant="bodyS" className={styles.label}>
+                            Роль
+                          </Typography>
+                          <Typography variant="body" className={styles.accountValue}>
+                            {user.roleName}
+                          </Typography>
+                        </Stack>
 
-                    <Stack gap={6}>
-                      <Typography variant="bodyS" className={styles.label}>
-                        Дата регистрации
+                        <Stack gap={6} className={styles.accountField}>
+                          <Typography variant="bodyS" className={styles.label}>
+                            Уровень доступа
+                          </Typography>
+                          <Typography variant="body" className={styles.accountValue}>
+                            {user.roleAccessLevel}
+                          </Typography>
+                        </Stack>
+                      </div>
+                    </Card>
+
+                    <Card className={styles.dashboardPanel}>
+                      <div className={styles.dashboardPanelHeader}>
+                        <Typography variant="h4">Активность</Typography>
+                        <Tag tone="success">Сводка</Tag>
+                      </div>
+
+                      <div className={styles.activityGrid}>
+                        <div className={styles.activityCard}>
+                          <span className={styles.activityValue}>
+                            {favoriteArticlesResult ? favoriteArticlesTotalCount : '—'}
+                          </span>
+                          <span className={styles.activityLabel}>Избранные статьи</span>
+                        </div>
+                        <div className={styles.activityCard}>
+                          <span className={styles.activityValue}>
+                            {favoriteMushroomsResult ? favoriteMushroomsTotalCount : '—'}
+                          </span>
+                          <span className={styles.activityLabel}>Избранные грибы</span>
+                        </div>
+                        <div className={styles.activityCard}>
+                          <span className={styles.activityValue}>{workspaceTabs.length}</span>
+                          <span className={styles.activityLabel}>Доступные разделы</span>
+                        </div>
+                      </div>
+
+                      <Typography variant="caption" className={styles.dashboardHint}>
+                        Счетчики обновляются из текущих данных избранного.
                       </Typography>
-                      <Typography variant="body">—</Typography>
-                    </Stack>
+                    </Card>
                   </div>
+
+                  <Card className={styles.dashboardPanel}>
+                    <div className={styles.dashboardPanelHeader}>
+                      <div>
+                        <Typography variant="h4">Рабочие разделы</Typography>
+                        <Typography variant="caption" className={styles.dashboardHint}>
+                          Быстрый доступ к разделам, доступным вашей роли.
+                        </Typography>
+                      </div>
+                    </div>
+
+                    {workspaceTabs.length > 0 ? (
+                      <div className={styles.workspaceGrid}>
+                        {workspaceTabs.map((tab) => (
+                          <Link key={tab.key} to={tab.routePath!} className={styles.workspaceLinkCard}>
+                            <span className={styles.workspaceLinkTitle}>{tab.label}</span>
+                            <span className={styles.workspaceLinkMeta}>{tab.subtitle}</span>
+                          </Link>
+                        ))}
+                      </div>
+                    ) : (
+                      <ContentState
+                        tone="empty"
+                        className={styles.editorStateCard}
+                        title="Рабочие разделы пока недоступны."
+                        description="Когда у роли появятся дополнительные права, быстрые ссылки отобразятся здесь."
+                      />
+                    )}
+                  </Card>
 
                   <div className={styles.placeholderCard}>
                     <div className={styles.placeholderHeader}>
-                      <Typography variant="body">Дополнительные поля аккаунта</Typography>
-                      <span className={styles.soonBadge}>Скоро</span>
+                      <Typography variant="body">Дополнительные поля профиля</Typography>
+                      <span className={styles.soonBadge}>Позже</span>
                     </div>
                     <Typography variant="bodyS" className={styles.placeholderText}>
-                      Телефон, город, биография и дополнительные настройки профиля добавим в следующих итерациях.
+                      Биография, город и публичные настройки появятся после расширения API профиля.
                     </Typography>
                   </div>
                 </>
@@ -1074,12 +1250,40 @@ export function ProfilePage({ section }: ProfilePageProps) {
               {activeSection !== 'profile' ? (
                 isFavoritesTab ? (
                   <div className={styles.favoritesLayout} data-testid="favorites-page">
+                    <div className={styles.favoritesHero}>
+                      <div>
+                        <Typography variant="meta" className={styles.favoritesHeroMeta}>
+                          Сохраненная коллекция
+                        </Typography>
+                        <Typography variant="h3" className={styles.favoritesHeroTitle}>
+                          Все, что хочется открыть позже
+                        </Typography>
+                        <Typography variant="bodyS" className={styles.favoritesHeroText}>
+                          Статьи и грибы остаются в одном месте, с быстрым переходом и отдельным управлением каждой
+                          подборкой.
+                        </Typography>
+                      </div>
+                      <div className={styles.favoritesSummary} aria-label="Сводка избранного">
+                        <div className={styles.favoritesSummaryItem}>
+                          <span className={styles.favoritesSummaryValue}>{favoriteArticlesTotalCount}</span>
+                          <span className={styles.favoritesSummaryLabel}>Статей</span>
+                        </div>
+                        <div className={styles.favoritesSummaryItem}>
+                          <span className={styles.favoritesSummaryValue}>{favoriteMushroomsTotalCount}</span>
+                          <span className={styles.favoritesSummaryLabel}>Грибов</span>
+                        </div>
+                      </div>
+                    </div>
+
                     <section className={styles.favoritesSection} aria-label="Избранные статьи" data-testid="favorites-articles-section">
                       <div className={styles.favoritesSectionHeader}>
-                        <Typography variant="h4">Избранные статьи</Typography>
-                        <Typography variant="caption" className={styles.favoritesSectionMeta}>
-                          Всего: {favoriteArticlesTotalCount}
-                        </Typography>
+                        <div>
+                          <Typography variant="h4">Избранные статьи</Typography>
+                          <Typography variant="caption" className={styles.favoritesSectionMeta}>
+                            Материалы для спокойного чтения и повторного просмотра.
+                          </Typography>
+                        </div>
+                        <Tag tone="success">Всего: {favoriteArticlesTotalCount}</Tag>
                       </div>
 
                       {favoriteArticlesQuery.isLoading ? (
@@ -1112,30 +1316,53 @@ export function ProfilePage({ section }: ProfilePageProps) {
                             <div className={styles.favoritesGrid}>
                               {favoriteArticles.map((article: FavoriteArticleItem) => (
                                 <Card key={article.articleId} className={styles.favoriteCard} data-testid="favorite-article-card">
-                                  <div className={styles.favoriteCardHeader}>
-                                    <Typography variant="bodyS" className={styles.favoriteCardTitle} data-testid="favorite-article-title">
-                                      {article.title}
-                                    </Typography>
-                                    <Tag tone="success">Опубликовано</Tag>
+                                  <div className={styles.favoriteMedia}>
+                                    {article.headerPhotoLink && !brokenFavoriteArticleImageIds[article.articleId] ? (
+                                      <img
+                                        src={article.headerPhotoLink}
+                                        alt=""
+                                        className={styles.favoriteImage}
+                                        onError={() =>
+                                          setBrokenFavoriteArticleImageIds((previousMap) => ({
+                                            ...previousMap,
+                                            [article.articleId]: true
+                                          }))
+                                        }
+                                      />
+                                    ) : (
+                                      <div className={styles.favoriteImageFallback}>Статья</div>
+                                    )}
                                   </div>
-                                  <Typography variant="caption" className={styles.favoriteCardMeta}>
-                                    {article.authorString} • {formatArticleDate(article.publishDate)} • Лайков: {article.likesCount}
-                                  </Typography>
-                                  <div className={styles.favoriteCardActions}>
-                                    <Link to={`/articles/${article.articleId}`} className={styles.editorTileActionLink}>
-                                      Открыть статью
-                                    </Link>
-                                    <Button
-                                      type="button"
-                                      variant="secondary"
-                                      onClick={() => {
-                                        void handleRemoveFavoriteArticle(article.articleId);
-                                      }}
-                                      disabled={Boolean(favoriteRemovingArticleIds[article.articleId])}
-                                      data-testid="favorite-article-remove"
-                                    >
-                                      {favoriteRemovingArticleIds[article.articleId] ? 'Удаляем...' : 'Убрать из избранного'}
-                                    </Button>
+                                  <div className={styles.favoriteCardBody}>
+                                    <div className={styles.favoriteCardHeader}>
+                                      <Typography variant="body" className={styles.favoriteCardTitle} data-testid="favorite-article-title">
+                                        {article.title}
+                                      </Typography>
+                                      <Tag tone="success">Опубликовано</Tag>
+                                    </div>
+                                    <Typography variant="caption" className={styles.favoriteCardMeta}>
+                                      {article.authorString} • {formatArticleDate(article.publishDate)}
+                                    </Typography>
+                                    <div className={styles.favoriteMetrics}>
+                                      <span>{article.likesCount} в избранном</span>
+                                      <span>Сохранено {formatArticleDate(article.likedAt)}</span>
+                                    </div>
+                                    <div className={styles.favoriteCardActions}>
+                                      <Link to={`/articles/${article.articleId}`} className={styles.favoritePrimaryLink}>
+                                        Открыть статью
+                                      </Link>
+                                      <Button
+                                        type="button"
+                                        variant="secondary"
+                                        onClick={() => {
+                                          void handleRemoveFavoriteArticle(article.articleId);
+                                        }}
+                                        disabled={Boolean(favoriteRemovingArticleIds[article.articleId])}
+                                        data-testid="favorite-article-remove"
+                                      >
+                                        {favoriteRemovingArticleIds[article.articleId] ? 'Удаляем...' : 'Убрать'}
+                                      </Button>
+                                    </div>
                                   </div>
                                 </Card>
                               ))}
@@ -1178,10 +1405,13 @@ export function ProfilePage({ section }: ProfilePageProps) {
 
                     <section className={styles.favoritesSection} aria-label="Избранные грибы" data-testid="favorites-mushrooms-section">
                       <div className={styles.favoritesSectionHeader}>
-                        <Typography variant="h4">Избранные грибы</Typography>
-                        <Typography variant="caption" className={styles.favoritesSectionMeta}>
-                          Всего: {favoriteMushroomsTotalCount}
-                        </Typography>
+                        <div>
+                          <Typography variant="h4">Избранные грибы</Typography>
+                          <Typography variant="caption" className={styles.favoritesSectionMeta}>
+                            Быстрый доступ к видам, которые вы отметили в каталоге.
+                          </Typography>
+                        </div>
+                        <Tag tone="info">Всего: {favoriteMushroomsTotalCount}</Tag>
                       </div>
 
                       {favoriteMushroomsQuery.isLoading ? (
@@ -1214,31 +1444,54 @@ export function ProfilePage({ section }: ProfilePageProps) {
                             <div className={styles.favoritesGrid}>
                               {favoriteMushrooms.map((mushroom: FavoriteMushroomItem) => (
                                 <Card key={mushroom.mushroomId} className={styles.favoriteCard} data-testid="favorite-mushroom-card">
-                                  <div className={styles.favoriteCardHeader}>
-                                    <Typography variant="bodyS" className={styles.favoriteCardTitle} data-testid="favorite-mushroom-title">
-                                      {mushroom.name}
-                                    </Typography>
-                                    <Tag tone="info">В каталоге</Tag>
+                                  <div className={styles.favoriteMedia}>
+                                    {mushroom.headerPhotoLink && !brokenFavoriteMushroomImageIds[mushroom.mushroomId] ? (
+                                      <img
+                                        src={mushroom.headerPhotoLink}
+                                        alt=""
+                                        className={styles.favoriteImage}
+                                        onError={() =>
+                                          setBrokenFavoriteMushroomImageIds((previousMap) => ({
+                                            ...previousMap,
+                                            [mushroom.mushroomId]: true
+                                          }))
+                                        }
+                                      />
+                                    ) : (
+                                      <div className={styles.favoriteImageFallback}>Гриб</div>
+                                    )}
                                   </div>
-                                  <Typography variant="caption" className={styles.favoriteCardMeta}>
-                                    {mushroom.family}
-                                    {mushroom.latinName ? ` • ${mushroom.latinName}` : ''} • Лайков: {mushroom.likesCount}
-                                  </Typography>
-                                  <div className={styles.favoriteCardActions}>
-                                    <Link to={`/mushrooms/${mushroom.mushroomId}`} className={styles.editorTileActionLink}>
-                                      Открыть гриб
-                                    </Link>
-                                    <Button
-                                      type="button"
-                                      variant="secondary"
-                                      onClick={() => {
-                                        void handleRemoveFavoriteMushroom(mushroom.mushroomId);
-                                      }}
-                                      disabled={Boolean(favoriteRemovingMushroomIds[mushroom.mushroomId])}
-                                      data-testid="favorite-mushroom-remove"
-                                    >
-                                      {favoriteRemovingMushroomIds[mushroom.mushroomId] ? 'Удаляем...' : 'Убрать из избранного'}
-                                    </Button>
+                                  <div className={styles.favoriteCardBody}>
+                                    <div className={styles.favoriteCardHeader}>
+                                      <Typography variant="body" className={styles.favoriteCardTitle} data-testid="favorite-mushroom-title">
+                                        {mushroom.name}
+                                      </Typography>
+                                      <Tag tone="info">В каталоге</Tag>
+                                    </div>
+                                    <Typography variant="caption" className={styles.favoriteCardMeta}>
+                                      {mushroom.family}
+                                      {mushroom.latinName ? ` • ${mushroom.latinName}` : ''}
+                                    </Typography>
+                                    <div className={styles.favoriteMetrics}>
+                                      <span>{mushroom.likesCount} в избранном</span>
+                                      <span>Сохранено {formatArticleDate(mushroom.likedAt)}</span>
+                                    </div>
+                                    <div className={styles.favoriteCardActions}>
+                                      <Link to={`/mushrooms/${mushroom.mushroomId}`} className={styles.favoritePrimaryLink}>
+                                        Открыть гриб
+                                      </Link>
+                                      <Button
+                                        type="button"
+                                        variant="secondary"
+                                        onClick={() => {
+                                          void handleRemoveFavoriteMushroom(mushroom.mushroomId);
+                                        }}
+                                        disabled={Boolean(favoriteRemovingMushroomIds[mushroom.mushroomId])}
+                                        data-testid="favorite-mushroom-remove"
+                                      >
+                                        {favoriteRemovingMushroomIds[mushroom.mushroomId] ? 'Удаляем...' : 'Убрать'}
+                                      </Button>
+                                    </div>
                                   </div>
                                 </Card>
                               ))}
@@ -1517,7 +1770,7 @@ export function ProfilePage({ section }: ProfilePageProps) {
               ) : null}
             </Stack>
           </div>
-        </Card>
+        </div>
       </Container>
     </PageLayout>
   );

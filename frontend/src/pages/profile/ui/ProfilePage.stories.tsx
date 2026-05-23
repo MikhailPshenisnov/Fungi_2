@@ -64,6 +64,29 @@ export const CommonUserFavorites: Story = {
   render: () => renderProfile({ section: 'favorites' })
 };
 
+export const UserWithAvatar: Story = {
+  render: () =>
+    renderProfile({
+      section: 'profile',
+      user: createSessionUser({
+        name: 'Леонид Лесовик',
+        email: 'leonid.lesovik@example.com',
+        avatarUrl: demoAvatarUrl
+      })
+    })
+};
+
+export const LongIdentity: Story = {
+  render: () =>
+    renderProfile({
+      section: 'profile',
+      user: createSessionUser({
+        name: 'Александра Константиновна Исследовательница Микологии',
+        email: 'alexandra.konstantinovna.research.profile@example.fungi.local'
+      })
+    })
+};
+
 export const EditorRoleTabs: Story = {
   render: () =>
     renderProfile({
@@ -127,6 +150,34 @@ export const SuperUserRoleTabs: Story = {
         roleName: 'SuperUser',
         roleAccessLevel: 0,
         permissions: [
+          'profile.su.system.read',
+          'profile.su.audit.read',
+          'profile.su.config.read'
+        ]
+      })
+    })
+};
+
+export const ManyRoleTabs: Story = {
+  render: () =>
+    renderProfile({
+      section: 'profile',
+      user: createSessionUser({
+        roleId: 'role-platform-owner',
+        roleName: 'Platform Owner',
+        roleAccessLevel: 0,
+        avatarUrl: demoAvatarUrl,
+        permissions: [
+          'content.articles.write',
+          'content.articles.review',
+          'content.mushrooms.write',
+          'content.mushrooms.review',
+          'content.mushrooms.publish',
+          'content.mushrooms.archive',
+          'profile.ja.reports.read',
+          'profile.ja.users.read',
+          'profile.admin.users-roles.read',
+          'profile.admin.action-logs.read',
           'profile.su.system.read',
           'profile.su.audit.read',
           'profile.su.config.read'
