@@ -12,8 +12,7 @@ import styles from './AppHeader.module.css';
 const navItems = [
   { label: 'О нас', href: '/about' },
   { label: 'Статьи', href: '/articles' },
-  { label: 'Грибы', href: '/mushrooms' },
-  { label: 'Отзывы', href: '/#reviews' }
+  { label: 'Грибы', href: '/mushrooms' }
 ];
 
 interface AppHeaderProps {
